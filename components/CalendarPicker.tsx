@@ -12,18 +12,18 @@ interface CalendarPickerProps {
 }
 
 const POLISH_MONTHS = [
-  "Styczeń",
-  "Luty",
-  "Marzec",
-  "Kwiecień",
-  "Maj",
-  "Czerwiec",
-  "Lipiec",
-  "Sierpień",
-  "Wrzesień",
-  "Październik",
-  "Listopad",
-  "Grudzień",
+  "styczeń",
+  "luty",
+  "marzec",
+  "kwiecień",
+  "maj",
+  "czerwiec",
+  "lipiec",
+  "sierpień",
+  "wrzesień",
+  "październik",
+  "listopad",
+  "grudzień",
 ];
 
 const POLISH_MONTHS_GENITIVE = [
@@ -41,7 +41,16 @@ const POLISH_MONTHS_GENITIVE = [
   "grudnia",
 ];
 
-const POLISH_WEEKDAYS = ["Pn", "Wt", "Śr", "Cz", "Pt", "Sb", "Nd"];
+const POLISH_WEEKDAYS_SHORT = ["po", "wt", "śr", "cz", "pt", "so", "ni"];
+const POLISH_WEEKDAYS_FULL = [
+  "Poniedziałek",
+  "Wtorek",
+  "Środa",
+  "Czwartek",
+  "Piątek",
+  "Sobota",
+  "Niedziela",
+];
 
 const TIME_SLOTS_WEEKDAY = [
   "09:00",
@@ -62,6 +71,21 @@ const TIME_SLOTS_SATURDAY = [
   "12:00",
   "13:00",
   "14:00",
+];
+
+// Godziny do wyświetlenia w lewej kolumnie (day view)
+const DAY_VIEW_HOURS = [
+  "08:00",
+  "09:00",
+  "10:00",
+  "11:00",
+  "12:00",
+  "13:00",
+  "14:00",
+  "15:00",
+  "16:00",
+  "17:00",
+  "18:00",
 ];
 
 export default function CalendarPicker({
@@ -95,9 +119,7 @@ export default function CalendarPicker({
   const isDateDisabled = (day: number) => {
     const date = new Date(currentYear, currentMonth, day);
     date.setHours(0, 0, 0, 0);
-    // Disable past dates
     if (date < today) return true;
-    // Disable Sundays (getDay() returns 0 for Sunday)
     if (date.getDay() === 0) return true;
     return false;
   };
@@ -165,13 +187,11 @@ export default function CalendarPicker({
     ? new Date(selectedDate + "T00:00:00")
     : null;
 
-  // Check if selected date is Saturday (getDay() returns 6 for Saturday)
   const isSaturday = selectedDateObj ? selectedDateObj.getDay() === 6 : false;
   const availableTimeSlots = isSaturday
     ? TIME_SLOTS_SATURDAY
     : TIME_SLOTS_WEEKDAY;
 
-  // Function to check if a time slot is booked
   const isTimeSlotBooked = (time: string) => {
     if (!selectedDate) return false;
     return bookedSlots.some(
@@ -179,176 +199,245 @@ export default function CalendarPicker({
     );
   };
 
+  // Formatowanie daty do wyświetlenia
+  const getFormattedSelectedDate = () => {
+    if (!selectedDateObj) return null;
+    const dayOfWeek = POLISH_WEEKDAYS_FULL[selectedDateObj.getDay()];
+    const day = selectedDateObj.getDate();
+    const month = POLISH_MONTHS_GENITIVE[selectedDateObj.getMonth()];
+    const year = selectedDateObj.getFullYear();
+    return { dayOfWeek, day, month, year };
+  };
+
+  const formattedDate = getFormattedSelectedDate();
+
   return (
-    <div className="space-y-6">
-      {/* Calendar Card */}
-      <div className="bg-white rounded-2xl shadow-lg shadow-text-dark/5 overflow-hidden">
-        {/* Header */}
-        <div className="px-6 py-5 border-b border-gray-100">
-          <div className="flex items-center justify-between">
-            <button
-              type="button"
-              onClick={goToPrevMonth}
-              disabled={!canGoPrevMonth()}
-              className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${
-                canGoPrevMonth()
-                  ? "hover:bg-gray-100 text-gray-600 hover:text-gray-900"
-                  : "opacity-30 cursor-not-allowed text-gray-300"
-              }`}
-            >
-              <ChevronLeft className="w-5 h-5" />
-            </button>
-
-            <h3 className="font-serif text-xl text-text-dark tracking-wide">
-              {POLISH_MONTHS[currentMonth]} {currentYear}
-            </h3>
-
-            <button
-              type="button"
-              onClick={goToNextMonth}
-              className="w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-100 text-gray-600 hover:text-gray-900 transition-all"
-            >
-              <ChevronRight className="w-5 h-5" />
-            </button>
-          </div>
+    <div className="flex flex-col lg:flex-row gap-6 w-full">
+      {/* LEFT SIDE - Day View */}
+      <div className="flex-1 bg-white rounded-2xl shadow-lg overflow-hidden">
+        {/* Header with date */}
+        <div className="p-6 border-b border-gray-100">
+          {formattedDate ? (
+            <div>
+              <div className="text-sm font-medium text-primary-taupe uppercase tracking-wide mb-1">
+                {formattedDate.dayOfWeek}
+              </div>
+              <div className="flex items-baseline gap-2">
+                <div className="text-4xl font-bold text-text-dark">
+                  {formattedDate.day}
+                </div>
+                <div className="text-lg text-gray-600">
+                  {formattedDate.month} {formattedDate.year}
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="text-gray-400 text-center py-4">
+              Wybierz datę z kalendarza
+            </div>
+          )}
         </div>
 
-        {/* Calendar Grid */}
-        <div className="p-4">
-          {/* Weekday headers */}
-          <div className="grid grid-cols-7 mb-2">
-            {POLISH_WEEKDAYS.map((day) => (
-              <div
-                key={day}
-                className="h-10 flex items-center justify-center text-xs font-medium text-gray-400 uppercase tracking-wider"
-              >
-                {day}
-              </div>
-            ))}
-          </div>
+        {/* Day schedule view */}
+        <div className="p-4 max-h-[500px] overflow-y-auto">
+          {!selectedDate && (
+            <div className="text-center py-12 text-gray-400">
+              <Clock className="w-12 h-12 mx-auto mb-3 opacity-30" />
+              <p>Wybierz datę, aby zobaczyć dostępne godziny</p>
+            </div>
+          )}
+          {selectedDate && (
+            <div className="space-y-1">
+              {DAY_VIEW_HOURS.map((hour) => {
+                const isAvailable = availableTimeSlots.includes(hour);
+                const isBooked = isAvailable && isTimeSlotBooked(hour);
+                const isSelectedTime = selectedTime === hour;
 
-          {/* Days grid */}
-          <div className="grid grid-cols-7 gap-1">
-            {calendarDays.map((day, index) => (
-              <div key={index} className="aspect-square p-0.5">
-                {day !== null && (
-                  <button
-                    type="button"
-                    onClick={() => handleDayClick(day)}
-                    disabled={isDateDisabled(day)}
-                    className={`w-full h-full rounded-full flex items-center justify-center text-sm font-medium transition-all relative ${
-                      isSunday(day)
-                        ? "text-gray-200 cursor-not-allowed line-through"
-                        : isDateDisabled(day)
-                          ? "text-gray-200 cursor-not-allowed"
-                          : isSelected(day)
-                            ? "bg-primary-taupe text-white shadow-md"
-                            : isToday(day)
-                              ? "bg-primary-taupe/10 text-primary-taupe font-semibold ring-2 ring-primary-taupe/30"
-                              : "text-gray-700 hover:bg-gray-100"
-                    }`}
+                return (
+                  <div
+                    key={hour}
+                    className="flex items-center border-b border-gray-50 last:border-0"
                   >
-                    {day}
-                  </button>
-                )}
-              </div>
-            ))}
-          </div>
+                    <div className="w-20 py-3 text-sm text-gray-500">
+                      {hour}
+                    </div>
+                    <div className="flex-1">
+                      {isAvailable && (
+                        <button
+                          type="button"
+                          onClick={() => !isBooked && onTimeChange(hour)}
+                          disabled={isBooked}
+                          className={`w-full text-left py-2 px-4 rounded-lg transition-all ${
+                            isBooked
+                              ? "bg-red-50 border-2 border-red-500 cursor-not-allowed"
+                              : isSelectedTime
+                                ? "bg-primary-taupe text-white shadow-md"
+                                : "bg-green-50 hover:bg-green-100 border-2 border-green-400"
+                          }`}
+                        >
+                          {isBooked ? (
+                            <span className="text-red-600 font-medium">
+                              Zajęte
+                            </span>
+                          ) : (
+                            <span
+                              className={
+                                isSelectedTime
+                                  ? "text-white font-medium"
+                                  : "text-green-700"
+                              }
+                            >
+                              {isSelectedTime ? "Wybrano" : "Dostępne"}
+                            </span>
+                          )}
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Time Selection Card */}
-      <div className="bg-white rounded-2xl shadow-lg shadow-text-dark/5 overflow-hidden">
-        <div className="px-6 py-4 border-b border-gray-100">
-          <div className="flex items-center space-x-2">
-            <Clock className="w-4 h-4 text-gray-400" />
-            <span className="text-sm font-medium text-gray-600 uppercase tracking-wider">
-              Wybierz godzinę
-            </span>
+      {/* RIGHT SIDE - Mini Calendar & Available Times */}
+      <div className="lg:w-96 space-y-6">
+        {/* Mini Calendar */}
+        <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+          <div className="p-4 border-b border-gray-100">
+            <div className="flex items-center justify-between mb-4">
+              <button
+                type="button"
+                onClick={goToPrevMonth}
+                disabled={!canGoPrevMonth()}
+                className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                  canGoPrevMonth()
+                    ? "hover:bg-gray-100 text-gray-600"
+                    : "opacity-30 cursor-not-allowed"
+                }`}
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+
+              <h3 className="text-sm font-bold text-text-dark uppercase tracking-wide">
+                {POLISH_MONTHS[currentMonth]} {currentYear}
+              </h3>
+
+              <button
+                type="button"
+                onClick={goToNextMonth}
+                className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-gray-100 text-gray-600"
+              >
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Weekday headers */}
+            <div className="grid grid-cols-7 mb-2">
+              {POLISH_WEEKDAYS_SHORT.map((day) => (
+                <div
+                  key={day}
+                  className="h-8 flex items-center justify-center text-[10px] font-medium text-gray-400 uppercase"
+                >
+                  {day}
+                </div>
+              ))}
+            </div>
+
+            {/* Days grid */}
+            <div className="grid grid-cols-7 gap-1">
+              {calendarDays.map((day, index) => (
+                <div key={index} className="aspect-square">
+                  {day !== null && (
+                    <button
+                      type="button"
+                      onClick={() => handleDayClick(day)}
+                      disabled={isDateDisabled(day)}
+                      className={`w-full h-full rounded-full flex items-center justify-center text-xs font-medium transition-all ${
+                        isSunday(day)
+                          ? "text-gray-200 cursor-not-allowed"
+                          : isDateDisabled(day)
+                            ? "text-gray-200 cursor-not-allowed"
+                            : isSelected(day)
+                              ? "bg-purple-600 text-white"
+                              : isToday(day)
+                                ? "bg-purple-100 text-purple-600 font-bold"
+                                : "text-gray-700 hover:bg-gray-100"
+                      }`}
+                    >
+                      {day}
+                      {isToday(day) && (
+                        <span className="absolute w-1 h-1 bg-purple-600 rounded-full mt-6"></span>
+                      )}
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
-        <div className="p-4">
-          {!selectedDate && (
-            <p className="text-sm text-gray-400 text-center py-4">
-              Najpierw wybierz datę
-            </p>
-          )}
-          {selectedDate && (
+        {/* Available Time Slots - Bottom section */}
+        {selectedDate && (
+          <div className="bg-white rounded-2xl shadow-lg overflow-hidden p-4">
+            <div className="flex items-center gap-2 mb-3">
+              <Clock className="w-4 h-4 text-gray-400" />
+              <h4 className="text-sm font-bold text-gray-700 uppercase tracking-wide">
+                Dostępne godziny
+              </h4>
+            </div>
             <div className="grid grid-cols-3 gap-2">
               {availableTimeSlots.map((time) => {
                 const isBooked = isTimeSlotBooked(time);
+                const isSelectedTime = selectedTime === time;
                 return (
                   <button
                     key={time}
                     type="button"
                     onClick={() => !isBooked && onTimeChange(time)}
                     disabled={isBooked}
-                    className={`py-3 px-4 rounded-xl text-sm font-medium transition-all ${
+                    className={`py-2 px-3 rounded-lg text-sm font-medium transition-all ${
                       isBooked
-                        ? "bg-gray-100 text-gray-400 cursor-not-allowed ring-2 ring-red-500"
-                        : selectedTime === time
+                        ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                        : isSelectedTime
                           ? "bg-primary-taupe text-white shadow-md"
-                          : "bg-gray-50 text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                          : "bg-gray-50 text-gray-700 hover:bg-gray-100"
                     }`}
                   >
                     {time}
-                    {isBooked && (
-                      <span className="block text-xs mt-0.5 text-red-500">
-                        Zajęte
-                      </span>
-                    )}
                   </button>
                 );
               })}
             </div>
-          )}
-          {selectedDate && isSaturday && (
-            <p className="text-xs text-gray-400 text-center mt-3">
-              W soboty gabinet czynny do 14:00
-            </p>
-          )}
-        </div>
-      </div>
+            {isSaturday && (
+              <p className="text-xs text-gray-400 text-center mt-3">
+                W soboty gabinet czynny do 14:00
+              </p>
+            )}
+          </div>
+        )}
 
-      {/* Selected Summary */}
-      {(selectedDate || selectedTime) && (
-        <div className="bg-gradient-to-br from-primary-taupe/10 to-accent-warm/10 rounded-2xl p-6 border border-primary-taupe/20">
-          <div className="flex items-start space-x-4">
-            <div className="w-12 h-12 rounded-full bg-primary-taupe/20 flex items-center justify-center flex-shrink-0">
-              <span className="text-primary-taupe font-serif text-lg">
-                {selectedDateObj ? selectedDateObj.getDate() : "?"}
-              </span>
-            </div>
-            <div>
-              <p className="text-xs font-medium text-primary-taupe/70 uppercase tracking-wider mb-1">
-                Wybrany termin
-              </p>
-              <p className="text-lg font-serif text-text-dark">
-                {selectedDateObj && (
-                  <>
-                    {selectedDateObj.getDate()}{" "}
-                    {POLISH_MONTHS_GENITIVE[selectedDateObj.getMonth()]}{" "}
-                    {selectedDateObj.getFullYear()}
-                  </>
-                )}
-                {!selectedDateObj && (
-                  <span className="text-gray-400">Wybierz datę</span>
-                )}
-              </p>
-              {selectedTime && (
-                <p className="text-sm text-gray-600 mt-1 flex items-center space-x-1">
-                  <Clock className="w-3.5 h-3.5" />
-                  <span>
-                    Godzina:{" "}
-                    <strong className="text-text-dark">{selectedTime}</strong>
-                  </span>
+        {/* Selected info */}
+        {selectedDate && selectedTime && (
+          <div className="bg-gradient-to-br from-primary-taupe/10 to-accent-warm/10 rounded-2xl p-4 border border-primary-taupe/20">
+            <p className="text-xs font-medium text-primary-taupe/70 uppercase tracking-wider mb-2">
+              Wybrany termin
+            </p>
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-primary-taupe/20 flex items-center justify-center">
+                <Clock className="w-5 h-5 text-primary-taupe" />
+              </div>
+              <div>
+                <p className="text-sm font-bold text-text-dark">
+                  {formattedDate?.day} {formattedDate?.month}
                 </p>
-              )}
+                <p className="text-xs text-gray-600">{selectedTime}</p>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }
