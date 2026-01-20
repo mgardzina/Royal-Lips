@@ -199,6 +199,33 @@ export default function CalendarPicker({
     );
   };
 
+  // Funkcja sprawdzająca czy godzina już minęła (tylko dla dzisiejszego dnia)
+  const isTimeSlotPast = (time: string) => {
+    if (!selectedDate) return false;
+
+    const selectedDateObj = new Date(selectedDate + "T00:00:00");
+    const now = new Date();
+
+    // Jeśli to nie dzisiaj, nie ukrywaj godzin
+    if (
+      selectedDateObj.getDate() !== now.getDate() ||
+      selectedDateObj.getMonth() !== now.getMonth() ||
+      selectedDateObj.getFullYear() !== now.getFullYear()
+    ) {
+      return false;
+    }
+
+    // Jeśli to dzisiaj, sprawdź czy godzina już minęła
+    const [hours, minutes] = time.split(":").map(Number);
+    const currentHours = now.getHours();
+    const currentMinutes = now.getMinutes();
+
+    if (hours < currentHours) return true;
+    if (hours === currentHours && minutes <= currentMinutes) return true;
+
+    return false;
+  };
+
   // Formatowanie daty do wyświetlenia
   const getFormattedSelectedDate = () => {
     if (!selectedDateObj) return null;
@@ -251,7 +278,11 @@ export default function CalendarPicker({
               {DAY_VIEW_HOURS.map((hour) => {
                 const isAvailable = availableTimeSlots.includes(hour);
                 const isBooked = isAvailable && isTimeSlotBooked(hour);
+                const isPast = isTimeSlotPast(hour);
                 const isSelectedTime = selectedTime === hour;
+
+                // Ukryj godziny, które już minęły
+                if (isPast) return null;
 
                 return (
                   <div
@@ -267,12 +298,12 @@ export default function CalendarPicker({
                           type="button"
                           onClick={() => !isBooked && onTimeChange(hour)}
                           disabled={isBooked}
-                          className={`w-full text-left py-2 px-4 rounded-lg transition-all ${
+                          className={`w-full text-left py-2 px-4 rounded-lg transition-colors duration-150 ${
                             isBooked
                               ? "bg-red-50 border-2 border-red-500 cursor-not-allowed"
                               : isSelectedTime
-                                ? "bg-primary-taupe text-white shadow-md"
-                                : "bg-green-50 hover:bg-green-100 border-2 border-green-400 active:bg-gray-200 active:border-gray-400"
+                                ? "bg-primary-taupe text-white shadow-md border-2 border-primary-taupe"
+                                : "bg-green-50 hover:bg-green-100 border-2 border-green-400 active:bg-green-200 active:border-green-500"
                           }`}
                         >
                           {isBooked ? (

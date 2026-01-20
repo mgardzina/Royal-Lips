@@ -285,12 +285,29 @@ export default function RezerwacjaPage() {
                   <input
                     type="email"
                     required
-                    pattern="[^@\s]+@[^@\s]+\.[^@\s]+"
+                    pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
                     value={formData.email || ""}
                     onChange={(e) => updateFormData("email", e.target.value)}
+                    onInvalid={(e) => {
+                      const target = e.target as HTMLInputElement;
+                      if (!target.value.includes("@")) {
+                        target.setCustomValidity("Email musi zawierać znak @");
+                      } else if (!target.value.match(/\.[a-zA-Z]{2,}$/)) {
+                        target.setCustomValidity(
+                          "Email musi zawierać domenę (np. @gmail.com)"
+                        );
+                      } else {
+                        target.setCustomValidity(
+                          "Wpisz poprawny adres email (np. twoj@email.com)"
+                        );
+                      }
+                    }}
+                    onInput={(e) => {
+                      const target = e.target as HTMLInputElement;
+                      target.setCustomValidity("");
+                    }}
                     className="w-full px-4 py-3 border border-text-dark/20 bg-bg-main/50 focus:border-primary-taupe outline-none transition-colors font-light"
                     placeholder="twoj@email.com"
-                    title="Wpisz poprawny adres email (np. twoj@email.com)"
                   />
                 </div>
 
