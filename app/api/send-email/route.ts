@@ -228,7 +228,7 @@ export async function POST(request: NextRequest) {
 
     // Wyślij email do właścicielki
     const ownerEmail = await resend.emails.send({
-      from: 'Royal Lips <kontakt@royal-lips.pl>',
+      from: 'Royal Lips <onboarding@resend.dev>',
       to: process.env.OWNER_EMAIL || 'owner@example.com',
       subject: `🔔 Nowa rezerwacja: ${firstName} ${lastName} - ${serviceName}`,
       html: ownerEmailHtml,
@@ -236,7 +236,7 @@ export async function POST(request: NextRequest) {
 
     // Wyślij potwierdzenie do klienta
     const clientEmail = await resend.emails.send({
-      from: 'Royal Lips <kontakt@royal-lips.pl>',
+      from: 'Royal Lips <onboarding@resend.dev>',
       to: email,
       subject: '✨ Potwierdzenie rezerwacji - Royal Lips',
       html: clientEmailHtml,

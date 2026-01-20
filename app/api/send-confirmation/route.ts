@@ -151,7 +151,7 @@ export async function POST(request: NextRequest) {
 
     // Wyślij email potwierdzający do klienta
     const result = await resend.emails.send({
-      from: 'Royal Lips <kontakt@royal-lips.pl>',
+      from: 'Royal Lips <onboarding@resend.dev>',
       to: email,
       subject: '✅ Twoja wizyta została potwierdzona! - Royal Lips',
       html: confirmationEmailHtml,
