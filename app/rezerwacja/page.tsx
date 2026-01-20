@@ -347,7 +347,7 @@ export default function RezerwacjaPage() {
                 type="button"
                 onClick={() => setStep(2)}
                 disabled={!isStep1Valid()}
-                className="w-full bg-primary-taupe text-text-light py-4 font-light text-sm tracking-widest hover:bg-accent-warm transition-all uppercase disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-primary-taupe text-text-light py-4 font-light text-sm tracking-widest hover:bg-accent-warm transition-all uppercase disabled:opacity-50 disabled:cursor-not-allowed border-2 border-primary-taupe/30 hover:border-accent-warm shadow-md"
               >
                 Dalej
               </button>
@@ -490,7 +490,7 @@ export default function RezerwacjaPage() {
                 <button
                   type="button"
                   onClick={() => setStep(1)}
-                  className="flex-1 border border-text-dark/20 text-text-dark py-4 font-light text-sm tracking-widest hover:bg-bg-main/50 transition-all uppercase"
+                  className="flex-1 border-2 border-text-dark/30 text-text-dark py-4 font-light text-sm tracking-widest hover:bg-bg-main/50 hover:border-text-dark/50 transition-all uppercase shadow-sm"
                 >
                   Wstecz
                 </button>
@@ -498,7 +498,7 @@ export default function RezerwacjaPage() {
                   type="button"
                   onClick={() => setStep(3)}
                   disabled={!isStep2Valid()}
-                  className="flex-1 bg-primary-taupe text-text-light py-4 font-light text-sm tracking-widest hover:bg-accent-warm transition-all uppercase disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex-1 bg-primary-taupe text-text-light py-4 font-light text-sm tracking-widest hover:bg-accent-warm transition-all uppercase disabled:opacity-50 disabled:cursor-not-allowed border-2 border-primary-taupe/30 hover:border-accent-warm shadow-md"
                 >
                   Dalej
                 </button>
@@ -648,14 +648,14 @@ export default function RezerwacjaPage() {
                 <button
                   type="button"
                   onClick={() => setStep(2)}
-                  className="flex-1 border border-text-dark/20 text-text-dark py-4 font-light text-sm tracking-widest hover:bg-bg-main/50 transition-all uppercase"
+                  className="flex-1 border-2 border-text-dark/30 text-text-dark py-4 font-light text-sm tracking-widest hover:bg-bg-main/50 hover:border-text-dark/50 transition-all uppercase shadow-sm"
                 >
                   Wstecz
                 </button>
                 <button
                   type="button"
                   onClick={() => setStep(4)}
-                  className="flex-1 bg-primary-taupe text-text-light py-4 font-light text-sm tracking-widest hover:bg-accent-warm transition-all uppercase"
+                  className="flex-1 bg-primary-taupe text-text-light py-4 font-light text-sm tracking-widest hover:bg-accent-warm transition-all uppercase border-2 border-primary-taupe/30 hover:border-accent-warm shadow-md"
                 >
                   Dalej
                 </button>
@@ -768,14 +768,14 @@ export default function RezerwacjaPage() {
                 <button
                   type="button"
                   onClick={() => setStep(3)}
-                  className="flex-1 border border-text-dark/20 text-text-dark py-4 font-light text-sm tracking-widest hover:bg-bg-main/50 transition-all uppercase"
+                  className="flex-1 border-2 border-text-dark/30 text-text-dark py-4 font-light text-sm tracking-widest hover:bg-bg-main/50 hover:border-text-dark/50 transition-all uppercase shadow-sm"
                 >
                   Wstecz
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting || !formData.consentPersonalData}
-                  className="flex-1 bg-primary-taupe text-text-light py-4 font-light text-sm tracking-widest hover:bg-accent-warm transition-all disabled:opacity-50 disabled:cursor-not-allowed uppercase"
+                  className="flex-1 bg-primary-taupe text-text-light py-4 font-light text-sm tracking-widest hover:bg-accent-warm transition-all disabled:opacity-50 disabled:cursor-not-allowed uppercase border-2 border-primary-taupe/30 hover:border-accent-warm shadow-md"
                 >
                   {isSubmitting ? "Wysyłanie..." : "Potwierdź rezerwację"}
                 </button>
