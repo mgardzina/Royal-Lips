@@ -285,10 +285,12 @@ export default function RezerwacjaPage() {
                   <input
                     type="email"
                     required
+                    pattern="[^@\s]+@[^@\s]+\.[^@\s]+"
                     value={formData.email || ""}
                     onChange={(e) => updateFormData("email", e.target.value)}
                     className="w-full px-4 py-3 border border-text-dark/20 bg-bg-main/50 focus:border-primary-taupe outline-none transition-colors font-light"
                     placeholder="twoj@email.com"
+                    title="Wpisz poprawny adres email (np. twoj@email.com)"
                   />
                 </div>
 

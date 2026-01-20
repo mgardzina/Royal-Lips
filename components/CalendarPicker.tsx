@@ -216,7 +216,7 @@ export default function CalendarPicker({
       {/* LEFT SIDE - Day View */}
       <div className="flex-1 bg-white rounded-2xl shadow-lg overflow-hidden">
         {/* Header with date */}
-        <div className="p-6 border-b border-gray-100">
+        <div className="p-6 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
           {formattedDate ? (
             <div>
               <div className="text-sm font-medium text-primary-taupe uppercase tracking-wide mb-1">
@@ -239,7 +239,7 @@ export default function CalendarPicker({
         </div>
 
         {/* Day schedule view */}
-        <div className="p-4 max-h-[500px] overflow-y-auto">
+        <div className="p-4 max-h-[500px] overflow-y-auto bg-gradient-to-b from-white via-gray-50/30 to-gray-50">
           {!selectedDate && (
             <div className="text-center py-12 text-gray-400">
               <Clock className="w-12 h-12 mx-auto mb-3 opacity-30" />
@@ -380,18 +380,18 @@ export default function CalendarPicker({
 
         {/* Staff Section - Booksy style */}
         <div className="bg-white rounded-2xl shadow-lg overflow-hidden p-6">
-          <h4 className="text-sm font-bold text-gray-700 uppercase tracking-wide mb-4">
+          <h4 className="text-sm font-bold text-gray-700 uppercase tracking-wide mb-4 text-center">
             Pracownicy
           </h4>
 
-          <div className="flex items-center gap-4 p-4 rounded-xl bg-gradient-to-br from-primary-taupe/5 to-accent-warm/5 border-2 border-primary-taupe/20">
+          <div className="flex flex-col items-center gap-4 p-4 rounded-xl bg-gradient-to-br from-primary-taupe/5 to-accent-warm/5 border border-primary-taupe/10">
             {/* Profile photo - Instagram/Booksy style */}
             <div className="relative">
-              <div className="w-16 h-16 rounded-full overflow-hidden ring-4 ring-primary-taupe/30 shadow-lg">
+              <div className="w-20 h-20 rounded-full overflow-hidden ring-2 ring-primary-taupe/20 shadow-md">
                 <img
                   src="/self_photo.jpg"
                   alt="Joanna Wielgos"
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover object-center"
                 />
               </div>
               {/* Active indicator dot */}
@@ -399,14 +399,14 @@ export default function CalendarPicker({
             </div>
 
             {/* Staff info */}
-            <div className="flex-1">
+            <div className="text-center">
               <h5 className="font-bold text-text-dark text-base mb-1">
                 Joanna Wielgos
               </h5>
               <p className="text-xs text-gray-600 mb-2">
                 Specjalista makijażu permanentnego
               </p>
-              <div className="flex items-center gap-1 text-xs text-primary-taupe">
+              <div className="flex items-center justify-center gap-1 text-xs text-primary-taupe">
                 <span className="font-medium">Dostępna</span>
               </div>
             </div>

@@ -21,11 +21,28 @@
 }
 
 body {
-  background-color: var(--bg-main);
+  background: linear-gradient(135deg, #E8E3DC 0%, #D4CEC4 50%, #C4B5A0 100%);
+  background-attachment: fixed;
   color: var(--text-dark);
   font-family: 'Montserrat', sans-serif;
   font-weight: 300;
   overflow-x: hidden;
+  position: relative;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image:
+    radial-gradient(circle at 20% 50%, rgba(168, 152, 133, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(196, 181, 160, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 40% 20%, rgba(184, 168, 148, 0.1) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: -1;
 }
 
 h1, h2, h3, h4, h5, h6 {
