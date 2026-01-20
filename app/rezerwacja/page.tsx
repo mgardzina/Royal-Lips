@@ -300,7 +300,25 @@ export default function RezerwacjaPage() {
                     type="tel"
                     required
                     value={formData.phone || ""}
-                    onChange={(e) => updateFormData("phone", e.target.value)}
+                    onChange={(e) => {
+                      const input = e.target.value;
+                      // Usuń wszystko poza cyframi
+                      const digitsOnly = input.replace(/\D/g, "");
+                      // Ogranicz do 9 cyfr
+                      const limitedDigits = digitsOnly.slice(0, 9);
+                      // Formatuj: +48 XXX XXX XXX
+                      let formatted = "+48";
+                      if (limitedDigits.length > 0) {
+                        formatted += " " + limitedDigits.slice(0, 3);
+                      }
+                      if (limitedDigits.length > 3) {
+                        formatted += " " + limitedDigits.slice(3, 6);
+                      }
+                      if (limitedDigits.length > 6) {
+                        formatted += " " + limitedDigits.slice(6, 9);
+                      }
+                      updateFormData("phone", formatted.trim());
+                    }}
                     className="w-full px-4 py-3 border border-text-dark/20 bg-bg-main/50 focus:border-primary-taupe outline-none transition-colors font-light"
                     placeholder="+48 123 456 789"
                   />
