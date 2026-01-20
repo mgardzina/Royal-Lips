@@ -272,7 +272,7 @@ export default function CalendarPicker({
                               ? "bg-red-50 border-2 border-red-500 cursor-not-allowed"
                               : isSelectedTime
                                 ? "bg-primary-taupe text-white shadow-md"
-                                : "bg-green-50 hover:bg-green-100 border-2 border-green-400"
+                                : "bg-green-50 hover:bg-green-100 border-2 border-green-400 active:bg-gray-200 active:border-gray-400"
                           }`}
                         >
                           {isBooked ? (
