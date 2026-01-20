@@ -378,45 +378,44 @@ export default function CalendarPicker({
           </div>
         </div>
 
-        {/* Available Time Slots - Bottom section */}
-        {selectedDate && (
-          <div className="bg-white rounded-2xl shadow-lg overflow-hidden p-4">
-            <div className="flex items-center gap-2 mb-3">
-              <Clock className="w-4 h-4 text-gray-400" />
-              <h4 className="text-sm font-bold text-gray-700 uppercase tracking-wide">
-                Dostępne godziny
-              </h4>
+        {/* Staff Section - Booksy style */}
+        <div className="bg-white rounded-2xl shadow-lg overflow-hidden p-6">
+          <h4 className="text-sm font-bold text-gray-700 uppercase tracking-wide mb-4">
+            Pracownicy
+          </h4>
+
+          <div className="flex items-center gap-4 p-4 rounded-xl bg-gradient-to-br from-primary-taupe/5 to-accent-warm/5 border-2 border-primary-taupe/20">
+            {/* Profile photo - Instagram/Booksy style */}
+            <div className="relative">
+              <div className="w-16 h-16 rounded-full overflow-hidden ring-4 ring-primary-taupe/30 shadow-lg">
+                <img
+                  src="/self_photo.jpg"
+                  alt="Joanna Wielgos"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              {/* Active indicator dot */}
+              <div className="absolute bottom-0 right-0 w-4 h-4 bg-green-500 rounded-full ring-2 ring-white"></div>
             </div>
-            <div className="grid grid-cols-3 gap-2">
-              {availableTimeSlots.map((time) => {
-                const isBooked = isTimeSlotBooked(time);
-                const isSelectedTime = selectedTime === time;
-                return (
-                  <button
-                    key={time}
-                    type="button"
-                    onClick={() => !isBooked && onTimeChange(time)}
-                    disabled={isBooked}
-                    className={`py-2 px-3 rounded-lg text-sm font-medium transition-all ${
-                      isBooked
-                        ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                        : isSelectedTime
-                          ? "bg-primary-taupe text-white shadow-md"
-                          : "bg-gray-50 text-gray-700 hover:bg-gray-100"
-                    }`}
-                  >
-                    {time}
-                  </button>
-                );
-              })}
-            </div>
-            {isSaturday && (
-              <p className="text-xs text-gray-400 text-center mt-3">
-                W soboty gabinet czynny do 14:00
+
+            {/* Staff info */}
+            <div className="flex-1">
+              <h5 className="font-bold text-text-dark text-base mb-1">
+                Joanna Wielgos
+              </h5>
+              <p className="text-xs text-gray-600 mb-2">
+                Specjalista makijażu permanentnego
               </p>
-            )}
+              <div className="flex items-center gap-1 text-xs text-primary-taupe">
+                <span className="font-medium">Dostępna</span>
+              </div>
+            </div>
           </div>
-        )}
+
+          <p className="text-xs text-gray-400 text-center mt-4">
+            Wszystkie wizyty są realizowane osobiście przez właścicielkę
+          </p>
+        </div>
 
         {/* Selected info */}
         {selectedDate && selectedTime && (
