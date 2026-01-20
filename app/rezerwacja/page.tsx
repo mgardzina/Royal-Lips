@@ -299,11 +299,17 @@ export default function RezerwacjaPage() {
                   <input
                     type="tel"
                     required
-                    value={formData.phone || ""}
+                    value={formData.phone || "+48 "}
                     onChange={(e) => {
                       const input = e.target.value;
-                      // Usuń wszystko poza cyframi
-                      const digitsOnly = input.replace(/\D/g, "");
+                      // Jeśli użytkownik próbuje usunąć +48, przywróć to
+                      if (!input.startsWith("+48")) {
+                        updateFormData("phone", "+48 ");
+                        return;
+                      }
+                      // Wyciągnij tylko cyfry po prefiksie +48
+                      const afterPrefix = input.substring(3);
+                      const digitsOnly = afterPrefix.replace(/\D/g, "");
                       // Ogranicz do 9 cyfr
                       const limitedDigits = digitsOnly.slice(0, 9);
                       // Formatuj: +48 XXX XXX XXX
@@ -317,7 +323,17 @@ export default function RezerwacjaPage() {
                       if (limitedDigits.length > 6) {
                         formatted += " " + limitedDigits.slice(6, 9);
                       }
-                      updateFormData("phone", formatted.trim());
+                      updateFormData("phone", formatted);
+                    }}
+                    onFocus={(e) => {
+                      // Jeśli pole jest puste, ustaw +48
+                      if (!formData.phone || formData.phone === "") {
+                        updateFormData("phone", "+48 ");
+                      }
+                      // Ustaw kursor po prefiksie
+                      setTimeout(() => {
+                        e.target.setSelectionRange(4, 4);
+                      }, 0);
                     }}
                     className="w-full px-4 py-3 border border-text-dark/20 bg-bg-main/50 focus:border-primary-taupe outline-none transition-colors font-light"
                     placeholder="+48 123 456 789"
