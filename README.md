@@ -1,36 +1,177 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Royal Lips - System Rezerwacji Online
 
-## Getting Started
+Profesjonalny system rezerwacji dla studia makijażu permanentnego Royal Lips, prowadzonego przez Joannę Wielgos.
 
-First, run the development server:
+## 🌟 Funkcje
+
+### System Rezerwacji
+- **Interaktywny kalendarz** - Booksy-style z widokiem dziennym i mini kalendarzem
+- **Zarządzanie dostępnością** - Automatyczne wykrywanie zajętych terminów
+- **Walidacja formularzy** - Weryfikacja danych z komunikatami błędów
+- **Wieloetapowy formularz** - 4 kroki: dane osobowe, wybór terminu, wywiad zdrowotny, potwierdzenie
+
+### Automatyzacja
+- **Webhook Google Sheets** - Automatyczne powiadomienia przy zmianie statusu na "Potwierdzona"
+- **Integracja email** - Wysyłka potwierdzenia do klienta i powiadomienia do właścicielki
+- **Synchronizacja z SheetDB** - Przechowywanie rezerwacji w Google Sheets
+
+### Interfejs
+- **Responsywny design** - Dostosowany do mobile, tablet i desktop
+- **Elegancka kolorystyka** - Beże, taupe i ciepłe akcenty
+- **Animacje i przejścia** - Płynne interakcje użytkownika
+- **Dostępność** - Semantyczny HTML i nawigacja klawiaturą
+
+## 🛠️ Technologie
+
+- **Framework**: Next.js 16 (App Router)
+- **Styling**: Tailwind CSS
+- **Hosting**: Google Cloud Run
+- **CI/CD**: Google Cloud Build
+- **Database**: Supabase (PostgreSQL)
+- **Email**: Resend
+- **Forms**: React Hook Form
+- **Icons**: Lucide React
+- **TypeScript**: Pełne typowanie
+
+## 📦 Instalacja
 
 ```bash
+# Klonowanie repozytorium
+git clone git@github.com:mgardzina/Royal-Lips.git
+cd Royal-Lips
+
+# Instalacja zależności
+npm install
+
+# Konfiguracja zmiennych środowiskowych
+cp .env.example .env
+# Uzupełnij .env swoimi kluczami API
+
+# Uruchomienie serwera deweloperskiego
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Aplikacja będzie dostępna pod adresem: http://localhost:3000
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🔑 Zmienne Środowiskowe
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Utwórz plik `.env` w głównym katalogu:
 
-## Learn More
+```env
+SUPABASE_PASS="your_password"
+NEXT_PUBLIC_SUPABASE_URL="https://your-project.supabase.co"
+NEXT_PUBLIC_SUPABASE_ANON_KEY="your_anon_key"
+RESEND_API_KEY="your_resend_key"
+OWNER_EMAIL="your@email.com"
+NEXT_PUBLIC_SHEETDB_URL="https://sheetdb.io/api/v1/your_sheet"
+NEXT_PUBLIC_URL="https://your-domain.com"
+```
 
-To learn more about Next.js, take a look at the following resources:
+## 🚀 Deploy na Google Cloud Run
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+# Build i deploy przez Cloud Build
+gcloud builds submit --config=cloudbuild.yaml \
+  --substitutions=COMMIT_SHA=$(git rev-parse HEAD)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+# Lub ręczny deploy
+docker build -t gcr.io/PROJECT_ID/royal-lips .
+docker push gcr.io/PROJECT_ID/royal-lips
+gcloud run deploy royal-lips \
+  --image gcr.io/PROJECT_ID/royal-lips \
+  --region europe-west1 \
+  --platform managed
+```
 
-## Deploy on Vercel
+## 📁 Struktura Projektu
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```
+royal-lips/
+├── app/                      # Next.js App Router
+│   ├── api/                  # API Routes
+│   │   ├── booking-webhook/  # Webhook dla Google Sheets
+│   │   ├── get-bookings/     # Pobieranie rezerwacji
+│   │   ├── send-confirmation/# Wysyłka potwierdzenia
+│   │   └── send-email/       # Ogólna wysyłka emaili
+│   ├── rezerwacja/           # Strona rezerwacji
+│   ├── o-nas/                # O nas
+│   ├── uslugi/               # Usługi
+│   ├── realizacje/           # Portfolio
+│   ├── kontakt/              # Kontakt
+│   └── layout.tsx            # Root layout
+├── components/               # Komponenty React
+│   ├── CalendarPicker.tsx    # Interaktywny kalendarz
+│   ├── FormButton.tsx        # Przyciski formularzy
+│   └── FormInput.tsx         # Pola formularzy
+├── lib/                      # Utilities
+├── public/                   # Statyczne pliki
+├── supabase/                 # Schemat bazy danych
+├── types/                    # TypeScript types
+├── Dockerfile                # Docker container
+├── cloudbuild.yaml           # Google Cloud Build config
+└── tailwind.config.ts        # Tailwind configuration
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🎨 Kolorystyka
+
+```css
+--primary-beige: #C4B5A0;
+--primary-taupe: #A89885;
+--bg-light: #E8E3DC;
+--bg-main: #D4CEC4;
+--text-dark: #4A4540;
+--text-light: #FFFFFF;
+--accent-warm: #B8A894;
+```
+
+## 📱 Responsywność
+
+- **Mobile**: 320px - 768px
+- **Tablet**: 768px - 1024px
+- **Desktop**: 1024px+
+
+## 🔒 Bezpieczeństwo
+
+- Walidacja wszystkich danych wejściowych
+- Sanityzacja emaili i inputów użytkownika
+- Environment variables dla kluczy API
+- HTTPS wymuszony na produkcji
+- CORS skonfigurowany dla API
+
+## 📧 Email Templates
+
+System używa HTML email templates z:
+- Responsywnym designem
+- Inline CSS dla kompatybilności
+- Personalizacją (imię, data, usługa)
+- Co-branding (Royal Lips)
+
+## 🐛 Debug
+
+```bash
+# Logi lokalne
+npm run dev
+
+# Logi Cloud Run
+gcloud run logs read royal-lips --region europe-west1
+
+# Testy
+npm run build  # Sprawdza błędy TypeScript i builduje
+```
+
+## 📄 Licencja
+
+MIT License - zobacz plik [LICENSE](LICENSE)
+
+## 👤 Autor
+
+**Mateusz Gardzina**
+
+## 🙏 Podziękowania
+
+- Joanna Wielgos - Właścicielka Royal Lips
+- Claude Sonnet 4.5 - Wsparcie rozwoju
+
+---
+
+**Royal Lips** © 2026 - Profesjonalny makijaż permanentny
