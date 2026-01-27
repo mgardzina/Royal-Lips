@@ -11,6 +11,7 @@ import {
   Mail,
 } from "lucide-react";
 import SignaturePad from "../../../components/SignaturePad";
+import Footer from "../../Footer";
 import {
   ConsentFormData,
   pmuContraindications,
@@ -785,6 +786,8 @@ export default function PmuForm({ onBack }: PmuFormProps) {
           </section>
         </form>
       </main>
+
+      <Footer />
     </div>
   );
 }

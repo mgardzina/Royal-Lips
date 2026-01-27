@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { ChevronDown, ChevronUp, Check, ArrowLeft, Mail } from "lucide-react";
 import SignaturePad from "../../../components/SignaturePad";
+import Footer from "../../../components/Footer";
 import {
   ConsentFormData,
   laserContraindications,
@@ -775,6 +776,8 @@ export default function LaserForm({ onBack }: LaserFormProps) {
           </section>
         </form>
       </main>
+
+      <Footer />
     </div>
   );
 }

@@ -11,6 +11,7 @@ import {
   Mail,
 } from "lucide-react";
 import SignaturePad from "../../../components/SignaturePad";
+import Footer from "../../components/Footer";
 import {
   ConsentFormData,
   hyaluronicContraindications,
@@ -829,6 +830,8 @@ export default function HyaluronicForm({ onBack }: HyaluronicFormProps) {
           </section>
         </form>
       </main>
+
+      <Footer />
     </div>
   );
 }
