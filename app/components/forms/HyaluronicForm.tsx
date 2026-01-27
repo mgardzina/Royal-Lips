@@ -8,6 +8,7 @@ import {
   Check,
   ArrowLeft,
   Instagram,
+  Mail,
 } from "lucide-react";
 import SignaturePad from "../../../components/SignaturePad";
 import {
@@ -56,6 +57,7 @@ const initialFormData: ConsentFormData = {
 
 export default function HyaluronicForm({ onBack }: HyaluronicFormProps) {
   const [formData, setFormData] = useState<ConsentFormData>(initialFormData);
+  const [email, setEmail] = useState("");
   const [expandedSections, setExpandedSections] = useState({
     reakcje: false,
     powiklania: false,
@@ -111,13 +113,20 @@ export default function HyaluronicForm({ onBack }: HyaluronicFormProps) {
     e.preventDefault();
     setIsSubmitting(true);
 
+    const submissionData = {
+      ...formData,
+      nazwaProduktu: email
+        ? `${formData.nazwaProduktu || ""} | Email: ${email}`.trim().replace(/^\|/, "").trim()
+        : formData.nazwaProduktu,
+    };
+
     try {
       const response = await fetch("/api/consent-forms", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(submissionData),
       });
 
       const result = await response.json();
@@ -156,6 +165,7 @@ export default function HyaluronicForm({ onBack }: HyaluronicFormProps) {
               onClick={() => {
                 setSubmitSuccess(false);
                 setFormData(initialFormData);
+                setEmail("");
                 window.scrollTo(0, 0);
               }}
               className="bg-[#8b7355] text-white px-8 py-3 rounded-xl hover:bg-[#7a6548] transition-colors"
@@ -259,6 +269,21 @@ export default function HyaluronicForm({ onBack }: HyaluronicFormProps) {
                   className="w-full px-4 py-3 bg-white/80 border border-[#d4cec4] rounded-xl focus:border-[#8b7355] focus:ring-2 focus:ring-[#8b7355]/20 outline-none transition-all"
                   placeholder="Krosno, 27.01.2026"
                 />
+              </div>
+              <div>
+                <label className="block text-sm text-[#6b6560] mb-2 font-medium">
+                  Adres E-mail
+                </label>
+                <div className="relative">
+                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#8b8580]" />
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="w-full pl-12 pr-4 py-3 bg-white/80 border border-[#d4cec4] rounded-xl focus:border-[#8b7355] focus:ring-2 focus:ring-[#8b7355]/20 outline-none transition-all"
+                    placeholder="jan@example.com"
+                  />
+                </div>
               </div>
               <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="md:col-span-2">
