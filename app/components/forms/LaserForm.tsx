@@ -1,13 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import {
-  ChevronDown,
-  ChevronUp,
-  Check,
-  ArrowLeft,
-  Mail,
-} from "lucide-react";
+import { ChevronDown, ChevronUp, Check, ArrowLeft, Mail } from "lucide-react";
 import SignaturePad from "../../../components/SignaturePad";
 import {
   ConsentFormData,
@@ -312,13 +306,20 @@ export default function LaserForm({ onBack }: LaserFormProps) {
                 <label className="block text-sm text-[#6b6560] mb-2 font-medium">
                   Telefon
                 </label>
-                <input
-                  type="tel"
-                  value={formData.telefon}
-                  onChange={(e) => handlePhoneChange(e.target.value)}
-                  className="w-full px-4 py-3 bg-white/80 border border-[#d4cec4] rounded-xl"
-                  placeholder="123 456 789"
-                />
+                <div className="flex">
+                  <span className="inline-flex items-center px-4 py-3 bg-[#f0ebe4] border border-r-0 border-[#d4cec4] rounded-l-xl text-[#6b6560] font-medium select-none">
+                    +48
+                  </span>
+                  <input
+                    type="tel"
+                    required
+                    value={formData.telefon}
+                    onChange={(e) => handlePhoneChange(e.target.value)}
+                    className="w-full px-4 py-3 bg-white/80 border border-[#d4cec4] rounded-r-xl focus:border-[#8b7355] focus:ring-2 focus:ring-[#8b7355]/20 outline-none transition-all"
+                    placeholder="123 456 789"
+                    maxLength={11}
+                  />
+                </div>
               </div>
               <div>
                 <label className="block text-sm text-[#6b6560] mb-2 font-medium">
@@ -386,7 +387,7 @@ export default function LaserForm({ onBack }: LaserFormProps) {
               Wywiad Medyczny
             </h3>
             <p className="text-sm text-[#6b6560] mb-6">
-              Proszę zaznaczyć przeciwwskazania (NIE POSIADAM / NIE DOTYCZY):
+              Czy posiadasz którekolwiek z poniższych przeciwwskazań?
             </p>
             <div className="space-y-3">
               {Object.entries(laserContraindications).map(
@@ -411,7 +412,7 @@ export default function LaserForm({ onBack }: LaserFormProps) {
                             : "bg-white/80 text-[#6b6560] hover:bg-green-100"
                         }`}
                       >
-                        NIE posiadam
+                        NIE
                       </button>
                       <button
                         type="button"
@@ -422,7 +423,7 @@ export default function LaserForm({ onBack }: LaserFormProps) {
                             : "bg-white/80 text-[#6b6560] hover:bg-red-100"
                         }`}
                       >
-                        POSIADAM
+                        TAK
                       </button>
                     </div>
                   </div>
@@ -676,9 +677,9 @@ export default function LaserForm({ onBack }: LaserFormProps) {
                   />
                   <span className="text-sm text-[#5a5550] leading-relaxed">
                     <strong>Opcjonalnie:</strong> Wyrażam zgodę na wykonanie
-                    fotografii ciała w celu dokumentacji oraz oceny
-                    efektywności zabiegu i wyrażam zgodę na umieszczenie
-                    fotografii w celach promocji firmy.
+                    fotografii ciała w celu dokumentacji oraz oceny efektywności
+                    zabiegu i wyrażam zgodę na umieszczenie fotografii w celach
+                    promocji firmy.
                   </span>
                 </label>
                 {formData.zgodaFotografie && (

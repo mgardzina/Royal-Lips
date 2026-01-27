@@ -423,8 +423,7 @@ export default function HyaluronicForm({ onBack }: HyaluronicFormProps) {
               Przeciwwskazania do zabiegu
             </h3>
             <p className="text-sm text-[#6b6560] mb-6">
-              Zostałem/am poinformowany/a o następujących przeciwwskazaniach do
-              zabiegu, wobec czego oświadczam, że:
+              Czy posiadasz którekolwiek z poniższych przeciwwskazań?
             </p>
 
             <div className="space-y-3">
@@ -443,17 +442,6 @@ export default function HyaluronicForm({ onBack }: HyaluronicFormProps) {
                     <div className="flex gap-2">
                       <button
                         type="button"
-                        onClick={() => handleContraindicationChange(key, true)}
-                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                          formData.przeciwwskazania[key] === true
-                            ? "bg-red-500 text-white shadow-md"
-                            : "bg-white/80 text-[#6b6560] hover:bg-red-100"
-                        }`}
-                      >
-                        Tak
-                      </button>
-                      <button
-                        type="button"
                         onClick={() => handleContraindicationChange(key, false)}
                         className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                           formData.przeciwwskazania[key] === false
@@ -461,7 +449,18 @@ export default function HyaluronicForm({ onBack }: HyaluronicFormProps) {
                             : "bg-white/80 text-[#6b6560] hover:bg-green-100"
                         }`}
                       >
-                        Nie
+                        NIE
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleContraindicationChange(key, true)}
+                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                          formData.przeciwwskazania[key] === true
+                            ? "bg-red-500 text-white shadow-md"
+                            : "bg-white/80 text-[#6b6560] hover:bg-red-100"
+                        }`}
+                      >
+                        TAK
                       </button>
                     </div>
                   </div>

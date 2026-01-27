@@ -387,7 +387,7 @@ export default function PmuForm({ onBack }: PmuFormProps) {
               Wywiad Medyczny
             </h3>
             <p className="text-sm text-[#6b6560] mb-6">
-              Oświadczam, że NIE posiadam następujących przeciwwskazań:
+              Czy posiadasz którekolwiek z poniższych przeciwwskazań?
             </p>
 
             <div className="space-y-3">
@@ -413,7 +413,7 @@ export default function PmuForm({ onBack }: PmuFormProps) {
                             : "bg-white/80 text-[#6b6560] hover:bg-green-100"
                         }`}
                       >
-                        NIE posiadam
+                        NIE
                       </button>
                       <button
                         type="button"
@@ -424,9 +424,8 @@ export default function PmuForm({ onBack }: PmuFormProps) {
                             : "bg-white/80 text-[#6b6560] hover:bg-red-100"
                         }`}
                       >
-                        POSIADAM
+                        TAK
                       </button>
-                      {/* W PMU oswiadczenie brzmi "Oświadczam, że NIE posiadam". Wiec negatywna odpowiedz jest dobra. */}
                     </div>
                   </div>
                 ),
