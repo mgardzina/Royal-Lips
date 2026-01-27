@@ -11,7 +11,7 @@ import {
   Mail,
 } from "lucide-react";
 import SignaturePad from "../../../components/SignaturePad";
-import Footer from "../../Footer";
+import Footer from "@/app/components/Footer";
 import {
   ConsentFormData,
   pmuContraindications,

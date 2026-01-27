@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { ChevronDown, ChevronUp, Check, ArrowLeft, Mail } from "lucide-react";
 import SignaturePad from "../../../components/SignaturePad";
-import Footer from "../../components/Footer";
+import Footer from "@/app/components/Footer";
 import {
   ConsentFormData,
   laserContraindications,
