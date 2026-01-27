@@ -48,9 +48,10 @@ export default function PolitykaPrywatnosciPage() {
               </h2>
               <p className="text-[#4a4540]/80 font-light leading-relaxed">
                 Administratorem Twoich danych osobowych jest Royal Lips - Joanna
-                Wielgos, z siedzibą przy ul. Pużaka 37, 38-400 Krosno. Kontakt z
-                administratorem możliwy jest pod adresem email:
-                kontakt@royallips.pl lub telefonicznie: +48 792 377 737.
+                Wielgos, z siedzibą przy ul. Pużaka 37, 38-400 Krosno,
+                REGION:180685260, NIP:6842237473. Kontakt z administratorem
+                możliwy jest pod adresem email: kontakt@royallips.pl lub
+                telefonicznie: +48 792 377 737.
               </p>
             </div>
 

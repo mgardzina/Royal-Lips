@@ -480,16 +480,6 @@ export default function HyaluronicForm({ onBack }: HyaluronicFormProps) {
                       </li>
                     ))}
                   </ul>
-                  <label className="flex items-center gap-2 mt-4 pt-3 border-t border-[#e8e0d5]">
-                    <input
-                      type="checkbox"
-                      required
-                      className="accent-[#8b7355]"
-                    />
-                    <span className="text-xs text-[#6b6560]">
-                      Akceptuję możliwość wystąpienia powyższych reakcji.
-                    </span>
-                  </label>
                 </div>
 
                 <div className="p-4 bg-white/50 rounded-xl">
@@ -516,17 +506,6 @@ export default function HyaluronicForm({ onBack }: HyaluronicFormProps) {
                       <p>{hyaluronicComplications.bardzoRzadkie.join(", ")}</p>
                     </div>
                   </div>
-                  <label className="flex items-center gap-2 mt-4 pt-3 border-t border-[#e8e0d5]">
-                    <input
-                      type="checkbox"
-                      required
-                      className="accent-[#8b7355]"
-                    />
-                    <span className="text-xs text-[#6b6560]">
-                      Zostałam/em poinformowana/y o możliwości wystąpienia
-                      powikłań po zabiegu.
-                    </span>
-                  </label>
                 </div>
               </div>
             )}
@@ -570,17 +549,6 @@ export default function HyaluronicForm({ onBack }: HyaluronicFormProps) {
                     </li>
                   ))}
                 </ul>
-                <label className="flex items-center gap-2 mt-4 pt-4 border-t border-[#d4cec4]">
-                  <input
-                    type="checkbox"
-                    required
-                    className="accent-[#8b7355]"
-                  />
-                  <span className="text-sm text-[#4a4540] font-medium">
-                    Zobowiązuję się przestrzegać powyższych zaleceń
-                    pozabiegowych.
-                  </span>
-                </label>
               </div>
             )}
           </section>

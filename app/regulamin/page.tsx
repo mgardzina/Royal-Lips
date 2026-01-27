@@ -49,8 +49,8 @@ export default function RegulaminPage() {
               <p className="text-[#4a4540]/80 font-light leading-relaxed">
                 Niniejszy regulamin określa zasady korzystania z usług
                 świadczonych przez Royal Lips - Joanna Wielgos, z siedzibą przy
-                ul. Pużaka 37, 38-400 Krosno. Korzystanie z usług oznacza
-                akceptację niniejszego regulaminu.
+                ul. Pużaka 37, 38-400 Krosno, REGION:180685260, NIP:6842237473.
+                Korzystanie z usług oznacza akceptację niniejszego regulaminu.
               </p>
             </div>
 

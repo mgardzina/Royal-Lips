@@ -349,16 +349,11 @@ export default function PmuForm({ onBack }: PmuFormProps) {
               </div>
 
               <div className="p-4 bg-white/50 rounded-xl">
-                <label className="flex items-start gap-4 cursor-pointer">
-                  <div className="w-5 h-5 mt-1 border border-[#8b7355] rounded-sm flex items-center justify-center">
-                    <div className="w-3 h-3 bg-[#8b7355] rounded-[1px]" />
-                  </div>
-                  <span className="text-sm text-[#5a5550]">
-                    Przyjmuję do wiadomości, że efekt finalny jest indywidualny
-                    i zależy od rodzaju skóry, ilości pigmentu i techniki. Ilość
-                    zabiegów jest uwarunkowana indywidualnie.
-                  </span>
-                </label>
+                <p className="text-sm text-[#5a5550]">
+                  Przyjmuję do wiadomości, że efekt finalny jest indywidualny
+                  i zależy od rodzaju skóry, ilości pigmentu i techniki. Ilość
+                  zabiegów jest uwarunkowana indywidualnie.
+                </p>
               </div>
             </div>
           </section>
@@ -451,16 +446,6 @@ export default function PmuForm({ onBack }: PmuFormProps) {
                       </li>
                     ))}
                   </ul>
-                  <label className="flex items-center gap-2 mt-4 pt-3 border-t border-[#e8e0d5]">
-                    <input
-                      type="checkbox"
-                      required
-                      className="accent-[#8b7355]"
-                    />
-                    <span className="text-xs text-[#6b6560]">
-                      Akceptuję możliwość wystąpienia powyższych reakcji.
-                    </span>
-                  </label>
                 </div>
 
                 <div className="p-4 bg-white/50 rounded-xl">
@@ -487,17 +472,6 @@ export default function PmuForm({ onBack }: PmuFormProps) {
                       <p>{pmuComplications.bardzoRzadkie.join(", ")}</p>
                     </div>
                   </div>
-                  <label className="flex items-center gap-2 mt-4 pt-3 border-t border-[#e8e0d5]">
-                    <input
-                      type="checkbox"
-                      required
-                      className="accent-[#8b7355]"
-                    />
-                    <span className="text-xs text-[#6b6560]">
-                      Zostałam/em poinformowana/y o możliwości wystąpienia
-                      powikłań po zabiegu.
-                    </span>
-                  </label>
                 </div>
               </div>
             )}
@@ -544,17 +518,6 @@ export default function PmuForm({ onBack }: PmuFormProps) {
                     </li>
                   ))}
                 </ul>
-                <label className="flex items-center gap-2 mt-4 pt-4 border-t border-[#d4cec4]">
-                  <input
-                    type="checkbox"
-                    required
-                    className="accent-[#8b7355]"
-                  />
-                  <span className="text-sm text-[#4a4540] font-medium">
-                    Zobowiązuję się przestrzegać powyższych zaleceń
-                    pozabiegowych.
-                  </span>
-                </label>
               </div>
             )}
           </section>
