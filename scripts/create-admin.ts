@@ -4,9 +4,14 @@ import { hash } from "bcryptjs";
 const prisma = new PrismaClient();
 
 async function main() {
-  const email = process.env.ADMIN_EMAIL || "admin@royallips.pl";
-  const password = process.env.ADMIN_PASSWORD || "zmien-to-haslo-123";
+  const email = process.env.ADMIN_EMAIL;
+  const password = process.env.ADMIN_PASSWORD;
   const name = process.env.ADMIN_NAME || "Administrator";
+
+  if (!email || !password) {
+    console.error("❌ Błąd: Ustaw zmienne ADMIN_EMAIL i ADMIN_PASSWORD w pliku .env");
+    process.exit(1);
+  }
 
   // Sprawdź czy admin już istnieje
   const existingAdmin = await prisma.adminUser.findUnique({
