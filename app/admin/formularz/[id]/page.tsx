@@ -19,7 +19,9 @@ interface ConsentFormFull {
   id: string;
   createdAt: string;
   imieNazwisko: string;
-  adres: string | null;
+  ulica: string | null;
+  kodPocztowy: string | null;
+  miasto: string | null;
   dataUrodzenia: string | null;
   telefon: string;
   miejscowoscData: string;
@@ -165,14 +167,19 @@ export default function FormDetailsPage() {
             </div>
             <div className="flex items-center gap-3 text-[#5a5550]">
               <MapPin className="w-5 h-5 text-[#8b7355]" />
-              <span>{form.miejscowoscData}</span>
-            </div>
-            {form.adres && (
-              <div className="flex items-center gap-3 text-[#5a5550]">
-                <User className="w-5 h-5 text-[#8b7355]" />
-                <span>{form.adres}</span>
+              <div className="flex flex-col">
+                {form.ulica || form.miasto ? (
+                  <>
+                    <span>{form.ulica}</span>
+                    <span>
+                      {form.kodPocztowy} {form.miasto}
+                    </span>
+                  </>
+                ) : (
+                  <span>Brak adresu</span>
+                )}
               </div>
-            )}
+            </div>
             {form.dataUrodzenia && (
               <div className="flex items-center gap-3 text-[#5a5550]">
                 <Calendar className="w-5 h-5 text-[#8b7355]" />

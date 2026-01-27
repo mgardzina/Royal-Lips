@@ -1,7 +1,10 @@
 export interface ConsentFormData {
   // Dane personalne
+  // Dane personalne
   imieNazwisko: string;
-  adres: string;
+  ulica: string;
+  kodPocztowy: string;
+  miasto: string;
   dataUrodzenia: string;
   telefon: string;
   miejscowoscData: string;

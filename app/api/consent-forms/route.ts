@@ -22,7 +22,9 @@ export async function POST(request: NextRequest) {
     const consentForm = await prisma.consentForm.create({
       data: {
         imieNazwisko: body.imieNazwisko,
-        adres: body.adres || null,
+        ulica: body.ulica || null,
+        kodPocztowy: body.kodPocztowy || null,
+        miasto: body.miasto || null,
         dataUrodzenia: body.dataUrodzenia || null,
         telefon: body.telefon,
         miejscowoscData: body.miejscowoscData,
