@@ -21,6 +21,7 @@ export async function POST(request: NextRequest) {
 
     const consentForm = await prisma.consentForm.create({
       data: {
+        type: body.type || 'HYALURONIC', // Domyślnie Kwas, jeśli brak
         imieNazwisko: body.imieNazwisko,
         ulica: body.ulica || null,
         kodPocztowy: body.kodPocztowy || null,
@@ -70,6 +71,7 @@ export async function GET() {
       orderBy: { createdAt: "desc" },
       select: {
         id: true,
+        type: true, // Zwróć typ
         createdAt: true,
         imieNazwisko: true,
         telefon: true,

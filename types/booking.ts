@@ -1,5 +1,8 @@
+export type FormType = 'HYALURONIC' | 'PMU' | 'LASER';
+
 export interface ConsentFormData {
-  // Dane personalne
+  type: FormType;
+  
   // Dane personalne
   imieNazwisko: string;
   ulica: string;
@@ -10,44 +13,12 @@ export interface ConsentFormData {
   miejscowoscData: string;
 
   // Szczegóły zabiegu
-  nazwaProduktu: string;
+  nazwaProduktu: string; // Dla lasera: Cel
   obszarZabiegu: string;
   celEfektu: string;
 
-  // Przeciwwskazania (27 pytań - true = Tak, false = Nie)
-  przeciwwskazania: {
-    ciazaLaktacja: boolean | null;
-    chorobaAutoimmunologiczna: boolean | null;
-    alergiaSkładniki: boolean | null;
-    alergiaBialka: boolean | null;
-    uczulenieIgE: boolean | null;
-    niedrocznoscNaczyn: boolean | null;
-    zmianySkorne: boolean | null;
-    tradzikRopny: boolean | null;
-    luszczycaAktywna: boolean | null;
-    cukrzycaNiestabilna: boolean | null;
-    chorobaNowotwrowa: boolean | null;
-    hemofilia: boolean | null;
-    hiv: boolean | null;
-    zoltaczka: boolean | null;
-    arytmiaSerca: boolean | null;
-    epilepsja: boolean | null;
-    bielactwo: boolean | null;
-    opryszczka: boolean | null;
-    nadpobudliwoscNerwowa: boolean | null;
-    tendencjaDoKeloidow: boolean | null;
-    kuracjaSterydowa: boolean | null;
-    antybiotykoterapia: boolean | null;
-    lekiRozrzedzajaceKrew: boolean | null;
-    kwasAcetylosalicylowy: boolean | null;
-    witaminaC: boolean | null;
-    lekiMiejscowe: boolean | null;
-    zabiegZluszczania: boolean | null;
-    alkoholNarkotyki: boolean | null;
-    temperaturaPrzeziebienie: boolean | null;
-    metodyRozgrzewajace: boolean | null;
-    solarium: boolean | null;
-  };
+  // Przeciwwskazania (Słownik klucz -> wartość)
+  przeciwwskazania: Record<string, boolean | null>;
 
   // Zgody
   zgodaPrzetwarzanieDanych: boolean;
@@ -55,48 +26,15 @@ export interface ConsentFormData {
   zgodaFotografie: boolean;
   miejscaPublikacjiFotografii: string;
 
-  // Podpis (można rozszerzyć o canvas do podpisu)
+  // Podpisy
   podpisDane: string;
   podpisMarketing: string;
   podpisFotografie: string;
   podpisRodo: string;
 }
 
-export const defaultContraindications: ConsentFormData['przeciwwskazania'] = {
-  ciazaLaktacja: null,
-  chorobaAutoimmunologiczna: null,
-  alergiaSkładniki: null,
-  alergiaBialka: null,
-  uczulenieIgE: null,
-  niedrocznoscNaczyn: null,
-  zmianySkorne: null,
-  tradzikRopny: null,
-  luszczycaAktywna: null,
-  cukrzycaNiestabilna: null,
-  chorobaNowotwrowa: null,
-  hemofilia: null,
-  hiv: null,
-  zoltaczka: null,
-  arytmiaSerca: null,
-  epilepsja: null,
-  bielactwo: null,
-  opryszczka: null,
-  nadpobudliwoscNerwowa: null,
-  tendencjaDoKeloidow: null,
-  kuracjaSterydowa: null,
-  antybiotykoterapia: null,
-  lekiRozrzedzajaceKrew: null,
-  kwasAcetylosalicylowy: null,
-  witaminaC: null,
-  lekiMiejscowe: null,
-  zabiegZluszczania: null,
-  alkoholNarkotyki: null,
-  temperaturaPrzeziebienie: null,
-  metodyRozgrzewajace: null,
-  solarium: null,
-};
-
-export const contraindicationLabels: Record<keyof ConsentFormData['przeciwwskazania'], string> = {
+// Stała dla Kwasu Hialuronowego (obecny)
+export const hyaluronicContraindications: Record<string, string> = {
   ciazaLaktacja: 'Jestem w ciąży lub w okresie laktacji',
   chorobaAutoimmunologiczna: 'Mam chorobę autoimmunologiczną',
   alergiaSkładniki: 'Mam alergię na składniki preparatu (dane z przeszłości, jeśli są)',
@@ -130,29 +68,60 @@ export const contraindicationLabels: Record<keyof ConsentFormData['przeciwwskaza
   solarium: 'Byłem/am w solarium i nie opalałem/am się intensywnie min. tydzień przed zabiegiem',
 };
 
-// Stary interfejs dla kompatybilności
-export interface BookingFormData {
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone: string;
-  serviceType: string;
-  preferredDate: string;
-  preferredTime: string;
-  hasAllergies: boolean;
-  allergiesDetails?: string;
-  isPregnant: boolean;
-  hasSkinConditions: boolean;
-  skinConditionsDetails?: string;
-  takingMedication: boolean;
-  medicationDetails?: string;
-  consentPersonalData: boolean;
-  consentMarketing: boolean;
-  additionalNotes?: string;
-}
+// Stała dla PMU (nowy)
+export const pmuContraindications: Record<string, string> = {
+  ciazaLaktacja: 'Ciąża i okres laktacji',
+  alergiaBarwniki: 'Alergia na barwniki do pigmentacji',
+  alergiaFarby: 'Alergia na farby fryzjerskie',
+  alergiaZnieczulenie: 'Alergia na preparaty znieczulające (Fashion Brows Turbo Strong/Zensa)',
+  zmianySkorne: 'Dermatologiczne zmiany skórne w obszarze zabiegu (trądzik, stany ropne, liszaje, brodawczaki, poparzenia)',
+  luszczycaAktywna: 'Łuszczyca (faza aktywna)',
+  cukrzycaNiestabilna: 'Nieustabilizowana cukrzyca',
+  hemofilia: 'Hemofilia',
+  chorobaNowotwrowa: 'Choroba nowotworowa',
+  hivZoltaczka: 'Żółtaczka i HIV',
+  arytmiaSerca: 'Arytmia serca',
+  epilepsja: 'Epilepsja',
+  bielactwo: 'Bielactwo',
+  opryszczka: 'Opryszczka',
+  nadpobudliwoscNerwowa: 'Nadpobudliwość nerwowa, tiki',
+  chorobaAutoimmunologiczna: 'Choroba autoimmunologiczna',
+  chorobyOczu: 'Tylko dla powiek: Choroby gałki ocznej, stany zapalne spojówek, przebyte operacje oczu, zwyrodnienie siatkówki',
+  sklonnoscDoBliznowcow: 'Skłonność do bliznowców (koloidów)',
+  kuracjaSterydowa: 'Aktualna kuracja sterydowa lub antybiotykoterapia',
+  lekiRozrzedzajaceKrew: 'Leki rozrzedzające krew',
+  zabiegZluszczania: 'Zabiegi złuszczania naskórka (ostatnie 4 tyg.)',
+  odzywkiDoBrwi: 'Odżywki do brwi/rzęs (ostatnie 3 mies.)',
+  wypelniaczeUst: 'Wypełniacze ust (ostatnie 3 mies.)',
+  leczenieStomatologiczne: 'Leczenie stomatologiczne (przy ustach)',
+  goraczkaPrzeziebienie: 'Gorączka/przeziębienie w dniu zabiegu',
+  alkoholNarkotyki: 'Alkohol/narkotyki (24h przed)',
+};
 
-export interface BookingRecord extends BookingFormData {
-  id: string;
-  createdAt: string;
-  status: 'pending' | 'confirmed' | 'completed' | 'cancelled';
-}
+// Stała dla Lasera (nowy)
+export const laserContraindications: Record<string, string> = {
+  ciazaLaktacja: 'Ciąża i laktacja',
+  rozrusznikSerca: 'Rozrusznik serca',
+  luszczycaCukrzyca: 'Łuszczyca, Cukrzyca, Hemofilia, Nowotwory, HIV/Żółtaczka',
+  arytmiaEpilepsja: 'Arytmia, Epilepsja, Bielactwo, Opryszczka',
+  nadpobudliwoscNerwowa: 'Nadpobudliwość nerwowa/tiki',
+  chorobaAutoimmunologiczna: 'Choroby autoimmunologiczne',
+  chorobyOczu: 'Choroby oczu/operacje (przy zabiegu na powiekach)',
+  sklonnoscDoBliznowcow: 'Skłonność do bliznowców',
+  leki: 'Leki: Sterydy, Antybiotyki, Rozrzedzające krew',
+  lekiMiejscowe: 'Leki miejscowe w obszarze zabiegu',
+  zabiegZluszczania: 'Złuszczanie naskórka (4 tyg. przed)',
+  odzywkiDoBrwi: 'Odżywki na porost (3 mies. przed)',
+  goraczkaAlkohol: 'Gorączka/Alkohol (24h)',
+};
+
+// Mapowanie typów na zestawy pytań
+export const contraindicationsByFormType: Record<FormType, Record<string, string>> = {
+  HYALURONIC: hyaluronicContraindications,
+  PMU: pmuContraindications,
+  LASER: laserContraindications,
+};
+
+// Zachowanie kompatybilności wstecznej (dla starych importów)
+export const defaultContraindications = {}; 
+export const contraindicationLabels = hyaluronicContraindications;

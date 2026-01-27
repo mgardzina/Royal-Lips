@@ -5,7 +5,12 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+}
+
+enum FormType {
+  HYALURONIC
+  PMU
+  LASER
 }
 
 // Klientka - identyfikowana po imieniu i nazwisku
@@ -15,12 +20,12 @@ model Client {
   updatedAt DateTime @updatedAt
 
   // Dane identyfikacyjne
-  imieNazwisko  String   @unique  // Klucz do łączenia formularzy
-  telefon       String?           // Ostatni znany telefon
-  
+  imieNazwisko String  @unique // Klucz do łączenia formularzy
+  telefon      String? // Ostatni znany telefon
+
   // Relacje
-  forms         ConsentForm[]
-  notes         ClientNote[]
+  forms ConsentForm[]
+  notes ClientNote[]
 }
 
 // Notatki do klientki (alergie, uwagi, etc.)
@@ -29,15 +34,16 @@ model ClientNote {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  content   String   @db.Text     // Treść notatki
-  
+  content String @db.Text // Treść notatki
+
   // Relacja z klientką
-  clientId  String
-  client    Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  clientId String
+  client   Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
 }
 
 model ConsentForm {
   id        String   @id @default(uuid())
+  type      FormType @default(HYALURONIC)
   createdAt DateTime @default(now())
 
   // Dane osobowe
@@ -70,8 +76,8 @@ model ConsentForm {
   podpisRodo       String? @db.Text
 
   // Relacja z klientką
-  clientId  String?
-  client    Client?  @relation(fields: [clientId], references: [id])
+  clientId String?
+  client   Client? @relation(fields: [clientId], references: [id])
 }
 
 model AdminUser {

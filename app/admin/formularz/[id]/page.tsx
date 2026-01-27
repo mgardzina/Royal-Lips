@@ -13,10 +13,11 @@ import {
   Check,
   X,
 } from "lucide-react";
-import { contraindicationLabels } from "@/types/booking";
+import { contraindicationsByFormType, FormType } from "@/types/booking";
 
 interface ConsentFormFull {
   id: string;
+  type: string;
   createdAt: string;
   imieNazwisko: string;
   ulica: string | null;
@@ -224,10 +225,10 @@ export default function FormDetailsPage() {
           </h2>
           <div className="space-y-2">
             {Object.entries(form.przeciwwskazania).map(([key, value]) => {
-              const label =
-                contraindicationLabels[
-                  key as keyof typeof contraindicationLabels
-                ] || key;
+              const labels =
+                contraindicationsByFormType[form.type as FormType] ||
+                contraindicationsByFormType["HYALURONIC"];
+              const label = labels[key] || key;
               return (
                 <div
                   key={key}

@@ -8,6 +8,7 @@ import { LogOut, FileText, Check, X, Search } from "lucide-react";
 
 interface ConsentFormSummary {
   id: string;
+  type: string;
   createdAt: string;
   imieNazwisko: string;
   telefon: string;
@@ -173,8 +174,23 @@ export default function AdminDashboard() {
                 >
                   <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div>
-                      <h3 className="font-medium text-[#4a4540]">
+                      <h3 className="font-medium text-[#4a4540] flex items-center gap-2">
                         {form.imieNazwisko}
+                        <span
+                          className={`text-xs px-2 py-0.5 rounded-full ${
+                            form.type === "PMU"
+                              ? "bg-purple-100 text-purple-700"
+                              : form.type === "LASER"
+                                ? "bg-red-100 text-red-700"
+                                : "bg-blue-100 text-blue-700"
+                          }`}
+                        >
+                          {form.type === "PMU"
+                            ? "PMU"
+                            : form.type === "LASER"
+                              ? "LASER"
+                              : "KWAS"}
+                        </span>
                       </h3>
                       <p className="text-sm text-[#8b8580]">
                         +48 {form.telefon} &bull; {form.miejscowoscData}
