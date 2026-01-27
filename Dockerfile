@@ -1,11 +1,13 @@
 # Stage 1: Dependencies
 FROM node:20-alpine AS deps
-RUN apk add --no-cache libc6-compat
+RUN apk add --no-cache libc6-compat openssl
 WORKDIR /app
 
 # Install dependencies
 COPY package*.json ./
+COPY prisma ./prisma/
 RUN npm ci
+RUN npx prisma generate
 
 # Stage 2: Builder
 FROM node:20-alpine AS builder
@@ -35,6 +37,8 @@ RUN adduser --system --uid 1001 nextjs
 COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+COPY --from=builder /app/prisma ./prisma
+COPY --from=deps /app/node_modules/.prisma ./node_modules/.prisma
 
 USER nextjs
 

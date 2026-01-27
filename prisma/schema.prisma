@@ -1,0 +1,47 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model ConsentForm {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+
+  // Dane osobowe
+  imieNazwisko    String
+  adres           String?
+  dataUrodzenia   String?
+  telefon         String
+  miejscowoscData String
+
+  // Szczegóły zabiegu
+  nazwaProduktu String?
+  obszarZabiegu String?
+  celEfektu     String?
+
+  // Przeciwwskazania (JSON)
+  przeciwwskazania Json
+
+  // Zgody
+  zgodaPrzetwarzanieDanych    Boolean
+  zgodaMarketing              Boolean
+  zgodaFotografie             Boolean
+  miejscaPublikacjiFotografii String?
+
+  // Podpisy (base64 images - duże teksty)
+  podpisDane       String? @db.Text
+  podpisMarketing  String? @db.Text
+  podpisFotografie String? @db.Text
+  podpisRodo       String? @db.Text
+}
+
+model AdminUser {
+  id           String  @id @default(uuid())
+  email        String  @unique
+  passwordHash String
+  name         String?
+}
