@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import CookieConsent from "../components/CookieConsent";
+import AuthProvider from "../components/AuthProvider";
 
 export const metadata: Metadata = {
   title: "Royal Lips - Joanna Wielgos",
@@ -17,7 +18,7 @@ export default function RootLayout({
   return (
     <html lang="pl">
       <body>
-        {children}
+        <AuthProvider>{children}</AuthProvider>
         <CookieConsent />
       </body>
     </html>

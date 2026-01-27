@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { LogOut, FileText, Check, X, Search } from "lucide-react";
 
@@ -17,13 +18,24 @@ interface ConsentFormSummary {
 }
 
 export default function AdminDashboard() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
   const [forms, setForms] = useState<ConsentFormSummary[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
 
+  // Sprawdzenie autentykacji
   useEffect(() => {
-    fetchForms();
-  }, []);
+    if (status === "unauthenticated") {
+      router.push("/admin/login");
+    }
+  }, [status, router]);
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      fetchForms();
+    }
+  }, [status]);
 
   const fetchForms = async () => {
     try {
@@ -42,7 +54,7 @@ export default function AdminDashboard() {
   const filteredForms = forms.filter(
     (form) =>
       form.imieNazwisko.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      form.telefon.includes(searchQuery)
+      form.telefon.includes(searchQuery),
   );
 
   const formatDate = (dateString: string) => {
@@ -54,6 +66,15 @@ export default function AdminDashboard() {
       minute: "2-digit",
     });
   };
+
+  // Pokaż loading gdy sesja jest sprawdzana
+  if (status === "loading" || status === "unauthenticated") {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-[#f8f6f3] via-[#efe9e1] to-[#e8e0d5] flex items-center justify-center">
+        <div className="text-[#8b7355] text-lg">Ładowanie...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#f8f6f3] via-[#efe9e1] to-[#e8e0d5]">
@@ -88,7 +109,9 @@ export default function AdminDashboard() {
             </p>
           </div>
           <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-6 shadow-lg">
-            <p className="text-[#8b7355] text-sm font-medium">Zgody marketing</p>
+            <p className="text-[#8b7355] text-sm font-medium">
+              Zgody marketing
+            </p>
             <p className="text-4xl font-serif text-[#4a4540] mt-2">
               {forms.filter((f) => f.zgodaMarketing).length}
             </p>
