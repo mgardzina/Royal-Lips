@@ -33,9 +33,9 @@ export async function POST(request: NextRequest) {
         obszarZabiegu: body.obszarZabiegu || null,
         celEfektu: body.celEfektu || null,
         przeciwwskazania: body.przeciwwskazania,
-        zgodaPrzetwarzanieDanych: body.zgodaPrzetwarzanieDanych,
-        zgodaMarketing: body.zgodaMarketing,
-        zgodaFotografie: body.zgodaFotografie,
+        zgodaPrzetwarzanieDanych: body.zgodaPrzetwarzanieDanych ?? false,
+        zgodaMarketing: body.zgodaMarketing ?? false,
+        zgodaFotografie: body.zgodaFotografie ?? false,
         miejscaPublikacjiFotografii: body.miejscaPublikacjiFotografii || null,
         podpisDane: body.podpisDane || null,
         podpisMarketing: body.podpisMarketing || null,
@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error("Błąd zapisu formularza:", error);
     return NextResponse.json(
-      { success: false, error: "Błąd zapisu formularza" },
+      { success: false, error: "Błąd zapisu formularza", details: String(error) },
       { status: 500 }
     );
   }
