@@ -243,8 +243,8 @@ export default function LaserForm({ onBack }: LaserFormProps) {
                   placeholder="Krosno, 27.01.2026"
                 />
               </div>
-              {/* EMAIL FIELD (Moved to bottom) */}
-              <div className="md:col-span-2">
+              {/* Email field - positioned 3rd to match PmuForm */}
+              <div>
                 <label className="block text-sm text-[#6b6560] mb-2 font-medium">
                   Adres E-mail
                 </label>
@@ -259,77 +259,82 @@ export default function LaserForm({ onBack }: LaserFormProps) {
                   />
                 </div>
               </div>
-            </div>
-            {/* Adresy, Data ur., Telefon... */}
-            <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="md:col-span-2">
+
+              {/* Address Section - col-span-2 within the same grid */}
+              <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="md:col-span-2">
+                  <label className="block text-sm text-[#6b6560] mb-2 font-medium">
+                    Ulica i numer
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.ulica}
+                    onChange={(e) => handleInputChange("ulica", e.target.value)}
+                    className="w-full px-4 py-3 bg-white/80 border border-[#d4cec4] rounded-xl"
+                    placeholder="Adres"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm text-[#6b6560] mb-2 font-medium">
+                    Kod pocztowy
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.kodPocztowy}
+                    onChange={(e) =>
+                      handleInputChange("kodPocztowy", e.target.value)
+                    }
+                    className="w-full px-4 py-3 bg-white/80 border border-[#d4cec4] rounded-xl"
+                    placeholder="38-400"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm text-[#6b6560] mb-2 font-medium">
+                    Miasto
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.miasto}
+                    onChange={(e) =>
+                      handleInputChange("miasto", e.target.value)
+                    }
+                    className="w-full px-4 py-3 bg-white/80 border border-[#d4cec4] rounded-xl"
+                    placeholder="Krosno"
+                  />
+                </div>
+              </div>
+
+              {/* DOB and Phone - continued in the same grid */}
+              <div>
                 <label className="block text-sm text-[#6b6560] mb-2 font-medium">
-                  Ulica i numer
+                  Data urodzenia
                 </label>
                 <input
                   type="text"
-                  value={formData.ulica}
-                  onChange={(e) => handleInputChange("ulica", e.target.value)}
+                  value={formData.dataUrodzenia}
+                  onChange={(e) => handleBirthDateChange(e.target.value)}
                   className="w-full px-4 py-3 bg-white/80 border border-[#d4cec4] rounded-xl"
-                  placeholder="Adres"
+                  placeholder="DD.MM.RRRR"
                 />
               </div>
               <div>
                 <label className="block text-sm text-[#6b6560] mb-2 font-medium">
-                  Kod pocztowy
+                  Telefon
                 </label>
-                <input
-                  type="text"
-                  value={formData.kodPocztowy}
-                  onChange={(e) =>
-                    handleInputChange("kodPocztowy", e.target.value)
-                  }
-                  className="w-full px-4 py-3 bg-white/80 border border-[#d4cec4] rounded-xl"
-                  placeholder="38-400"
-                />
-              </div>
-              <div>
-                <label className="block text-sm text-[#6b6560] mb-2 font-medium">
-                  Miasto
-                </label>
-                <input
-                  type="text"
-                  value={formData.miasto}
-                  onChange={(e) => handleInputChange("miasto", e.target.value)}
-                  className="w-full px-4 py-3 bg-white/80 border border-[#d4cec4] rounded-xl"
-                  placeholder="Krosno"
-                />
-              </div>
-            </div>
-            <div>
-              <label className="block text-sm text-[#6b6560] mb-2 font-medium">
-                Data urodzenia
-              </label>
-              <input
-                type="text"
-                value={formData.dataUrodzenia}
-                onChange={(e) => handleBirthDateChange(e.target.value)}
-                className="w-full px-4 py-3 bg-white/80 border border-[#d4cec4] rounded-xl"
-                placeholder="DD.MM.RRRR"
-              />
-            </div>
-            <div>
-              <label className="block text-sm text-[#6b6560] mb-2 font-medium">
-                Telefon
-              </label>
-              <div className="flex">
-                <span className="inline-flex items-center px-4 py-3 bg-[#f0ebe4] border border-r-0 border-[#d4cec4] rounded-l-xl text-[#6b6560] font-medium select-none">
-                  +48
-                </span>
-                <input
-                  type="tel"
-                  required
-                  value={formData.telefon}
-                  onChange={(e) => handlePhoneChange(e.target.value)}
-                  className="w-full px-4 py-3 bg-white/80 border border-[#d4cec4] rounded-r-xl focus:border-[#8b7355] focus:ring-2 focus:ring-[#8b7355]/20 outline-none transition-all"
-                  placeholder="123 456 789"
-                  maxLength={11}
-                />
+                <div className="flex">
+                  <span className="inline-flex items-center px-4 py-3 bg-[#f0ebe4] border border-r-0 border-[#d4cec4] rounded-l-xl text-[#6b6560] font-medium select-none">
+                    +48
+                  </span>
+                  <input
+                    type="tel"
+                    required
+                    value={formData.telefon}
+                    onChange={(e) => handlePhoneChange(e.target.value)}
+                    className="w-full px-4 py-3 bg-white/80 border border-[#d4cec4] rounded-r-xl focus:border-[#8b7355] focus:ring-2 focus:ring-[#8b7355]/20 outline-none transition-all"
+                    placeholder="123 456 789"
+                    maxLength={11}
+                  />
+                </div>
               </div>
             </div>
           </section>
