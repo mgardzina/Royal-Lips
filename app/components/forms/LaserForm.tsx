@@ -2,8 +2,6 @@
 
 import { useState } from "react";
 import {
-  Instagram,
-  Phone,
   ChevronDown,
   ChevronUp,
   Check,
@@ -14,6 +12,10 @@ import SignaturePad from "../../../components/SignaturePad";
 import {
   ConsentFormData,
   laserContraindications,
+  laserNaturalReactions,
+  laserComplications,
+  laserPostCare,
+  rodoInfo,
 } from "../../../types/booking";
 
 interface LaserFormProps {
@@ -29,9 +31,11 @@ const initialFormData: ConsentFormData = {
   dataUrodzenia: "",
   telefon: "",
   miejscowoscData: "",
-  nazwaProduktu: "", // Wykorzystamy jako "Email" w tym formularzu (lub dodamy custom state) - zaraz, ConsentFormData nie ma emaila. Użyjmy nazwaProduktu jako tymczasowego pola na maila lub dodajmy do schema? Nie modyfikuję schema.
-  obszarZabiegu: "", // "Użycie lasera w obszarze..."
-  celEfektu: "", // "Oczekiwany efekt..."
+  osobaPrzeprowadzajacaZabieg: "",
+  nazwaProduktu: "",
+  obszarZabiegu: "",
+  celEfektu: "",
+  numerZabiegu: "",
   przeciwwskazania: Object.keys(laserContraindications).reduce(
     (acc, key) => ({ ...acc, [key]: null }),
     {},
@@ -39,11 +43,14 @@ const initialFormData: ConsentFormData = {
   zgodaPrzetwarzanieDanych: false,
   zgodaMarketing: false,
   zgodaFotografie: false,
+  zgodaPomocPrawna: false,
   miejscaPublikacjiFotografii: "",
   podpisDane: "",
   podpisMarketing: "",
   podpisFotografie: "",
   podpisRodo: "",
+  informacjaDodatkowa: "",
+  zastrzeniaKlienta: "",
 };
 
 export default function LaserForm({ onBack }: LaserFormProps) {
@@ -437,7 +444,7 @@ export default function LaserForm({ onBack }: LaserFormProps) {
               className="w-full p-6 md:p-8 flex justify-between items-center text-left hover:bg-white/40 transition-colors"
             >
               <h3 className="text-2xl font-serif text-[#4a4540]">
-                Ryzyko i Powikłania
+                Świadomość ryzyka
               </h3>
               {expandedSections.reakcje ? (
                 <ChevronUp className="w-6 h-6 text-[#8b7355]" />
@@ -447,32 +454,68 @@ export default function LaserForm({ onBack }: LaserFormProps) {
             </button>
             {expandedSections.reakcje && (
               <div className="px-6 md:px-8 pb-8 space-y-4">
+                <p className="text-sm text-[#6b6560]">
+                  Zostałam/em poinformowana/y o przebiegu zabiegu i możliwości
+                  naturalnego wystąpienia po zabiegu reakcji organizmu:
+                </p>
+
                 <div className="p-4 bg-white/50 rounded-xl">
-                  <p className="text-sm font-medium text-[#4a4540] mb-2">
-                    Reakcje:
+                  <p className="text-sm font-medium text-[#4a4540] mb-3">
+                    Możliwe naturalne reakcje na zabieg:
                   </p>
-                  <ul className="list-disc ml-5 text-sm text-[#5a5550]">
-                    <li>dyskomfort, swędzenie</li>
-                    <li>strupki, przebarwienia</li>
+                  <ul className="space-y-2 text-sm text-[#5a5550]">
+                    {laserNaturalReactions.map((reaction, index) => (
+                      <li key={index} className="flex items-start gap-2">
+                        <span className="text-[#8b7355]">•</span>
+                        {reaction}
+                      </li>
+                    ))}
                   </ul>
-                  <label className="flex items-center gap-2 mt-2">
-                    <input type="checkbox" className="accent-[#8b7355]" />
-                    <span className="text-xs text-[#6b6560]">Akceptuję.</span>
+                  <label className="flex items-center gap-2 mt-4 pt-3 border-t border-[#e8e0d5]">
+                    <input
+                      type="checkbox"
+                      required
+                      className="accent-[#8b7355]"
+                    />
+                    <span className="text-xs text-[#6b6560]">
+                      Akceptuję możliwość wystąpienia powyższych reakcji.
+                    </span>
                   </label>
                 </div>
 
                 <div className="p-4 bg-white/50 rounded-xl">
-                  <p className="text-sm font-medium text-[#4a4540] mb-2">
-                    Powikłania:
+                  <p className="text-sm font-medium text-[#4a4540] mb-3">
+                    Możliwe powikłania:
                   </p>
-                  <ul className="list-disc ml-5 text-sm text-[#5a5550]">
-                    <li>obrzęk, pęcherzyki, infekcje</li>
-                    <li>blizny, zmiany tekstury skóry</li>
-                  </ul>
-                  <label className="flex items-center gap-2 mt-2">
-                    <input type="checkbox" className="accent-[#8b7355]" />
+                  <div className="space-y-3 text-sm text-[#5a5550]">
+                    <div>
+                      <p className="text-xs font-medium text-[#6b6560] mb-1">
+                        Ryzyko wystąpienia - częste:
+                      </p>
+                      <p>{laserComplications.czeste.join(", ")}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs font-medium text-[#6b6560] mb-1">
+                        Ryzyko wystąpienia - rzadkie:
+                      </p>
+                      <p>{laserComplications.rzadkie.join(", ")}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs font-medium text-[#6b6560] mb-1">
+                        Ryzyko wystąpienia - bardzo rzadkie:
+                      </p>
+                      <p>{laserComplications.bardzoRzadkie.join(", ")}</p>
+                    </div>
+                  </div>
+                  <label className="flex items-center gap-2 mt-4 pt-3 border-t border-[#e8e0d5]">
+                    <input
+                      type="checkbox"
+                      required
+                      className="accent-[#8b7355]"
+                    />
                     <span className="text-xs text-[#6b6560]">
-                      Zostałem poinformowany.
+                      Zostałam/em poinformowana/y o możliwości wystąpienia
+                      powikłań po zabiegu.
                     </span>
                   </label>
                 </div>
@@ -488,7 +531,7 @@ export default function LaserForm({ onBack }: LaserFormProps) {
               className="w-full p-6 md:p-8 flex justify-between items-center text-left hover:bg-white/40 transition-colors"
             >
               <h3 className="text-2xl font-serif text-[#4a4540]">
-                Zalecenia po zabiegu
+                Zobowiązania pozabiegowe
               </h3>
               {expandedSections.zalecenia ? (
                 <ChevronUp className="w-6 h-6 text-[#8b7355]" />
@@ -498,15 +541,19 @@ export default function LaserForm({ onBack }: LaserFormProps) {
             </button>
             {expandedSections.zalecenia && (
               <div className="px-6 md:px-8 pb-8">
+                <p className="text-sm text-[#6b6560] mb-4">
+                  Zostałam/em poinformowana/y o konieczności stosowania się do
+                  następujących zaleceń pozabiegowych, których nieprzestrzeganie
+                  może spowodować poważne powikłania, i przyjmuję je do
+                  stosowania:
+                </p>
                 <ul className="space-y-2 text-[#5a5550] text-sm">
-                  <li>• Higiena dłoni</li>
-                  <li>
-                    • <strong>Unikać słońca i solarium przez 4 tygodnie</strong>
-                  </li>
-                  <li>• Sauna/Basen: min. 3 tygodnie</li>
-                  <li>• Nie odrywać strupków</li>
-                  <li>• Unikać alkoholu (48h)</li>
-                  <li>• Zakaz peelingów (2 tygodnie)</li>
+                  {laserPostCare.map((instruction, index) => (
+                    <li key={index} className="flex items-start gap-2">
+                      <span className="text-[#8b7355]">•</span>
+                      {instruction}
+                    </li>
+                  ))}
                 </ul>
                 <label className="flex items-center gap-2 mt-4 pt-4 border-t border-[#d4cec4]">
                   <input
@@ -515,49 +562,240 @@ export default function LaserForm({ onBack }: LaserFormProps) {
                     className="accent-[#8b7355]"
                   />
                   <span className="text-sm text-[#4a4540] font-medium">
-                    Oświadczam, że będę przestrzegać zaleceń.
+                    Zobowiązuję się przestrzegać powyższych zaleceń
+                    pozabiegowych.
                   </span>
                 </label>
               </div>
             )}
           </section>
 
-          {/* Standardowe zgody */}
+          {/* RODO - Klauzula informacyjna */}
+          <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg overflow-hidden">
+            <button
+              type="button"
+              onClick={() => toggleSection("rodo")}
+              className="w-full p-6 md:p-8 flex justify-between items-center text-left hover:bg-white/40 transition-colors"
+            >
+              <h3 className="text-2xl font-serif text-[#4a4540]">
+                Klauzula Informacyjna RODO
+              </h3>
+              {expandedSections.rodo ? (
+                <ChevronUp className="w-6 h-6 text-[#8b7355]" />
+              ) : (
+                <ChevronDown className="w-6 h-6 text-[#8b7355]" />
+              )}
+            </button>
+            {expandedSections.rodo && (
+              <div className="px-6 md:px-8 pb-8">
+                <div className="bg-[#f8f6f3] p-4 rounded-xl text-xs text-[#5a5550] leading-relaxed whitespace-pre-line max-h-96 overflow-y-auto">
+                  {rodoInfo.pelnyTekst}
+                </div>
+              </div>
+            )}
+          </section>
+
+          {/* Oświadczenia i zgody */}
           <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
             <h3 className="text-2xl font-serif text-[#4a4540] mb-6 pb-3 border-b border-[#d4cec4]">
-              Zgody
+              Oświadczenia i Zgoda na Zabieg
             </h3>
+            <div className="bg-[#f8f6f3] p-4 rounded-xl mb-6">
+              <p className="text-sm text-[#5a5550] leading-relaxed">
+                <strong>Oświadczam, że:</strong>
+              </p>
+              <ol className="list-decimal ml-5 mt-2 text-sm text-[#5a5550] space-y-2">
+                <li>
+                  Jestem świadoma/y przebiegu zabiegu, jego celu, oraz
+                  okoliczności jego przeprowadzenia i zasad obowiązujących po
+                  wykonaniu zabiegu, oraz że świadomie i dobrowolnie poddaję się
+                  zabiegowi.
+                </li>
+                <li>
+                  Osoba przeprowadzająca zabieg poinformowała mnie o powyższych
+                  okolicznościach, oraz udzieliła mi niezbędnych odpowiedzi oraz
+                  wszelkich informacji co do zachowania po zabiegu, oraz w
+                  zakresie zadawanych przez mnie pytań, i nie wnoszę do tej
+                  informacji zastrzeżeń, oraz że są one dla mnie w pełni
+                  zrozumiałe.
+                </li>
+                <li>
+                  Podane przeze mnie w niniejszym oświadczeniu odpowiedzi, w
+                  szczególności co do stanu zdrowia, oraz braku ewentualnych
+                  przeciwwskazań są zgodne z prawdą, i opierają się na mojej
+                  wiedzy co do stanu mojego zdrowia, bez zatajania czegokolwiek.
+                </li>
+              </ol>
+            </div>
+
             <div className="space-y-4">
-              {/* Świadomość, Potwierdzenie, Prawdziwość */}
-              <label className="flex items-start gap-4">
-                <input
-                  type="checkbox"
-                  required
-                  checked={formData.zgodaPrzetwarzanieDanych}
-                  onChange={(e) =>
-                    handleInputChange(
-                      "zgodaPrzetwarzanieDanych",
-                      e.target.checked,
-                    )
-                  }
-                  className="accent-[#8b7355] mt-1"
-                />
-                <span className="text-sm text-[#5a5550]">
-                  Świadomość zabiegu i dobrowolne poddanie się mu.
-                </span>
-              </label>
-              {formData.zgodaPrzetwarzanieDanych && (
-                <div className="mt-4">
-                  <SignaturePad
-                    label="Podpis klienta"
-                    value={formData.podpisDane}
-                    onChange={(sig) => handleInputChange("podpisDane", sig)}
-                    date={formData.miejscowoscData}
+              {/* Zgoda na przetwarzanie danych */}
+              <div className="p-4 bg-white/50 rounded-xl">
+                <label className="flex items-start gap-4 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={formData.zgodaPrzetwarzanieDanych}
+                    onChange={(e) =>
+                      handleInputChange(
+                        "zgodaPrzetwarzanieDanych",
+                        e.target.checked,
+                      )
+                    }
+                    className="w-5 h-5 mt-1 text-[#8b7355] rounded border-[#d4cec4] focus:ring-[#8b7355]"
                     required
                   />
-                </div>
-              )}
+                  <span className="text-sm text-[#5a5550] leading-relaxed">
+                    Wyrażam zgodę na przetwarzanie moich danych osobowych przez{" "}
+                    {rodoInfo.firmaNazwa} {rodoInfo.administrator},{" "}
+                    {rodoInfo.adres}, NIP: {rodoInfo.nip} w celu realizacji
+                    umowy o wykonanie zabiegu z użyciem lasera Q-switch. Zgodę
+                    wyrażam w sposób świadomy i dobrowolny, a podane przeze mnie
+                    dane są zgodne z prawdą.
+                  </span>
+                </label>
+                {formData.zgodaPrzetwarzanieDanych && (
+                  <div className="mt-4 ml-9">
+                    <SignaturePad
+                      label="Podpis - Oświadczenie i zgoda na zabieg"
+                      value={formData.podpisDane}
+                      onChange={(sig) => handleInputChange("podpisDane", sig)}
+                      date={formData.miejscowoscData}
+                      required
+                    />
+                  </div>
+                )}
+              </div>
+
+              {/* Zgoda na marketing (opcjonalna) */}
+              <div className="p-4 bg-white/50 rounded-xl">
+                <label className="flex items-start gap-4 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={formData.zgodaMarketing}
+                    onChange={(e) =>
+                      handleInputChange("zgodaMarketing", e.target.checked)
+                    }
+                    className="w-5 h-5 mt-1 text-[#8b7355] rounded border-[#d4cec4] focus:ring-[#8b7355]"
+                  />
+                  <span className="text-sm text-[#5a5550] leading-relaxed">
+                    <strong>Opcjonalnie:</strong> Wyrażam zgodę na przetwarzanie
+                    moich danych osobowych przez {rodoInfo.firmaNazwa}{" "}
+                    {rodoInfo.administrator}, {rodoInfo.adres}, NIP:{" "}
+                    {rodoInfo.nip} w celach marketingowych. Zgodę wyrażam w
+                    sposób świadomy i dobrowolny, a podane przeze mnie dane są
+                    zgodne z prawdą.
+                  </span>
+                </label>
+                {formData.zgodaMarketing && (
+                  <div className="mt-4 ml-9">
+                    <SignaturePad
+                      label="Podpis zgody marketingowej"
+                      value={formData.podpisMarketing}
+                      onChange={(sig) =>
+                        handleInputChange("podpisMarketing", sig)
+                      }
+                      date={formData.miejscowoscData}
+                    />
+                  </div>
+                )}
+              </div>
+
+              {/* Zgoda na wizerunek (opcjonalna) */}
+              <div className="p-4 bg-white/50 rounded-xl">
+                <label className="flex items-start gap-4 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={formData.zgodaFotografie}
+                    onChange={(e) =>
+                      handleInputChange("zgodaFotografie", e.target.checked)
+                    }
+                    className="w-5 h-5 mt-1 text-[#8b7355] rounded border-[#d4cec4] focus:ring-[#8b7355]"
+                  />
+                  <span className="text-sm text-[#5a5550] leading-relaxed">
+                    <strong>Opcjonalnie:</strong> Wyrażam zgodę na wykonanie
+                    fotografii ciała w celu dokumentacji oraz oceny
+                    efektywności zabiegu i wyrażam zgodę na umieszczenie
+                    fotografii w celach promocji firmy.
+                  </span>
+                </label>
+                {formData.zgodaFotografie && (
+                  <div className="mt-4 ml-9 space-y-4">
+                    <div>
+                      <label className="block text-sm text-[#6b6560] mb-2 font-medium">
+                        Miejsca publikacji (np. www, Facebook, Instagram)
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.miejscaPublikacjiFotografii}
+                        onChange={(e) =>
+                          handleInputChange(
+                            "miejscaPublikacjiFotografii",
+                            e.target.value,
+                          )
+                        }
+                        className="w-full px-4 py-3 bg-white/80 border border-[#d4cec4] rounded-xl focus:border-[#8b7355] focus:ring-2 focus:ring-[#8b7355]/20 outline-none transition-all"
+                        placeholder="www, Facebook, Instagram"
+                      />
+                    </div>
+                    <SignaturePad
+                      label="Podpis zgody na wizerunek"
+                      value={formData.podpisFotografie}
+                      onChange={(sig) =>
+                        handleInputChange("podpisFotografie", sig)
+                      }
+                      date={formData.miejscowoscData}
+                    />
+                  </div>
+                )}
+              </div>
+
+              {/* Zgoda na pomoc prawną (opcjonalna) */}
+              <div className="p-4 bg-white/50 rounded-xl">
+                <label className="flex items-start gap-4 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={formData.zgodaPomocPrawna}
+                    onChange={(e) =>
+                      handleInputChange("zgodaPomocPrawna", e.target.checked)
+                    }
+                    className="w-5 h-5 mt-1 text-[#8b7355] rounded border-[#d4cec4] focus:ring-[#8b7355]"
+                  />
+                  <span className="text-sm text-[#5a5550] leading-relaxed">
+                    <strong>Opcjonalnie:</strong> Wyrażam zgodę na przetwarzanie
+                    moich danych osobowych przez {rodoInfo.firmaNazwa}{" "}
+                    {rodoInfo.administrator} w celu udzielenia mi pomocy
+                    prawnej.
+                  </span>
+                </label>
+                {formData.zgodaPomocPrawna && (
+                  <div className="mt-4 ml-9">
+                    <SignaturePad
+                      label="Podpis zgody na pomoc prawną"
+                      value={formData.podpisRodo}
+                      onChange={(sig) => handleInputChange("podpisRodo", sig)}
+                      date={formData.miejscowoscData}
+                    />
+                  </div>
+                )}
+              </div>
+
+              {/* Informacja dodatkowa */}
+              <div className="p-4 bg-white/50 rounded-xl">
+                <label className="block text-sm text-[#6b6560] mb-2 font-medium">
+                  Informacja dodatkowa / Zastrzeżenia klienta (opcjonalnie)
+                </label>
+                <textarea
+                  value={formData.informacjaDodatkowa || ""}
+                  onChange={(e) =>
+                    handleInputChange("informacjaDodatkowa", e.target.value)
+                  }
+                  className="w-full px-4 py-3 bg-white/80 border border-[#d4cec4] rounded-xl focus:border-[#8b7355] focus:ring-2 focus:ring-[#8b7355]/20 outline-none transition-all"
+                  placeholder="Stwierdzone nieprawidłowości po zabiegu, zastrzeżenia klienta..."
+                  rows={3}
+                />
+              </div>
             </div>
+
             <div className="pt-6">
               <button
                 type="submit"

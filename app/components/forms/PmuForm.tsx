@@ -10,7 +10,14 @@ import {
   ArrowLeft,
 } from "lucide-react";
 import SignaturePad from "../../../components/SignaturePad";
-import { ConsentFormData, pmuContraindications } from "../../../types/booking";
+import {
+  ConsentFormData,
+  pmuContraindications,
+  pmuNaturalReactions,
+  pmuComplications,
+  pmuPostCare,
+  rodoInfo,
+} from "../../../types/booking";
 
 interface PmuFormProps {
   onBack: () => void;
@@ -25,9 +32,11 @@ const initialFormData: ConsentFormData = {
   dataUrodzenia: "",
   telefon: "",
   miejscowoscData: "",
-  nazwaProduktu: "", // Nie dotyczy, ale wypełnimy "Pigment"
+  osobaPrzeprowadzajacaZabieg: "",
+  nazwaProduktu: "Pigment",
   obszarZabiegu: "",
-  celEfektu: "", // "Makijaż permanentny w obszarze..."
+  celEfektu: "",
+  numerZabiegu: "",
   przeciwwskazania: Object.keys(pmuContraindications).reduce(
     (acc, key) => ({ ...acc, [key]: null }),
     {},
@@ -35,11 +44,14 @@ const initialFormData: ConsentFormData = {
   zgodaPrzetwarzanieDanych: false,
   zgodaMarketing: false,
   zgodaFotografie: false,
+  zgodaPomocPrawna: false,
   miejscaPublikacjiFotografii: "",
   podpisDane: "",
   podpisMarketing: "",
   podpisFotografie: "",
   podpisRodo: "",
+  informacjaDodatkowa: "",
+  zastrzeniaKlienta: "",
 };
 
 export default function PmuForm({ onBack }: PmuFormProps) {
@@ -422,15 +434,24 @@ export default function PmuForm({ onBack }: PmuFormProps) {
             </button>
             {expandedSections.reakcje && (
               <div className="px-6 md:px-8 pb-8 space-y-4">
+                <p className="text-sm text-[#6b6560]">
+                  Zostałam/em poinformowana/y o przebiegu zabiegu i możliwości
+                  naturalnego wystąpienia po zabiegu reakcji organizmu:
+                </p>
+
                 <div className="p-4 bg-white/50 rounded-xl">
-                  <p className="text-sm font-medium text-[#4a4540] mb-2">
-                    Naturalne reakcje:
+                  <p className="text-sm font-medium text-[#4a4540] mb-3">
+                    Możliwe naturalne reakcje na zabieg:
                   </p>
-                  <ul className="list-disc ml-5 text-sm text-[#5a5550]">
-                    <li>swędzenie, strupki, złuszczanie</li>
-                    <li>ciemniejszy kolor w pierwszych dniach</li>
+                  <ul className="space-y-2 text-sm text-[#5a5550]">
+                    {pmuNaturalReactions.map((reaction, index) => (
+                      <li key={index} className="flex items-start gap-2">
+                        <span className="text-[#8b7355]">•</span>
+                        {reaction}
+                      </li>
+                    ))}
                   </ul>
-                  <label className="flex items-center gap-2 mt-2">
+                  <label className="flex items-center gap-2 mt-4 pt-3 border-t border-[#e8e0d5]">
                     <input
                       type="checkbox"
                       required
@@ -443,22 +464,38 @@ export default function PmuForm({ onBack }: PmuFormProps) {
                 </div>
 
                 <div className="p-4 bg-white/50 rounded-xl">
-                  <p className="text-sm font-medium text-[#4a4540] mb-2">
+                  <p className="text-sm font-medium text-[#4a4540] mb-3">
                     Możliwe powikłania:
                   </p>
-                  <ul className="list-disc ml-5 text-sm text-[#5a5550]">
-                    <li>zakażenia (wirusowe/bakteryjne)</li>
-                    <li>obrzęk, rumień</li>
-                    <li>bliznowce, migracja pigmentu</li>
-                  </ul>
-                  <label className="flex items-center gap-2 mt-2">
+                  <div className="space-y-3 text-sm text-[#5a5550]">
+                    <div>
+                      <p className="text-xs font-medium text-[#6b6560] mb-1">
+                        Ryzyko wystąpienia - częste:
+                      </p>
+                      <p>{pmuComplications.czeste.join(", ")}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs font-medium text-[#6b6560] mb-1">
+                        Ryzyko wystąpienia - rzadkie:
+                      </p>
+                      <p>{pmuComplications.rzadkie.join(", ")}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs font-medium text-[#6b6560] mb-1">
+                        Ryzyko wystąpienia - bardzo rzadkie:
+                      </p>
+                      <p>{pmuComplications.bardzoRzadkie.join(", ")}</p>
+                    </div>
+                  </div>
+                  <label className="flex items-center gap-2 mt-4 pt-3 border-t border-[#e8e0d5]">
                     <input
                       type="checkbox"
                       required
                       className="accent-[#8b7355]"
                     />
                     <span className="text-xs text-[#6b6560]">
-                      Zostałam/em poinformowana o ryzyku powikłań.
+                      Zostałam/em poinformowana/y o możliwości wystąpienia
+                      powikłań po zabiegu.
                     </span>
                   </label>
                 </div>
@@ -474,7 +511,7 @@ export default function PmuForm({ onBack }: PmuFormProps) {
               className="w-full p-6 md:p-8 flex justify-between items-center text-left hover:bg-white/40 transition-colors"
             >
               <h3 className="text-2xl font-serif text-[#4a4540]">
-                Zalecenia po zabiegu
+                Zobowiązania pozabiegowe
               </h3>
               {expandedSections.zalecenia ? (
                 <ChevronUp className="w-6 h-6 text-[#8b7355]" />
@@ -485,28 +522,28 @@ export default function PmuForm({ onBack }: PmuFormProps) {
             {expandedSections.zalecenia && (
               <div className="px-6 md:px-8 pb-8">
                 <p className="text-sm text-[#6b6560] mb-4">
-                  Zobowiązuję się przestrzegać poniższych zaleceń:
+                  Zostałam/em poinformowana/y o konieczności stosowania się do
+                  następujących zaleceń pozabiegowych, których nieprzestrzeganie
+                  może spowodować poważne powikłania, i przyjmuję je do
+                  stosowania:
                 </p>
                 <ul className="space-y-2 text-[#5a5550] text-sm">
-                  <li>
-                    • Wysoka higiena dłoni, nie myć mydłem miejsca zabiegu przez
-                    2 tygodnie
-                  </li>
-                  <li>
-                    • <strong>Unikać słońca i solarium przez 6 tygodni</strong>
-                  </li>
-                  <li>• Zakaz sauny/basenu przez min. 3 tygodnie</li>
-                  <li>• Nie odrywać strupków</li>
-                  <li>• Unikać gorących/ostrych potraw i alkoholu</li>
-                  <li>
-                    • Usta: pić przez słomkę, nie malować, higiena jamy ustnej
-                  </li>
-                  <li>• Zakaz botoksu/mezoterapii (2-3 tyg.)</li>
-                  <li>• Zakaz peelingów (3 tyg.)</li>
+                  {pmuPostCare.map((instruction, index) => (
+                    <li key={index} className="flex items-start gap-2">
+                      <span className="text-[#8b7355]">•</span>
+                      <span
+                        className={
+                          instruction.startsWith("WAŻNE") ||
+                          instruction.includes("UWAGA")
+                            ? "font-medium"
+                            : ""
+                        }
+                      >
+                        {instruction}
+                      </span>
+                    </li>
+                  ))}
                 </ul>
-                <p className="text-xs text-[#8b8580] mt-4">
-                  Korekta możliwa do 2 miesięcy od zabiegu.
-                </p>
                 <label className="flex items-center gap-2 mt-4 pt-4 border-t border-[#d4cec4]">
                   <input
                     type="checkbox"
@@ -514,9 +551,35 @@ export default function PmuForm({ onBack }: PmuFormProps) {
                     className="accent-[#8b7355]"
                   />
                   <span className="text-sm text-[#4a4540] font-medium">
-                    Zobowiązuję się przestrzegać powyższych zaleceń.
+                    Zobowiązuję się przestrzegać powyższych zaleceń
+                    pozabiegowych.
                   </span>
                 </label>
+              </div>
+            )}
+          </section>
+
+          {/* RODO - Klauzula informacyjna */}
+          <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg overflow-hidden">
+            <button
+              type="button"
+              onClick={() => toggleSection("rodo")}
+              className="w-full p-6 md:p-8 flex justify-between items-center text-left hover:bg-white/40 transition-colors"
+            >
+              <h3 className="text-2xl font-serif text-[#4a4540]">
+                Klauzula Informacyjna RODO
+              </h3>
+              {expandedSections.rodo ? (
+                <ChevronUp className="w-6 h-6 text-[#8b7355]" />
+              ) : (
+                <ChevronDown className="w-6 h-6 text-[#8b7355]" />
+              )}
+            </button>
+            {expandedSections.rodo && (
+              <div className="px-6 md:px-8 pb-8">
+                <div className="bg-[#f8f6f3] p-4 rounded-xl text-xs text-[#5a5550] leading-relaxed whitespace-pre-line max-h-96 overflow-y-auto">
+                  {rodoInfo.pelnyTekst}
+                </div>
               </div>
             )}
           </section>
@@ -524,8 +587,36 @@ export default function PmuForm({ onBack }: PmuFormProps) {
           {/* Oświadczenia i podpis */}
           <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
             <h3 className="text-2xl font-serif text-[#4a4540] mb-6 pb-3 border-b border-[#d4cec4]">
-              Zgody i Oświadczenia
+              Oświadczenia i Zgoda na Zabieg
             </h3>
+
+            <div className="bg-[#f8f6f3] p-4 rounded-xl mb-6">
+              <p className="text-sm text-[#5a5550] leading-relaxed">
+                <strong>Oświadczam, że:</strong>
+              </p>
+              <ol className="list-decimal ml-5 mt-2 text-sm text-[#5a5550] space-y-2">
+                <li>
+                  Jestem świadoma/y przebiegu zabiegu, jego celu, oraz
+                  okoliczności jego przeprowadzenia i zasad obowiązujących po
+                  wykonaniu zabiegu, oraz że świadomie i dobrowolnie poddaję się
+                  zabiegowi.
+                </li>
+                <li>
+                  Osoba przeprowadzająca zabieg poinformowała mnie o powyższych
+                  okolicznościach, oraz udzieliła mi niezbędnych odpowiedzi oraz
+                  wszelkich informacji co do zachowania po zabiegu, oraz w
+                  zakresie zadawanych przez mnie pytań, i nie wnoszę do tej
+                  informacji zastrzeżeń, oraz że są one dla mnie w pełni
+                  zrozumiałe.
+                </li>
+                <li>
+                  Podane przeze mnie w niniejszym oświadczeniu odpowiedzi, w
+                  szczególności co do stanu zdrowia, oraz braku ewentualnych
+                  przeciwwskazań są zgodne z prawdą, i opierają się na mojej
+                  wiedzy co do stanu mojego zdrowia, bez zatajania czegokolwiek.
+                </li>
+              </ol>
+            </div>
 
             <div className="space-y-4">
               <label className="flex items-start gap-4">
@@ -542,36 +633,18 @@ export default function PmuForm({ onBack }: PmuFormProps) {
                   className="accent-[#8b7355] mt-1"
                 />
                 <span className="text-sm text-[#5a5550]">
-                  Świadomie i dobrowolnie poddaję się zabiegowi.
-                </span>
-              </label>
-
-              <label className="flex items-start gap-4">
-                <input
-                  type="checkbox"
-                  required
-                  className="accent-[#8b7355] mt-1"
-                />
-                <span className="text-sm text-[#5a5550]">
-                  Otrzymałam/em wyczerpujące informacje o zabiegu i pielęgnacji.
-                </span>
-              </label>
-
-              <label className="flex items-start gap-4">
-                <input
-                  type="checkbox"
-                  required
-                  className="accent-[#8b7355] mt-1"
-                />
-                <span className="text-sm text-[#5a5550]">
-                  Podane przeze mnie dane o stanie zdrowia są zgodne z prawdą.
+                  Wyrażam zgodę na przetwarzanie moich danych osobowych przez{" "}
+                  {rodoInfo.firmaNazwa} {rodoInfo.administrator},{" "}
+                  {rodoInfo.adres}, NIP: {rodoInfo.nip} w celu realizacji umowy
+                  o wykonanie zabiegu. Zgodę wyrażam w sposób świadomy i
+                  dobrowolny, a podane przeze mnie dane są zgodne z prawdą.
                 </span>
               </label>
 
               {formData.zgodaPrzetwarzanieDanych && (
-                <div className="mt-4">
+                <div className="mt-4 p-4 bg-white/50 rounded-xl">
                   <SignaturePad
-                    label="Podpis klienta"
+                    label="Podpis - Oświadczenie i zgoda na zabieg"
                     value={formData.podpisDane}
                     onChange={(sig) => handleInputChange("podpisDane", sig)}
                     date={formData.miejscowoscData}
@@ -580,8 +653,42 @@ export default function PmuForm({ onBack }: PmuFormProps) {
                 </div>
               )}
 
-              {/* Zgoda na wizerunek (opcja) */}
+              {/* Zgoda na marketing (opcjonalna) */}
               <div className="p-4 bg-white/50 rounded-xl mt-4">
+                <label className="flex items-start gap-4 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={formData.zgodaMarketing}
+                    onChange={(e) =>
+                      handleInputChange("zgodaMarketing", e.target.checked)
+                    }
+                    className="w-5 h-5 mt-1 text-[#8b7355] rounded border-[#d4cec4] focus:ring-[#8b7355]"
+                  />
+                  <span className="text-sm text-[#5a5550] leading-relaxed">
+                    <strong>Opcjonalnie:</strong> Wyrażam zgodę na przetwarzanie
+                    moich danych osobowych przez {rodoInfo.firmaNazwa}{" "}
+                    {rodoInfo.administrator}, {rodoInfo.adres}, NIP:{" "}
+                    {rodoInfo.nip} w celach marketingowych. Zgodę wyrażam w
+                    sposób świadomy i dobrowolny, a podane przeze mnie dane są
+                    zgodne z prawdą.
+                  </span>
+                </label>
+                {formData.zgodaMarketing && (
+                  <div className="mt-4 ml-9">
+                    <SignaturePad
+                      label="Podpis zgody marketingowej"
+                      value={formData.podpisMarketing}
+                      onChange={(sig) =>
+                        handleInputChange("podpisMarketing", sig)
+                      }
+                      date={formData.miejscowoscData}
+                    />
+                  </div>
+                )}
+              </div>
+
+              {/* Zgoda na wizerunek (opcjonalna) */}
+              <div className="p-4 bg-white/50 rounded-xl">
                 <label className="flex items-start gap-4 cursor-pointer">
                   <input
                     type="checkbox"
@@ -592,12 +699,31 @@ export default function PmuForm({ onBack }: PmuFormProps) {
                     className="w-5 h-5 mt-1 text-[#8b7355] rounded border-[#d4cec4] focus:ring-[#8b7355]"
                   />
                   <span className="text-sm text-[#5a5550] leading-relaxed">
-                    Opjonalnie: Wyrażam zgodę na publikację wizerunku w celach
-                    promocji Royal Lips.
+                    <strong>Opcjonalnie:</strong> Wyrażam zgodę na publikację
+                    mojego wizerunku utrwalonego podczas makijażu permanentnego
+                    wykonanego przez {rodoInfo.firmaNazwa} {rodoInfo.administrator}{" "}
+                    w celu promocji firmy na stronach firmowych Royal Lips.
                   </span>
                 </label>
                 {formData.zgodaFotografie && (
-                  <div className="mt-4 ml-9">
+                  <div className="mt-4 ml-9 space-y-4">
+                    <div>
+                      <label className="block text-sm text-[#6b6560] mb-2 font-medium">
+                        Miejsca publikacji (np. www, Facebook, Instagram)
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.miejscaPublikacjiFotografii}
+                        onChange={(e) =>
+                          handleInputChange(
+                            "miejscaPublikacjiFotografii",
+                            e.target.value,
+                          )
+                        }
+                        className="w-full px-4 py-3 bg-white/80 border border-[#d4cec4] rounded-xl focus:border-[#8b7355] focus:ring-2 focus:ring-[#8b7355]/20 outline-none transition-all"
+                        placeholder="www, Facebook, Instagram"
+                      />
+                    </div>
                     <SignaturePad
                       label="Podpis zgody na wizerunek"
                       value={formData.podpisFotografie}
@@ -609,7 +735,53 @@ export default function PmuForm({ onBack }: PmuFormProps) {
                   </div>
                 )}
               </div>
+
+              {/* Zgoda na pomoc prawną (opcjonalna) */}
+              <div className="p-4 bg-white/50 rounded-xl">
+                <label className="flex items-start gap-4 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={formData.zgodaPomocPrawna}
+                    onChange={(e) =>
+                      handleInputChange("zgodaPomocPrawna", e.target.checked)
+                    }
+                    className="w-5 h-5 mt-1 text-[#8b7355] rounded border-[#d4cec4] focus:ring-[#8b7355]"
+                  />
+                  <span className="text-sm text-[#5a5550] leading-relaxed">
+                    <strong>Opcjonalnie:</strong> Wyrażam zgodę na przetwarzanie
+                    moich danych osobowych przez {rodoInfo.firmaNazwa}{" "}
+                    {rodoInfo.administrator} w celu udzielenia mi pomocy prawnej.
+                  </span>
+                </label>
+                {formData.zgodaPomocPrawna && (
+                  <div className="mt-4 ml-9">
+                    <SignaturePad
+                      label="Podpis zgody na pomoc prawną"
+                      value={formData.podpisRodo}
+                      onChange={(sig) => handleInputChange("podpisRodo", sig)}
+                      date={formData.miejscowoscData}
+                    />
+                  </div>
+                )}
+              </div>
+
+              {/* Informacja dodatkowa */}
+              <div className="p-4 bg-white/50 rounded-xl">
+                <label className="block text-sm text-[#6b6560] mb-2 font-medium">
+                  Informacja dodatkowa / Zastrzeżenia klienta (opcjonalnie)
+                </label>
+                <textarea
+                  value={formData.informacjaDodatkowa || ""}
+                  onChange={(e) =>
+                    handleInputChange("informacjaDodatkowa", e.target.value)
+                  }
+                  className="w-full px-4 py-3 bg-white/80 border border-[#d4cec4] rounded-xl focus:border-[#8b7355] focus:ring-2 focus:ring-[#8b7355]/20 outline-none transition-all"
+                  placeholder="Stwierdzone nieprawidłowości po zabiegu, zastrzeżenia klienta..."
+                  rows={3}
+                />
+              </div>
             </div>
+
             <div className="pt-6">
               <button
                 type="submit"
