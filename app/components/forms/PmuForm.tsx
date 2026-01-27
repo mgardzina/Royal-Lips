@@ -230,7 +230,7 @@ export default function PmuForm({ onBack }: PmuFormProps) {
                     handleInputChange("imieNazwisko", e.target.value)
                   }
                   className="w-full px-4 py-3 bg-white/80 border border-[#d4cec4] rounded-xl focus:border-[#8b7355] focus:ring-2 focus:ring-[#8b7355]/20 outline-none transition-all"
-                  placeholder="Jan Kowalski"
+                  placeholder="Joanna Wielgos"
                 />
               </div>
               <div>
@@ -259,7 +259,7 @@ export default function PmuForm({ onBack }: PmuFormProps) {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     className="w-full pl-12 pr-4 py-3 bg-white/80 border border-[#d4cec4] rounded-xl focus:border-[#8b7355] focus:ring-2 focus:ring-[#8b7355]/20 outline-none transition-all"
-                    placeholder="jan@example.com"
+                    placeholder="kontakt@royallips.pl"
                   />
                 </div>
               </div>
@@ -373,8 +373,8 @@ export default function PmuForm({ onBack }: PmuFormProps) {
 
               <div className="p-4 bg-white/50 rounded-xl">
                 <p className="text-sm text-[#5a5550]">
-                  Przyjmuję do wiadomości, że efekt finalny jest indywidualny
-                  i zależy od rodzaju skóry, ilości pigmentu i techniki. Ilość
+                  Przyjmuję do wiadomości, że efekt finalny jest indywidualny i
+                  zależy od rodzaju skóry, ilości pigmentu i techniki. Ilość
                   zabiegów jest uwarunkowana indywidualnie.
                 </p>
               </div>
@@ -686,8 +686,9 @@ export default function PmuForm({ onBack }: PmuFormProps) {
                   <span className="text-sm text-[#5a5550] leading-relaxed">
                     <strong>Opcjonalnie:</strong> Wyrażam zgodę na publikację
                     mojego wizerunku utrwalonego podczas makijażu permanentnego
-                    wykonanego przez {rodoInfo.firmaNazwa} {rodoInfo.administrator}{" "}
-                    w celu promocji firmy na stronach firmowych Royal Lips.
+                    wykonanego przez {rodoInfo.firmaNazwa}{" "}
+                    {rodoInfo.administrator} w celu promocji firmy na stronach
+                    firmowych Royal Lips.
                   </span>
                 </label>
                 {formData.zgodaFotografie && (
@@ -735,7 +736,8 @@ export default function PmuForm({ onBack }: PmuFormProps) {
                   <span className="text-sm text-[#5a5550] leading-relaxed">
                     <strong>Opcjonalnie:</strong> Wyrażam zgodę na przetwarzanie
                     moich danych osobowych przez {rodoInfo.firmaNazwa}{" "}
-                    {rodoInfo.administrator} w celu udzielenia mi pomocy prawnej.
+                    {rodoInfo.administrator} w celu udzielenia mi pomocy
+                    prawnej.
                   </span>
                 </label>
                 {formData.zgodaPomocPrawna && (

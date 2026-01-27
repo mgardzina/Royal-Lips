@@ -212,7 +212,6 @@ export default function LaserForm({ onBack }: LaserFormProps) {
             </h3>
 
             <div className="grid md:grid-cols-2 gap-6">
-              {/* Standard inputs... */}
               <div>
                 <label className="block text-sm text-[#6b6560] mb-2 font-medium">
                   Imię i nazwisko *
@@ -225,30 +224,27 @@ export default function LaserForm({ onBack }: LaserFormProps) {
                     handleInputChange("imieNazwisko", e.target.value)
                   }
                   className="w-full px-4 py-3 bg-white/80 border border-[#d4cec4] rounded-xl focus:border-[#8b7355] focus:ring-2 focus:ring-[#8b7355]/20 outline-none transition-all"
-                  placeholder="Jan Kowalski"
+                  placeholder="Joanna Wielgos"
                 />
               </div>
-
-              {/* EMAIL FIELD (NOWOŚĆ DLA LASERA) */}
               <div>
                 <label className="block text-sm text-[#6b6560] mb-2 font-medium">
-                  Adres E-mail
+                  Miejscowość / Data *
                 </label>
-                <div className="relative">
-                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#8b8580]" />
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="w-full pl-12 pr-4 py-3 bg-white/80 border border-[#d4cec4] rounded-xl focus:border-[#8b7355] focus:ring-2 focus:ring-[#8b7355]/20 outline-none transition-all"
-                    placeholder="jan@example.com"
-                  />
-                </div>
+                <input
+                  type="text"
+                  required
+                  value={formData.miejscowoscData}
+                  onChange={(e) =>
+                    handleInputChange("miejscowoscData", e.target.value)
+                  }
+                  className="w-full px-4 py-3 bg-white/80 border border-[#d4cec4] rounded-xl focus:border-[#8b7355] focus:ring-2 focus:ring-[#8b7355]/20 outline-none transition-all"
+                  placeholder="Krosno, 27.01.2026"
+                />
               </div>
 
               {/* Adresy, Data ur., Telefon... */}
               <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* ... (skrót dla czytelności taska, ale pełny kod będzie) */}
                 <div className="md:col-span-2">
                   <label className="block text-sm text-[#6b6560] mb-2 font-medium">
                     Ulica i numer
@@ -321,19 +317,22 @@ export default function LaserForm({ onBack }: LaserFormProps) {
                   />
                 </div>
               </div>
-              <div>
+
+              {/* EMAIL FIELD (Moved to bottom) */}
+              <div className="md:col-span-2">
                 <label className="block text-sm text-[#6b6560] mb-2 font-medium">
-                  Miejscowość / Data
+                  Adres E-mail
                 </label>
-                <input
-                  type="text"
-                  value={formData.miejscowoscData}
-                  onChange={(e) =>
-                    handleInputChange("miejscowoscData", e.target.value)
-                  }
-                  className="w-full px-4 py-3 bg-white/80 border border-[#d4cec4] rounded-xl"
-                  placeholder="Krosno, 27.01.2026"
-                />
+                <div className="relative">
+                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#8b8580]" />
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="w-full pl-12 pr-4 py-3 bg-white/80 border border-[#d4cec4] rounded-xl focus:border-[#8b7355] focus:ring-2 focus:ring-[#8b7355]/20 outline-none transition-all"
+                    placeholder="kontakt@royallips.pl"
+                  />
+                </div>
               </div>
             </div>
           </section>

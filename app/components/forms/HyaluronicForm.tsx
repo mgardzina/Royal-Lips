@@ -116,7 +116,10 @@ export default function HyaluronicForm({ onBack }: HyaluronicFormProps) {
     const submissionData = {
       ...formData,
       nazwaProduktu: email
-        ? `${formData.nazwaProduktu || ""} | Email: ${email}`.trim().replace(/^\|/, "").trim()
+        ? `${formData.nazwaProduktu || ""} | Email: ${email}`
+            .trim()
+            .replace(/^\|/, "")
+            .trim()
         : formData.nazwaProduktu,
     };
 
@@ -252,7 +255,7 @@ export default function HyaluronicForm({ onBack }: HyaluronicFormProps) {
                     handleInputChange("imieNazwisko", e.target.value)
                   }
                   className="w-full px-4 py-3 bg-white/80 border border-[#d4cec4] rounded-xl focus:border-[#8b7355] focus:ring-2 focus:ring-[#8b7355]/20 outline-none transition-all"
-                  placeholder="Jan Kowalski"
+                  placeholder="Joanna Wielgos"
                 />
               </div>
               <div>
@@ -281,7 +284,7 @@ export default function HyaluronicForm({ onBack }: HyaluronicFormProps) {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     className="w-full pl-12 pr-4 py-3 bg-white/80 border border-[#d4cec4] rounded-xl focus:border-[#8b7355] focus:ring-2 focus:ring-[#8b7355]/20 outline-none transition-all"
-                    placeholder="jan@example.com"
+                    placeholder="kontakt@royallips.pl"
                   />
                 </div>
               </div>
@@ -720,9 +723,9 @@ export default function HyaluronicForm({ onBack }: HyaluronicFormProps) {
                   />
                   <span className="text-sm text-[#5a5550] leading-relaxed">
                     <strong>Opcjonalnie:</strong> Wyrażam zgodę na wykonanie
-                    fotografii ciała w celu dokumentacji oraz oceny
-                    efektywności zabiegu i wyrażam zgodę na umieszczenie
-                    fotografii w celach promocji firmy.
+                    fotografii ciała w celu dokumentacji oraz oceny efektywności
+                    zabiegu i wyrażam zgodę na umieszczenie fotografii w celach
+                    promocji firmy.
                   </span>
                 </label>
                 {formData.zgodaFotografie && (
