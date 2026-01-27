@@ -8,6 +8,34 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// Klientka - identyfikowana po imieniu i nazwisku
+model Client {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Dane identyfikacyjne
+  imieNazwisko  String   @unique  // Klucz do łączenia formularzy
+  telefon       String?           // Ostatni znany telefon
+  
+  // Relacje
+  forms         ConsentForm[]
+  notes         ClientNote[]
+}
+
+// Notatki do klientki (alergie, uwagi, etc.)
+model ClientNote {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  content   String   @db.Text     // Treść notatki
+  
+  // Relacja z klientką
+  clientId  String
+  client    Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+}
+
 model ConsentForm {
   id        String   @id @default(uuid())
   createdAt DateTime @default(now())
@@ -38,6 +66,10 @@ model ConsentForm {
   podpisMarketing  String? @db.Text
   podpisFotografie String? @db.Text
   podpisRodo       String? @db.Text
+
+  // Relacja z klientką
+  clientId  String?
+  client    Client?  @relation(fields: [clientId], references: [id])
 }
 
 model AdminUser {

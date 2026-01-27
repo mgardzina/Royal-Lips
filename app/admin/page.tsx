@@ -87,13 +87,21 @@ export default function AdminDashboard() {
             </h1>
             <p className="text-white/60 text-sm">Panel administracyjny</p>
           </div>
-          <button
-            onClick={() => signOut({ callbackUrl: "/admin/login" })}
-            className="flex items-center gap-2 text-white/80 hover:text-white transition-colors"
-          >
-            <LogOut className="w-5 h-5" />
-            <span className="hidden md:inline">Wyloguj</span>
-          </button>
+          <div className="flex items-center gap-4">
+            <Link
+              href="/admin/klientki"
+              className="text-white/80 hover:text-white transition-colors bg-white/10 px-4 py-2 rounded-lg text-sm font-medium"
+            >
+              Baza Klientek
+            </Link>
+            <button
+              onClick={() => signOut({ callbackUrl: "/admin/login" })}
+              className="flex items-center gap-2 text-white/80 hover:text-white transition-colors"
+            >
+              <LogOut className="w-5 h-5" />
+              <span className="hidden md:inline">Wyloguj</span>
+            </button>
+          </div>
         </div>
       </header>
 

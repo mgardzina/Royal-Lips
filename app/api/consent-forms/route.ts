@@ -7,6 +7,18 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
 
+    // Znajdź lub utwórz klientkę po imieniu i nazwisku
+    const client = await prisma.client.upsert({
+      where: { imieNazwisko: body.imieNazwisko },
+      update: {
+        telefon: body.telefon, // Aktualizuj telefon przy każdej wizycie
+      },
+      create: {
+        imieNazwisko: body.imieNazwisko,
+        telefon: body.telefon,
+      },
+    });
+
     const consentForm = await prisma.consentForm.create({
       data: {
         imieNazwisko: body.imieNazwisko,
@@ -26,6 +38,7 @@ export async function POST(request: NextRequest) {
         podpisMarketing: body.podpisMarketing || null,
         podpisFotografie: body.podpisFotografie || null,
         podpisRodo: body.podpisRodo || null,
+        clientId: client.id, // Powiązanie z klientką
       },
     });
 

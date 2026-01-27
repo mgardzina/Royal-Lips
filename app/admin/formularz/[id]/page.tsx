@@ -35,6 +35,7 @@ interface ConsentFormFull {
   podpisMarketing: string | null;
   podpisFotografie: string | null;
   podpisRodo: string | null;
+  clientId: string | null;
 }
 
 export default function FormDetailsPage() {
@@ -137,9 +138,20 @@ export default function FormDetailsPage() {
         <div className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
           <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-6">
             <div>
-              <h1 className="text-2xl md:text-3xl font-serif text-[#4a4540]">
-                {form.imieNazwisko}
-              </h1>
+              <div className="flex items-center gap-4">
+                <h1 className="text-2xl md:text-3xl font-serif text-[#4a4540]">
+                  {form.imieNazwisko}
+                </h1>
+                {form.clientId && (
+                  <Link
+                    href={`/admin/klientki/${form.clientId}`}
+                    className="flex items-center gap-1.5 px-3 py-1.5 bg-[#8b7355]/10 text-[#8b7355] hover:bg-[#8b7355]/20 rounded-lg text-sm font-medium transition-colors"
+                  >
+                    <User className="w-4 h-4" />
+                    Profil klientki
+                  </Link>
+                )}
+              </div>
               <p className="text-[#8b8580] mt-1">
                 Formularz wypełniony: {formatDate(form.createdAt)}
               </p>
