@@ -12,14 +12,27 @@ import {
   Trash2,
   Check,
   X,
+  Mail,
 } from "lucide-react";
 import { contraindicationsByFormType, FormType } from "@/types/booking";
+
+// Funkcja do czyszczenia starego formatu nazwaProduktu (usuwanie emaila)
+const cleanNazwaProduktu = (nazwa: string | null): string | null => {
+  if (!nazwa) return null;
+  // Usuń " | Email: xxx" lub "Email: xxx" ze starego formatu
+  const cleaned = nazwa
+    .replace(/\s*\|\s*Email:\s*[^\s|]+/gi, "")
+    .replace(/^Email:\s*[^\s|]+\s*\|?\s*/gi, "")
+    .trim();
+  return cleaned || null;
+};
 
 interface ConsentFormFull {
   id: string;
   type: string;
   createdAt: string;
   imieNazwisko: string;
+  email: string | null;
   ulica: string | null;
   kodPocztowy: string | null;
   miasto: string | null;
@@ -166,6 +179,12 @@ export default function FormDetailsPage() {
               <Phone className="w-5 h-5 text-[#8b7355]" />
               <span>+48 {form.telefon}</span>
             </div>
+            {form.email && (
+              <div className="flex items-center gap-3 text-[#5a5550]">
+                <Mail className="w-5 h-5 text-[#8b7355]" />
+                <span>{form.email}</span>
+              </div>
+            )}
             <div className="flex items-center gap-3 text-[#5a5550]">
               <MapPin className="w-5 h-5 text-[#8b7355]" />
               <div className="flex flex-col">
@@ -191,16 +210,18 @@ export default function FormDetailsPage() {
         </div>
 
         {/* Procedure Details */}
-        {(form.nazwaProduktu || form.obszarZabiegu || form.celEfektu) && (
+        {(cleanNazwaProduktu(form.nazwaProduktu) ||
+          form.obszarZabiegu ||
+          form.celEfektu) && (
           <div className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
             <h2 className="text-xl font-serif text-[#4a4540] mb-4 pb-3 border-b border-[#d4cec4]">
               Szczegóły zabiegu
             </h2>
             <div className="space-y-3 text-[#5a5550]">
-              {form.nazwaProduktu && (
+              {cleanNazwaProduktu(form.nazwaProduktu) && (
                 <p>
                   <span className="font-medium">Preparat:</span>{" "}
-                  {form.nazwaProduktu}
+                  {cleanNazwaProduktu(form.nazwaProduktu)}
                 </p>
               )}
               {form.obszarZabiegu && (

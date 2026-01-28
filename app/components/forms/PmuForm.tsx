@@ -116,7 +116,8 @@ export default function PmuForm({ onBack }: PmuFormProps) {
 
     const submissionData = {
       ...formData,
-      nazwaProduktu: email ? `Pigment | Email: ${email}` : "Pigment",
+      nazwaProduktu: "Pigment",
+      email: email || null,
     };
 
     try {
@@ -605,39 +606,41 @@ export default function PmuForm({ onBack }: PmuFormProps) {
             </div>
 
             <div className="space-y-4">
-              <label className="flex items-start gap-4">
-                <input
-                  type="checkbox"
-                  required
-                  checked={formData.zgodaPrzetwarzanieDanych}
-                  onChange={(e) =>
-                    handleInputChange(
-                      "zgodaPrzetwarzanieDanych",
-                      e.target.checked,
-                    )
-                  }
-                  className="accent-[#8b7355] mt-1"
-                />
-                <span className="text-sm text-[#5a5550]">
-                  Wyrażam zgodę na przetwarzanie moich danych osobowych przez{" "}
-                  {rodoInfo.firmaNazwa} {rodoInfo.administrator},{" "}
-                  {rodoInfo.adres}, NIP: {rodoInfo.nip} w celu realizacji umowy
-                  o wykonanie zabiegu. Zgodę wyrażam w sposób świadomy i
-                  dobrowolny, a podane przeze mnie dane są zgodne z prawdą.
-                </span>
-              </label>
-
-              {formData.zgodaPrzetwarzanieDanych && (
-                <div className="mt-4 p-4 bg-white/50 rounded-xl">
-                  <SignaturePad
-                    label="Podpis - Oświadczenie i zgoda na zabieg"
-                    value={formData.podpisDane}
-                    onChange={(sig) => handleInputChange("podpisDane", sig)}
-                    date={formData.miejscowoscData}
+              <div className="p-4 bg-white/50 rounded-xl">
+                <label className="flex items-start gap-4 cursor-pointer">
+                  <input
+                    type="checkbox"
                     required
+                    checked={formData.zgodaPrzetwarzanieDanych}
+                    onChange={(e) =>
+                      handleInputChange(
+                        "zgodaPrzetwarzanieDanych",
+                        e.target.checked,
+                      )
+                    }
+                    className="w-5 h-5 mt-1 text-[#8b7355] rounded border-[#d4cec4] focus:ring-[#8b7355]"
                   />
-                </div>
-              )}
+                  <span className="text-sm text-[#5a5550] leading-relaxed">
+                    <strong>Wymagane:</strong> Wyrażam zgodę na przetwarzanie
+                    moich danych osobowych przez {rodoInfo.firmaNazwa}{" "}
+                    {rodoInfo.administrator}, {rodoInfo.adres}, NIP:{" "}
+                    {rodoInfo.nip} w celu realizacji umowy o wykonanie zabiegu.
+                    Zgodę wyrażam w sposób świadomy i dobrowolny, a podane
+                    przeze mnie dane są zgodne z prawdą.
+                  </span>
+                </label>
+                {formData.zgodaPrzetwarzanieDanych && (
+                  <div className="mt-4 ml-9">
+                    <SignaturePad
+                      label="Podpis - Oświadczenie i zgoda na zabieg"
+                      value={formData.podpisDane}
+                      onChange={(sig) => handleInputChange("podpisDane", sig)}
+                      date={formData.miejscowoscData}
+                      required
+                    />
+                  </div>
+                )}
+              </div>
 
               {/* Zgoda na marketing (opcjonalna) */}
               <div className="p-4 bg-white/50 rounded-xl mt-4">

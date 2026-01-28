@@ -14,12 +14,10 @@ interface ConsentFormSummary {
   telefon: string;
   miejscowoscData: string;
   zgodaPrzetwarzanieDanych: boolean;
-  zgodaMarketing: boolean;
-  zgodaFotografie: boolean;
 }
 
 export default function AdminDashboard() {
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   const router = useRouter();
   const [forms, setForms] = useState<ConsentFormSummary[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -95,6 +93,12 @@ export default function AdminDashboard() {
             >
               Baza Klientek
             </Link>
+            <Link
+              href="/admin/statystyki"
+              className="text-white/80 hover:text-white transition-colors bg-white/10 px-4 py-2 rounded-lg text-sm font-medium"
+            >
+              Statystyki
+            </Link>
             <button
               onClick={() => signOut({ callbackUrl: "/admin/login" })}
               className="flex items-center gap-2 text-white/80 hover:text-white transition-colors"
@@ -107,32 +111,6 @@ export default function AdminDashboard() {
       </header>
 
       <main className="max-w-6xl mx-auto px-4 py-8">
-        {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-          <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-6 shadow-lg">
-            <p className="text-[#8b7355] text-sm font-medium">
-              Wszystkie formularze
-            </p>
-            <p className="text-4xl font-serif text-[#4a4540] mt-2">
-              {forms.length}
-            </p>
-          </div>
-          <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-6 shadow-lg">
-            <p className="text-[#8b7355] text-sm font-medium">
-              Zgody marketing
-            </p>
-            <p className="text-4xl font-serif text-[#4a4540] mt-2">
-              {forms.filter((f) => f.zgodaMarketing).length}
-            </p>
-          </div>
-          <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-6 shadow-lg">
-            <p className="text-[#8b7355] text-sm font-medium">Zgody foto</p>
-            <p className="text-4xl font-serif text-[#4a4540] mt-2">
-              {forms.filter((f) => f.zgodaFotografie).length}
-            </p>
-          </div>
-        </div>
-
         {/* Search */}
         <div className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 mb-6">
           <div className="relative">
@@ -207,29 +185,7 @@ export default function AdminDashboard() {
                           ) : (
                             <X className="w-4 h-4 text-red-500" />
                           )}
-                          Dane
-                        </span>
-                        <span
-                          className="flex items-center gap-1 text-xs"
-                          title="Zgoda marketing"
-                        >
-                          {form.zgodaMarketing ? (
-                            <Check className="w-4 h-4 text-green-500" />
-                          ) : (
-                            <X className="w-4 h-4 text-red-500" />
-                          )}
-                          Marketing
-                        </span>
-                        <span
-                          className="flex items-center gap-1 text-xs"
-                          title="Zgoda foto"
-                        >
-                          {form.zgodaFotografie ? (
-                            <Check className="w-4 h-4 text-green-500" />
-                          ) : (
-                            <X className="w-4 h-4 text-red-500" />
-                          )}
-                          Foto
+                          RODO
                         </span>
                       </div>
                       <span className="text-sm text-[#8b8580]">

@@ -16,9 +16,10 @@ export async function GET(
           orderBy: { createdAt: "desc" },
           select: {
             id: true,
+            type: true,
             createdAt: true,
             obszarZabiegu: true,
-            nazwaProduktu: true,
+            email: true,
             telefon: true,
           },
         },

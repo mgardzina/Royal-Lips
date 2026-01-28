@@ -12,6 +12,7 @@ import {
   Phone,
   StickyNote,
   FileText,
+  Mail,
 } from "lucide-react";
 
 interface Note {
@@ -22,11 +23,18 @@ interface Note {
 
 interface Form {
   id: string;
+  type: "HYALURONIC" | "PMU" | "LASER";
   createdAt: string;
   obszarZabiegu: string | null;
-  nazwaProduktu: string | null;
+  email: string | null;
   telefon: string;
 }
+
+const categoryLabels: Record<Form["type"], string> = {
+  HYALURONIC: "Kwas hialuronowy",
+  PMU: "Makijaż permanentny",
+  LASER: "Laser",
+};
 
 interface ClientDetails {
   id: string;
@@ -160,10 +168,18 @@ export default function ClientDetailsPage({
               <h1 className="text-2xl font-serif text-white tracking-wider">
                 {client.imieNazwisko}
               </h1>
-              <p className="text-white/60 text-sm flex items-center gap-2">
-                <Phone className="w-3 h-3" />
-                {client.telefon ? `+48 ${client.telefon}` : "Brak telefonu"}
-              </p>
+              <div className="flex items-center gap-4 text-white/60 text-sm">
+                <span className="flex items-center gap-1">
+                  <Phone className="w-3 h-3" />
+                  {client.telefon ? `+48 ${client.telefon}` : "Brak telefonu"}
+                </span>
+                {client.forms.length > 0 && client.forms[0].email && (
+                  <span className="flex items-center gap-1">
+                    <Mail className="w-3 h-3" />
+                    {client.forms[0].email}
+                  </span>
+                )}
+              </div>
             </div>
           </div>
         </div>
@@ -251,10 +267,10 @@ export default function ClientDetailsPage({
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                       <div>
                         <h3 className="font-medium text-[#4a4540]">
-                          {form.nazwaProduktu || "Zabieg bez nazwy"}
+                          {categoryLabels[form.type]}
                         </h3>
                         <p className="text-sm text-[#8b8580]">
-                          {form.obszarZabiegu || "Brak obszaru"}
+                          {form.obszarZabiegu || "Brak szczegółów"}
                         </p>
                       </div>
                       <div className="flex items-center gap-2 text-sm text-[#8b8580]">

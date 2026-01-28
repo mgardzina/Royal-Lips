@@ -107,10 +107,9 @@ export default function LaserForm({ onBack }: LaserFormProps) {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Dopisujemy Email do nazwaProduktu
     const submissionData = {
       ...formData,
-      nazwaProduktu: `Email: ${email}`,
+      email: email || null,
     };
 
     try {
@@ -271,7 +270,7 @@ export default function LaserForm({ onBack }: LaserFormProps) {
                     value={formData.ulica}
                     onChange={(e) => handleInputChange("ulica", e.target.value)}
                     className="w-full px-4 py-3 bg-white/80 border border-[#d4cec4] rounded-xl"
-                    placeholder="Adres"
+                    placeholder="ul. Przykładowa 1/2"
                   />
                 </div>
                 <div>

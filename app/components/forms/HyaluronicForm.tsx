@@ -116,12 +116,7 @@ export default function HyaluronicForm({ onBack }: HyaluronicFormProps) {
 
     const submissionData = {
       ...formData,
-      nazwaProduktu: email
-        ? `${formData.nazwaProduktu || ""} | Email: ${email}`
-            .trim()
-            .replace(/^\|/, "")
-            .trim()
-        : formData.nazwaProduktu,
+      email: email || null,
     };
 
     try {

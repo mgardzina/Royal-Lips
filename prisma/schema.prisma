@@ -48,6 +48,7 @@ model ConsentForm {
 
   // Dane osobowe
   imieNazwisko    String
+  email           String?
   ulica           String?
   kodPocztowy     String?
   miasto          String?
