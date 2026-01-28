@@ -609,12 +609,12 @@ export default function LaserForm({ onBack }: LaserFormProps) {
                     required
                   />
                   <span className="text-sm text-[#5a5550] leading-relaxed">
-                    Wyrażam zgodę na przetwarzanie moich danych osobowych przez{" "}
-                    {rodoInfo.firmaNazwa} {rodoInfo.administrator},{" "}
-                    {rodoInfo.adres}, NIP: {rodoInfo.nip} w celu realizacji
-                    umowy o wykonanie zabiegu z użyciem lasera Q-switch. Zgodę
-                    wyrażam w sposób świadomy i dobrowolny, a podane przeze mnie
-                    dane są zgodne z prawdą.
+                    <strong>Wymagane:</strong>Wyrażam zgodę na przetwarzanie
+                    moich danych osobowych przez {rodoInfo.firmaNazwa}{" "}
+                    {rodoInfo.administrator}, {rodoInfo.adres}, NIP:{" "}
+                    {rodoInfo.nip} w celu realizacji umowy o wykonanie zabiegu z
+                    użyciem lasera Q-switch. Zgodę wyrażam w sposób świadomy i
+                    dobrowolny, a podane przeze mnie dane są zgodne z prawdą.
                   </span>
                 </label>
                 {formData.zgodaPrzetwarzanieDanych && (
