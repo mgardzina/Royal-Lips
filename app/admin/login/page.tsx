@@ -40,7 +40,9 @@ export default function LoginPage() {
     <div className="min-h-screen bg-gradient-to-br from-[#f8f6f3] via-[#efe9e1] to-[#e8e0d5] flex items-center justify-center p-4">
       <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl p-8 md:p-12 w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-serif text-[#4a4540] mb-2">ROYAL LIPS</h1>
+          <h1 className="text-3xl font-serif text-[#4a4540] mb-2">
+            ROYAL LIPS
+          </h1>
           <p className="text-[#8b7355]">Panel administracyjny</p>
         </div>
 
@@ -61,7 +63,7 @@ export default function LoginPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full px-4 py-3 bg-white border border-[#d4cec4] rounded-xl focus:border-[#8b7355] focus:ring-2 focus:ring-[#8b7355]/20 outline-none transition-all"
-              placeholder="admin@royallips.pl"
+              placeholder="admin@royal-lips.pl"
             />
           </div>
 

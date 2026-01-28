@@ -8,9 +8,12 @@ const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
 };
 
+// Cloud SQL Proxy używa Unix socket - nie wymaga SSL
+const isCloudSqlProxy = process.env.DATABASE_URL?.includes("host=/cloudsql");
+
 const pool = new Pool({
   connectionString,
-  ssl: process.env.NODE_ENV === "production" ? true : { rejectUnauthorized: false },
+  ssl: isCloudSqlProxy ? false : { rejectUnauthorized: false },
 });
 const adapter = new PrismaPg(pool);
 

@@ -9,47 +9,48 @@ const pool = new Pool({
   ssl: false,
 });
 
-async function main() {
-  const email = process.env.ADMIN_EMAIL;
-  const password = process.env.ADMIN_PASSWORD;
-  const name = process.env.ADMIN_NAME;
+async function createUser() {
+  const args = process.argv.slice(2);
 
-  if (!email || !password || !name) {
-    console.error("❌ Błąd: Ustaw zmienne ADMIN_EMAIL, ADMIN_PASSWORD i ADMIN_NAME w pliku .env");
+  if (args.length < 2) {
+    console.log("Użycie: npx tsx scripts/create-user.ts <email> <hasło> [imię]");
+    console.log("Przykład: npx tsx scripts/create-user.ts joanna@royallips.pl haslo123 'Joanna Wielgos'");
     process.exit(1);
   }
 
-  // Sprawdź czy admin już istnieje
+  const [email, password, name = "Administrator"] = args;
+
+  // Sprawdź czy użytkownik już istnieje
   const existing = await pool.query(
     'SELECT id, email FROM "AdminUser" WHERE email = $1',
     [email]
   );
 
   if (existing.rows.length > 0) {
-    console.log(`Admin z emailem ${email} już istnieje.`);
+    console.log(`❌ Użytkownik z emailem ${email} już istnieje.`);
     await pool.end();
-    return;
+    process.exit(1);
   }
 
   // Hashuj hasło
   const passwordHash = await hash(password, 12);
 
-  // Utwórz admina
+  // Utwórz użytkownika
   const result = await pool.query(
     'INSERT INTO "AdminUser" (id, email, "passwordHash", name) VALUES (gen_random_uuid(), $1, $2, $3) RETURNING id, email, name',
     [email, passwordHash, name]
   );
 
-  const admin = result.rows[0];
-  console.log(`✅ Admin utworzony pomyślnie:`);
-  console.log(`   Email: ${admin.email}`);
-  console.log(`   Nazwa: ${admin.name}`);
-  console.log(`\n⚠️  WAŻNE: Zmień hasło po pierwszym logowaniu!`);
+  const user = result.rows[0];
+  console.log("✅ Użytkownik utworzony:");
+  console.log(`   Email: ${user.email}`);
+  console.log(`   Nazwa: ${user.name}`);
+  console.log(`   ID: ${user.id}`);
 
   await pool.end();
 }
 
-main().catch((e) => {
+createUser().catch((e) => {
   console.error("❌ Błąd:", e.message);
   pool.end();
   process.exit(1);

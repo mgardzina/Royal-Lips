@@ -17,7 +17,7 @@ interface ConsentFormSummary {
 }
 
 export default function AdminDashboard() {
-  const { status } = useSession();
+  const { data: session, status } = useSession();
   const router = useRouter();
   const [forms, setForms] = useState<ConsentFormSummary[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -84,7 +84,11 @@ export default function AdminDashboard() {
             <h1 className="text-2xl font-serif text-white tracking-wider">
               ROYAL LIPS
             </h1>
-            <p className="text-white/60 text-sm">Panel administracyjny</p>
+            <p className="text-white/60 text-sm">
+              {session?.user?.email === "admin@royal-lips.pl"
+                ? "Panel administracyjny"
+                : session?.user?.name || "Panel"}
+            </p>
           </div>
           <div className="flex items-center gap-4">
             <Link
