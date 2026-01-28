@@ -253,18 +253,18 @@ export default function FormDetailsPage() {
               return (
                 <div
                   key={key}
-                  className="flex items-start gap-3 py-2 border-b border-[#f0ebe4] last:border-0"
+                  className="flex items-center gap-3 py-2 border-b border-[#f0ebe4] last:border-0"
                 >
                   {value === true ? (
-                    <span className="px-2 py-1 bg-red-100 text-red-600 text-xs rounded font-medium">
+                    <span className="min-w-[44px] text-center px-2 py-1 bg-red-100 text-red-600 text-xs rounded font-medium flex-shrink-0">
                       TAK
                     </span>
                   ) : value === false ? (
-                    <span className="px-2 py-1 bg-green-100 text-green-600 text-xs rounded font-medium">
+                    <span className="min-w-[44px] text-center px-2 py-1 bg-green-100 text-green-600 text-xs rounded font-medium flex-shrink-0">
                       NIE
                     </span>
                   ) : (
-                    <span className="px-2 py-1 bg-gray-100 text-gray-500 text-xs rounded font-medium">
+                    <span className="min-w-[44px] text-center px-2 py-1 bg-gray-100 text-gray-500 text-xs rounded font-medium flex-shrink-0">
                       -
                     </span>
                   )}
