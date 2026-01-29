@@ -61,6 +61,7 @@ export async function PATCH(
       "kodPocztowy",
       "miasto",
       "type",
+      "przeciwwskazania",
     ];
 
     // Filtruj tylko dozwolone pola

@@ -83,7 +83,11 @@ export default function FormDetailsPage() {
       const data = await response.json();
       if (data.success) {
         setForm(data.form);
-        setEditedForm(data.form);
+        // Oczyść nazwaProduktu ze starego formatu z emailem
+        setEditedForm({
+          ...data.form,
+          nazwaProduktu: cleanNazwaProduktu(data.form.nazwaProduktu) || "",
+        });
       }
     } catch (error) {
       console.error("Błąd pobierania formularza:", error);
@@ -132,7 +136,10 @@ export default function FormDetailsPage() {
   };
 
   const handleCancel = () => {
-    setEditedForm(form || {});
+    setEditedForm({
+      ...(form || {}),
+      nazwaProduktu: cleanNazwaProduktu(form?.nazwaProduktu || null) || "",
+    });
     setIsEditing(false);
   };
 
@@ -441,23 +448,71 @@ export default function FormDetailsPage() {
                 contraindicationsByFormType[form.type as FormType] ||
                 contraindicationsByFormType["HYALURONIC"];
               const label = labels[key] || key;
+              const currentValue =
+                editedForm.przeciwwskazania?.[key] ?? value;
+
               return (
                 <div
                   key={key}
                   className="flex items-center gap-3 py-2 border-b border-[#f0ebe4] last:border-0"
                 >
-                  {value === true ? (
-                    <span className="min-w-[44px] text-center px-2 py-1 bg-red-100 text-red-600 text-xs rounded font-medium flex-shrink-0">
-                      TAK
-                    </span>
-                  ) : value === false ? (
-                    <span className="min-w-[44px] text-center px-2 py-1 bg-green-100 text-green-600 text-xs rounded font-medium flex-shrink-0">
-                      NIE
-                    </span>
+                  {isEditing ? (
+                    <div className="flex gap-1 flex-shrink-0">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setEditedForm({
+                            ...editedForm,
+                            przeciwwskazania: {
+                              ...editedForm.przeciwwskazania,
+                              [key]: true,
+                            },
+                          })
+                        }
+                        className={`min-w-[40px] text-center px-2 py-1 text-xs rounded font-medium transition-colors ${
+                          currentValue === true
+                            ? "bg-red-500 text-white"
+                            : "bg-red-100 text-red-600 hover:bg-red-200"
+                        }`}
+                      >
+                        TAK
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setEditedForm({
+                            ...editedForm,
+                            przeciwwskazania: {
+                              ...editedForm.przeciwwskazania,
+                              [key]: false,
+                            },
+                          })
+                        }
+                        className={`min-w-[40px] text-center px-2 py-1 text-xs rounded font-medium transition-colors ${
+                          currentValue === false
+                            ? "bg-green-500 text-white"
+                            : "bg-green-100 text-green-600 hover:bg-green-200"
+                        }`}
+                      >
+                        NIE
+                      </button>
+                    </div>
                   ) : (
-                    <span className="min-w-[44px] text-center px-2 py-1 bg-gray-100 text-gray-500 text-xs rounded font-medium flex-shrink-0">
-                      -
-                    </span>
+                    <>
+                      {value === true ? (
+                        <span className="min-w-[44px] text-center px-2 py-1 bg-red-100 text-red-600 text-xs rounded font-medium flex-shrink-0">
+                          TAK
+                        </span>
+                      ) : value === false ? (
+                        <span className="min-w-[44px] text-center px-2 py-1 bg-green-100 text-green-600 text-xs rounded font-medium flex-shrink-0">
+                          NIE
+                        </span>
+                      ) : (
+                        <span className="min-w-[44px] text-center px-2 py-1 bg-gray-100 text-gray-500 text-xs rounded font-medium flex-shrink-0">
+                          -
+                        </span>
+                      )}
+                    </>
                   )}
                   <span className="text-sm text-[#5a5550]">{label}</span>
                 </div>
