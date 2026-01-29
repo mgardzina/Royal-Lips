@@ -167,11 +167,4 @@ MIT License - zobacz plik [LICENSE](LICENSE)
 
 **Mateusz Gardzina**
 
-## 🙏 Podziękowania
-
-- Joanna Wielgos - Właścicielka Royal Lips
-- Claude Sonnet 4.5 - Wsparcie rozwoju
-
----
-
 **Royal Lips** © 2026 - Profesjonalny makijaż permanentny
