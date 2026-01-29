@@ -194,10 +194,25 @@ export default function PmuForm({ onBack }: PmuFormProps) {
               <ArrowLeft className="w-6 h-6" />
             </button>
             <h1 className="text-xl md:text-2xl font-serif text-white tracking-wider">
-              ROYAL LIPS - PMU
+              ROYAL LIPS
             </h1>
           </div>
-          {/* Socials ... */}
+          <div className="flex items-center gap-4">
+            <a
+              href="tel:+48792377737"
+              className="text-white/80 hover:text-white transition-colors"
+            >
+              <Phone className="w-5 h-5" />
+            </a>
+            <a
+              href="https://www.instagram.com/makijazpermanentnykrosno/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-white/80 hover:text-white transition-colors"
+            >
+              <Instagram className="w-5 h-5" />
+            </a>
+          </div>
         </div>
       </header>
 

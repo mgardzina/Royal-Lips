@@ -1,0 +1,20 @@
+{
+  "name": "Royal Lips - Joanna Wielgos",
+  "short_name": "Royal Lips",
+  "description": "Profesjonalny makijaż permanentny brwi, ust i kresek w Krośnie. Zabiegi kwasem hialuronowym i depilacja laserowa.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#E8E3DC",
+  "theme_color": "#4A4540",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["beauty", "lifestyle"],
+  "lang": "pl"
+}
