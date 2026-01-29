@@ -1,75 +1,552 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
-import { X } from "lucide-react";
+import {
+  X,
+  ChevronDown,
+  ChevronUp,
+  Cookie,
+  Shield,
+  BarChart3,
+  Target,
+} from "lucide-react";
+
+// Types for cookie consent
+interface CookiePreferences {
+  necessary: boolean;
+  marketing: boolean;
+  analytics: boolean;
+}
+
+interface ConsentState {
+  preferences: CookiePreferences;
+  timestamp: string;
+  version: string;
+}
+
+const CONSENT_VERSION = "1.0.0";
+const STORAGE_KEY = "cookieConsent";
+
+// Cookie category descriptions with Royal Lips colors
+const COOKIE_CATEGORIES = {
+  necessary: {
+    key: "necessary" as const,
+    title: "Niezbędne ciasteczka",
+    description:
+      "Te pliki cookie są niezbędne do prawidłowego funkcjonowania strony. Umożliwiają podstawowe funkcje, takie jak nawigacja po stronie i dostęp do bezpiecznych obszarów. Strona nie może działać prawidłowo bez tych plików cookie.",
+    cookies: [
+      {
+        name: "session",
+        purpose: "Utrzymanie sesji użytkownika",
+        duration: "Sesja",
+      },
+      {
+        name: "cookieConsent",
+        purpose: "Przechowywanie preferencji cookie",
+        duration: "1 rok",
+      },
+    ],
+    required: true,
+    icon: Shield,
+    bgColor: "bg-[#E8E3DC]",
+    iconBgColor: "bg-[#D4CEC4]",
+    iconColor: "text-[#4A4540]",
+    borderColor: "border-[#C4B5A0]",
+    switchOnColor: "bg-[#A89885]",
+  },
+  marketing: {
+    key: "marketing" as const,
+    title: "Marketingowe ciasteczka",
+    description:
+      "Te pliki cookie służą do śledzenia odwiedzających na stronach internetowych. Celem jest wyświetlanie reklam, które są trafne i interesujące dla indywidualnego użytkownika.",
+    cookies: [
+      {
+        name: "_fbp",
+        purpose: "Facebook Pixel - śledzenie konwersji",
+        duration: "3 miesiące",
+      },
+      {
+        name: "_gcl_au",
+        purpose: "Google Ads - śledzenie konwersji",
+        duration: "3 miesiące",
+      },
+    ],
+    required: false,
+    icon: Target,
+    bgColor: "bg-[#E8E3DC]",
+    iconBgColor: "bg-[#D4CEC4]",
+    iconColor: "text-[#4A4540]",
+    borderColor: "border-[#C4B5A0]",
+    switchOnColor: "bg-[#A89885]",
+  },
+  analytics: {
+    key: "analytics" as const,
+    title: "Analityczne ciasteczka",
+    description:
+      "Te pliki cookie pozwalają nam zliczać wizyty i źródła ruchu, dzięki czemu możemy mierzyć i poprawiać wydajność naszej strony. Pomagają nam dowiedzieć się, które strony są najbardziej i najmniej popularne.",
+    cookies: [
+      {
+        name: "_ga",
+        purpose: "Google Analytics - identyfikacja użytkownika",
+        duration: "2 lata",
+      },
+      {
+        name: "_ga_*",
+        purpose: "Google Analytics - stan sesji",
+        duration: "2 lata",
+      },
+    ],
+    required: false,
+    icon: BarChart3,
+    bgColor: "bg-[#E8E3DC]",
+    iconBgColor: "bg-[#D4CEC4]",
+    iconColor: "text-[#4A4540]",
+    borderColor: "border-[#C4B5A0]",
+    switchOnColor: "bg-[#A89885]",
+  },
+};
+
+// Update Google Consent Mode
+function updateGoogleConsent(preferences: CookiePreferences) {
+  if (typeof window !== "undefined" && typeof window.gtag === "function") {
+    window.gtag("consent", "update", {
+      ad_storage: preferences.marketing ? "granted" : "denied",
+      ad_user_data: preferences.marketing ? "granted" : "denied",
+      ad_personalization: preferences.marketing ? "granted" : "denied",
+      analytics_storage: preferences.analytics ? "granted" : "denied",
+      functionality_storage: "granted",
+      personalization_storage: preferences.marketing ? "granted" : "denied",
+      security_storage: "granted",
+    });
+  }
+}
+
+// Save consent to localStorage
+function saveConsent(preferences: CookiePreferences) {
+  const consent: ConsentState = {
+    preferences,
+    timestamp: new Date().toISOString(),
+    version: CONSENT_VERSION,
+  };
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(consent));
+  updateGoogleConsent(preferences);
+}
+
+// Load consent from localStorage
+function loadConsent(): ConsentState | null {
+  if (typeof window === "undefined") return null;
+  const stored = localStorage.getItem(STORAGE_KEY);
+  if (!stored) return null;
+  try {
+    const consent = JSON.parse(stored) as ConsentState;
+    if (consent.version !== CONSENT_VERSION) return null;
+    return consent;
+  } catch {
+    return null;
+  }
+}
+
+// Announce to screen readers
+function announceToScreenReader(message: string) {
+  const announcement = document.createElement("div");
+  announcement.setAttribute("role", "status");
+  announcement.setAttribute("aria-live", "polite");
+  announcement.setAttribute("aria-atomic", "true");
+  announcement.className = "sr-only";
+  announcement.textContent = message;
+  document.body.appendChild(announcement);
+  setTimeout(() => announcement.remove(), 1000);
+}
 
 export default function CookieConsent() {
   const [showBanner, setShowBanner] = useState(false);
+  const [showCookieButton, setShowCookieButton] = useState(false);
+  const [preferences, setPreferences] = useState<CookiePreferences>({
+    necessary: true,
+    marketing: true,
+    analytics: true,
+  });
+  const [expandedCategories, setExpandedCategories] = useState<
+    Record<string, boolean>
+  >({});
+  const bannerRef = useRef<HTMLDivElement>(null);
+  const firstFocusableRef = useRef<HTMLButtonElement>(null);
 
+  // Initialize on mount
   useEffect(() => {
-    // Check if user already accepted cookies
-    const consent = localStorage.getItem("cookieConsent");
-    if (!consent) {
-      // Small delay before showing banner
-      const timer = setTimeout(() => setShowBanner(true), 1000);
+    const consent = loadConsent();
+    if (consent) {
+      setPreferences(consent.preferences);
+      updateGoogleConsent(consent.preferences);
+      setShowCookieButton(true);
+    } else {
+      const timer = setTimeout(() => {
+        setShowBanner(true);
+        setTimeout(() => {
+          firstFocusableRef.current?.focus();
+        }, 100);
+      }, 1000);
       return () => clearTimeout(timer);
     }
   }, []);
 
-  const acceptCookies = () => {
-    localStorage.setItem("cookieConsent", "accepted");
-    setShowBanner(false);
+  // Trap focus inside banner when open
+  const handleKeyDown = useCallback(
+    (e: KeyboardEvent) => {
+      if (!showBanner) return;
+
+      if (e.key === "Escape") {
+        handleAcceptNecessary();
+        return;
+      }
+
+      if (e.key === "Tab") {
+        const focusableElements = bannerRef.current?.querySelectorAll(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+        );
+        if (!focusableElements?.length) return;
+
+        const firstElement = focusableElements[0] as HTMLElement;
+        const lastElement = focusableElements[
+          focusableElements.length - 1
+        ] as HTMLElement;
+
+        if (e.shiftKey && document.activeElement === firstElement) {
+          e.preventDefault();
+          lastElement.focus();
+        } else if (!e.shiftKey && document.activeElement === lastElement) {
+          e.preventDefault();
+          firstElement.focus();
+        }
+      }
+    },
+    [showBanner],
+  );
+
+  useEffect(() => {
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [handleKeyDown]);
+
+  const toggleCategory = (category: string) => {
+    setExpandedCategories((prev) => ({
+      ...prev,
+      [category]: !prev[category],
+    }));
   };
 
-  const declineCookies = () => {
-    localStorage.setItem("cookieConsent", "declined");
-    setShowBanner(false);
+  const togglePreference = (category: keyof CookiePreferences) => {
+    if (category === "necessary") return;
+    setPreferences((prev) => ({
+      ...prev,
+      [category]: !prev[category],
+    }));
   };
 
-  if (!showBanner) return null;
+  const handleAcceptAll = () => {
+    const allAccepted: CookiePreferences = {
+      necessary: true,
+      marketing: true,
+      analytics: true,
+    };
+    saveConsent(allAccepted);
+    setPreferences(allAccepted);
+    setShowBanner(false);
+    setShowCookieButton(true);
+    announceToScreenReader("Wszystkie pliki cookie zostały zaakceptowane");
+  };
+
+  const handleAcceptNecessary = () => {
+    const necessaryOnly: CookiePreferences = {
+      necessary: true,
+      marketing: false,
+      analytics: false,
+    };
+    saveConsent(necessaryOnly);
+    setPreferences(necessaryOnly);
+    setShowBanner(false);
+    setShowCookieButton(true);
+    announceToScreenReader("Zaakceptowano tylko niezbędne pliki cookie");
+  };
+
+  const handleAcceptSelected = () => {
+    saveConsent(preferences);
+    setShowBanner(false);
+    setShowCookieButton(true);
+    const accepted = [];
+    if (preferences.marketing) accepted.push("marketingowe");
+    if (preferences.analytics) accepted.push("analityczne");
+    const message =
+      accepted.length > 0
+        ? `Zaakceptowano niezbędne oraz ${accepted.join(" i ")} pliki cookie`
+        : "Zaakceptowano tylko niezbędne pliki cookie";
+    announceToScreenReader(message);
+  };
+
+  const handleOpenSettings = () => {
+    setShowBanner(true);
+    setShowCookieButton(false);
+  };
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-[100] bg-bg-light border-t border-text-dark/10 shadow-lg">
-      <div className="max-w-7xl mx-auto px-4 py-6">
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-          <div className="flex-1 pr-4">
-            <p className="text-text-dark font-light text-sm leading-relaxed">
-              Ta strona używa plików cookies w celu zapewnienia najlepszej
-              jakości usług. Korzystając ze strony, zgadzasz się na ich użycie.{" "}
-              <Link
-                href="/polityka-prywatnosci"
-                className="text-primary-taupe underline hover:text-accent-warm transition-colors"
-              >
-                Dowiedz się więcej
-              </Link>
-            </p>
-          </div>
+    <>
+      {/* Cookie button in bottom left corner - Royal Lips style */}
+      {showCookieButton && !showBanner && (
+        <button
+          onClick={handleOpenSettings}
+          className="fixed bottom-4 left-4 z-[98] p-3 bg-[#4A4540] rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-[#A89885] focus:ring-offset-2 group"
+          aria-label="Otwórz ustawienia plików cookie"
+        >
+          <Cookie className="w-5 h-5 text-[#E8E3DC]" />
+        </button>
+      )}
 
-          <div className="flex items-center space-x-3 flex-shrink-0">
-            <button
-              onClick={declineCookies}
-              className="px-6 py-2 border border-text-dark/20 text-text-dark font-light text-xs tracking-wider hover:bg-bg-main/50 transition-all uppercase"
-            >
-              Odrzuć
-            </button>
-            <button
-              onClick={acceptCookies}
-              className="px-6 py-2 bg-primary-taupe text-text-light font-light text-xs tracking-wider hover:bg-accent-warm transition-all uppercase"
-            >
-              Akceptuję
-            </button>
-          </div>
+      {showBanner && (
+        <>
+          {/* Backdrop */}
+          <div
+            className="fixed inset-0 bg-black/50 z-[99] backdrop-blur-sm"
+            aria-hidden="true"
+            onClick={handleAcceptNecessary}
+          />
 
-          <button
-            onClick={declineCookies}
-            className="absolute top-2 right-2 md:hidden p-2 text-text-dark/50 hover:text-text-dark transition-colors"
-            aria-label="Zamknij"
+          {/* Cookie Banner Modal */}
+          <div
+            ref={bannerRef}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="cookie-banner-title"
+            aria-describedby="cookie-banner-description"
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4"
           >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
-      </div>
-    </div>
+            <div className="bg-[#E8E3DC] rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+              {/* Header - Royal Lips style */}
+              <div className="p-6 pb-4 bg-[#4A4540]">
+                <div className="flex items-start justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2.5 bg-[#A89885] rounded-xl shadow-md">
+                      <Cookie
+                        className="w-6 h-6 text-[#E8E3DC]"
+                        aria-hidden="true"
+                      />
+                    </div>
+                    <h2
+                      id="cookie-banner-title"
+                      className="text-xl font-serif font-light tracking-wider text-[#E8E3DC] uppercase"
+                    >
+                      Używamy plików cookie
+                    </h2>
+                  </div>
+                  <button
+                    ref={firstFocusableRef}
+                    onClick={handleAcceptNecessary}
+                    className="p-2 text-[#C4B5A0] hover:text-[#E8E3DC] hover:bg-[#A89885]/50 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-[#A89885] focus:ring-offset-2 focus:ring-offset-[#4A4540]"
+                    aria-label="Zamknij i zaakceptuj tylko niezbędne"
+                  >
+                    <X className="w-5 h-5" aria-hidden="true" />
+                  </button>
+                </div>
+                <p
+                  id="cookie-banner-description"
+                  className="mt-3 text-sm text-[#C4B5A0] leading-relaxed font-light"
+                >
+                  Szanowni Państwo, nasz serwis stosuje pliki cookies. Głównie w
+                  celach funkcjonalnych oraz w celu, by nasze usługi były
+                  dostarczane na jak najwyższym poziomie. Prosimy o określenie
+                  warunków przechowywania lub dostępu do nich niżej.
+                </p>
+              </div>
+
+              {/* Cookie Categories - always visible */}
+              <div className="flex-1 overflow-y-auto px-6 py-4 space-y-3">
+                {(
+                  Object.keys(COOKIE_CATEGORIES) as Array<
+                    keyof typeof COOKIE_CATEGORIES
+                  >
+                ).map((categoryKey) => {
+                  const category = COOKIE_CATEGORIES[categoryKey];
+                  const isExpanded = expandedCategories[categoryKey];
+                  const isEnabled = preferences[categoryKey];
+                  const IconComponent = category.icon;
+
+                  return (
+                    <div
+                      key={categoryKey}
+                      className={`border-2 ${isEnabled ? category.borderColor : "border-[#D4CEC4]"} rounded-xl overflow-hidden transition-all duration-300`}
+                    >
+                      <div
+                        className={`flex items-center justify-between p-4 ${isEnabled ? category.bgColor : "bg-[#D4CEC4]/50"} transition-colors duration-300`}
+                      >
+                        <button
+                          onClick={() => toggleCategory(categoryKey)}
+                          className="flex items-center gap-3 flex-1 text-left focus:outline-none focus:ring-2 focus:ring-[#A89885] focus:ring-inset rounded-lg"
+                          aria-expanded={isExpanded}
+                          aria-controls={`cookie-category-${categoryKey}`}
+                        >
+                          <div
+                            className={`p-2 ${category.iconBgColor} rounded-lg`}
+                          >
+                            <IconComponent
+                              className={`w-4 h-4 ${category.iconColor}`}
+                            />
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className="font-medium text-[#4A4540]">
+                              {category.title}
+                            </span>
+                            {category.required && (
+                              <span className="text-xs px-2 py-0.5 bg-[#C4B5A0] text-[#4A4540] rounded-full">
+                                Wymagane
+                              </span>
+                            )}
+                          </div>
+                          <span className={`${category.iconColor} ml-auto`}>
+                            {isExpanded ? (
+                              <ChevronUp className="w-5 h-5" />
+                            ) : (
+                              <ChevronDown className="w-5 h-5" />
+                            )}
+                          </span>
+                        </button>
+
+                        {/* Toggle Switch with category color */}
+                        <button
+                          onClick={() => togglePreference(categoryKey)}
+                          disabled={category.required}
+                          className={`
+                              relative w-14 h-7 rounded-full transition-all duration-300 flex-shrink-0 ml-4
+                              focus:outline-none focus:ring-2 focus:ring-[#A89885] focus:ring-offset-2
+                              ${category.required ? "cursor-not-allowed opacity-75" : "cursor-pointer"}
+                              ${isEnabled ? category.switchOnColor : "bg-[#D4CEC4]"}
+                            `}
+                          role="switch"
+                          aria-checked={isEnabled}
+                          aria-label={`${isEnabled ? "Wyłącz" : "Włącz"} ${category.title}`}
+                        >
+                          <span
+                            className={`
+                                absolute top-0.5 left-0.5 w-6 h-6 bg-white rounded-full shadow-md
+                                transition-transform duration-300 ease-in-out
+                                ${isEnabled ? "translate-x-7" : "translate-x-0"}
+                              `}
+                          />
+                        </button>
+                      </div>
+
+                      {/* Expanded Content */}
+                      <div
+                        id={`cookie-category-${categoryKey}`}
+                        className={`
+                            overflow-hidden transition-all duration-300 ease-in-out
+                            ${isExpanded ? "max-h-96 opacity-100" : "max-h-0 opacity-0"}
+                          `}
+                        aria-hidden={!isExpanded}
+                      >
+                        <div className="p-4 pt-2 bg-[#E8E3DC] border-t border-[#D4CEC4]">
+                          <p className="text-sm text-[#4A4540] leading-relaxed mb-3 font-light">
+                            {category.description}
+                          </p>
+                          {category.cookies.length > 0 && (
+                            <div
+                              className={`${category.bgColor} rounded-lg p-3`}
+                            >
+                              <table className="w-full text-xs">
+                                <thead>
+                                  <tr className="text-left text-[#4A4540]/70 border-b border-[#C4B5A0]">
+                                    <th className="pb-2 font-medium">Nazwa</th>
+                                    <th className="pb-2 font-medium">Cel</th>
+                                    <th className="pb-2 font-medium">Czas</th>
+                                  </tr>
+                                </thead>
+                                <tbody className="text-[#4A4540]">
+                                  {category.cookies.map((cookie, index) => (
+                                    <tr
+                                      key={index}
+                                      className="border-t border-[#D4CEC4] first:border-t-0"
+                                    >
+                                      <td className="py-2 font-mono text-[#4A4540] font-semibold">
+                                        {cookie.name}
+                                      </td>
+                                      <td className="py-2">{cookie.purpose}</td>
+                                      <td className="py-2 text-[#4A4540]/70">
+                                        {cookie.duration}
+                                      </td>
+                                    </tr>
+                                  ))}
+                                </tbody>
+                              </table>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Footer with Actions - Royal Lips style */}
+              <div className="p-6 pt-4 border-t border-[#D4CEC4] bg-[#D4CEC4]/50">
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <button
+                    onClick={handleAcceptNecessary}
+                    className="flex-1 px-4 py-3 border-2 border-[#4A4540]/30 text-[#4A4540] font-light text-sm rounded-xl hover:bg-[#D4CEC4] transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[#A89885] focus:ring-offset-2 tracking-wider uppercase"
+                  >
+                    Tylko niezbędne
+                  </button>
+                  <button
+                    onClick={handleAcceptSelected}
+                    className="flex-1 px-4 py-3 border-2 border-[#A89885] text-[#4A4540] font-light text-sm rounded-xl hover:bg-[#C4B5A0]/30 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[#A89885] focus:ring-offset-2 tracking-wider uppercase"
+                  >
+                    Potwierdź wybrane
+                  </button>
+                  <button
+                    onClick={handleAcceptAll}
+                    className="flex-1 px-4 py-3 bg-[#4A4540] text-[#E8E3DC] font-light text-sm rounded-xl hover:bg-[#5a554f] transition-all duration-300 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#A89885] focus:ring-offset-2 tracking-wider uppercase"
+                  >
+                    Zaakceptuj wszystkie
+                  </button>
+                </div>
+
+                {/* Privacy Policy Link */}
+                <div className="mt-4 text-center">
+                  <Link
+                    href="/polityka-prywatnosci"
+                    className="text-xs text-[#4A4540]/70 hover:text-[#4A4540] underline transition-colors focus:outline-none focus:ring-2 focus:ring-[#A89885] focus:ring-offset-2 rounded tracking-wider"
+                  >
+                    Polityka prywatności
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+    </>
   );
+}
+
+// Export utility function to check consent
+export function hasConsentFor(category: keyof CookiePreferences): boolean {
+  if (typeof window === "undefined") return false;
+  const consent = loadConsent();
+  return consent?.preferences[category] ?? false;
+}
+
+// Export function to show consent banner again
+export function showConsentBanner() {
+  localStorage.removeItem(STORAGE_KEY);
+  window.location.reload();
+}
+
+// Extend window interface for gtag
+declare global {
+  interface Window {
+    gtag: (
+      command: string,
+      action: string,
+      params?: Record<string, string>,
+    ) => void;
+    dataLayer: unknown[];
+  }
 }

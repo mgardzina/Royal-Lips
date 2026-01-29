@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import CookieConsent from "../components/CookieConsent";
+import GoogleAnalytics from "../components/GoogleAnalytics";
 import AuthProvider from "../components/AuthProvider";
 
 export const metadata: Metadata = {
@@ -17,6 +18,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pl">
+      <head>
+        <GoogleAnalytics />
+      </head>
       <body>
         <AuthProvider>{children}</AuthProvider>
         <CookieConsent />

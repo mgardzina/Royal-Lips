@@ -7,17 +7,17 @@ export default function RegulaminPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#f8f6f3] via-[#efe9e1] to-[#e8e0d5]">
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-[#f8f6f3]/95 backdrop-blur-sm border-b border-[#d4cec4]/50">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-[#4a4540]/95 backdrop-blur-sm border-b border-[#d4cec4]/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-24">
             <Link href="/" className="flex items-center">
-              <h1 className="text-2xl md:text-3xl font-serif font-light text-[#4a4540] tracking-widest">
+              <h1 className="text-2xl md:text-3xl font-serif font-light text-[#f8f6f3] tracking-widest">
                 ROYAL LIPS
               </h1>
             </Link>
             <Link
               href="/"
-              className="flex items-center space-x-2 text-[#4a4540] hover:text-[#8b7355] transition-colors font-light text-sm tracking-wider uppercase"
+              className="flex items-center space-x-2 text-[#f8f6f3] hover:text-[#8b7355] transition-colors font-light text-sm tracking-wider uppercase"
             >
               <ArrowLeft className="w-4 h-4" />
               <span>Powrót</span>
