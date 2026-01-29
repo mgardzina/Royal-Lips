@@ -13,11 +13,17 @@ import {
   StickyNote,
   FileText,
   Mail,
+  AlertTriangle,
+  Heart,
+  MessageSquare,
 } from "lucide-react";
+
+type NoteCategory = "NOTATKA" | "ALERGIA" | "UWAGA" | "PREFERENCJA";
 
 interface Note {
   id: string;
   content: string;
+  category: NoteCategory;
   createdAt: string;
 }
 
@@ -34,6 +40,36 @@ const categoryLabels: Record<Form["type"], string> = {
   HYALURONIC: "Kwas hialuronowy",
   PMU: "Makijaż permanentny",
   LASER: "Laser",
+};
+
+const noteCategoryConfig: Record<
+  NoteCategory,
+  { label: string; color: string; bgColor: string; icon: typeof StickyNote }
+> = {
+  NOTATKA: {
+    label: "Notatka",
+    color: "text-gray-600",
+    bgColor: "bg-gray-50 border-gray-200",
+    icon: MessageSquare,
+  },
+  ALERGIA: {
+    label: "Alergia",
+    color: "text-red-600",
+    bgColor: "bg-red-50 border-red-200",
+    icon: AlertTriangle,
+  },
+  UWAGA: {
+    label: "Uwaga",
+    color: "text-amber-600",
+    bgColor: "bg-amber-50 border-amber-200",
+    icon: AlertTriangle,
+  },
+  PREFERENCJA: {
+    label: "Preferencja",
+    color: "text-purple-600",
+    bgColor: "bg-purple-50 border-purple-200",
+    icon: Heart,
+  },
 };
 
 interface ClientDetails {
@@ -54,6 +90,7 @@ export default function ClientDetailsPage({
   const [client, setClient] = useState<ClientDetails | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [newNote, setNewNote] = useState("");
+  const [newNoteCategory, setNewNoteCategory] = useState<NoteCategory>("NOTATKA");
   const [isSubmittingNote, setIsSubmittingNote] = useState(false);
   const [clientId, setClientId] = useState<string>("");
 
@@ -96,12 +133,13 @@ export default function ClientDetailsPage({
       const response = await fetch(`/api/clients/${clientId}/notes`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ content: newNote }),
+        body: JSON.stringify({ content: newNote, category: newNoteCategory }),
       });
       const data = await response.json();
       if (data.success) {
         setNewNote("");
-        fetchClientDetails(); // Odśwież dane
+        setNewNoteCategory("NOTATKA");
+        fetchClientDetails();
       }
     } catch (error) {
       console.error("Błąd dodawania notatki:", error);
@@ -119,7 +157,7 @@ export default function ClientDetailsPage({
       });
       const data = await response.json();
       if (data.success) {
-        fetchClientDetails(); // Odśwież dane
+        fetchClientDetails();
       }
     } catch (error) {
       console.error("Błąd usuwania notatki:", error);
@@ -135,6 +173,19 @@ export default function ClientDetailsPage({
       minute: "2-digit",
     });
   };
+
+  // Sortuj notatki: najpierw alergie i uwagi, potem reszta
+  const sortedNotes = client?.notes
+    ? [...client.notes].sort((a, b) => {
+        const priority: Record<NoteCategory, number> = {
+          ALERGIA: 0,
+          UWAGA: 1,
+          PREFERENCJA: 2,
+          NOTATKA: 3,
+        };
+        return priority[a.category] - priority[b.category];
+      })
+    : [];
 
   if (status === "loading" || status === "unauthenticated" || isLoading) {
     return (
@@ -191,14 +242,52 @@ export default function ClientDetailsPage({
           <div className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6">
             <h2 className="text-xl font-serif text-[#4a4540] flex items-center gap-2 mb-4">
               <StickyNote className="w-5 h-5 text-[#8b7355]" />
-              Notatki
+              Notatki i adnotacje
             </h2>
 
             <form onSubmit={handleAddNote} className="mb-6">
+              <div className="mb-3">
+                <label className="block text-sm font-medium text-[#8b8580] mb-2">
+                  Kategoria
+                </label>
+                <div className="grid grid-cols-2 gap-2">
+                  {(
+                    Object.entries(noteCategoryConfig) as [
+                      NoteCategory,
+                      (typeof noteCategoryConfig)[NoteCategory]
+                    ][]
+                  ).map(([key, config]) => {
+                    const Icon = config.icon;
+                    return (
+                      <button
+                        key={key}
+                        type="button"
+                        onClick={() => setNewNoteCategory(key)}
+                        className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all border ${
+                          newNoteCategory === key
+                            ? `${config.bgColor} ${config.color} border-current`
+                            : "bg-white border-[#d4cec4] text-[#8b8580] hover:bg-gray-50"
+                        }`}
+                      >
+                        <Icon className="w-4 h-4" />
+                        {config.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
               <textarea
                 value={newNote}
                 onChange={(e) => setNewNote(e.target.value)}
-                placeholder="Dodaj notatkę (np. alergie, preferencje)..."
+                placeholder={
+                  newNoteCategory === "ALERGIA"
+                    ? "Opisz alergię lub przeciwwskazanie..."
+                    : newNoteCategory === "UWAGA"
+                      ? "Dodaj ważną uwagę..."
+                      : newNoteCategory === "PREFERENCJA"
+                        ? "Opisz preferencję klientki..."
+                        : "Dodaj notatkę..."
+                }
                 className="w-full p-3 bg-white border border-[#d4cec4] rounded-xl focus:border-[#8b7355] focus:ring-2 focus:ring-[#8b7355]/20 outline-none transition-all resize-none h-24 text-sm"
               />
               <button
@@ -207,36 +296,50 @@ export default function ClientDetailsPage({
                 className="mt-2 w-full bg-[#8b7355] text-white py-2 rounded-lg hover:bg-[#6d5a43] transition-colors disabled:opacity-50 flex items-center justify-center gap-2 text-sm"
               >
                 <Plus className="w-4 h-4" />
-                Dodaj notatkę
+                Dodaj {noteCategoryConfig[newNoteCategory].label.toLowerCase()}
               </button>
             </form>
 
-            <div className="space-y-4 max-h-[500px] overflow-y-auto">
-              {client.notes.length === 0 ? (
-                <p className="text-sm text-[#8b8580] text-center">
+            <div className="space-y-3 max-h-[500px] overflow-y-auto">
+              {sortedNotes.length === 0 ? (
+                <p className="text-sm text-[#8b8580] text-center py-4">
                   Brak notatek
                 </p>
               ) : (
-                client.notes.map((note) => (
-                  <div
-                    key={note.id}
-                    className="bg-white p-4 rounded-xl border border-[#d4cec4] relative group"
-                  >
-                    <p className="text-[#4a4540] text-sm whitespace-pre-wrap">
-                      {note.content}
-                    </p>
-                    <div className="mt-2 flex justify-between items-center text-xs text-[#8b8580]">
-                      <span>{formatDate(note.createdAt)}</span>
-                      <button
-                        onClick={() => handleDeleteNote(note.id)}
-                        className="opacity-0 group-hover:opacity-100 text-red-500 hover:text-red-700 transition-all p-1"
-                        title="Usuń notatkę"
-                      >
-                        <Trash2 className="w-3 h-3" />
-                      </button>
+                sortedNotes.map((note) => {
+                  const config =
+                    noteCategoryConfig[note.category] ||
+                    noteCategoryConfig.NOTATKA;
+                  const Icon = config.icon;
+                  return (
+                    <div
+                      key={note.id}
+                      className={`p-4 rounded-xl border relative group ${config.bgColor}`}
+                    >
+                      <div className="flex items-start gap-2 mb-2">
+                        <Icon className={`w-4 h-4 mt-0.5 ${config.color}`} />
+                        <span
+                          className={`text-xs font-medium ${config.color}`}
+                        >
+                          {config.label}
+                        </span>
+                      </div>
+                      <p className="text-[#4a4540] text-sm whitespace-pre-wrap pl-6">
+                        {note.content}
+                      </p>
+                      <div className="mt-2 flex justify-between items-center text-xs text-[#8b8580] pl-6">
+                        <span>{formatDate(note.createdAt)}</span>
+                        <button
+                          onClick={() => handleDeleteNote(note.id)}
+                          className="opacity-0 group-hover:opacity-100 text-red-500 hover:text-red-700 transition-all p-1"
+                          title="Usuń notatkę"
+                        >
+                          <Trash2 className="w-3 h-3" />
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                ))
+                  );
+                })
               )}
             </div>
           </div>

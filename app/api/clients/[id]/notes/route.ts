@@ -40,9 +40,16 @@ export async function POST(
       );
     }
 
+    // Walidacja kategorii
+    const validCategories = ["NOTATKA", "ALERGIA", "UWAGA", "PREFERENCJA"];
+    const category = validCategories.includes(body.category)
+      ? body.category
+      : "NOTATKA";
+
     const note = await prisma.clientNote.create({
       data: {
         content: body.content.trim(),
+        category,
         clientId: id,
       },
     });

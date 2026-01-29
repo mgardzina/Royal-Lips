@@ -36,6 +36,56 @@ export async function GET(
   }
 }
 
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const session = await auth();
+
+  if (!session) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  try {
+    const { id } = await params;
+    const body = await request.json();
+
+    // Pola dozwolone do edycji
+    const allowedFields = [
+      "nazwaProduktu",
+      "obszarZabiegu",
+      "celEfektu",
+      "email",
+      "telefon",
+      "ulica",
+      "kodPocztowy",
+      "miasto",
+      "type",
+    ];
+
+    // Filtruj tylko dozwolone pola
+    const updateData: Record<string, unknown> = {};
+    for (const field of allowedFields) {
+      if (body[field] !== undefined) {
+        updateData[field] = body[field];
+      }
+    }
+
+    const form = await prisma.consentForm.update({
+      where: { id },
+      data: updateData,
+    });
+
+    return NextResponse.json({ success: true, form });
+  } catch (error) {
+    console.error("Błąd aktualizacji formularza:", error);
+    return NextResponse.json(
+      { success: false, error: "Błąd aktualizacji formularza" },
+      { status: 500 }
+    );
+  }
+}
+
 export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }

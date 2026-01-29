@@ -28,13 +28,21 @@ model Client {
   notes ClientNote[]
 }
 
+enum NoteCategory {
+  NOTATKA   // Ogólna notatka
+  ALERGIA   // Alergie i przeciwwskazania
+  UWAGA     // Ważne uwagi
+  PREFERENCJA // Preferencje klientki
+}
+
 // Notatki do klientki (alergie, uwagi, etc.)
 model ClientNote {
   id        String   @id @default(uuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  content String @db.Text // Treść notatki
+  content  String       @db.Text // Treść notatki
+  category NoteCategory @default(NOTATKA) // Kategoria notatki
 
   // Relacja z klientką
   clientId String
