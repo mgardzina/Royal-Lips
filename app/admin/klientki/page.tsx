@@ -98,7 +98,7 @@ export default function ClientsPage() {
 
       <main className="max-w-6xl mx-auto px-4 py-8">
         {/* Search */}
-        <div className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 mb-6">
+        <div className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-4 md:p-6 mb-6">
           <div className="relative">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#8b8580]" />
             <input
@@ -113,7 +113,7 @@ export default function ClientsPage() {
 
         {/* Clients List */}
         <div className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg overflow-hidden">
-          <div className="p-6 border-b border-[#d4cec4]">
+          <div className="p-4 md:p-6 border-b border-[#d4cec4]">
             <h2 className="text-xl font-serif text-[#4a4540] flex items-center gap-2">
               <Users className="w-5 h-5 text-[#8b7355]" />
               Lista klientek
@@ -134,7 +134,7 @@ export default function ClientsPage() {
                 <Link
                   key={client.id}
                   href={`/admin/klientki/${client.id}`}
-                  className="block p-6 hover:bg-white/50 transition-colors"
+                  className="block p-4 md:p-6 hover:bg-white/50 transition-colors"
                 >
                   <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div>

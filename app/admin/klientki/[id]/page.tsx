@@ -90,7 +90,8 @@ export default function ClientDetailsPage({
   const [client, setClient] = useState<ClientDetails | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [newNote, setNewNote] = useState("");
-  const [newNoteCategory, setNewNoteCategory] = useState<NoteCategory>("NOTATKA");
+  const [newNoteCategory, setNewNoteCategory] =
+    useState<NoteCategory>("NOTATKA");
   const [isSubmittingNote, setIsSubmittingNote] = useState(false);
   const [clientId, setClientId] = useState<string>("");
 
@@ -239,7 +240,7 @@ export default function ClientDetailsPage({
       <main className="max-w-6xl mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Lewa kolumna - Notatki */}
         <div className="lg:col-span-1 space-y-6">
-          <div className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6">
+          <div className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-4 md:p-6">
             <h2 className="text-xl font-serif text-[#4a4540] flex items-center gap-2 mb-4">
               <StickyNote className="w-5 h-5 text-[#8b7355]" />
               Notatki i adnotacje
@@ -254,7 +255,7 @@ export default function ClientDetailsPage({
                   {(
                     Object.entries(noteCategoryConfig) as [
                       NoteCategory,
-                      (typeof noteCategoryConfig)[NoteCategory]
+                      (typeof noteCategoryConfig)[NoteCategory],
                     ][]
                   ).map(([key, config]) => {
                     const Icon = config.icon;
@@ -318,9 +319,7 @@ export default function ClientDetailsPage({
                     >
                       <div className="flex items-start gap-2 mb-2">
                         <Icon className={`w-4 h-4 mt-0.5 ${config.color}`} />
-                        <span
-                          className={`text-xs font-medium ${config.color}`}
-                        >
+                        <span className={`text-xs font-medium ${config.color}`}>
                           {config.label}
                         </span>
                       </div>
@@ -348,7 +347,7 @@ export default function ClientDetailsPage({
         {/* Prawa kolumna - Historia zabiegów */}
         <div className="lg:col-span-2">
           <div className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg overflow-hidden">
-            <div className="p-6 border-b border-[#d4cec4]">
+            <div className="p-4 md:p-6 border-b border-[#d4cec4]">
               <h2 className="text-xl font-serif text-[#4a4540] flex items-center gap-2">
                 <FileText className="w-5 h-5 text-[#8b7355]" />
                 Historia zabiegów ({client.forms.length})
@@ -365,7 +364,7 @@ export default function ClientDetailsPage({
                   <Link
                     key={form.id}
                     href={`/admin/formularz/${form.id}`}
-                    className="block p-6 hover:bg-white/50 transition-colors"
+                    className="block p-4 md:p-6 hover:bg-white/50 transition-colors"
                   >
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                       <div>

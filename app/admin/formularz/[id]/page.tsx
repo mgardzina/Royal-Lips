@@ -229,7 +229,7 @@ export default function FormDetailsPage() {
 
       <main className="max-w-4xl mx-auto px-4 py-8 space-y-6">
         {/* Header Info */}
-        <div className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
+        <div className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-4 md:p-8">
           <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-6">
             <div>
               <div className="flex items-center gap-4 flex-wrap">
@@ -364,7 +364,7 @@ export default function FormDetailsPage() {
         </div>
 
         {/* Procedure Details */}
-        <div className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
+        <div className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-4 md:p-8">
           <h2 className="text-xl font-serif text-[#4a4540] mb-4 pb-3 border-b border-[#d4cec4]">
             Szczegóły zabiegu
           </h2>
@@ -438,7 +438,7 @@ export default function FormDetailsPage() {
         </div>
 
         {/* Contraindications */}
-        <div className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
+        <div className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-4 md:p-8">
           <h2 className="text-xl font-serif text-[#4a4540] mb-4 pb-3 border-b border-[#d4cec4]">
             Przeciwwskazania
           </h2>
@@ -448,8 +448,7 @@ export default function FormDetailsPage() {
                 contraindicationsByFormType[form.type as FormType] ||
                 contraindicationsByFormType["HYALURONIC"];
               const label = labels[key] || key;
-              const currentValue =
-                editedForm.przeciwwskazania?.[key] ?? value;
+              const currentValue = editedForm.przeciwwskazania?.[key] ?? value;
 
               return (
                 <div
@@ -522,7 +521,7 @@ export default function FormDetailsPage() {
         </div>
 
         {/* Consents */}
-        <div className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
+        <div className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-4 md:p-8">
           <h2 className="text-xl font-serif text-[#4a4540] mb-4 pb-3 border-b border-[#d4cec4]">
             Zgody
           </h2>
@@ -562,7 +561,7 @@ export default function FormDetailsPage() {
         </div>
 
         {/* Signatures */}
-        <div className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
+        <div className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-4 md:p-8">
           <h2 className="text-xl font-serif text-[#4a4540] mb-4 pb-3 border-b border-[#d4cec4]">
             Podpisy
           </h2>

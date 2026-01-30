@@ -229,7 +229,7 @@ export default function LaserForm({ onBack }: LaserFormProps) {
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Dane osobowe */}
-          <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
+          <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-4 md:p-8">
             <h3 className="text-2xl font-serif text-[#4a4540] mb-6 pb-3 border-b border-[#d4cec4]">
               Dane osobowe
             </h3>
@@ -362,7 +362,7 @@ export default function LaserForm({ onBack }: LaserFormProps) {
           </section>
 
           {/* Zakres Zabiegu Laser */}
-          <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
+          <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-4 md:p-8">
             <h3 className="text-2xl font-serif text-[#4a4540] mb-6 pb-3 border-b border-[#d4cec4]">
               Zakres zabiegu
             </h3>
@@ -405,7 +405,7 @@ export default function LaserForm({ onBack }: LaserFormProps) {
           </section>
 
           {/* Wywiad Medyczny Laser */}
-          <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
+          <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-4 md:p-8">
             <h3 className="text-2xl font-serif text-[#4a4540] mb-4 pb-3 border-b border-[#d4cec4]">
               Wywiad Medyczny
             </h3>
@@ -562,7 +562,7 @@ export default function LaserForm({ onBack }: LaserFormProps) {
             <button
               type="button"
               onClick={() => toggleSection("rodo")}
-              className="w-full p-6 md:p-8 flex justify-between items-center text-left hover:bg-white/40 transition-colors"
+              className="w-full p-4 md:p-8 flex justify-between items-center text-left hover:bg-white/40 transition-colors"
             >
               <h3 className="text-2xl font-serif text-[#4a4540]">
                 Klauzula Informacyjna RODO
@@ -583,7 +583,7 @@ export default function LaserForm({ onBack }: LaserFormProps) {
           </section>
 
           {/* Oświadczenia i zgody */}
-          <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
+          <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-4 md:p-8">
             <h3 className="text-2xl font-serif text-[#4a4540] mb-6 pb-3 border-b border-[#d4cec4]">
               Oświadczenia i Zgoda na Zabieg
             </h3>

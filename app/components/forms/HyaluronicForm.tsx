@@ -234,7 +234,7 @@ export default function HyaluronicForm({ onBack }: HyaluronicFormProps) {
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Dane osobowe (taki sam we wszystkich formularzach) */}
-          <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
+          <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-4 md:p-8">
             <h3 className="text-2xl font-serif text-[#4a4540] mb-6 pb-3 border-b border-[#d4cec4]">
               Dane osobowe
             </h3>
@@ -366,7 +366,7 @@ export default function HyaluronicForm({ onBack }: HyaluronicFormProps) {
           </section>
 
           {/* Szczegóły zabiegu */}
-          <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
+          <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-4 md:p-8">
             <h3 className="text-2xl font-serif text-[#4a4540] mb-6 pb-3 border-b border-[#d4cec4]">
               Szczegóły zabiegu
             </h3>
@@ -417,7 +417,7 @@ export default function HyaluronicForm({ onBack }: HyaluronicFormProps) {
           </section>
 
           {/* Przeciwwskazania */}
-          <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
+          <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-4 md:p-8">
             <h3 className="text-2xl font-serif text-[#4a4540] mb-4 pb-3 border-b border-[#d4cec4]">
               Przeciwwskazania do zabiegu
             </h3>
@@ -473,7 +473,7 @@ export default function HyaluronicForm({ onBack }: HyaluronicFormProps) {
             <button
               type="button"
               onClick={() => toggleSection("reakcje")}
-              className="w-full p-6 md:p-8 flex justify-between items-center text-left hover:bg-white/40 transition-colors"
+              className="w-full p-4 md:p-8 flex justify-between items-center text-left hover:bg-white/40 transition-colors"
             >
               <h3 className="text-2xl font-serif text-[#4a4540]">
                 Świadomość ryzyka
@@ -539,7 +539,7 @@ export default function HyaluronicForm({ onBack }: HyaluronicFormProps) {
             <button
               type="button"
               onClick={() => toggleSection("zalecenia")}
-              className="w-full p-6 md:p-8 flex justify-between items-center text-left hover:bg-white/40 transition-colors"
+              className="w-full p-4 md:p-8 flex justify-between items-center text-left hover:bg-white/40 transition-colors"
             >
               <h3 className="text-2xl font-serif text-[#4a4540]">
                 Zobowiązania pozabiegowe
@@ -581,7 +581,7 @@ export default function HyaluronicForm({ onBack }: HyaluronicFormProps) {
             <button
               type="button"
               onClick={() => toggleSection("rodo")}
-              className="w-full p-6 md:p-8 flex justify-between items-center text-left hover:bg-white/40 transition-colors"
+              className="w-full p-4 md:p-8 flex justify-between items-center text-left hover:bg-white/40 transition-colors"
             >
               <h3 className="text-2xl font-serif text-[#4a4540]">
                 Klauzula Informacyjna RODO

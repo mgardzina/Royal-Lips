@@ -44,18 +44,19 @@ export default function SignaturePad({
         {label} {required && "*"}
       </label>
       <div className="border border-[#d4cec4] rounded-xl overflow-hidden bg-white">
-        <SignatureCanvas
-          ref={sigCanvas}
-          canvasProps={{
-            className: "w-full h-28 touch-none",
-            style: { width: "100%", height: "112px" },
-          }}
-          backgroundColor="rgb(255, 255, 255)"
-          penColor="#6b6560"
-          minWidth={0.5}
-          maxWidth={1.5}
-          onEnd={handleEnd}
-        />
+        <div style={{ height: "112px", width: "100%" }}>
+          <SignatureCanvas
+            ref={sigCanvas}
+            canvasProps={{
+              className: "w-full h-full touch-none block",
+            }}
+            backgroundColor="rgb(255, 255, 255)"
+            penColor="#6b6560"
+            minWidth={0.5}
+            maxWidth={1.5}
+            onEnd={handleEnd}
+          />
+        </div>
       </div>
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-4">
