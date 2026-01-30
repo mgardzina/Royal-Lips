@@ -67,6 +67,28 @@ export default function HyaluronicForm({ onBack }: HyaluronicFormProps) {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [currentContraindicationIndex, setCurrentContraindicationIndex] =
+    useState(0);
+  const [showContraindicationsWizard, setShowContraindicationsWizard] =
+    useState(true);
+
+  const contraindicationKeys = Object.keys(hyaluronicContraindications);
+  const currentContraindicationKey =
+    contraindicationKeys[currentContraindicationIndex];
+  const isWizardComplete =
+    currentContraindicationIndex === contraindicationKeys.length;
+
+  const handleWizardAnswer = (value: boolean) => {
+    handleContraindicationChange(currentContraindicationKey, value);
+    if (currentContraindicationIndex < contraindicationKeys.length) {
+      setCurrentContraindicationIndex((prev) => prev + 1);
+    }
+  };
+
+  const resetWizard = () => {
+    setCurrentContraindicationIndex(0);
+    setShowContraindicationsWizard(true);
+  };
 
   const toggleSection = (section: keyof typeof expandedSections) => {
     setExpandedSections((prev) => ({ ...prev, [section]: !prev[section] }));
@@ -426,44 +448,107 @@ export default function HyaluronicForm({ onBack }: HyaluronicFormProps) {
             </p>
 
             <div className="space-y-3">
-              {Object.entries(hyaluronicContraindications).map(
-                ([key, label], index) => (
-                  <div
-                    key={key}
-                    className="flex items-start gap-4 p-4 bg-white/50 rounded-xl hover:bg-white/80 transition-colors"
-                  >
-                    <span className="text-[#8b7355] font-medium min-w-[2rem]">
-                      {index + 1}.
+              {showContraindicationsWizard && !isWizardComplete ? (
+                <div className="bg-[#f8f6f3] p-6 rounded-xl border border-[#d4cec4]">
+                  <div className="flex justify-between items-center mb-6">
+                    <span className="text-sm font-medium text-[#8b7355]">
+                      Pytanie {currentContraindicationIndex + 1} z{" "}
+                      {contraindicationKeys.length}
                     </span>
-                    <p className="flex-1 text-[#5a5550] text-sm leading-relaxed">
-                      {label}
-                    </p>
-                    <div className="flex gap-2">
-                      <button
-                        type="button"
-                        onClick={() => handleContraindicationChange(key, false)}
-                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                          formData.przeciwwskazania[key] === false
-                            ? "bg-green-500 text-white shadow-md"
-                            : "bg-white/80 text-[#6b6560] hover:bg-green-100"
-                        }`}
-                      >
-                        NIE
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleContraindicationChange(key, true)}
-                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                          formData.przeciwwskazania[key] === true
-                            ? "bg-red-500 text-white shadow-md"
-                            : "bg-white/80 text-[#6b6560] hover:bg-red-100"
-                        }`}
-                      >
-                        TAK
-                      </button>
+                    <div className="h-2 w-24 bg-[#d4cec4] rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-[#8b7355] transition-all duration-300"
+                        style={{
+                          width: `${((currentContraindicationIndex + 1) / contraindicationKeys.length) * 100}%`,
+                        }}
+                      ></div>
                     </div>
                   </div>
-                ),
+
+                  <h4 className="text-xl md:text-2xl font-serif text-[#4a4540] mb-8 min-h-[5rem] flex items-center">
+                    {hyaluronicContraindications[currentContraindicationKey]}
+                  </h4>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <button
+                      type="button"
+                      onClick={() => handleWizardAnswer(false)}
+                      className="py-4 px-6 rounded-xl bg-white border-2 border-[#d4cec4] text-[#6b6560] hover:border-[#8b7355] hover:bg-[#8b7355] hover:text-white transition-all text-lg font-medium shadow-sm hover:shadow-md active:scale-95"
+                    >
+                      NIE
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleWizardAnswer(true)}
+                      className="py-4 px-6 rounded-xl bg-white border-2 border-[#d4cec4] text-[#6b6560] hover:border-red-500 hover:bg-red-500 hover:text-white transition-all text-lg font-medium shadow-sm hover:shadow-md active:scale-95"
+                    >
+                      TAK
+                    </button>
+                  </div>
+
+                  <div className="mt-6 flex justify-between items-center">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setCurrentContraindicationIndex((prev) =>
+                          Math.max(0, prev - 1),
+                        )
+                      }
+                      disabled={currentContraindicationIndex === 0}
+                      className="flex items-center gap-2 text-sm text-[#8b8580] disabled:opacity-0 hover:text-[#8b7355] transition-colors"
+                    >
+                      <ArrowLeft className="w-4 h-4" />
+                      Poprzednie
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between p-4 bg-green-50 border border-green-200 rounded-xl mb-6">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                        <Check className="w-5 h-5 text-green-600" />
+                      </div>
+                      <span className="text-green-800 font-medium">
+                        Wywiad medyczny zakończony
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={resetWizard}
+                      className="text-sm text-green-700 hover:text-green-900 font-medium underline"
+                    >
+                      Edytuj odpowiedzi
+                    </button>
+                  </div>
+
+                  {Object.entries(hyaluronicContraindications).map(
+                    ([key, label], index) => (
+                      <div
+                        key={key}
+                        className={`flex items-start gap-4 p-4 rounded-xl transition-colors ${
+                          formData.przeciwwskazania[key]
+                            ? "bg-red-50 border border-red-100"
+                            : "bg-white/50 border border-transparent"
+                        }`}
+                      >
+                        <span className="text-[#8b7355] font-medium min-w-[1.5rem] mt-0.5">
+                          {index + 1}.
+                        </span>
+                        <div className="flex-1">
+                          <p className="text-[#5a5550] text-sm leading-relaxed">
+                            {label}
+                          </p>
+                          {formData.przeciwwskazania[key] && (
+                            <span className="inline-block mt-2 px-3 py-1 bg-red-100 text-red-700 text-xs font-medium rounded-full">
+                              Wskazano: TAK
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    ),
+                  )}
+                </div>
               )}
             </div>
           </section>
