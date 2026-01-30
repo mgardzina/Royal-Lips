@@ -438,7 +438,7 @@ export default function LaserForm({ onBack }: LaserFormProps) {
               {showContraindicationsWizard && !isWizardComplete ? (
                 <div
                   key={currentContraindicationIndex}
-                  className="bg-[#f8f6f3] p-6 rounded-xl border border-[#d4cec4]"
+                  className="bg-[#f8f6f3] p-6 rounded-xl border border-[#d4cec4] max-w-2xl mx-auto shadow-sm"
                 >
                   <div className="flex justify-between items-center mb-6">
                     <span className="text-sm font-medium text-[#8b7355]">
@@ -455,28 +455,30 @@ export default function LaserForm({ onBack }: LaserFormProps) {
                     </div>
                   </div>
 
-                  <h4 className="text-xl md:text-2xl font-serif text-[#4a4540] mb-8 min-h-[5rem] flex items-center">
+                  <h4 className="text-xl md:text-2xl font-serif text-[#4a4540] mb-8 min-h-[5rem] flex items-center justify-center text-center">
                     {laserContraindications[currentContraindicationKey]}
                   </h4>
 
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-2 gap-6 max-w-md mx-auto">
                     <button
                       type="button"
                       onClick={() => handleWizardAnswer(false)}
-                      className="py-4 px-6 rounded-xl bg-white border-2 border-[#d4cec4] text-[#6b6560] hover:border-green-500 hover:bg-green-500 hover:text-white transition-all text-lg font-medium shadow-sm hover:shadow-md active:scale-95"
+                      className="py-4 px-6 rounded-xl bg-white border-2 border-[#d4cec4] text-[#6b6560] active:border-green-500 active:bg-green-500 active:text-white md:hover:border-green-500 md:hover:bg-green-500 md:hover:text-white transition-all text-lg font-medium shadow-sm hover:shadow-md active:scale-95 flex flex-col items-center justify-center gap-2"
                     >
+                      <span className="text-2xl">✕</span>
                       NIE
                     </button>
                     <button
                       type="button"
                       onClick={() => handleWizardAnswer(true)}
-                      className="py-4 px-6 rounded-xl bg-white border-2 border-[#d4cec4] text-[#6b6560] hover:border-red-500 hover:bg-red-500 hover:text-white transition-all text-lg font-medium shadow-sm hover:shadow-md active:scale-95"
+                      className="py-4 px-6 rounded-xl bg-white border-2 border-[#d4cec4] text-[#6b6560] active:border-red-500 active:bg-red-500 active:text-white md:hover:border-red-500 md:hover:bg-red-500 md:hover:text-white transition-all text-lg font-medium shadow-sm hover:shadow-md active:scale-95 flex flex-col items-center justify-center gap-2"
                     >
+                      <span className="text-2xl">!</span>
                       TAK
                     </button>
                   </div>
 
-                  <div className="mt-6 flex justify-between items-center">
+                  <div className="mt-8 flex justify-between items-center border-t border-[#d4cec4]/50 pt-6">
                     <button
                       type="button"
                       onClick={() =>
@@ -490,6 +492,9 @@ export default function LaserForm({ onBack }: LaserFormProps) {
                       <ArrowLeft className="w-4 h-4" />
                       Poprzednie
                     </button>
+                    <span className="text-xs text-[#d4cec4] uppercase tracking-wider font-medium">
+                      Krok {currentContraindicationIndex + 1}
+                    </span>
                   </div>
                 </div>
               ) : (
@@ -516,10 +521,10 @@ export default function LaserForm({ onBack }: LaserFormProps) {
                     ([key, label], index) => (
                       <div
                         key={key}
-                        className={`flex items-start gap-4 p-4 rounded-xl transition-colors ${
+                        className={`flex items-center gap-4 p-4 rounded-xl transition-colors ${
                           formData.przeciwwskazania[key]
                             ? "bg-red-50 border border-red-100"
-                            : "bg-white/50 border border-transparent"
+                            : "bg-green-50/50 border border-green-100/50"
                         }`}
                       >
                         <span className="text-[#8b7355] font-medium min-w-[1.5rem] mt-0.5">
@@ -529,9 +534,15 @@ export default function LaserForm({ onBack }: LaserFormProps) {
                           <p className="text-[#5a5550] text-sm leading-relaxed">
                             {label}
                           </p>
-                          {formData.przeciwwskazania[key] && (
-                            <span className="inline-block mt-2 px-3 py-1 bg-red-100 text-red-700 text-xs font-medium rounded-full">
-                              Wskazano: TAK
+                        </div>
+                        <div className="ml-2">
+                          {formData.przeciwwskazania[key] ? (
+                            <span className="inline-flex items-center px-3 py-1 bg-red-100 text-red-700 text-xs font-bold rounded-full border border-red-200 whitespace-nowrap">
+                              TAK
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center px-3 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full border border-green-200 whitespace-nowrap">
+                              NIE
                             </span>
                           )}
                         </div>
