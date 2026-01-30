@@ -5,6 +5,11 @@ import { prisma } from "@/lib/prisma";
 export async function GET() {
   try {
     const clients = await prisma.client.findMany({
+      where: {
+        forms: {
+          some: {},
+        },
+      },
       include: {
         _count: {
           select: { forms: true, notes: true },
