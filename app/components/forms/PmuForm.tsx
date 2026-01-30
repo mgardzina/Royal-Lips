@@ -431,7 +431,10 @@ export default function PmuForm({ onBack }: PmuFormProps) {
 
             <div className="space-y-3">
               {showContraindicationsWizard && !isWizardComplete ? (
-                <div className="bg-[#f8f6f3] p-6 rounded-xl border border-[#d4cec4]">
+                <div
+                  key={currentContraindicationIndex}
+                  className="bg-[#f8f6f3] p-6 rounded-xl border border-[#d4cec4]"
+                >
                   <div className="flex justify-between items-center mb-6">
                     <span className="text-sm font-medium text-[#8b7355]">
                       Pytanie {currentContraindicationIndex + 1} z{" "}
@@ -455,7 +458,7 @@ export default function PmuForm({ onBack }: PmuFormProps) {
                     <button
                       type="button"
                       onClick={() => handleWizardAnswer(false)}
-                      className="py-4 px-6 rounded-xl bg-white border-2 border-[#d4cec4] text-[#6b6560] hover:border-[#8b7355] hover:bg-[#8b7355] hover:text-white transition-all text-lg font-medium shadow-sm hover:shadow-md active:scale-95"
+                      className="py-4 px-6 rounded-xl bg-white border-2 border-[#d4cec4] text-[#6b6560] hover:border-green-500 hover:bg-green-500 hover:text-white transition-all text-lg font-medium shadow-sm hover:shadow-md active:scale-95"
                     >
                       NIE
                     </button>
