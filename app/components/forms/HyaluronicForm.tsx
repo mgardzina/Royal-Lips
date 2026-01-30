@@ -478,7 +478,6 @@ export default function HyaluronicForm({ onBack }: HyaluronicFormProps) {
                       onClick={() => handleWizardAnswer(false)}
                       className="py-4 px-6 rounded-xl bg-white border-2 border-[#d4cec4] text-[#6b6560] active:border-green-500 active:bg-green-500 active:text-white md:hover:border-green-500 md:hover:bg-green-500 md:hover:text-white transition-all text-lg font-medium shadow-sm hover:shadow-md active:scale-95 flex flex-col items-center justify-center gap-2"
                     >
-                      <span className="text-2xl">✕</span>
                       NIE
                     </button>
                     <button
@@ -486,7 +485,6 @@ export default function HyaluronicForm({ onBack }: HyaluronicFormProps) {
                       onClick={() => handleWizardAnswer(true)}
                       className="py-4 px-6 rounded-xl bg-white border-2 border-[#d4cec4] text-[#6b6560] active:border-red-500 active:bg-red-500 active:text-white md:hover:border-red-500 md:hover:bg-red-500 md:hover:text-white transition-all text-lg font-medium shadow-sm hover:shadow-md active:scale-95 flex flex-col items-center justify-center gap-2"
                     >
-                      <span className="text-2xl">!</span>
                       TAK
                     </button>
                   </div>
