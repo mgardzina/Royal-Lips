@@ -23,6 +23,7 @@ export async function POST(request: NextRequest) {
       data: {
         type: body.type || 'HYALURONIC', // Domyślnie Kwas, jeśli brak
         imieNazwisko: body.imieNazwisko,
+        email: body.email || null,
         ulica: body.ulica || null,
         kodPocztowy: body.kodPocztowy || null,
         miasto: body.miasto || null,
