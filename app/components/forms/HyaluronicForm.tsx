@@ -923,133 +923,109 @@ export default function HyaluronicForm({ onBack }: HyaluronicFormProps) {
                   Poniższe zgody są <strong>opcjonalne</strong>.
                 </p>
 
-                <div className="space-y-6">
-                  {/* Zgoda na marketing */}
-                  <div className="p-5 bg-white/50 rounded-xl border border-[#d4cec4]/30">
-                    <label className="flex items-start gap-4 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={formData.zgodaMarketing}
-                        onChange={(e) =>
-                          handleInputChange("zgodaMarketing", e.target.checked)
-                        }
-                        className="w-5 h-5 mt-1 text-[#8b7355] rounded border-[#d4cec4] focus:ring-[#8b7355]"
-                      />
-                      <span className="text-sm text-[#5a5550] leading-relaxed">
-                        <strong>Zgoda Marketingowa:</strong> Wyrażam zgodę na
-                        otrzymywanie informacji o nowościach i promocjach od{" "}
-                        {rodoInfo.firmaNazwa}.
-                      </span>
-                    </label>
-                    {formData.zgodaMarketing && (
-                      <div className="mt-4 ml-9">
-                        <SignaturePad
-                          label="Podpis zgody marketingowej"
-                          value={formData.podpisMarketing}
-                          onChange={(sig) =>
-                            handleInputChange("podpisMarketing", sig)
-                          }
-                          date={formData.miejscowoscData}
-                        />
-                      </div>
-                    )}
+                {/* Zgoda na marketing */}
+                <div className="bg-white/60 backdrop-blur-sm rounded-xl shadow-sm overflow-hidden border border-[#e5e0d8] hover:shadow-md transition-shadow">
+                  <div className="p-6">
+                    <h4 className="font-serif text-[#4a4540] text-lg mb-3">
+                      Zgoda Marketingowa
+                    </h4>
+                    <p className="text-sm text-[#5a5550] leading-relaxed mb-6">
+                      Wyrażam zgodę na otrzymywanie informacji o nowościach,
+                      promocjach i ofertach specjalnych od firmy{" "}
+                      <strong>{rodoInfo.firmaNazwa}</strong> drogą elektroniczną
+                      (SMS / E-mail).
+                    </p>
+                    <SignaturePad
+                      label="Podpis (Zgadzam się)"
+                      value={formData.podpisMarketing}
+                      onChange={(sig) => {
+                        handleInputChange("podpisMarketing", sig);
+                        handleInputChange("zgodaMarketing", !!sig);
+                      }}
+                      date={formData.miejscowoscData}
+                    />
                   </div>
+                </div>
 
-                  {/* Zgoda na wizerunek */}
-                  <div className="p-5 bg-white/50 rounded-xl border border-[#d4cec4]/30">
-                    <label className="flex items-start gap-4 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={formData.zgodaFotografie}
-                        onChange={(e) =>
-                          handleInputChange("zgodaFotografie", e.target.checked)
-                        }
-                        className="w-5 h-5 mt-1 text-[#8b7355] rounded border-[#d4cec4] focus:ring-[#8b7355]"
-                      />
-                      <span className="text-sm text-[#5a5550] leading-relaxed">
-                        <strong>Zgoda na Wizerunek:</strong> Wyrażam zgodę na
-                        publikację efektów zabiegu (zdjęcia) w celach
-                        promocyjnych Royal Lips (np. Social Media).
-                      </span>
-                    </label>
-                    {formData.zgodaFotografie && (
-                      <div className="mt-4 ml-9 space-y-4">
-                        <div>
-                          <label className="block text-sm text-[#6b6560] mb-2 font-medium">
-                            Gdzie możemy publikować? (opcjonalnie)
-                          </label>
-                          <input
-                            type="text"
-                            value={formData.miejscaPublikacjiFotografii}
-                            onChange={(e) =>
-                              handleInputChange(
-                                "miejscaPublikacjiFotografii",
-                                e.target.value,
-                              )
-                            }
-                            className="w-full px-4 py-2 bg-white/80 border border-[#d4cec4] rounded-lg text-sm"
-                            placeholder="np. tylko Instagram"
-                          />
-                        </div>
-                        <SignaturePad
-                          label="Podpis zgody na wizerunek"
-                          value={formData.podpisFotografie}
-                          onChange={(sig) =>
-                            handleInputChange("podpisFotografie", sig)
-                          }
-                          date={formData.miejscowoscData}
-                        />
-                      </div>
-                    )}
-                  </div>
+                {/* Zgoda na wizerunek */}
+                <div className="bg-white/60 backdrop-blur-sm rounded-xl shadow-sm overflow-hidden border border-[#e5e0d8] hover:shadow-md transition-shadow">
+                  <div className="p-6">
+                    <h4 className="font-serif text-[#4a4540] text-lg mb-3">
+                      Zgoda na Wykorzystanie Wizerunku
+                    </h4>
+                    <p className="text-sm text-[#5a5550] leading-relaxed mb-4">
+                      Wyrażam nieodpłatną zgodę na utrwalenie i
+                      rozpowszechnianie mojego wizerunku (zdjęcia/video efektów
+                      zabiegu) w celach promocyjnych salonu Royal Lips.
+                    </p>
 
-                  {/* Zgoda prawna */}
-                  <div className="p-5 bg-white/50 rounded-xl border border-[#d4cec4]/30">
-                    <label className="flex items-start gap-4 cursor-pointer">
+                    <div className="mb-6">
+                      <label className="block text-xs uppercase tracking-wider text-[#8b8580] mb-2 font-medium">
+                        Gdzie możemy publikować? (opcjonalnie)
+                      </label>
                       <input
-                        type="checkbox"
-                        checked={formData.zgodaPomocPrawna}
+                        type="text"
+                        value={formData.miejscaPublikacjiFotografii}
                         onChange={(e) =>
                           handleInputChange(
-                            "zgodaPomocPrawna",
-                            e.target.checked,
+                            "miejscaPublikacjiFotografii",
+                            e.target.value,
                           )
                         }
-                        className="w-5 h-5 mt-1 text-[#8b7355] rounded border-[#d4cec4] focus:ring-[#8b7355]"
+                        className="w-full px-4 py-2 bg-[#f8f6f3] border-b border-[#d4cec4] focus:border-[#8b7355] outline-none text-sm transition-colors text-[#4a4540]"
+                        placeholder="np. Instagram, Facebook (zostaw puste = wszystkie)"
                       />
-                      <span className="text-sm text-[#5a5550] leading-relaxed">
-                        <strong>Pomoc Prawna:</strong> Wyrażam zgodę na
-                        przetwarzanie danych w celu udzielenia pomocy prawnej
-                        (jeśli dotyczy).
-                      </span>
-                    </label>
-                    {formData.zgodaPomocPrawna && (
-                      <div className="mt-4 ml-9">
-                        <SignaturePad
-                          label="Podpis zgody"
-                          value={formData.podpisRodo}
-                          onChange={(sig) =>
-                            handleInputChange("podpisRodo", sig)
-                          }
-                          date={formData.miejscowoscData}
-                        />
-                      </div>
-                    )}
-                  </div>
+                    </div>
 
-                  {/* Informacja dodatkowa */}
-                  <div className="p-5 bg-white/50 rounded-xl border border-[#d4cec4]/30">
-                    <label className="block text-sm text-[#6b6560] mb-2 font-medium">
-                      Uwagi dodatkowe (opcjonalnie)
+                    <SignaturePad
+                      label="Podpis (Zgadzam się)"
+                      value={formData.podpisFotografie}
+                      onChange={(sig) => {
+                        handleInputChange("podpisFotografie", sig);
+                        handleInputChange("zgodaFotografie", !!sig);
+                      }}
+                      date={formData.miejscowoscData}
+                    />
+                  </div>
+                </div>
+
+                {/* Zgoda prawna */}
+                <div className="bg-white/60 backdrop-blur-sm rounded-xl shadow-sm overflow-hidden border border-[#e5e0d8] hover:shadow-md transition-shadow">
+                  <div className="p-6">
+                    <h4 className="font-serif text-[#4a4540] text-lg mb-3">
+                      Zgoda na Pomoc Prawną
+                    </h4>
+                    <p className="text-sm text-[#5a5550] leading-relaxed mb-6">
+                      Wyrażam zgodę na przetwarzanie moich danych osobowych (w
+                      tym danych wrażliwych) przez podmioty świadczące pomoc
+                      prawną na rzecz salonu, w przypadku wystąpienia roszczeń.
+                    </p>
+                    <SignaturePad
+                      label="Podpis (Zgadzam się)"
+                      value={formData.podpisDane}
+                      onChange={(sig) => {
+                        handleInputChange("podpisDane", sig);
+                        handleInputChange("zgodaPomocPrawna", !!sig);
+                      }}
+                      date={formData.miejscowoscData}
+                    />
+                  </div>
+                </div>
+
+                {/* Informacja dodatkowa */}
+                <div className="bg-white/60 backdrop-blur-sm rounded-xl shadow-sm overflow-hidden border border-[#e5e0d8] hover:shadow-md transition-shadow">
+                  <div className="p-6">
+                    <label className="block font-serif text-[#4a4540] text-lg mb-3">
+                      Uwagi Dodatkowe
                     </label>
                     <textarea
                       value={formData.informacjaDodatkowa || ""}
                       onChange={(e) =>
                         handleInputChange("informacjaDodatkowa", e.target.value)
                       }
-                      className="w-full px-4 py-3 bg-white/80 border border-[#d4cec4] rounded-xl focus:border-[#8b7355] focus:ring-2 focus:ring-[#8b7355]/20 outline-none transition-all"
+                      className="w-full px-4 py-3 bg-[#f8f6f3] border-b border-[#d4cec4] focus:border-[#8b7355] outline-none transition-all resize-none rounded-t-lg"
                       placeholder="Np. uwagi co do terminu, prośby..."
-                      rows={2}
+                      rows={3}
                     />
                   </div>
                 </div>

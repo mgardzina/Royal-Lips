@@ -39,41 +39,52 @@ export default function SignaturePad({
   };
 
   return (
-    <div className="space-y-2">
-      <label className="block text-sm text-[#6b6560] font-medium">
-        {label} {required && "*"}
-      </label>
-      <div className="border border-[#d4cec4] rounded-xl overflow-hidden bg-white">
-        <div style={{ height: "112px", width: "100%" }}>
-          <SignatureCanvas
-            ref={sigCanvas}
-            canvasProps={{
-              className: "w-full h-full touch-none block",
-            }}
-            backgroundColor="rgb(255, 255, 255)"
-            penColor="#6b6560"
-            minWidth={0.5}
-            maxWidth={1.5}
-            onEnd={handleEnd}
-          />
-        </div>
+    <div className="space-y-4">
+      <div className="flex justify-between items-end">
+        <label className="block text-sm text-[#6b6560] font-medium uppercase tracking-wide">
+          {label} {required && "*"}
+        </label>
+        {date && (
+          <p className="text-xs text-[#6b6560] font-serif italic">{date}</p>
+        )}
       </div>
-      <div className="flex justify-between items-center">
-        <div className="flex items-center gap-4">
-          <p className="text-xs text-[#8b8580]">Podpisz myszką lub palcem</p>
-          {date && (
-            <p className="text-xs text-[#6b6560]">
-              Data: <span className="font-medium">{date}</span>
-            </p>
-          )}
+
+      <div className="relative group">
+        <div className="rounded-xl overflow-hidden bg-[#faf9f6]">
+          <div style={{ height: "160px", width: "100%" }}>
+            <SignatureCanvas
+              ref={sigCanvas}
+              canvasProps={{
+                className: "w-full h-full touch-none block",
+              }}
+              backgroundColor="transparent"
+              penColor="#4a4540"
+              minWidth={0.5}
+              maxWidth={1.2} // Thinner, more elegant line
+              onEnd={handleEnd}
+            />
+          </div>
         </div>
-        <button
-          type="button"
-          onClick={handleClear}
-          className="text-xs text-[#8b7355] hover:text-[#6b5540] transition-colors"
-        >
-          Wyczyść
-        </button>
+
+        {/* Helper text / Clear button inside/below */}
+        <div className="absolute bottom-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+          <button
+            type="button"
+            onClick={handleClear}
+            className="text-xs bg-white/80 px-2 py-1 rounded shadow-sm text-[#8b7355] hover:text-[#6b5540] transition-colors"
+          >
+            Wyczyść
+          </button>
+        </div>
+
+        {/* Placeholder text if empty? No, standard line is better. */}
+        {!value && (
+          <div className="absolute bottom-4 left-4 pointer-events-none select-none">
+            <span className="text-[#d4cec4] text-xs uppercase tracking-widest border-t border-[#d4cec4] pt-1">
+              Podpisz tutaj
+            </span>
+          </div>
+        )}
       </div>
     </div>
   );
