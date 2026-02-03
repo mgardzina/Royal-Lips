@@ -95,6 +95,17 @@ export default function ClientDetailsPage({
   const [isSubmittingNote, setIsSubmittingNote] = useState(false);
   const [clientId, setClientId] = useState<string>("");
 
+  // History State
+  interface TreatmentHistory {
+    id: string;
+    date: string;
+    description: string;
+  }
+  const [history, setHistory] = useState<TreatmentHistory[]>([]);
+  const [newHistory, setNewHistory] = useState({ date: "", description: "" });
+  const [isAddingHistory, setIsAddingHistory] = useState(false);
+  const [showAddHistoryForm, setShowAddHistoryForm] = useState(false);
+
   useEffect(() => {
     params.then((p) => setClientId(p.id));
   }, [params]);
@@ -146,6 +157,53 @@ export default function ClientDetailsPage({
       console.error("Błąd dodawania notatki:", error);
     } finally {
       setIsSubmittingNote(false);
+    }
+  };
+
+  const fetchHistory = async () => {
+    try {
+      const response = await fetch(`/api/clients/${clientId}/history`);
+      if (response.ok) {
+        const data = await response.json();
+        setHistory(data);
+      }
+    } catch (error) {
+      console.error("Error fetching history:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (clientId) {
+      fetchHistory();
+    }
+  }, [clientId]);
+
+  const handleAddHistory = async () => {
+    if (!newHistory.date || !newHistory.description) return;
+
+    setIsAddingHistory(true);
+    try {
+      const response = await fetch(`/api/clients/${clientId}/history`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newHistory),
+      });
+
+      if (response.ok) {
+        await fetchHistory();
+        setNewHistory({ date: "", description: "" });
+      } else {
+        const err = await response.json();
+        if (err.error?.includes("Client has no forms")) {
+          alert(
+            "Klientka nie ma jeszcze żadnego formularza. Wypełnij najpierw formularz, aby dodać historię.",
+          );
+        }
+      }
+    } catch (error) {
+      console.error("Error adding history:", error);
+    } finally {
+      setIsAddingHistory(false);
     }
   };
 
@@ -345,19 +403,217 @@ export default function ClientDetailsPage({
         </div>
 
         {/* Prawa kolumna - Historia zabiegów */}
-        <div className="lg:col-span-2">
+        <div className="lg:col-span-2 space-y-8">
+          {/* Sekcja dodawania nowej wizyty (Szybka akcja) - widoczna tylko po kliknięciu */}
+          {showAddHistoryForm && (
+            <div className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8 border border-[#d4cec4] animate-in fade-in slide-in-from-top-2 duration-300">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-xl font-serif text-[#4a4540] flex items-center gap-2">
+                  <FileText className="w-6 h-6 text-[#8b7355]" />
+                  Dodaj nową wizytę
+                </h2>
+                <button
+                  onClick={() => setShowAddHistoryForm(false)}
+                  className="text-[#8b8580] hover:text-[#4a4540] transition-colors"
+                >
+                  Anuluj
+                </button>
+              </div>
+
+              <div className="bg-white/80 rounded-xl p-5 shadow-sm border border-[#d4cec4]">
+                <div className="grid gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <label className="block text-xs font-medium text-[#8b8580] mb-1 uppercase tracking-wider">
+                        Data wizyty
+                      </label>
+                      <input
+                        type="datetime-local"
+                        value={newHistory.date}
+                        onChange={(e) =>
+                          setNewHistory({ ...newHistory, date: e.target.value })
+                        }
+                        className="w-full px-3 py-2 bg-[#f8f6f3] border border-[#d4cec4] rounded-lg focus:border-[#8b7355] outline-none text-sm"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-[#8b8580] mb-1 uppercase tracking-wider">
+                        Adnotacja (np. 2. zabieg)
+                      </label>
+                      <input
+                        type="text"
+                        value={newHistory.description.split(" | ")[0] || ""}
+                        onChange={(e) => {
+                          const parts = newHistory.description.split(" | ");
+                          let area = "";
+                          let details = "";
+
+                          if (parts.length === 3) {
+                            area = parts[1];
+                            details = parts[2];
+                          } else if (parts.length === 2) {
+                            area = parts[0];
+                            details = parts[1];
+                          } else {
+                            details = parts[0];
+                          }
+
+                          setNewHistory({
+                            ...newHistory,
+                            description: `${e.target.value} | ${area} | ${details}`,
+                          });
+                        }}
+                        placeholder="np. Zabieg przypominający"
+                        className="w-full px-3 py-2 bg-[#f8f6f3] border border-[#d4cec4] rounded-lg focus:border-[#8b7355] outline-none text-sm"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-[#8b8580] mb-1 uppercase tracking-wider">
+                        Obszar / Zabieg
+                      </label>
+                      <input
+                        type="text"
+                        value={
+                          newHistory.description.includes(" | ")
+                            ? newHistory.description.split(" | ").length === 3
+                              ? newHistory.description.split(" | ")[1]
+                              : newHistory.description.split(" | ")[0]
+                            : ""
+                        }
+                        onChange={(e) => {
+                          const parts = newHistory.description.split(" | ");
+                          let annotation = "";
+                          let details = "";
+
+                          if (parts.length === 3) {
+                            annotation = parts[0];
+                            details = parts[2];
+                          } else if (parts.length === 2) {
+                            details = parts[1];
+                          } else {
+                            details = parts[0];
+                          }
+
+                          setNewHistory({
+                            ...newHistory,
+                            description: `${annotation} | ${e.target.value} | ${details}`,
+                          });
+                        }}
+                        placeholder="np. Usta"
+                        className="w-full px-3 py-2 bg-[#f8f6f3] border border-[#d4cec4] rounded-lg focus:border-[#8b7355] outline-none text-sm"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-medium text-[#8b8580] mb-1 uppercase tracking-wider">
+                      Szczegóły (Preparat, Efekt, Uwagi)
+                    </label>
+                    <textarea
+                      value={
+                        newHistory.description.includes(" | ")
+                          ? newHistory.description.split(" | ").length === 3
+                            ? newHistory.description.split(" | ")[2]
+                            : newHistory.description.split(" | ")[1]
+                          : newHistory.description
+                      }
+                      onChange={(e) => {
+                        const parts = newHistory.description.split(" | ");
+                        let annotation = "";
+                        let area = "";
+
+                        if (parts.length === 3) {
+                          annotation = parts[0];
+                          area = parts[1];
+                        } else if (parts.length === 2) {
+                          area = parts[0];
+                        }
+
+                        setNewHistory({
+                          ...newHistory,
+                          description: `${annotation} | ${area} | ${e.target.value}`,
+                        });
+                      }}
+                      className="w-full px-3 py-2 bg-[#f8f6f3] border border-[#d4cec4] rounded-lg focus:border-[#8b7355] outline-none text-sm h-20 resize-none"
+                      placeholder="np. Stylage M 1ml, efekt naturalny..."
+                    />
+                  </div>
+
+                  <button
+                    onClick={async () => {
+                      await handleAddHistory();
+                      setShowAddHistoryForm(false);
+                    }}
+                    disabled={isAddingHistory || !newHistory.date}
+                    className="mt-2 bg-[#8b7355] text-white py-2 px-6 rounded-lg text-sm font-medium hover:bg-[#7a6548] disabled:opacity-50 disabled:cursor-not-allowed transition-colors self-start"
+                  >
+                    {isAddingHistory ? "Zapisywanie..." : "+ Zapisz wizytę"}
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Lista Historii */}
           <div className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg overflow-hidden">
             <div className="p-4 md:p-6 border-b border-[#d4cec4]">
               <h2 className="text-xl font-serif text-[#4a4540] flex items-center gap-2">
-                <FileText className="w-5 h-5 text-[#8b7355]" />
-                Historia zabiegów ({client.forms.length})
+                <Calendar className="w-5 h-5 text-[#8b7355]" />
+                Historia wizyt
+              </h2>
+              <button
+                onClick={() => setShowAddHistoryForm(!showAddHistoryForm)}
+                className="bg-[#8b7355] text-white px-3 py-1.5 rounded-lg text-xs font-medium hover:bg-[#7a6548] transition-colors flex items-center gap-1"
+              >
+                <Plus className="w-3 h-3" />
+                Dodaj wizytę
+              </button>
+            </div>
+
+            <div className="max-h-[600px] overflow-y-auto p-4 space-y-4">
+              {history.length === 0 ? (
+                <p className="text-center text-[#8b8580] py-8 italic">
+                  Brak zapisanej historii dla tej klientki.
+                </p>
+              ) : (
+                history.map((entry) => (
+                  <div
+                    key={entry.id}
+                    className="bg-white rounded-xl p-5 border border-[#e5e0d8] shadow-sm hover:shadow-md transition-shadow"
+                  >
+                    <div className="flex justify-between items-start mb-2">
+                      <span className="text-[#8b7355] font-serif font-medium text-lg">
+                        {new Date(entry.date).toLocaleDateString("pl-PL", {
+                          day: "numeric",
+                          month: "long",
+                          year: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                      </span>
+                    </div>
+                    <p className="text-[#5a5550] whitespace-pre-wrap leading-relaxed text-sm">
+                      {entry.description}
+                    </p>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+
+          {/* Lista wypełnionych Formularzy (Tylko do podglądu) */}
+          <div className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg overflow-hidden opacity-80 hover:opacity-100 transition-opacity">
+            <div className="p-4 md:p-6 border-b border-[#d4cec4]">
+              <h2 className="text-lg font-serif text-[#4a4540] flex items-center gap-2">
+                <FileText className="w-5 h-5 text-[#8b8580]" />
+                Archiwum Formularzy ({client.forms.length})
               </h2>
             </div>
 
             <div className="divide-y divide-[#d4cec4]">
               {client.forms.length === 0 ? (
                 <div className="p-12 text-center text-[#8b8580]">
-                  Brak historii zabiegów
+                  Brak formularzy
                 </div>
               ) : (
                 client.forms.map((form) => (
