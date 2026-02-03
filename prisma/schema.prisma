@@ -29,9 +29,9 @@ model Client {
 }
 
 enum NoteCategory {
-  NOTATKA   // Ogólna notatka
-  ALERGIA   // Alergie i przeciwwskazania
-  UWAGA     // Ważne uwagi
+  NOTATKA // Ogólna notatka
+  ALERGIA // Alergie i przeciwwskazania
+  UWAGA // Ważne uwagi
   PREFERENCJA // Preferencje klientki
 }
 
@@ -76,6 +76,7 @@ model ConsentForm {
   zgodaPrzetwarzanieDanych    Boolean
   zgodaMarketing              Boolean
   zgodaFotografie             Boolean
+  zgodaPomocPrawna            Boolean @default(false)
   miejscaPublikacjiFotografii String?
 
   // Podpisy (base64 images - duże teksty)
@@ -84,9 +85,34 @@ model ConsentForm {
   podpisFotografie String? @db.Text
   podpisRodo       String? @db.Text
 
+  // Dodatkowe informacje
+  informacjaDodatkowa         String?
+  zastrzeniaKlienta           String?
+  numerZabiegu                String?
+  osobaPrzeprowadzajacaZabieg String?
+
+  // Digital Signature & Audit Log (Art. 78¹ KC - Forma Dokumentowa)
+  signatureStatus     String?   @default("PENDING") // PENDING, VERIFIED, SIGNED
+  signatureVerifiedAt DateTime?
+  auditLog            Json? // Pełny audit log dla zgodności prawnej
+
   // Relacja z klientką
   clientId String?
   client   Client? @relation(fields: [clientId], references: [id])
+}
+
+// Tymczasowe przechowywanie kodów OTP
+model OtpVerification {
+  id          String   @id @default(uuid())
+  phoneNumber String
+  code        String
+  formId      String? // Opcjonalne powiązanie z formularzem
+  expiresAt   DateTime
+  verified    Boolean  @default(false)
+  attempts    Int      @default(0)
+  createdAt   DateTime @default(now())
+
+  @@index([phoneNumber, code])
 }
 
 model AdminUser {

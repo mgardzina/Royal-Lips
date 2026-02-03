@@ -45,7 +45,3 @@ next-env.d.ts
 # documentation
 *.md
 !README.md
-
-# supabase (not used)
-supabase
-supabase-schema.sql

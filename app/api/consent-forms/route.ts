@@ -37,12 +37,21 @@ export async function POST(request: NextRequest) {
         zgodaPrzetwarzanieDanych: Boolean(body.zgodaPrzetwarzanieDanych),
         zgodaMarketing: Boolean(body.zgodaMarketing),
         zgodaFotografie: Boolean(body.zgodaFotografie),
+        zgodaPomocPrawna: Boolean(body.zgodaPomocPrawna),
         miejscaPublikacjiFotografii: body.miejscaPublikacjiFotografii || null,
         podpisDane: body.podpisDane || null,
         podpisMarketing: body.podpisMarketing || null,
         podpisFotografie: body.podpisFotografie || null,
         podpisRodo: body.podpisRodo || null,
+        informacjaDodatkowa: body.informacjaDodatkowa || null,
+        zastrzeniaKlienta: body.zastrzeniaKlienta || null,
+        numerZabiegu: body.numerZabiegu || null,
+        osobaPrzeprowadzajacaZabieg: body.osobaPrzeprowadzajacaZabieg || null,
         clientId: client.id, // Powiązanie z klientką
+        // Digital Signature & Audit Log (Art. 78¹ KC - Forma Dokumentowa)
+        signatureStatus: body.signatureStatus || 'PENDING',
+        signatureVerifiedAt: body.auditLog?.signedAt ? new Date(body.auditLog.signedAt) : null,
+        auditLog: body.auditLog || null,
       },
     });
 
