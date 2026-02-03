@@ -198,12 +198,17 @@ export default function ClientDetailsPage({
         return true;
       } else {
         const err = await response.json();
+        console.error("API Error Response:", err);
         if (err.error?.includes("Client has no forms")) {
           alert(
             "Klientka nie ma jeszcze żadnego formularza. Wypełnij najpierw formularz, aby dodać historię.",
           );
         } else {
-          alert(`Błąd zapisu: ${err.error || "Nieznany błąd"}`);
+          let msg = `Błąd zapisu: ${err.error || "Nieznany błąd"}`;
+          if (err.details) {
+            msg += `\n\nSzczegóły:\n${err.details}`;
+          }
+          alert(msg);
         }
         return false;
       }
