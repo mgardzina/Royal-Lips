@@ -52,14 +52,17 @@ export async function POST(
   }
 
   const { id } = await params;
+  
+  console.error("[API] POST /api/clients/[id]/history - START", { clientId: id });
 
   try {
     const body = await request.json();
     const { date, description } = body;
     
-    console.log("[API] Add visit request:", { clientId: id, date, description });
+    console.error("[API] Add visit request:", { clientId: id, date, description });
 
     if (!date || !description) {
+      console.error("[API] Missing date or description");
       return NextResponse.json(
         { error: "Date and description are required" },
         { status: 400 }
@@ -69,7 +72,7 @@ export async function POST(
     // Parse manual date format: DD.MM.YYYY HH:MM
     let parsedDate: Date;
     try {
-      console.log("[API] Parsing date:", date);
+      console.error("[API] Parsing date:", date);
       // Try parsing DD.MM.YYYY HH:MM format
       const match = date.match(/^(\d{2})\.(\d{2})\.(\d{4})\s+(\d{2}):(\d{2})$/);
       if (match) {
@@ -81,15 +84,15 @@ export async function POST(
           parseInt(hour),
           parseInt(minute)
         );
-        console.log("[API] Date parsed successfully:", parsedDate);
+        console.error("[API] Date parsed successfully:", parsedDate);
       } else {
         // Fallback to ISO format
-        console.log("[API] Using ISO fallback");
+        console.error("[API] Using ISO fallback");
         parsedDate = new Date(date);
       }
       
       if (isNaN(parsedDate.getTime())) {
-        console.log("[API] Invalid date after parsing");
+        console.error("[API] Invalid date after parsing");
         return NextResponse.json(
           { error: "Invalid date format. Use DD.MM.YYYY HH:MM" },
           { status: 400 }
@@ -103,7 +106,7 @@ export async function POST(
       );
     }
 
-    console.log("[API] Finding latest form for client:", id);
+    console.error("[API] Finding latest form for client:", id);
     // 1. Find the MOST RECENT form for this client to attach history to
     const latestForm = await prisma.consentForm.findFirst({
       where: { clientId: id },
@@ -111,15 +114,15 @@ export async function POST(
     });
 
     if (!latestForm) {
-      console.log("[API] No forms found for client");
+      console.error("[API] No forms found for client");
       return NextResponse.json(
         { error: "Client has no forms. Cannot attach history." },
         { status: 404 }
       );
     }
     
-    console.log("[API] Found form:", latestForm.id);
-    console.log("[API] Creating history entry...");
+    console.error("[API] Found form:", latestForm.id);
+    console.error("[API] Creating history entry...");
 
     // 2. Create history entry attached to the latest form
     const newEntry = await prisma.treatmentHistory.create({
@@ -130,7 +133,7 @@ export async function POST(
       },
     });
     
-    console.log("[API] History entry created successfully:", newEntry.id);
+    console.error("[API] History entry created successfully:", newEntry.id);
 
     return NextResponse.json(newEntry);
   } catch (error) {
