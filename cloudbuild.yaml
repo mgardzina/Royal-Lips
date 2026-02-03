@@ -45,8 +45,7 @@ steps:
       - '10'
       - '--port'
       - '8080'
-      - '--set-env-vars'
-      - 'NODE_ENV=production'
+
 
 images:
   - 'gcr.io/$PROJECT_ID/royal-lips:$COMMIT_SHA'
