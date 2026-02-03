@@ -49,11 +49,13 @@ interface ConsentFormFull {
   zgodaPrzetwarzanieDanych: boolean;
   zgodaMarketing: boolean;
   zgodaFotografie: boolean;
+  zgodaPomocPrawna: boolean;
   miejscaPublikacjiFotografii: string | null;
   podpisDane: string | null;
   podpisMarketing: string | null;
   podpisFotografie: string | null;
   podpisRodo: string | null;
+  informacjaDodatkowa: string | null;
   clientId: string | null;
 }
 
@@ -72,6 +74,9 @@ export default function FormDetailsPage() {
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [editedForm, setEditedForm] = useState<Partial<ConsentFormFull>>({});
+  const [activeTab, setActiveTab] = useState<
+    "details" | "contraindications" | "consents"
+  >("details");
 
   useEffect(() => {
     fetchForm();
@@ -228,7 +233,7 @@ export default function FormDetailsPage() {
       </header>
 
       <main className="max-w-4xl mx-auto px-4 py-8 space-y-6">
-        {/* Header Info */}
+        {/* Header Info - Always Visible */}
         <div className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-4 md:p-8">
           <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-6">
             <div>
@@ -363,265 +368,369 @@ export default function FormDetailsPage() {
           </div>
         </div>
 
-        {/* Procedure Details */}
-        <div className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-4 md:p-8">
-          <h2 className="text-xl font-serif text-[#4a4540] mb-4 pb-3 border-b border-[#d4cec4]">
+        {/* Tabs Navigation */}
+        <div className="flex gap-2 border-b border-[#d4cec4] overflow-x-auto pb-1">
+          <button
+            onClick={() => setActiveTab("details")}
+            className={`px-4 py-2 text-sm font-medium transition-colors whitespace-nowrap ${
+              activeTab === "details"
+                ? "text-[#8b7355] border-b-2 border-[#8b7355]"
+                : "text-[#8b8580] hover:text-[#4a4540]"
+            }`}
+          >
             Szczegóły zabiegu
-          </h2>
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-[#8b8580] mb-1">
-                Preparat
-              </label>
-              {isEditing ? (
-                <input
-                  type="text"
-                  value={editedForm.nazwaProduktu || ""}
-                  onChange={(e) =>
-                    setEditedForm({
-                      ...editedForm,
-                      nazwaProduktu: e.target.value,
-                    })
-                  }
-                  className="w-full px-3 py-2 bg-white border border-[#d4cec4] rounded-lg focus:border-[#8b7355] focus:ring-2 focus:ring-[#8b7355]/20 outline-none"
-                  placeholder="Nazwa preparatu"
-                />
-              ) : (
-                <p className="text-[#5a5550]">
-                  {cleanNazwaProduktu(form.nazwaProduktu) || "Nie podano"}
-                </p>
-              )}
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-[#8b8580] mb-1">
-                Obszar zabiegu
-              </label>
-              {isEditing ? (
-                <input
-                  type="text"
-                  value={editedForm.obszarZabiegu || ""}
-                  onChange={(e) =>
-                    setEditedForm({
-                      ...editedForm,
-                      obszarZabiegu: e.target.value,
-                    })
-                  }
-                  className="w-full px-3 py-2 bg-white border border-[#d4cec4] rounded-lg focus:border-[#8b7355] focus:ring-2 focus:ring-[#8b7355]/20 outline-none"
-                  placeholder="Obszar zabiegu"
-                />
-              ) : (
-                <p className="text-[#5a5550]">
-                  {form.obszarZabiegu || "Nie podano"}
-                </p>
-              )}
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-[#8b8580] mb-1">
-                Cel / efekt
-              </label>
-              {isEditing ? (
-                <textarea
-                  value={editedForm.celEfektu || ""}
-                  onChange={(e) =>
-                    setEditedForm({ ...editedForm, celEfektu: e.target.value })
-                  }
-                  className="w-full px-3 py-2 bg-white border border-[#d4cec4] rounded-lg focus:border-[#8b7355] focus:ring-2 focus:ring-[#8b7355]/20 outline-none resize-none h-20"
-                  placeholder="Cel zabiegu"
-                />
-              ) : (
-                <p className="text-[#5a5550]">
-                  {form.celEfektu || "Nie podano"}
-                </p>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* Contraindications */}
-        <div className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-4 md:p-8">
-          <h2 className="text-xl font-serif text-[#4a4540] mb-4 pb-3 border-b border-[#d4cec4]">
+          </button>
+          <button
+            onClick={() => setActiveTab("contraindications")}
+            className={`px-4 py-2 text-sm font-medium transition-colors whitespace-nowrap ${
+              activeTab === "contraindications"
+                ? "text-[#8b7355] border-b-2 border-[#8b7355]"
+                : "text-[#8b8580] hover:text-[#4a4540]"
+            }`}
+          >
             Przeciwwskazania
-          </h2>
-          <div className="space-y-2">
-            {Object.entries(form.przeciwwskazania).map(([key, value]) => {
-              const labels =
-                contraindicationsByFormType[form.type as FormType] ||
-                contraindicationsByFormType["HYALURONIC"];
-              const label = labels[key] || key;
-              const currentValue = editedForm.przeciwwskazania?.[key] ?? value;
+          </button>
+          <button
+            onClick={() => setActiveTab("consents")}
+            className={`px-4 py-2 text-sm font-medium transition-colors whitespace-nowrap ${
+              activeTab === "consents"
+                ? "text-[#8b7355] border-b-2 border-[#8b7355]"
+                : "text-[#8b8580] hover:text-[#4a4540]"
+            }`}
+          >
+            Zgody i Podpisy
+          </button>
+        </div>
 
-              return (
-                <div
-                  key={key}
-                  className="flex items-center gap-3 py-2 border-b border-[#f0ebe4] last:border-0"
-                >
-                  {isEditing ? (
-                    <div className="flex gap-1 flex-shrink-0">
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setEditedForm({
-                            ...editedForm,
-                            przeciwwskazania: {
-                              ...editedForm.przeciwwskazania,
-                              [key]: true,
-                            },
-                          })
-                        }
-                        className={`min-w-[40px] text-center px-2 py-1 text-xs rounded font-medium transition-colors ${
-                          currentValue === true
-                            ? "bg-red-500 text-white"
-                            : "bg-red-100 text-red-600 hover:bg-red-200"
-                        }`}
-                      >
-                        TAK
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setEditedForm({
-                            ...editedForm,
-                            przeciwwskazania: {
-                              ...editedForm.przeciwwskazania,
-                              [key]: false,
-                            },
-                          })
-                        }
-                        className={`min-w-[40px] text-center px-2 py-1 text-xs rounded font-medium transition-colors ${
-                          currentValue === false
-                            ? "bg-green-500 text-white"
-                            : "bg-green-100 text-green-600 hover:bg-green-200"
-                        }`}
-                      >
-                        NIE
-                      </button>
-                    </div>
-                  ) : (
-                    <>
-                      {value === true ? (
-                        <span className="min-w-[44px] text-center px-2 py-1 bg-red-100 text-red-600 text-xs rounded font-medium flex-shrink-0">
+        {/* Tab Content: Details */}
+        {activeTab === "details" && (
+          <div className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-4 md:p-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
+            <h2 className="text-xl font-serif text-[#4a4540] mb-4 pb-3 border-b border-[#d4cec4]">
+              Szczegóły zabiegu
+            </h2>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-[#8b8580] mb-1">
+                  Preparat
+                </label>
+                {isEditing ? (
+                  <input
+                    type="text"
+                    value={editedForm.nazwaProduktu || ""}
+                    onChange={(e) =>
+                      setEditedForm({
+                        ...editedForm,
+                        nazwaProduktu: e.target.value,
+                      })
+                    }
+                    className="w-full px-3 py-2 bg-white border border-[#d4cec4] rounded-lg focus:border-[#8b7355] focus:ring-2 focus:ring-[#8b7355]/20 outline-none"
+                    placeholder="Nazwa preparatu"
+                  />
+                ) : (
+                  <p className="text-[#5a5550]">
+                    {cleanNazwaProduktu(form.nazwaProduktu) || "Nie podano"}
+                  </p>
+                )}
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-[#8b8580] mb-1">
+                  Obszar zabiegu
+                </label>
+                {isEditing ? (
+                  <input
+                    type="text"
+                    value={editedForm.obszarZabiegu || ""}
+                    onChange={(e) =>
+                      setEditedForm({
+                        ...editedForm,
+                        obszarZabiegu: e.target.value,
+                      })
+                    }
+                    className="w-full px-3 py-2 bg-white border border-[#d4cec4] rounded-lg focus:border-[#8b7355] focus:ring-2 focus:ring-[#8b7355]/20 outline-none"
+                    placeholder="Obszar zabiegu"
+                  />
+                ) : (
+                  <p className="text-[#5a5550]">
+                    {form.obszarZabiegu || "Nie podano"}
+                  </p>
+                )}
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-[#8b8580] mb-1">
+                  Cel / efekt
+                </label>
+                {isEditing ? (
+                  <textarea
+                    value={editedForm.celEfektu || ""}
+                    onChange={(e) =>
+                      setEditedForm({
+                        ...editedForm,
+                        celEfektu: e.target.value,
+                      })
+                    }
+                    className="w-full px-3 py-2 bg-white border border-[#d4cec4] rounded-lg focus:border-[#8b7355] focus:ring-2 focus:ring-[#8b7355]/20 outline-none resize-none h-20"
+                    placeholder="Cel zabiegu"
+                  />
+                ) : (
+                  <p className="text-[#5a5550]">
+                    {form.celEfektu || "Nie podano"}
+                  </p>
+                )}
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-[#8b8580] mb-1">
+                  Uwagi Dodatkowe
+                </label>
+                <div className="bg-[#f8f6f3] p-3 rounded-lg border border-[#d4cec4] min-h-[60px]">
+                  <p className="text-[#5a5550] text-sm">
+                    {form.informacjaDodatkowa || "Brak uwag"}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Tab Content: Contraindications */}
+        {activeTab === "contraindications" && (
+          <div className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-4 md:p-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
+            <h2 className="text-xl font-serif text-[#4a4540] mb-4 pb-3 border-b border-[#d4cec4]">
+              Przeciwwskazania
+            </h2>
+            <div className="space-y-2">
+              {Object.entries(form.przeciwwskazania).map(([key, value]) => {
+                const labels =
+                  contraindicationsByFormType[form.type as FormType] ||
+                  contraindicationsByFormType["HYALURONIC"];
+                const label = labels[key] || key;
+                const currentValue =
+                  editedForm.przeciwwskazania?.[key] ?? value;
+
+                return (
+                  <div
+                    key={key}
+                    className="flex items-center gap-3 py-2 border-b border-[#f0ebe4] last:border-0"
+                  >
+                    {isEditing ? (
+                      <div className="flex gap-1 flex-shrink-0">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setEditedForm({
+                              ...editedForm,
+                              przeciwwskazania: {
+                                ...editedForm.przeciwwskazania,
+                                [key]: true,
+                              },
+                            })
+                          }
+                          className={`min-w-[40px] text-center px-2 py-1 text-xs rounded font-medium transition-colors ${
+                            currentValue === true
+                              ? "bg-red-500 text-white"
+                              : "bg-red-100 text-red-600 hover:bg-red-200"
+                          }`}
+                        >
                           TAK
-                        </span>
-                      ) : value === false ? (
-                        <span className="min-w-[44px] text-center px-2 py-1 bg-green-100 text-green-600 text-xs rounded font-medium flex-shrink-0">
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setEditedForm({
+                              ...editedForm,
+                              przeciwwskazania: {
+                                ...editedForm.przeciwwskazania,
+                                [key]: false,
+                              },
+                            })
+                          }
+                          className={`min-w-[40px] text-center px-2 py-1 text-xs rounded font-medium transition-colors ${
+                            currentValue === false
+                              ? "bg-green-500 text-white"
+                              : "bg-green-100 text-green-600 hover:bg-green-200"
+                          }`}
+                        >
                           NIE
-                        </span>
-                      ) : (
-                        <span className="min-w-[44px] text-center px-2 py-1 bg-gray-100 text-gray-500 text-xs rounded font-medium flex-shrink-0">
-                          -
-                        </span>
-                      )}
-                    </>
-                  )}
-                  <span className="text-sm text-[#5a5550]">{label}</span>
-                </div>
-              );
-            })}
+                        </button>
+                      </div>
+                    ) : (
+                      <>
+                        {value === true ? (
+                          <span className="min-w-[44px] text-center px-2 py-1 bg-red-100 text-red-600 text-xs rounded font-medium flex-shrink-0">
+                            TAK
+                          </span>
+                        ) : value === false ? (
+                          <span className="min-w-[44px] text-center px-2 py-1 bg-green-100 text-green-600 text-xs rounded font-medium flex-shrink-0">
+                            NIE
+                          </span>
+                        ) : (
+                          <span className="min-w-[44px] text-center px-2 py-1 bg-gray-100 text-gray-500 text-xs rounded font-medium flex-shrink-0">
+                            -
+                          </span>
+                        )}
+                      </>
+                    )}
+                    <span className="text-sm text-[#5a5550]">{label}</span>
+                  </div>
+                );
+              })}
+            </div>
           </div>
-        </div>
+        )}
 
-        {/* Consents */}
-        <div className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-4 md:p-8">
-          <h2 className="text-xl font-serif text-[#4a4540] mb-4 pb-3 border-b border-[#d4cec4]">
-            Zgody
-          </h2>
-          <div className="space-y-4">
-            <div className="flex items-center gap-3">
-              {form.zgodaPrzetwarzanieDanych ? (
-                <Check className="w-5 h-5 text-green-500" />
-              ) : (
-                <X className="w-5 h-5 text-red-500" />
-              )}
-              <span className="text-[#5a5550]">
-                Zgoda na przetwarzanie danych
-              </span>
-            </div>
-            <div className="flex items-center gap-3">
-              {form.zgodaMarketing ? (
-                <Check className="w-5 h-5 text-green-500" />
-              ) : (
-                <X className="w-5 h-5 text-red-500" />
-              )}
-              <span className="text-[#5a5550]">Zgoda marketingowa</span>
-            </div>
-            <div className="flex items-center gap-3">
-              {form.zgodaFotografie ? (
-                <Check className="w-5 h-5 text-green-500" />
-              ) : (
-                <X className="w-5 h-5 text-red-500" />
-              )}
-              <span className="text-[#5a5550]">Zgoda na fotografie</span>
-              {form.zgodaFotografie && form.miejscaPublikacjiFotografii && (
-                <span className="text-sm text-[#8b8580]">
-                  ({form.miejscaPublikacjiFotografii})
+        {/* Tab Content: Consents & Signatures (New Card Style) */}
+        {activeTab === "consents" && (
+          <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
+            {/* RODO / Główne */}
+            <div className="bg-white/80 rounded-2xl shadow-sm border border-[#d4cec4] p-6">
+              <div className="flex justify-between items-center mb-4 border-b border-[#f0ebe4] pb-2">
+                <h3 className="text-lg font-serif text-[#4a4540]">
+                  Oświadczenia i RODO
+                </h3>
+                <span
+                  className={`px-3 py-1 rounded-full text-xs font-medium ${form.podpisRodo ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}
+                >
+                  {form.podpisRodo ? "PODPISANO" : "BRAK ZGODY/PODPISU"}
                 </span>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* Signatures */}
-        <div className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-4 md:p-8">
-          <h2 className="text-xl font-serif text-[#4a4540] mb-4 pb-3 border-b border-[#d4cec4]">
-            Podpisy
-          </h2>
-          <div className="grid md:grid-cols-2 gap-6">
-            {form.podpisDane && (
-              <div>
-                <p className="text-sm text-[#8b8580] mb-2">
-                  Podpis - zgoda na dane
-                </p>
-                <div className="bg-white rounded-xl p-2 border border-[#d4cec4]">
-                  <img
-                    src={form.podpisDane}
-                    alt="Podpis"
-                    className="w-full h-auto"
-                  />
-                </div>
               </div>
-            )}
-            {form.podpisMarketing && (
-              <div>
-                <p className="text-sm text-[#8b8580] mb-2">
-                  Podpis - zgoda marketing
+              <div className="flex items-start gap-4 mb-4">
+                {form.zgodaPrzetwarzanieDanych ? (
+                  <Check className="w-5 h-5 text-green-500 mt-0.5" />
+                ) : (
+                  <X className="w-5 h-5 text-red-500 mt-0.5" />
+                )}
+                <p className="text-sm text-[#5a5550]">
+                  Potwierdzenie: Świadoma zgoda na zabieg oraz przetwarzanie
+                  danych w celach realizacji usługi.
                 </p>
-                <div className="bg-white rounded-xl p-2 border border-[#d4cec4]">
-                  <img
-                    src={form.podpisMarketing}
-                    alt="Podpis"
-                    className="w-full h-auto"
-                  />
-                </div>
               </div>
-            )}
-            {form.podpisFotografie && (
-              <div>
-                <p className="text-sm text-[#8b8580] mb-2">
-                  Podpis - zgoda foto
-                </p>
-                <div className="bg-white rounded-xl p-2 border border-[#d4cec4]">
-                  <img
-                    src={form.podpisFotografie}
-                    alt="Podpis"
-                    className="w-full h-auto"
-                  />
-                </div>
-              </div>
-            )}
-            {form.podpisRodo && (
-              <div>
-                <p className="text-sm text-[#8b8580] mb-2">Podpis - RODO</p>
-                <div className="bg-white rounded-xl p-2 border border-[#d4cec4]">
+              {form.podpisRodo ? (
+                <div className="bg-[#f8f6f3] p-4 rounded-xl border border-[#e5e0d8]">
+                  <p className="text-xs text-[#8b8580] uppercase tracking-wider mb-2">
+                    Podpis RODO
+                  </p>
                   <img
                     src={form.podpisRodo}
-                    alt="Podpis"
-                    className="w-full h-auto"
+                    alt="Podpis RODO"
+                    className="h-20 object-contain mx-auto md:mx-0"
                   />
                 </div>
+              ) : (
+                <div className="bg-red-50 p-4 rounded-xl border border-red-100 text-red-500 text-sm">
+                  Brak podpisu głównego.
+                </div>
+              )}
+            </div>
+
+            {/* Marketing */}
+            <div className="bg-white/80 rounded-2xl shadow-sm border border-[#d4cec4] p-6">
+              <div className="flex justify-between items-center mb-4 border-b border-[#f0ebe4] pb-2">
+                <h3 className="text-lg font-serif text-[#4a4540]">
+                  Zgoda Marketingowa
+                </h3>
+                <span
+                  className={`px-3 py-1 rounded-full text-xs font-medium ${form.zgodaMarketing ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"}`}
+                >
+                  {form.zgodaMarketing ? "WYRAŻONO ZGODĘ" : "BRAK ZGODY"}
+                </span>
               </div>
-            )}
+              <p className="text-sm text-[#5a5550] mb-4">
+                Zgoda na otrzymywanie informacji o nowościach i promocjach
+                (SMS/Email).
+              </p>
+              {form.zgodaMarketing && form.podpisMarketing ? (
+                <div className="bg-[#f8f6f3] p-4 rounded-xl border border-[#e5e0d8]">
+                  <p className="text-xs text-[#8b8580] uppercase tracking-wider mb-2">
+                    Podpis Marketingowy
+                  </p>
+                  <img
+                    src={form.podpisMarketing}
+                    alt="Podpis Marketing"
+                    className="h-20 object-contain mx-auto md:mx-0"
+                  />
+                </div>
+              ) : (
+                <p className="text-sm text-gray-400 italic">
+                  Klient nie wyraził zgody.
+                </p>
+              )}
+            </div>
+
+            {/* Wizerunek */}
+            <div className="bg-white/80 rounded-2xl shadow-sm border border-[#d4cec4] p-6">
+              <div className="flex justify-between items-center mb-4 border-b border-[#f0ebe4] pb-2">
+                <h3 className="text-lg font-serif text-[#4a4540]">
+                  Zgoda na Wizerunek
+                </h3>
+                <span
+                  className={`px-3 py-1 rounded-full text-xs font-medium ${form.zgodaFotografie ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"}`}
+                >
+                  {form.zgodaFotografie ? "WYRAŻONO ZGODĘ" : "BRAK ZGODY"}
+                </span>
+              </div>
+              <p className="text-sm text-[#5a5550] mb-2">
+                Zgoda na publikację zdjęć/wideo z zabiegu.
+              </p>
+              {form.miejscaPublikacjiFotografii && (
+                <p className="text-sm text-[#4a4540] mb-4 font-medium">
+                  Ograniczenia publikacji:{" "}
+                  <span className="text-[#8b7355]">
+                    {form.miejscaPublikacjiFotografii}
+                  </span>
+                </p>
+              )}
+              {form.zgodaFotografie && form.podpisFotografie ? (
+                <div className="bg-[#f8f6f3] p-4 rounded-xl border border-[#e5e0d8]">
+                  <p className="text-xs text-[#8b8580] uppercase tracking-wider mb-2">
+                    Podpis Wizerunek
+                  </p>
+                  <img
+                    src={form.podpisFotografie}
+                    alt="Podpis Foto"
+                    className="h-20 object-contain mx-auto md:mx-0"
+                  />
+                </div>
+              ) : (
+                <p className="text-sm text-gray-400 italic">
+                  Klient nie wyraził zgody.
+                </p>
+              )}
+            </div>
+
+            {/* Pomoc Prawna */}
+            <div className="bg-white/80 rounded-2xl shadow-sm border border-[#d4cec4] p-6">
+              <div className="flex justify-between items-center mb-4 border-b border-[#f0ebe4] pb-2">
+                <h3 className="text-lg font-serif text-[#4a4540]">
+                  Pomoc Prawna
+                </h3>
+                <span
+                  className={`px-3 py-1 rounded-full text-xs font-medium ${form.zgodaPomocPrawna ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"}`}
+                >
+                  {form.zgodaPomocPrawna ? "WYRAŻONO ZGODĘ" : "BRAK ZGODY"}
+                </span>
+              </div>
+              <p className="text-sm text-[#5a5550] mb-4">
+                Zgoda na przetwarzanie danych przez podmioty prawne w przypadku
+                roszczeń.
+              </p>
+              {form.zgodaPomocPrawna && form.podpisDane ? (
+                <div className="bg-[#f8f6f3] p-4 rounded-xl border border-[#e5e0d8]">
+                  <p className="text-xs text-[#8b8580] uppercase tracking-wider mb-2">
+                    Podpis Pomoc Prawna
+                  </p>
+                  <img
+                    src={form.podpisDane}
+                    alt="Podpis Prawny"
+                    className="h-20 object-contain mx-auto md:mx-0"
+                  />
+                </div>
+              ) : (
+                <p className="text-sm text-gray-400 italic">
+                  Klient nie wyraził zgody.
+                </p>
+              )}
+            </div>
           </div>
-        </div>
+        )}
       </main>
     </div>
   );
