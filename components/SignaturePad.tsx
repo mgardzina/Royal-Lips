@@ -40,24 +40,19 @@ export default function SignaturePad({
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-between items-end">
-        <label className="block text-sm text-[#6b6560] font-medium uppercase tracking-wide">
-          {label} {required && "*"}
-        </label>
-        {date && (
-          <p className="text-xs text-[#6b6560] font-serif italic">{date}</p>
-        )}
-      </div>
+      <label className="block text-sm text-[#6b6560] font-medium uppercase tracking-wide">
+        {label} {required && "*"}
+      </label>
 
       <div className="relative group">
-        <div className="rounded-xl overflow-hidden bg-[#faf9f6]">
+        <div className="rounded-xl overflow-hidden border border-[#d4cec4]">
           <div style={{ height: "160px", width: "100%" }}>
             <SignatureCanvas
               ref={sigCanvas}
               canvasProps={{
-                className: "w-full h-full touch-none block",
+                className: "w-full h-full touch-none block bg-white",
               }}
-              backgroundColor="transparent"
+              backgroundColor="white"
               penColor="black"
               minWidth={1.0}
               maxWidth={2.5} // Optimized for Apple Pencil / Real pen feel
@@ -77,7 +72,7 @@ export default function SignaturePad({
           </button>
         </div>
 
-        {/* Placeholder text if empty? No, standard line is better. */}
+        {/* Placeholder text if empty */}
         {!value && (
           <div className="absolute bottom-4 left-4 pointer-events-none select-none">
             <span className="text-[#d4cec4] text-xs uppercase tracking-widest border-t border-[#d4cec4] pt-1">
@@ -86,6 +81,13 @@ export default function SignaturePad({
           </div>
         )}
       </div>
+
+      {/* Date label BELOW signature */}
+      {date && (
+        <p className="text-xs text-[#6b6560] font-serif italic text-right">
+          {date}
+        </p>
+      )}
     </div>
   );
 }
