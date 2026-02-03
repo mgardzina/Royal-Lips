@@ -178,8 +178,11 @@ export default function ClientDetailsPage({
     }
   }, [clientId]);
 
-  const handleAddHistory = async () => {
-    if (!newHistory.date || !newHistory.description) return;
+  const handleAddHistory = async (): Promise<boolean> => {
+    if (!newHistory.date || !newHistory.description) {
+      alert("Wypełnij datę i opis wizyty.");
+      return false;
+    }
 
     setIsAddingHistory(true);
     try {
@@ -192,16 +195,22 @@ export default function ClientDetailsPage({
       if (response.ok) {
         await fetchHistory();
         setNewHistory({ date: "", description: "" });
+        return true;
       } else {
         const err = await response.json();
         if (err.error?.includes("Client has no forms")) {
           alert(
             "Klientka nie ma jeszcze żadnego formularza. Wypełnij najpierw formularz, aby dodać historię.",
           );
+        } else {
+          alert(`Błąd zapisu: ${err.error || "Nieznany błąd"}`);
         }
+        return false;
       }
     } catch (error) {
       console.error("Error adding history:", error);
+      alert("Wystąpił błąd połączenia.");
+      return false;
     } finally {
       setIsAddingHistory(false);
     }
@@ -423,18 +432,58 @@ export default function ClientDetailsPage({
               <div className="bg-white/80 rounded-xl p-5 shadow-sm border border-[#d4cec4]">
                 <div className="grid gap-4">
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div>
-                      <label className="block text-xs font-medium text-[#8b8580] mb-1 uppercase tracking-wider">
-                        Data wizyty
+                    <div className="flex flex-col gap-2">
+                      <label className="block text-xs font-medium text-[#8b8580] uppercase tracking-wider">
+                        Data i Czas wizyty
                       </label>
-                      <input
-                        type="datetime-local"
-                        value={newHistory.date}
-                        onChange={(e) =>
-                          setNewHistory({ ...newHistory, date: e.target.value })
-                        }
-                        className="w-full px-3 py-2 bg-[#f8f6f3] border border-[#d4cec4] rounded-lg focus:border-[#8b7355] outline-none text-sm"
-                      />
+                      <div className="flex gap-2">
+                        <input
+                          type="date"
+                          value={
+                            newHistory.date ? newHistory.date.split("T")[0] : ""
+                          }
+                          onChange={(e) => {
+                            const time = newHistory.date
+                              ? newHistory.date.split("T")[1]
+                              : "12:00";
+                            setNewHistory({
+                              ...newHistory,
+                              date: `${e.target.value}T${time}`,
+                            });
+                          }}
+                          className="flex-1 px-3 py-2 bg-[#f8f6f3] border border-[#d4cec4] rounded-lg focus:border-[#8b7355] outline-none text-sm"
+                        />
+                        <input
+                          type="time"
+                          value={
+                            newHistory.date ? newHistory.date.split("T")[1] : ""
+                          }
+                          onChange={(e) => {
+                            const date = newHistory.date
+                              ? newHistory.date.split("T")[0]
+                              : new Date().toISOString().split("T")[0];
+                            setNewHistory({
+                              ...newHistory,
+                              date: `${date}T${e.target.value}`,
+                            });
+                          }}
+                          className="w-24 px-3 py-2 bg-[#f8f6f3] border border-[#d4cec4] rounded-lg focus:border-[#8b7355] outline-none text-sm"
+                        />
+                      </div>
+                      <button
+                        onClick={() => {
+                          const now = new Date();
+                          const iso = new Date(
+                            now.getTime() - now.getTimezoneOffset() * 60000,
+                          )
+                            .toISOString()
+                            .slice(0, 16);
+                          setNewHistory({ ...newHistory, date: iso });
+                        }}
+                        className="text-xs text-[#8b7355] hover:underline self-start bg-transparent border-none p-0 cursor-pointer"
+                      >
+                        Ustaw teraz
+                      </button>
                     </div>
                     <div>
                       <label className="block text-xs font-medium text-[#8b8580] mb-1 uppercase tracking-wider">
@@ -541,10 +590,16 @@ export default function ClientDetailsPage({
 
                   <button
                     onClick={async () => {
-                      await handleAddHistory();
-                      setShowAddHistoryForm(false);
+                      const success = await handleAddHistory();
+                      if (success) {
+                        setShowAddHistoryForm(false);
+                      }
                     }}
-                    disabled={isAddingHistory || !newHistory.date}
+                    disabled={
+                      isAddingHistory ||
+                      !newHistory.date ||
+                      !newHistory.description
+                    }
                     className="mt-2 bg-[#8b7355] text-white py-2 px-6 rounded-lg text-sm font-medium hover:bg-[#7a6548] disabled:opacity-50 disabled:cursor-not-allowed transition-colors self-start"
                   >
                     {isAddingHistory ? "Zapisywanie..." : "+ Zapisz wizytę"}
@@ -554,12 +609,11 @@ export default function ClientDetailsPage({
             </div>
           )}
 
-          {/* Lista Historii */}
+          {/* Unified Timeline - Historia i Formularze */}
           <div className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg overflow-hidden">
-            <div className="p-4 md:p-6 border-b border-[#d4cec4]">
-              <h2 className="text-xl font-serif text-[#4a4540] flex items-center gap-2">
-                <Calendar className="w-5 h-5 text-[#8b7355]" />
-                Historia wizyt
+            <div className="p-4 md:p-6 border-b border-[#d4cec4] flex justify-between items-center">
+              <h2 className="text-xl font-serif text-[#4a4540]">
+                Historia klientki
               </h2>
               <button
                 onClick={() => setShowAddHistoryForm(!showAddHistoryForm)}
@@ -570,75 +624,79 @@ export default function ClientDetailsPage({
               </button>
             </div>
 
-            <div className="max-h-[600px] overflow-y-auto p-4 space-y-4">
-              {history.length === 0 ? (
-                <p className="text-center text-[#8b8580] py-8 italic">
-                  Brak zapisanej historii dla tej klientki.
-                </p>
-              ) : (
-                history.map((entry) => (
-                  <div
-                    key={entry.id}
-                    className="bg-white rounded-xl p-5 border border-[#e5e0d8] shadow-sm hover:shadow-md transition-shadow"
-                  >
-                    <div className="flex justify-between items-start mb-2">
-                      <span className="text-[#8b7355] font-serif font-medium text-lg">
-                        {new Date(entry.date).toLocaleDateString("pl-PL", {
-                          day: "numeric",
-                          month: "long",
-                          year: "numeric",
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}
-                      </span>
-                    </div>
-                    <p className="text-[#5a5550] whitespace-pre-wrap leading-relaxed text-sm">
-                      {entry.description}
+            <div className="max-h-[600px] overflow-y-auto p-4 space-y-3">
+              {(() => {
+                // Merge forms and history into unified timeline
+                const timelineItems = [
+                  ...history.map((h) => ({
+                    id: h.id,
+                    type: "visit" as const,
+                    date: new Date(h.date),
+                    description: h.description,
+                  })),
+                  ...client.forms.map((f) => ({
+                    id: f.id,
+                    type: "form" as const,
+                    date: new Date(f.createdAt),
+                    formType: f.type,
+                    obszarZabiegu: f.obszarZabiegu,
+                  })),
+                ].sort((a, b) => b.date.getTime() - a.date.getTime());
+
+                if (timelineItems.length === 0) {
+                  return (
+                    <p className="text-center text-[#8b8580] py-8 italic">
+                      Brak historii dla tej klientki.
                     </p>
-                  </div>
-                ))
-              )}
-            </div>
-          </div>
+                  );
+                }
 
-          {/* Lista wypełnionych Formularzy (Tylko do podglądu) */}
-          <div className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg overflow-hidden opacity-80 hover:opacity-100 transition-opacity">
-            <div className="p-4 md:p-6 border-b border-[#d4cec4]">
-              <h2 className="text-lg font-serif text-[#4a4540] flex items-center gap-2">
-                <FileText className="w-5 h-5 text-[#8b8580]" />
-                Archiwum Formularzy ({client.forms.length})
-              </h2>
-            </div>
-
-            <div className="divide-y divide-[#d4cec4]">
-              {client.forms.length === 0 ? (
-                <div className="p-12 text-center text-[#8b8580]">
-                  Brak formularzy
-                </div>
-              ) : (
-                client.forms.map((form) => (
-                  <Link
-                    key={form.id}
-                    href={`/admin/formularz/${form.id}`}
-                    className="block p-4 md:p-6 hover:bg-white/50 transition-colors"
+                return timelineItems.map((item) => (
+                  <div
+                    key={`${item.type}-${item.id}`}
+                    className="bg-white rounded-xl p-4 border border-[#e5e0d8] shadow-sm hover:shadow-md transition-shadow"
                   >
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                      <div>
-                        <h3 className="font-medium text-[#4a4540]">
-                          {categoryLabels[form.type]}
-                        </h3>
-                        <p className="text-sm text-[#8b8580]">
-                          {form.obszarZabiegu || "Brak szczegółów"}
-                        </p>
-                      </div>
-                      <div className="flex items-center gap-2 text-sm text-[#8b8580]">
-                        <Calendar className="w-4 h-4" />
-                        {formatDate(form.createdAt)}
+                    <div className="flex items-start gap-3">
+                      {/* Text label instead of icon */}
+                      <span className="text-[10px] uppercase tracking-wider font-bold text-white bg-[#8b7355] px-2 py-1 rounded-md whitespace-nowrap mt-0.5">
+                        {item.type === "visit" ? "Wizyta" : "Formularz"}
+                      </span>
+
+                      <div className="flex-1 min-w-0">
+                        <div className="flex justify-between items-start mb-1.5">
+                          <span className="text-[#8b7355] font-medium text-sm">
+                            {item.date.toLocaleDateString("pl-PL", {
+                              day: "numeric",
+                              month: "long",
+                              year: "numeric",
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })}
+                          </span>
+                        </div>
+
+                        {item.type === "visit" ? (
+                          <p className="text-[#5a5550] text-sm leading-relaxed whitespace-pre-wrap">
+                            {item.description}
+                          </p>
+                        ) : (
+                          <Link
+                            href={`/admin/formularz/${item.id}`}
+                            className="block hover:text-[#8b7355] transition-colors"
+                          >
+                            <p className="font-medium text-[#4a4540] text-sm">
+                              {categoryLabels[item.formType]}
+                            </p>
+                            <p className="text-xs text-[#8b8580] mt-0.5">
+                              {item.obszarZabiegu || "Brak szczegółów"}
+                            </p>
+                          </Link>
+                        )}
                       </div>
                     </div>
-                  </Link>
-                ))
-              )}
+                  </div>
+                ));
+              })()}
             </div>
           </div>
         </div>
