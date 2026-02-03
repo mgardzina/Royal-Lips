@@ -12,7 +12,9 @@ import {
   Shield,
   CheckCircle2,
   Lock,
+  X,
 } from "lucide-react";
+import { isAdult } from "@/lib/dateUtils";
 import SignaturePad from "../../../components/SignaturePad";
 import SignatureVerificationModal from "@/components/SignatureVerificationModal";
 import { AuditLogData } from "@/app/actions/otp";
@@ -64,6 +66,7 @@ const initialFormData: ConsentFormData = {
 export default function PmuForm({ onBack }: PmuFormProps) {
   const [formData, setFormData] = useState<ConsentFormData>(initialFormData);
   const [email, setEmail] = useState("");
+  const [birthDateError, setBirthDateError] = useState<string | null>(null);
   const [expandedSections, setExpandedSections] = useState({
     reakcje: true,
     powiklania: true,
@@ -143,6 +146,20 @@ export default function PmuForm({ onBack }: PmuFormProps) {
   const handleBirthDateChange = (value: string) => {
     const formatted = formatBirthDate(value);
     setFormData((prev) => ({ ...prev, dataUrodzenia: formatted }));
+
+    // Validate age if full date is entered
+    if (formatted.length === 10) {
+      if (!isAdult(formatted)) {
+        // You might want to set an error state here
+        setBirthDateError(
+          "Musisz być osobą pełnoletnią, aby wypełnić formularz.",
+        );
+      } else {
+        setBirthDateError(null);
+      }
+    } else {
+      setBirthDateError(null);
+    }
   };
 
   const handleContraindicationChange = (key: string, value: boolean) => {
@@ -265,7 +282,8 @@ export default function PmuForm({ onBack }: PmuFormProps) {
     formData.miejscowoscData &&
     formData.dataUrodzenia &&
     formData.obszarZabiegu &&
-    isWizardComplete;
+    isWizardComplete &&
+    !birthDateError;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#f8f6f3] via-[#efe9e1] to-[#e8e0d5]">
@@ -481,6 +499,12 @@ export default function PmuForm({ onBack }: PmuFormProps) {
                       placeholder="DD.MM.RRRR"
                       maxLength={10}
                     />
+                    {birthDateError && (
+                      <div className="mt-2 flex items-center gap-2 text-red-600 text-sm animate-in fade-in slide-in-from-top-1">
+                        <X className="w-4 h-4" />
+                        <span>{birthDateError}</span>
+                      </div>
+                    )}
                   </div>
                   <div>
                     <label className="block text-sm text-[#6b6560] mb-2 font-medium">
@@ -517,6 +541,32 @@ export default function PmuForm({ onBack }: PmuFormProps) {
                     <label className="block text-sm text-[#6b6560] mb-2 font-medium">
                       Obszar zabiegu
                     </label>
+                    <div className="grid grid-cols-2 gap-3 mb-3">
+                      {["Brwi", "Usta", "Kreski górne", "Kreski dolne"].map(
+                        (area) => (
+                          <button
+                            key={area}
+                            type="button"
+                            onClick={() => {
+                              const current = formData.obszarZabiegu
+                                ? formData.obszarZabiegu.split(", ")
+                                : [];
+                              const newValue = current.includes(area)
+                                ? current.filter((i) => i !== area).join(", ")
+                                : [...current, area].join(", ");
+                              handleInputChange("obszarZabiegu", newValue);
+                            }}
+                            className={`py-3 px-4 rounded-xl border-2 transition-all font-medium text-sm ${
+                              formData.obszarZabiegu.split(", ").includes(area)
+                                ? "border-[#8b7355] bg-[#8b7355] text-white"
+                                : "border-[#d4cec4] bg-white text-[#6b6560] hover:border-[#8b7355] hover:text-[#8b7355]"
+                            }`}
+                          >
+                            {area}
+                          </button>
+                        ),
+                      )}
+                    </div>
                     <input
                       type="text"
                       value={formData.obszarZabiegu}
@@ -524,12 +574,57 @@ export default function PmuForm({ onBack }: PmuFormProps) {
                         handleInputChange("obszarZabiegu", e.target.value)
                       }
                       className="w-full px-4 py-3 bg-white/80 border border-[#d4cec4] rounded-xl focus:border-[#8b7355] focus:ring-2 focus:ring-[#8b7355]/20 outline-none transition-all"
-                      placeholder="np. Brwi, Usta, Kreski"
+                      placeholder="Inny (wpisz ręcznie)..."
                     />
                     <p className="text-xs text-[#8b8580] mt-2">
                       Ustalono, iż celem zabiegu jest makijaż permanentny w
                       powyższym obszarze.
                     </p>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm text-[#6b6560] mb-2 font-medium">
+                      Oczekiwany efekt
+                    </label>
+                    <div className="grid grid-cols-2 gap-3 mb-3">
+                      {[
+                        "Naturalny efekt",
+                        "Podkreślenie konturu",
+                        "Ombre / Cieniowanie",
+                        "Pełne wypełnienie",
+                        "Wyrównanie asymetrii",
+                      ].map((effect) => (
+                        <button
+                          key={effect}
+                          type="button"
+                          onClick={() => {
+                            const current = formData.celEfektu
+                              ? formData.celEfektu.split(", ")
+                              : [];
+                            const newValue = current.includes(effect)
+                              ? current.filter((i) => i !== effect).join(", ")
+                              : [...current, effect].join(", ");
+                            handleInputChange("celEfektu", newValue);
+                          }}
+                          className={`py-3 px-4 rounded-xl border-2 transition-all font-medium text-sm ${
+                            formData.celEfektu.split(", ").includes(effect)
+                              ? "border-[#8b7355] bg-[#8b7355] text-white"
+                              : "border-[#d4cec4] bg-white text-[#6b6560] hover:border-[#8b7355] hover:text-[#8b7355]"
+                          }`}
+                        >
+                          {effect}
+                        </button>
+                      ))}
+                    </div>
+                    <input
+                      type="text"
+                      value={formData.celEfektu}
+                      onChange={(e) =>
+                        handleInputChange("celEfektu", e.target.value)
+                      }
+                      className="w-full px-4 py-3 bg-white/80 border border-[#d4cec4] rounded-xl focus:border-[#8b7355] focus:ring-2 focus:ring-[#8b7355]/20 outline-none transition-all"
+                      placeholder="Inny (wpisz ręcznie)..."
+                    />
                   </div>
 
                   <div className="p-4 bg-white/50 rounded-xl">
@@ -854,6 +949,26 @@ export default function PmuForm({ onBack }: PmuFormProps) {
                     </li>
                   </ol>
                 </div>
+                {/* Podpis pod Zabiegiem (Nowy, obowiązkowy) */}
+                <div className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8 mt-8">
+                  <h3 className="text-xl font-serif text-[#4a4540] mb-4 border-b border-[#d4cec4] pb-2">
+                    Potwierdzenie Zgody na Zabieg
+                  </h3>
+                  <p className="text-sm text-[#5a5550] mb-6">
+                    Składając podpis poniżej potwierdzam, że zapoznałam/em się z
+                    powyższymi informacjami, ryzykiem oraz zaleceniami i wyrażam
+                    świadomą zgodę na przeprowadzenie zabiegu.
+                  </p>
+                  <SignaturePad
+                    label="Podpis Klienta (Wymagany)"
+                    value={formData.podpisDane}
+                    onChange={(sig) => {
+                      handleInputChange("podpisDane", sig);
+                      handleInputChange("zgodaPomocPrawna", !!sig);
+                    }}
+                    date={formData.miejscowoscData}
+                  />
+                </div>
               </section>
 
               <div className="flex justify-between pt-4 pb-12">
@@ -867,7 +982,8 @@ export default function PmuForm({ onBack }: PmuFormProps) {
                 <button
                   type="button"
                   onClick={() => setCurrentStep("MARKETING")}
-                  className="bg-[#8b7355] text-white py-3 px-8 rounded-xl text-lg font-medium shadow-lg hover:bg-[#7a6548] transition-all"
+                  disabled={!formData.podpisDane}
+                  className="bg-[#8b7355] text-white py-3 px-8 rounded-xl text-lg font-medium shadow-lg hover:bg-[#7a6548] disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                 >
                   Dalej (Zgody dodatkowe) →
                 </button>

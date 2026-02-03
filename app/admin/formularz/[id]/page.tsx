@@ -30,6 +30,12 @@ const cleanNazwaProduktu = (nazwa: string | null): string | null => {
   return cleaned || null;
 };
 
+interface TreatmentHistory {
+  id: string;
+  date: string;
+  description: string;
+}
+
 interface ConsentFormFull {
   id: string;
   type: string;
@@ -69,17 +75,21 @@ export default function FormDetailsPage() {
   const params = useParams();
   const router = useRouter();
   const [form, setForm] = useState<ConsentFormFull | null>(null);
+  const [history, setHistory] = useState<TreatmentHistory[]>([]);
+  const [newHistory, setNewHistory] = useState({ date: "", description: "" });
+  const [isAddingHistory, setIsAddingHistory] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [editedForm, setEditedForm] = useState<Partial<ConsentFormFull>>({});
   const [activeTab, setActiveTab] = useState<
-    "details" | "contraindications" | "consents"
+    "details" | "contraindications" | "consents" | "history"
   >("details");
 
   useEffect(() => {
     fetchForm();
+    fetchHistory();
   }, [params.id]);
 
   const fetchForm = async () => {
@@ -98,6 +108,40 @@ export default function FormDetailsPage() {
       console.error("Błąd pobierania formularza:", error);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const fetchHistory = async () => {
+    try {
+      const response = await fetch(`/api/consent-forms/${params.id}/history`);
+      if (response.ok) {
+        const data = await response.json();
+        setHistory(data);
+      }
+    } catch (error) {
+      console.error("Błąd pobierania historii:", error);
+    }
+  };
+
+  const handleAddHistory = async () => {
+    if (!newHistory.date || !newHistory.description) return;
+
+    setIsAddingHistory(true);
+    try {
+      const response = await fetch(`/api/consent-forms/${params.id}/history`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newHistory),
+      });
+
+      if (response.ok) {
+        await fetchHistory();
+        setNewHistory({ date: "", description: "" });
+      }
+    } catch (error) {
+      console.error("Błąd dodawania historii:", error);
+    } finally {
+      setIsAddingHistory(false);
     }
   };
 
@@ -400,6 +444,16 @@ export default function FormDetailsPage() {
           >
             Zgody i Podpisy
           </button>
+          <button
+            onClick={() => setActiveTab("history")}
+            className={`px-4 py-2 text-sm font-medium transition-colors whitespace-nowrap ${
+              activeTab === "history"
+                ? "text-[#8b7355] border-b-2 border-[#8b7355]"
+                : "text-[#8b8580] hover:text-[#4a4540]"
+            }`}
+          >
+            Historia zabiegów
+          </button>
         </div>
 
         {/* Tab Content: Details */}
@@ -577,6 +631,196 @@ export default function FormDetailsPage() {
           </div>
         )}
 
+        {/* Tab Content: History */}
+        {activeTab === "history" && (
+          <div className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-4 md:p-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
+            <h2 className="text-xl font-serif text-[#4a4540] mb-6 pb-3 border-b border-[#d4cec4]">
+              Historia wizyt
+            </h2>
+
+            {/* Formularz dodawania */}
+            <div className="bg-white/80 rounded-xl p-5 mb-8 shadow-sm border border-[#d4cec4]">
+              <h3 className="text-md font-serif text-[#4a4540] mb-4">
+                Dodaj kolejną wizytę
+              </h3>
+              <div className="grid gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <label className="block text-xs font-medium text-[#8b8580] mb-1 uppercase tracking-wider">
+                      Data wizyty
+                    </label>
+                    <input
+                      type="datetime-local"
+                      value={newHistory.date}
+                      onChange={(e) =>
+                        setNewHistory({ ...newHistory, date: e.target.value })
+                      }
+                      className="w-full px-3 py-2 bg-[#f8f6f3] border border-[#d4cec4] rounded-lg focus:border-[#8b7355] outline-none text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-[#8b8580] mb-1 uppercase tracking-wider">
+                      Adnotacja (np. 2. zabieg)
+                    </label>
+                    <input
+                      type="text"
+                      value={
+                        newHistory.description.includes(" | ")
+                          ? newHistory.description.split(" | ").length === 3
+                            ? newHistory.description.split(" | ")[0]
+                            : ""
+                          : ""
+                      }
+                      onChange={(e) => {
+                        const parts = newHistory.description.split(" | ");
+                        // Force 3 parts: [Annotation, Area, Details]
+                        // If current has 2 parts [Area, Details], we prepend.
+                        // If current has 1 part [Details/Mixed], we treat as Details and prepend generic.
+
+                        let area = "";
+                        let details = "";
+
+                        if (parts.length === 3) {
+                          area = parts[1];
+                          details = parts[2];
+                        } else if (parts.length === 2) {
+                          area = parts[0];
+                          details = parts[1];
+                        } else {
+                          details = parts[0];
+                        }
+
+                        setNewHistory({
+                          ...newHistory,
+                          description: `${e.target.value} | ${area} | ${details}`,
+                        });
+                      }}
+                      placeholder="np. Zabieg przypominający"
+                      className="w-full px-3 py-2 bg-[#f8f6f3] border border-[#d4cec4] rounded-lg focus:border-[#8b7355] outline-none text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-[#8b8580] mb-1 uppercase tracking-wider">
+                      Obszar / Zabieg
+                    </label>
+                    <input
+                      type="text"
+                      value={
+                        newHistory.description.includes(" | ")
+                          ? newHistory.description.split(" | ").length === 3
+                            ? newHistory.description.split(" | ")[1]
+                            : newHistory.description.split(" | ")[0] // Fallback for 2 parts
+                          : ""
+                      }
+                      onChange={(e) => {
+                        const parts = newHistory.description.split(" | ");
+                        let annotation = "";
+                        let details = "";
+
+                        if (parts.length === 3) {
+                          annotation = parts[0];
+                          details = parts[2];
+                        } else if (parts.length === 2) {
+                          // treating [Area, Details] -> Add empty annotation
+                          details = parts[1];
+                        } else {
+                          details = parts[0];
+                        }
+
+                        setNewHistory({
+                          ...newHistory,
+                          description: `${annotation} | ${e.target.value} | ${details}`,
+                        });
+                      }}
+                      placeholder="np. Usta"
+                      className="w-full px-3 py-2 bg-[#f8f6f3] border border-[#d4cec4] rounded-lg focus:border-[#8b7355] outline-none text-sm"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-medium text-[#8b8580] mb-1 uppercase tracking-wider">
+                    Szczegóły (Preparat, Efekt, Uwagi)
+                  </label>
+                  <textarea
+                    value={
+                      newHistory.description.includes(" | ")
+                        ? newHistory.description.split(" | ").length === 3
+                          ? newHistory.description.split(" | ")[2]
+                          : newHistory.description.split(" | ")[1]
+                        : newHistory.description
+                    }
+                    onChange={(e) => {
+                      const parts = newHistory.description.split(" | ");
+                      let annotation = "";
+                      let area = "";
+
+                      if (parts.length === 3) {
+                        annotation = parts[0];
+                        area = parts[1];
+                      } else if (parts.length === 2) {
+                        area = parts[0];
+                      } else {
+                        // only details existed
+                      }
+
+                      setNewHistory({
+                        ...newHistory,
+                        description: `${annotation} | ${area} | ${e.target.value}`,
+                      });
+                    }}
+                    className="w-full px-3 py-2 bg-[#f8f6f3] border border-[#d4cec4] rounded-lg focus:border-[#8b7355] outline-none text-sm h-20 resize-none"
+                    placeholder="np. Stylage M 1ml, efekt naturalny..."
+                  />
+                </div>
+
+                <button
+                  onClick={handleAddHistory}
+                  disabled={
+                    isAddingHistory ||
+                    !newHistory.date ||
+                    !newHistory.description
+                  }
+                  className="mt-2 bg-[#8b7355] text-white py-2 px-6 rounded-lg text-sm font-medium hover:bg-[#7a6548] disabled:opacity-50 disabled:cursor-not-allowed transition-colors self-start"
+                >
+                  {isAddingHistory ? "Dodawanie..." : "+ Dodaj wizytę"}
+                </button>
+              </div>
+            </div>
+
+            {/* Lista historii */}
+            <div className="space-y-4">
+              {history.length === 0 ? (
+                <p className="text-center text-[#8b8580] py-8 italic">
+                  Brak historii wizyt dla tego formularza.
+                </p>
+              ) : (
+                history.map((entry) => (
+                  <div
+                    key={entry.id}
+                    className="bg-white rounded-xl p-5 border border-[#e5e0d8] shadow-sm hover:shadow-md transition-shadow"
+                  >
+                    <div className="flex justify-between items-start mb-2">
+                      <span className="text-[#8b7355] font-serif font-medium text-lg">
+                        {new Date(entry.date).toLocaleDateString("pl-PL", {
+                          day: "numeric",
+                          month: "long",
+                          year: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                      </span>
+                    </div>
+                    <p className="text-[#5a5550] whitespace-pre-wrap leading-relaxed text-sm">
+                      {entry.description}
+                    </p>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        )}
+
         {/* Tab Content: Consents & Signatures (New Card Style) */}
         {activeTab === "consents" && (
           <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
@@ -603,15 +847,16 @@ export default function FormDetailsPage() {
                   danych w celach realizacji usługi.
                 </p>
               </div>
+
               {form.podpisRodo ? (
-                <div className="bg-[#f8f6f3] p-4 rounded-xl border border-[#e5e0d8]">
-                  <p className="text-xs text-[#8b8580] uppercase tracking-wider mb-2">
+                <div className="p-4 rounded-xl">
+                  <p className="text-xs text-[#8b8580] uppercase tracking-wider mb-2 font-medium">
                     Podpis RODO
                   </p>
                   <img
                     src={form.podpisRodo}
                     alt="Podpis RODO"
-                    className="h-20 object-contain mx-auto md:mx-0"
+                    className="h-40 object-contain mx-auto md:mx-0 filter mix-blend-multiply"
                   />
                 </div>
               ) : (
@@ -696,11 +941,11 @@ export default function FormDetailsPage() {
               )}
             </div>
 
-            {/* Pomoc Prawna */}
+            {/* Zgoda na Zabieg (dawniej Pomoc Prawna) */}
             <div className="bg-white/80 rounded-2xl shadow-sm border border-[#d4cec4] p-6">
               <div className="flex justify-between items-center mb-4 border-b border-[#f0ebe4] pb-2">
                 <h3 className="text-lg font-serif text-[#4a4540]">
-                  Pomoc Prawna
+                  Zgoda na Zabieg
                 </h3>
                 <span
                   className={`px-3 py-1 rounded-full text-xs font-medium ${form.zgodaPomocPrawna ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"}`}
@@ -709,18 +954,18 @@ export default function FormDetailsPage() {
                 </span>
               </div>
               <p className="text-sm text-[#5a5550] mb-4">
-                Zgoda na przetwarzanie danych przez podmioty prawne w przypadku
-                roszczeń.
+                Potwierdzenie: Świadoma zgoda na przeprowadzenie zabiegu po
+                zapoznaniu się z informacjami i ryzykiem.
               </p>
               {form.zgodaPomocPrawna && form.podpisDane ? (
-                <div className="bg-[#f8f6f3] p-4 rounded-xl border border-[#e5e0d8]">
-                  <p className="text-xs text-[#8b8580] uppercase tracking-wider mb-2">
-                    Podpis Pomoc Prawna
+                <div className="p-4 rounded-xl">
+                  <p className="text-xs text-[#8b8580] uppercase tracking-wider mb-2 font-medium">
+                    Podpis Klienta
                   </p>
                   <img
                     src={form.podpisDane}
-                    alt="Podpis Prawny"
-                    className="h-20 object-contain mx-auto md:mx-0"
+                    alt="Podpis Zabieg"
+                    className="h-40 object-contain mx-auto md:mx-0 filter mix-blend-multiply"
                   />
                 </div>
               ) : (

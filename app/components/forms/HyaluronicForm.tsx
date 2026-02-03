@@ -11,7 +11,9 @@ import {
   Mail,
   Shield,
   CheckCircle2,
+  X,
 } from "lucide-react";
+import { isAdult } from "@/lib/dateUtils";
 import SignaturePad from "@/components/SignaturePad";
 import SignatureVerificationModal from "@/components/SignatureVerificationModal";
 import { AuditLogData } from "@/app/actions/otp";
@@ -64,6 +66,7 @@ const initialFormData: ConsentFormData = {
 export default function HyaluronicForm({ onBack }: HyaluronicFormProps) {
   const [formData, setFormData] = useState<ConsentFormData>(initialFormData);
   const [email, setEmail] = useState("");
+  const [birthDateError, setBirthDateError] = useState<string | null>(null);
   const [expandedSections, setExpandedSections] = useState({
     reakcje: true,
     powiklania: true,
@@ -143,6 +146,19 @@ export default function HyaluronicForm({ onBack }: HyaluronicFormProps) {
   const handleBirthDateChange = (value: string) => {
     const formatted = formatBirthDate(value);
     setFormData((prev) => ({ ...prev, dataUrodzenia: formatted }));
+
+    // Validate age if full date is entered
+    if (formatted.length === 10) {
+      if (!isAdult(formatted)) {
+        setBirthDateError(
+          "Musisz być osobą pełnoletnią, aby wypełnić formularz.",
+        );
+      } else {
+        setBirthDateError(null);
+      }
+    } else {
+      setBirthDateError(null);
+    }
   };
 
   const handleContraindicationChange = (key: string, value: boolean) => {
@@ -263,7 +279,8 @@ export default function HyaluronicForm({ onBack }: HyaluronicFormProps) {
     formData.telefon.replace(/\D/g, "").length === 9 &&
     formData.miejscowoscData &&
     formData.dataUrodzenia &&
-    isWizardComplete;
+    isWizardComplete &&
+    !birthDateError;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#f8f6f3] via-[#efe9e1] to-[#e8e0d5]">
@@ -477,6 +494,12 @@ export default function HyaluronicForm({ onBack }: HyaluronicFormProps) {
                       className="w-full px-4 py-3 bg-white/80 border border-[#d4cec4] rounded-xl focus:border-[#8b7355] focus:ring-2 focus:ring-[#8b7355]/20 outline-none transition-all"
                       placeholder="DD.MM.RRRR"
                     />
+                    {birthDateError && (
+                      <div className="mt-2 flex items-center gap-2 text-red-600 text-sm animate-in fade-in slide-in-from-top-1">
+                        <X className="w-4 h-4" />
+                        <span>{birthDateError}</span>
+                      </div>
+                    )}
                   </div>
                   <div>
                     <label className="block text-sm text-[#6b6560] mb-2 font-medium">
@@ -556,6 +579,36 @@ export default function HyaluronicForm({ onBack }: HyaluronicFormProps) {
                     <label className="block text-sm text-[#6b6560] mb-2 font-medium">
                       Oczekiwany efekt
                     </label>
+                    <div className="grid grid-cols-2 gap-3 mb-3">
+                      {[
+                        "Naturalny efekt",
+                        "Powiększenie",
+                        "Nawilżenie",
+                        "Konturowanie",
+                        "Wyrównanie asymetrii",
+                      ].map((effect) => (
+                        <button
+                          key={effect}
+                          type="button"
+                          onClick={() => {
+                            const current = formData.celEfektu
+                              ? formData.celEfektu.split(", ")
+                              : [];
+                            const newValue = current.includes(effect)
+                              ? current.filter((i) => i !== effect).join(", ")
+                              : [...current, effect].join(", ");
+                            handleInputChange("celEfektu", newValue);
+                          }}
+                          className={`py-3 px-4 rounded-xl border-2 transition-all font-medium text-sm ${
+                            formData.celEfektu.split(", ").includes(effect)
+                              ? "border-[#8b7355] bg-[#8b7355] text-white"
+                              : "border-[#d4cec4] bg-white text-[#6b6560] hover:border-[#8b7355] hover:text-[#8b7355]"
+                          }`}
+                        >
+                          {effect}
+                        </button>
+                      ))}
+                    </div>
                     <input
                       type="text"
                       value={formData.celEfektu}
@@ -563,7 +616,7 @@ export default function HyaluronicForm({ onBack }: HyaluronicFormProps) {
                         handleInputChange("celEfektu", e.target.value)
                       }
                       className="w-full px-4 py-3 bg-white/80 border border-[#d4cec4] rounded-xl focus:border-[#8b7355] focus:ring-2 focus:ring-[#8b7355]/20 outline-none transition-all"
-                      placeholder="np. powiększenie ust"
+                      placeholder="Inny (wpisz ręcznie)..."
                     />
                   </div>
                 </div>
@@ -614,14 +667,14 @@ export default function HyaluronicForm({ onBack }: HyaluronicFormProps) {
                         <button
                           type="button"
                           onClick={() => handleWizardAnswer(false)}
-                          className="py-4 px-6 rounded-xl bg-white border-2 border-[#d4cec4] text-[#6b6560] active:border-green-500 active:bg-green-500 active:text-white md:hover:border-green-500 md:hover:bg-green-500 md:hover:text-white transition-all text-lg font-medium shadow-sm hover:shadow-md active:scale-95 flex flex-col items-center justify-center gap-2"
+                          className="py-4 px-6 rounded-xl bg-white border-2 border-[#d4cec4] text-[#6b6560] active:border-green-500 active:bg-green-500 active:text-white md:hover:border-green-500 md:hover:bg-green-500 md:hover:text-white transition-all text-lg font-medium shadow-sm hover:shadow-md active:scale-95 flex items-center justify-center"
                         >
                           NIE
                         </button>
                         <button
                           type="button"
                           onClick={() => handleWizardAnswer(true)}
-                          className="py-4 px-6 rounded-xl bg-white border-2 border-[#d4cec4] text-[#6b6560] active:border-red-500 active:bg-red-500 active:text-white md:hover:border-red-500 md:hover:bg-red-500 md:hover:text-white transition-all text-lg font-medium shadow-sm hover:shadow-md active:scale-95 flex flex-col items-center justify-center gap-2"
+                          className="py-4 px-6 rounded-xl bg-white border-2 border-[#d4cec4] text-[#6b6560] active:border-red-500 active:bg-red-500 active:text-white md:hover:border-red-500 md:hover:bg-red-500 md:hover:text-white transition-all text-lg font-medium shadow-sm hover:shadow-md active:scale-95 flex items-center justify-center"
                         >
                           TAK
                         </button>
@@ -888,6 +941,29 @@ export default function HyaluronicForm({ onBack }: HyaluronicFormProps) {
                     </li>
                   </ol>
                 </div>
+
+                {/* Podpis pod Zabiegiem (Nowy, obowiązkowy) */}
+                <div className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8 mt-8">
+                  <h3 className="text-xl font-serif text-[#4a4540] mb-4 border-b border-[#d4cec4] pb-2">
+                    Potwierdzenie Zgody na Zabieg
+                  </h3>
+                  <p className="text-sm text-[#5a5550] mb-6">
+                    Składając podpis poniżej potwierdzam, że zapoznałam/em się z
+                    powyższymi informacjami, ryzykiem oraz zaleceniami i wyrażam
+                    świadomą zgodę na przeprowadzenie zabiegu.
+                  </p>
+                  <SignaturePad
+                    label="Podpis Klienta (Wymagany)"
+                    value={formData.podpisDane}
+                    onChange={(sig) => {
+                      handleInputChange("podpisDane", sig);
+                      // Możemy tu też ustawić flagę zgody, np. zgodaPomocPrawna (repurposed) lub po prostu polegać na podpisie
+                      // Dla spójności z backendem, ustawmy zgodaPomocPrawna na true
+                      handleInputChange("zgodaPomocPrawna", !!sig);
+                    }}
+                    date={formData.miejscowoscData}
+                  />
+                </div>
               </section>
 
               <div className="flex justify-between pt-4 pb-12">
@@ -901,7 +977,8 @@ export default function HyaluronicForm({ onBack }: HyaluronicFormProps) {
                 <button
                   type="button"
                   onClick={() => setCurrentStep("MARKETING")}
-                  className="bg-[#8b7355] text-white py-3 px-8 rounded-xl text-lg font-medium shadow-lg hover:bg-[#7a6548] transition-all"
+                  disabled={!formData.podpisDane}
+                  className="bg-[#8b7355] text-white py-3 px-8 rounded-xl text-lg font-medium shadow-lg hover:bg-[#7a6548] disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                 >
                   Dalej (Zgody dodatkowe) →
                 </button>
@@ -983,29 +1060,6 @@ export default function HyaluronicForm({ onBack }: HyaluronicFormProps) {
                       onChange={(sig) => {
                         handleInputChange("podpisFotografie", sig);
                         handleInputChange("zgodaFotografie", !!sig);
-                      }}
-                      date={formData.miejscowoscData}
-                    />
-                  </div>
-                </div>
-
-                {/* Zgoda prawna */}
-                <div className="bg-white/60 backdrop-blur-sm rounded-xl shadow-sm overflow-hidden border border-[#e5e0d8] hover:shadow-md transition-shadow">
-                  <div className="p-6">
-                    <h4 className="font-serif text-[#4a4540] text-lg mb-3">
-                      Zgoda na Pomoc Prawną
-                    </h4>
-                    <p className="text-sm text-[#5a5550] leading-relaxed mb-6">
-                      Wyrażam zgodę na przetwarzanie moich danych osobowych (w
-                      tym danych wrażliwych) przez podmioty świadczące pomoc
-                      prawną na rzecz salonu, w przypadku wystąpienia roszczeń.
-                    </p>
-                    <SignaturePad
-                      label="Podpis (Zgadzam się)"
-                      value={formData.podpisDane}
-                      onChange={(sig) => {
-                        handleInputChange("podpisDane", sig);
-                        handleInputChange("zgodaPomocPrawna", !!sig);
                       }}
                       date={formData.miejscowoscData}
                     />

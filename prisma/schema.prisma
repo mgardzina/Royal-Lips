@@ -55,14 +55,17 @@ model ConsentForm {
   createdAt DateTime @default(now())
 
   // Dane osobowe
-  imieNazwisko    String
-  email           String?
-  ulica           String?
-  kodPocztowy     String?
-  miasto          String?
-  dataUrodzenia   String?
-  telefon         String
-  miejscowoscData String
+  imieNazwisko String
+  email        String?
+  ulica        String?
+
+  // Relacja z historią zabiegów
+  treatmentHistory TreatmentHistory[] // Nowe pole
+  kodPocztowy      String?
+  miasto           String?
+  dataUrodzenia    String?
+  telefon          String
+  miejscowoscData  String
 
   // Szczegóły zabiegu
   nazwaProduktu String?
@@ -120,4 +123,14 @@ model AdminUser {
   email        String  @unique
   passwordHash String
   name         String?
+}
+
+model TreatmentHistory {
+  id          String   @id @default(uuid())
+  createdAt   DateTime @default(now())
+  date        DateTime // Data wykonania zabiegu
+  description String // Opis zabiegu (np. ilość ml, parametry lasera)
+
+  formId String
+  form   ConsentForm @relation(fields: [formId], references: [id], onDelete: Cascade)
 }

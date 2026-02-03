@@ -58,9 +58,9 @@ export default function SignaturePad({
                 className: "w-full h-full touch-none block",
               }}
               backgroundColor="transparent"
-              penColor="#4a4540"
-              minWidth={0.5}
-              maxWidth={1.2} // Thinner, more elegant line
+              penColor="black"
+              minWidth={1.0}
+              maxWidth={2.5} // Optimized for Apple Pencil / Real pen feel
               onEnd={handleEnd}
             />
           </div>
