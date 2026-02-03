@@ -69,49 +69,48 @@ export async function POST(
       );
     }
 
-    // Parse manual date format: DD.MM.YYYY HH:MM
+    // Parse ISO datetime format from HTML date/time inputs: YYYY-MM-DDTHH:MM
     let parsedDate: Date;
     try {
       console.error("[API] Parsing date:", date);
-      // Try parsing DD.MM.YYYY HH:MM format
-      const match = date.match(/^(\d{2})\.(\d{2})\.(\d{4})\s+(\d{2}):(\d{2})$/);
-      if (match) {
-        const [, day, month, year, hour, minute] = match;
-        parsedDate = new Date(
-          parseInt(year),
-          parseInt(month) - 1,
-          parseInt(day),
-          parseInt(hour),
-          parseInt(minute)
-        );
-        console.error("[API] Date parsed successfully:", parsedDate);
-      } else {
-        // Fallback to ISO format
-        console.error("[API] Using ISO fallback");
-        parsedDate = new Date(date);
-      }
+      parsedDate = new Date(date);
       
       if (isNaN(parsedDate.getTime())) {
         console.error("[API] Invalid date after parsing");
         return NextResponse.json(
-          { error: "Invalid date format. Use DD.MM.YYYY HH:MM" },
+          { error: "Invalid date format" },
           { status: 400 }
         );
       }
+      console.error("[API] Date parsed successfully:", parsedDate);
     } catch (err) {
       console.error("[API] Date parsing error:", err);
       return NextResponse.json(
-        { error: "Invalid date format. Use DD.MM.YYYY HH:MM" },
+        { error: "Invalid date format" },
         { status: 400 }
       );
     }
 
     console.error("[API] Finding latest form for client:", id);
     // 1. Find the MOST RECENT form for this client to attach history to
-    const latestForm = await prisma.consentForm.findFirst({
-      where: { clientId: id },
-      orderBy: { createdAt: "desc" }
-    });
+    let latestForm;
+    try {
+      latestForm = await prisma.consentForm.findFirst({
+        where: { clientId: id },
+        orderBy: { createdAt: "desc" }
+      });
+    } catch (dbError) {
+      const dbErrorMsg = dbError instanceof Error ? dbError.message : String(dbError);
+      console.error("[API] Database error finding form:", dbErrorMsg);
+      return NextResponse.json(
+        { 
+          error: "Database error finding form",
+          details: dbErrorMsg,
+          step: "findForm"
+        },
+        { status: 500 }
+      );
+    }
 
     if (!latestForm) {
       console.error("[API] No forms found for client");
@@ -125,13 +124,30 @@ export async function POST(
     console.error("[API] Creating history entry...");
 
     // 2. Create history entry attached to the latest form
-    const newEntry = await prisma.treatmentHistory.create({
-      data: {
-        formId: latestForm.id,
-        date: parsedDate,
-        description,
-      },
-    });
+    let newEntry;
+    try {
+      newEntry = await prisma.treatmentHistory.create({
+        data: {
+          formId: latestForm.id,
+          date: parsedDate,
+          description,
+        },
+      });
+    } catch (createError) {
+      const createErrorMsg = createError instanceof Error ? createError.message : String(createError);
+      const createErrorStack = createError instanceof Error ? createError.stack : undefined;
+      console.error("[API] Database error creating history:", createErrorMsg);
+      return NextResponse.json(
+        { 
+          error: "Database error creating history",
+          details: createErrorMsg,
+          stack: createErrorStack,
+          step: "createHistory",
+          data: { formId: latestForm.id, date: parsedDate.toISOString(), description }
+        },
+        { status: 500 }
+      );
+    }
     
     console.error("[API] History entry created successfully:", newEntry.id);
 
@@ -149,7 +165,9 @@ export async function POST(
     return NextResponse.json(
       { 
         error: "Failed to create client history",
-        details: process.env.NODE_ENV === 'development' ? errorMessage : undefined
+        details: errorMessage,
+        stack: errorStack,
+        step: "unknown"
       },
       { status: 500 }
     );

@@ -431,20 +431,50 @@ export default function ClientDetailsPage({
 
               <div className="bg-white/80 rounded-xl p-5 shadow-sm border border-[#d4cec4]">
                 <div className="grid gap-4">
-                  {/* Data i Czas - pełna szerokość */}
-                  <div>
-                    <label className="block text-xs font-medium text-[#8b8580] mb-1 uppercase tracking-wider">
-                      Data i Czas (DD.MM.RRRR GG:MM)
-                    </label>
-                    <input
-                      type="text"
-                      value={newHistory.date}
-                      onChange={(e) =>
-                        setNewHistory({ ...newHistory, date: e.target.value })
-                      }
-                      placeholder="np. 03.02.2026 14:30"
-                      className="w-full px-3 py-2 bg-[#f8f6f3] border border-[#d4cec4] rounded-lg focus:border-[#8b7355] outline-none text-sm"
-                    />
+                  {/* Data i Czas - osobne pola */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-medium text-[#8b8580] mb-1 uppercase tracking-wider">
+                        Data wizyty
+                      </label>
+                      <input
+                        type="date"
+                        value={
+                          newHistory.date ? newHistory.date.split("T")[0] : ""
+                        }
+                        onChange={(e) => {
+                          const time = newHistory.date
+                            ? newHistory.date.split("T")[1]
+                            : "12:00";
+                          setNewHistory({
+                            ...newHistory,
+                            date: `${e.target.value}T${time}`,
+                          });
+                        }}
+                        className="w-full px-3 py-2 bg-[#f8f6f3] border border-[#d4cec4] rounded-lg focus:border-[#8b7355] outline-none text-sm"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-[#8b8580] mb-1 uppercase tracking-wider">
+                        Godzina
+                      </label>
+                      <input
+                        type="time"
+                        value={
+                          newHistory.date ? newHistory.date.split("T")[1] : ""
+                        }
+                        onChange={(e) => {
+                          const date = newHistory.date
+                            ? newHistory.date.split("T")[0]
+                            : new Date().toISOString().split("T")[0];
+                          setNewHistory({
+                            ...newHistory,
+                            date: `${date}T${e.target.value}`,
+                          });
+                        }}
+                        className="w-full px-3 py-2 bg-[#f8f6f3] border border-[#d4cec4] rounded-lg focus:border-[#8b7355] outline-none text-sm"
+                      />
+                    </div>
                   </div>
 
                   {/* Adnotacja i Obszar - 2 kolumny */}
