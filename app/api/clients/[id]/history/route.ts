@@ -64,6 +64,38 @@ export async function POST(
       );
     }
 
+    // Parse manual date format: DD.MM.YYYY HH:MM
+    let parsedDate: Date;
+    try {
+      // Try parsing DD.MM.YYYY HH:MM format
+      const match = date.match(/^(\d{2})\.(\d{2})\.(\d{4})\s+(\d{2}):(\d{2})$/);
+      if (match) {
+        const [, day, month, year, hour, minute] = match;
+        parsedDate = new Date(
+          parseInt(year),
+          parseInt(month) - 1,
+          parseInt(day),
+          parseInt(hour),
+          parseInt(minute)
+        );
+      } else {
+        // Fallback to ISO format
+        parsedDate = new Date(date);
+      }
+      
+      if (isNaN(parsedDate.getTime())) {
+        return NextResponse.json(
+          { error: "Invalid date format. Use DD.MM.YYYY HH:MM" },
+          { status: 400 }
+        );
+      }
+    } catch (err) {
+      return NextResponse.json(
+        { error: "Invalid date format. Use DD.MM.YYYY HH:MM" },
+        { status: 400 }
+      );
+    }
+
     // 1. Find the MOST RECENT form for this client to attach history to
     const latestForm = await prisma.consentForm.findFirst({
       where: { clientId: id },
@@ -81,7 +113,7 @@ export async function POST(
     const newEntry = await prisma.treatmentHistory.create({
       data: {
         formId: latestForm.id,
-        date: new Date(date),
+        date: parsedDate,
         description,
       },
     });
