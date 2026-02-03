@@ -120,9 +120,20 @@ export async function POST(
 
     return NextResponse.json(newEntry);
   } catch (error) {
-    console.error("Error creating client history:", error);
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    const errorStack = error instanceof Error ? error.stack : undefined;
+    
+    console.error("[API] Error creating client history:", {
+      error: errorMessage,
+      stack: errorStack,
+      clientId: id,
+    });
+    
     return NextResponse.json(
-      { error: "Failed to create client history" },
+      { 
+        error: "Failed to create client history",
+        details: process.env.NODE_ENV === 'development' ? errorMessage : undefined
+      },
       { status: 500 }
     );
   }
