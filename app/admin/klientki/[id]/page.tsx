@@ -16,6 +16,9 @@ import {
   AlertTriangle,
   Heart,
   MessageSquare,
+  Edit2,
+  X,
+  Check,
 } from "lucide-react";
 
 type NoteCategory = "NOTATKA" | "ALERGIA" | "UWAGA" | "PREFERENCJA";
@@ -105,6 +108,12 @@ export default function ClientDetailsPage({
   const [newHistory, setNewHistory] = useState({ date: "", description: "" });
   const [isAddingHistory, setIsAddingHistory] = useState(false);
   const [showAddHistoryForm, setShowAddHistoryForm] = useState(false);
+  const [editingHistoryId, setEditingHistoryId] = useState<string | null>(null);
+  const [editFormData, setEditFormData] = useState({
+    date: "",
+    description: "",
+  });
+  const [isSavingEdit, setIsSavingEdit] = useState(false);
 
   useEffect(() => {
     params.then((p) => setClientId(p.id));
@@ -234,6 +243,63 @@ export default function ClientDetailsPage({
       }
     } catch (error) {
       console.error("Błąd usuwania notatki:", error);
+    }
+  };
+
+  const handleDeleteHistory = async (historyId: string) => {
+    if (!confirm("Czy na pewno chcesz usunąć tę wizytę z historii?")) return;
+
+    try {
+      const response = await fetch(`/api/history/${historyId}`, {
+        method: "DELETE",
+      });
+      if (response.ok) {
+        await fetchHistory();
+      } else {
+        alert("Wystąpił błąd podczas usuwania.");
+      }
+    } catch (error) {
+      console.error("Error deleting history:", error);
+      alert("Błąd połączenia.");
+    }
+  };
+
+  const startEditingHistory = (item: TreatmentHistory) => {
+    setEditingHistoryId(item.id);
+    setEditFormData({
+      date: item.date,
+      description: item.description,
+    });
+  };
+
+  const cancelEditing = () => {
+    setEditingHistoryId(null);
+    setEditFormData({ date: "", description: "" });
+  };
+
+  const handleUpdateHistory = async () => {
+    if (!editingHistoryId || !editFormData.date || !editFormData.description)
+      return;
+
+    setIsSavingEdit(true);
+    try {
+      const response = await fetch(`/api/history/${editingHistoryId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(editFormData),
+      });
+
+      if (response.ok) {
+        await fetchHistory();
+        cancelEditing();
+      } else {
+        alert("Błąd aktualizacji wpisu.");
+      }
+    } catch (error) {
+      console.error("Error updating history:", error);
+      alert("Błąd połączenia.");
+    } finally {
+      setIsSavingEdit(false);
     }
   };
 
@@ -656,40 +722,128 @@ export default function ClientDetailsPage({
                     className="bg-white rounded-xl p-4 border border-[#e5e0d8] shadow-sm hover:shadow-md transition-shadow"
                   >
                     <div className="flex items-start gap-3">
-                      {/* Text label instead of icon */}
-                      <span className="text-[10px] uppercase tracking-wider font-bold text-white bg-[#8b7355] px-2 py-1 rounded-md whitespace-nowrap mt-0.5">
+                      <span
+                        className={`text-[10px] uppercase tracking-wider font-bold text-white px-2 py-1 rounded-md whitespace-nowrap mt-0.5 ${item.type === "visit" ? "bg-[#8b7355]" : "bg-[#4a4540]"}`}
+                      >
                         {item.type === "visit" ? "Wizyta" : "Formularz"}
                       </span>
 
                       <div className="flex-1 min-w-0">
-                        <div className="flex justify-between items-start mb-1.5">
-                          <span className="text-[#8b7355] font-medium text-sm">
-                            {item.date.toLocaleDateString("pl-PL", {
-                              day: "numeric",
-                              month: "long",
-                              year: "numeric",
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            })}
-                          </span>
-                        </div>
-
-                        {item.type === "visit" ? (
-                          <p className="text-[#5a5550] text-sm leading-relaxed whitespace-pre-wrap">
-                            {item.description}
-                          </p>
+                        {item.type === "visit" &&
+                        editingHistoryId === item.id ? (
+                          <div className="space-y-3">
+                            {/* EDYCJA WIZYTY */}
+                            <div className="grid grid-cols-2 gap-2">
+                              <input
+                                type="date"
+                                value={editFormData.date.split("T")[0]}
+                                onChange={(e) => {
+                                  const time =
+                                    editFormData.date.split("T")[1] || "12:00";
+                                  setEditFormData({
+                                    ...editFormData,
+                                    date: `${e.target.value}T${time}`,
+                                  });
+                                }}
+                                className="px-2 py-1 border rounded text-xs"
+                              />
+                              <input
+                                type="time"
+                                value={editFormData.date.split("T")[1] || ""}
+                                onChange={(e) => {
+                                  const date = editFormData.date.split("T")[0];
+                                  setEditFormData({
+                                    ...editFormData,
+                                    date: `${date}T${e.target.value}`,
+                                  });
+                                }}
+                                className="px-2 py-1 border rounded text-xs"
+                              />
+                            </div>
+                            <textarea
+                              value={editFormData.description}
+                              onChange={(e) =>
+                                setEditFormData({
+                                  ...editFormData,
+                                  description: e.target.value,
+                                })
+                              }
+                              className="w-full px-2 py-1 border rounded text-sm min-h-[60px]"
+                            />
+                            <div className="flex justify-end gap-2">
+                              <button
+                                onClick={cancelEditing}
+                                className="p-1 text-gray-500 hover:bg-gray-100 rounded"
+                              >
+                                <X className="w-4 h-4" />
+                              </button>
+                              <button
+                                onClick={handleUpdateHistory}
+                                disabled={isSavingEdit}
+                                className="p-1 text-green-600 hover:bg-green-50 rounded"
+                              >
+                                <Check className="w-4 h-4" />
+                              </button>
+                            </div>
+                          </div>
                         ) : (
-                          <Link
-                            href={`/admin/formularz/${item.id}`}
-                            className="block hover:text-[#8b7355] transition-colors"
-                          >
-                            <p className="font-medium text-[#4a4540] text-sm">
-                              {categoryLabels[item.formType]}
-                            </p>
-                            <p className="text-xs text-[#8b8580] mt-0.5">
-                              {item.obszarZabiegu || "Brak szczegółów"}
-                            </p>
-                          </Link>
+                          <>
+                            {/* WIDOK STANDARDOWY */}
+                            <div className="flex justify-between items-start mb-1.5">
+                              <span className="text-[#8b7355] font-medium text-sm">
+                                {item.date.toLocaleDateString("pl-PL", {
+                                  day: "numeric",
+                                  month: "long",
+                                  year: "numeric",
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                })}
+                              </span>
+
+                              {item.type === "visit" && (
+                                <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                  <button
+                                    onClick={() =>
+                                      startEditingHistory({
+                                        id: item.id,
+                                        date: item.date.toISOString(),
+                                        description: item.description,
+                                      })
+                                    }
+                                    className="p-1 text-[#8b8580] hover:text-[#8b7355] transition-colors"
+                                    title="Edytuj"
+                                  >
+                                    <Edit2 className="w-3.5 h-3.5" />
+                                  </button>
+                                  <button
+                                    onClick={() => handleDeleteHistory(item.id)}
+                                    className="p-1 text-red-400 hover:text-red-600 transition-colors"
+                                    title="Usuń"
+                                  >
+                                    <Trash2 className="w-3.5 h-3.5" />
+                                  </button>
+                                </div>
+                              )}
+                            </div>
+
+                            {item.type === "visit" ? (
+                              <p className="text-[#5a5550] text-sm leading-relaxed whitespace-pre-wrap">
+                                {item.description}
+                              </p>
+                            ) : (
+                              <Link
+                                href={`/admin/formularz/${item.id}`}
+                                className="block hover:text-[#8b7355] transition-colors"
+                              >
+                                <p className="font-medium text-[#4a4540] text-sm">
+                                  {categoryLabels[item.formType]}
+                                </p>
+                                <p className="text-xs text-[#8b8580] mt-0.5">
+                                  {item.obszarZabiegu || "Brak szczegółów"}
+                                </p>
+                              </Link>
+                            )}
+                          </>
                         )}
                       </div>
                     </div>
