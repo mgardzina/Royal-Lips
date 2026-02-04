@@ -73,7 +73,6 @@ const formTypeLabels: Record<string, string> = {
   NEEDLE_MESOTHERAPY: "Mezoterapia igłowa",
   INJECTION_LIPOLYSIS: "Lipoliza iniekcyjna",
   PERMANENT_MAKEUP: "Makijaż permanentny (Legacy)",
-  LASER_REMOVAL: "Laserowe usuwanie",
   LASER_HAIR_REMOVAL: "Depilacja laserowa",
 };
 
@@ -688,6 +687,41 @@ export default function FormDetailsPage() {
               ) : (
                 <div className="bg-red-50 p-4 rounded-xl border border-red-100 text-red-500 text-sm">
                   Brak podpisu głównego.
+                </div>
+              )}
+            </div>
+
+            {/* RODO Clause (Section 2) */}
+            <div className="bg-white/80 rounded-2xl shadow-sm border border-[#d4cec4] p-6">
+              <div className="flex justify-between items-center mb-4 border-b border-[#f0ebe4] pb-2">
+                Klauzula Informacyjna RODO
+                <span
+                  className={`px-3 py-1 rounded-full text-xs font-medium ${
+                    (form as any).podpisRodo2
+                      ? "bg-green-100 text-green-700"
+                      : "bg-red-100 text-red-700"
+                  }`}
+                >
+                  {(form as any).podpisRodo2 ? "PODPISANO" : "BRAK PODPISU"}
+                </span>
+              </div>
+              <p className="text-sm text-[#5a5550] mb-4">
+                Potwierdzenie: Zapoznanie się z klauzulą informacyjną RODO.
+              </p>
+              {(form as any).podpisRodo2 ? (
+                <div className="p-4 rounded-xl">
+                  <p className="text-xs text-[#8b8580] uppercase tracking-wider mb-2 font-medium">
+                    Podpis RODO (Klauzula)
+                  </p>
+                  <img
+                    src={(form as any).podpisRodo2}
+                    alt="Podpis RODO 2"
+                    className="h-40 object-contain mx-auto md:mx-0 filter mix-blend-multiply"
+                  />
+                </div>
+              ) : (
+                <div className="bg-red-50 p-4 rounded-xl border border-red-100 text-red-500 text-sm">
+                  Brak podpisu klauzuli.
                 </div>
               )}
             </div>

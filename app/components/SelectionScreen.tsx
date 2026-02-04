@@ -101,6 +101,22 @@ export default function SelectionScreen({ onSelect }: SelectionScreenProps) {
               <p className="text-sm text-[#8b8580]">Botoks / Kwas</p>
             </div>
           </button>
+
+          {/* Depilacja Laserowa */}
+          <button
+            onClick={() => onSelect("LASER_HAIR_REMOVAL")}
+            className="group relative bg-white/60 backdrop-blur-sm p-8 rounded-2xl shadow-lg border border-[#d4cec4] hover:border-[#8b7355] hover:bg-white/80 transition-all duration-300 flex flex-col items-center gap-6"
+          >
+            <div className="w-20 h-20 bg-[#efe9e1] rounded-full flex items-center justify-center group-hover:bg-[#8b7355]/10 transition-colors">
+              <Zap className="w-10 h-10 text-[#8b7355] group-hover:scale-110 transition-transform duration-300" />
+            </div>
+            <div className="text-center">
+              <h3 className="text-xl font-serif text-[#4a4540] mb-2 font-medium">
+                Depilacja Laserowa
+              </h3>
+              <p className="text-sm text-[#8b8580]">Laser diodowy</p>
+            </div>
+          </button>
         </div>
         <div className="mt-12 text-center text-[#8b8580] text-sm flex gap-6 justify-center">
           <a

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import SelectionScreen from "./components/SelectionScreen";
 import FacialVolumetryForm from "./components/forms/FacialVolumetryForm";
+import LaserRemovalForm from "./components/forms/LaserRemovalForm";
 
 import LipModelingForm from "./components/forms/LipModelingForm";
 import WrinkleLevelingForm from "./components/forms/WrinkleLevelingForm";
@@ -28,9 +29,10 @@ export default function HomePage() {
       return <LipModelingForm onBack={() => setSelectedForm(null)} />;
     case "FACIAL_VOLUMETRY":
       return <FacialVolumetryForm onBack={() => setSelectedForm(null)} />;
-
     case "WRINKLE_REDUCTION":
       return <WrinkleLevelingForm onBack={() => setSelectedForm(null)} />;
+    case "LASER_HAIR_REMOVAL":
+      return <LaserRemovalForm onBack={() => setSelectedForm(null)} />;
     default:
       return <div>Formularz nieznany</div>;
   }

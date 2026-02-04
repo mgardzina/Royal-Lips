@@ -4,7 +4,6 @@ export type FormType =
   | 'NEEDLE_MESOTHERAPY'
   | 'INJECTION_LIPOLYSIS'
   | 'PERMANENT_MAKEUP'
-  | 'LASER_REMOVAL'
   | 'LASER_HAIR_REMOVAL'
   | 'WRINKLE_REDUCTION';
 
@@ -42,7 +41,8 @@ export interface ConsentFormData {
   podpisDane: string;
   podpisMarketing: string;
   podpisFotografie: string;
-  podpisRodo: string;
+  podpisRodo: string | null;
+  podpisRodo2: string | null;
 
   // Informacja dodatkowa
   informacjaDodatkowa?: string;
@@ -52,35 +52,44 @@ export interface ConsentFormData {
 // RODO Information - Dane administratora
 export const rodoInfo = {
   administrator: 'Joanna Wielgos',
-  firmaNazwa: 'Royal Lips Studio Makijażu Permanentnego',
+  firmaNazwa: 'Royal Lips Makijaż Permanentny - Joanna Wielgos',
   nip: '6842237473',
   regon: '180685260',
   adres: 'ul. Pużaka 37, 38-400 Krosno',
-  pelnyTekst: `Zgodnie z art. 13 ust. 1-2 Rozporządzenia Parlamentu Europejskiego i Rady (UE) 2016/679 z dnia 27 kwietnia 2016 r. w sprawie ochrony osób fizycznych w związku z przetwarzaniem danych osobowych i w sprawie swobodnego przepływu takich danych oraz uchylenia dyrektywy 95/46/WE (ogólne rozporządzenie o ochronie danych) (dalej „RODO") informuję, że:
+  consentTitle: 'ZGODA NA PRZETWARZANIE DANYCH OSOBOWYCH RODO',
+  consentText: `Ja, niżej podpisana, zgodnie z art. 6 ust 1 pkt a w zw. z 7 ust. 2 Rozporządzenia Parlamentu Europejskiego i Rady Unii Europejskiej z dnia 27 kwietnia 2016 r. 2016/679 (Dz.U.UE.L.2018.127.2 t.j.) w sprawie ochrony osób fizycznych w związku z przetwarzaniem danych osobowych i w sprawie swobodnego przepływu takich danych oraz uchylenia dyrektywy 95/46/WE (ogólne rozporządzenie o ochronie danych), zwane dalej RODO, wyrażam dobrowolną zgodę na przetwarzanie przez Administratora – Malwinę Zięba, prowadzącą działalność gospodarczą pod firmą: PowderBrows Academy Malwina Zięba, ul. Siedlanowskiego 3/12 , 37 – 450 Stalowa Wola, NIP: 8652314272, REGON: 383931003, moich danych osobowych w postaci:
+● imienia i nazwiska
+● numeru telefonu
+● adresu e-mail
+● daty urodzenia
+● numeru PESEL
+● wizerunku utrwalonego w celu prowadzenia dokumentacji zabiegowej
+● informacji o stanie zdrowia, schorzeniach, przebytych zabiegach`,
+  clauseTitle: 'KLAUZULA INFORMACYJNA DOTYCZĄCA PRZETWARZANIA DANYCH OSOBOWYCH',
+  clauseText: `Oświadczam, że zgodnie z art. 13 ust. 1 i ust. 2 RODO zostałam poinformowana, iż:
+a) podanie danych osobowych jest dobrowolne, ale w przypadku odmowy ich podania, Administrator jest uprawniony do odmowy realizacji usługi,
+b) posiadam prawo do cofnięcia zgody w dowolnym momencie, jednak rozumiem, iż nie wpłynie to na zgodność z prawem przetwarzania, którego dokonano na podstawie zgody przed jej cofnięciem,
+c) dane w postaci: imienia i nazwiska, daty urodzenia, numeru PESEL, informacji o stanie zdrowia, schorzeniach, przebytych zabiegach oraz wizerunku utrwalonego w celu prowadzenia dokumentacji zabiegowej, są przetwarzane na podstawie upoważnienia ustawowego, o którym mowa w art. 9 ust. 2 a RODO, w celu prawidłowej realizacji usługi - do której niezbędne jest pozyskanie danych wrażliwych,
+d) dane w postaci: numeru telefonu oraz adresu mailowego, będą wykorzystywane w celu dokonania rezerwacji, realizacji usługi oraz informowania o usługach świadczonych przez Administratora (terminy wizyt, oferty, zakres usług),
+e) dane w postaci wizerunku utrwalonego w celach promocyjno-marketingowych będą wykorzystywane na potrzeby działalności promocyjno-marketingowej Administratora (zamieszczenie fotografii na stronie internetowej salonu, portalu Facebook, portalu Instagram),
+f) odbiorcami danych osobowych będą upoważnione przez Administratora osoby, które przetwarzają dane osobowe w ramach powierzonych im zadań służbowych,
+g) w przypadku uprawnionego żądania odbiorcami danych mogą stać się również organy kontroli, organy ścigania oraz inne organy publiczne działające na podstawie upoważnienia ustawowego,
+h) dane osobowe będą przetwarzane do momentu: cofnięcia zgody, wygaśnięcia ciążącego na Administratorze obowiązku przechowywania danych wynikającego z aktualnie obowiązujących przepisów prawa lub upływu terminu wygaśnięcia roszczeń związanych z wykonaną usługą,
+i) posiadam prawo do żądania od Administratora: dostępu do swoich danych osobowych, prawo do ich sprostowania, do ich przenoszenia lub ograniczenia przetwarzania, a także usunięcia danych osobowych,
+j) dane osobowe będą poddane zautomatyzowanym procesom związanym z podejmowaniem decyzji, w tym profilowaniu zwykłemu, wyłącznie w celu dopasowania oferty marketingowej Administratora do indywidualnych potrzeb klienta, a także przypominania o umówionych wizytach,
+k) Administrator nie będzie przekazywał danych osobowych do państwa trzeciego lub organizacji międzynarodowych,
+l) w przypadku uznania, że dane osobowe są przetwarzane nieprawidłowo lub niezgodnie z przepisami przysługuje mi prawo do wniesienia skargi do organu nadzoru – Prezesa Urzędu Ochrony Danych Osobowych.`,
+  pelnyTekst: `Obowiązek informacyjny RODO
 
-I. Administratorem Pani/Pana danych osobowych jest Joanna Wielgos, prowadząca działalność gospodarczą pod nazwą: Royal Lips Studio Makijażu Permanentnego, ul. Pużaka 37, 38-400 Krosno, REGON 180685260, NIP 6842237473
+Zgodnie z art. 13 ogólnego rozporządzenia o ochronie danych osobowych Dz. Urz. UE L 119 z 04.05.2016 informuję, iż:
 
-II. Będę przetwarzać Pani/Pana dane wyłącznie w celu wykonania umowy o wykonanie zabiegu kosmetycznego, w zakresie wynikającym ze zlecenia, i objętej zgodą na podstawie Oświadczenia o wyrażeniu zgody na wykonanie zabiegu kosmetycznego, zgodnie z zasadami wymienionymi w art. 5. Niedopuszczalne jest przetwarzanie Pani/Pana danych w celu marketingu bezpośredniego.
-
-III. Prawo do sprzeciwu
-W każdej chwili przysługuje Pani/Panu prawo do wniesienia sprzeciwu wobec przetwarzania Pani/Pana danych, przetwarzanych w celu i na podstawie wskazanych powyżej. Przestaniemy przetwarzać Pani/Pana dane w tych celach, chyba że będziemy w stanie wykazać, że istnieją ważne, prawnie uzasadnione podstawy, które są nadrzędne wobec Pani/Pana interesów, praw i wolności lub Pani/Pana dane będą nam niezbędne do ewentualnego ustalenia, dochodzenia lub obrony roszczeń.
-
-IV. Będę przechowywać dane przez okres niezbędny dla prawidłowego wykonania umowy, nie dłużej jednak niż do przedawnienia dochodzenia roszczenia lub zgłoszenia szkody.
-
-V. Pani/Pana dane osobowe mogą zostać przekazywane wyłącznie pracownikom księgowości/biura rachunkowego, na których przepisy nakładają obowiązek zachowania tajemnicy – tylko w celu umożliwienia rozliczenia wykonanego zabiegu, wystawienia faktury, rachunku imiennego, lub pracownikom przedsiębiorstwa Joanna Wielgos Royal Lips Studio Makijażu Permanentnego (ul. Pużaka 37, 38-400 Krosno), którym powierzono pisemnie przetwarzanie danych osobowych i którzy ponoszą odpowiedzialność za naruszenie zasad przetwarzania.
-
-VI. Zgodnie z RODO, przysługuje Pani/Panu prawo do:
-a) dostępu do swoich danych oraz otrzymania ich kopii
-b) sprostowania (poprawiania) swoich danych
-c) żądania usunięcia, ograniczenia lub wniesienia sprzeciwu wobec ich przetwarzania
-d) przenoszenia danych
-e) wniesienia skargi do organu nadzorczego
-
-VII. Podanie danych jest dobrowolne z tym, że odmowa ich podania może uniemożliwić wykonanie zabiegu w ramach usług oferowanych Klientom, i stanowi podstawę odmowy ich wykonania.
-
-VIII. Informuję, że nie podejmuję decyzji w sposób zautomatyzowany i Pani/Pana dane nie są profilowane.
-
-IX. W każdej chwili przysługuje Pani/Panu prawo do wycofania zgody na przetwarzanie Pani/Pana danych osobowych (w tym należących do szczególnej kategorii), ale cofnięcie zgody nie wpływa na zgodność z prawem przetwarzania, którego dokonano zgodnie z prawem, przed jej wycofaniem.`,
+1) administratorem Pani/Pana danych osobowych jest PowderBrows Academy Malwina Zięba,
+2) Pani/Pana dane osobowe przetwarzane będą w celu korzystania z usług hotelowych/kosmetycznych - na podstawie Art. 6 ust. 1 lit. b ogólnego rozporządzenia o ochronie danych osobowych z dnia 27 kwietnia 2016 r.
+3) odbiorcami Pani/Pana danych osobowych będą wyłącznie podmioty uprawnione do uzyskania danych osobowych na podstawie przepisów prawa oraz podmioty uczestniczące w realizacji usług
+4) Pani/Pana dane osobowe przechowywane będą przez okres 10 lat
+5) posiada Pani/Pan prawo do żądania od administratora dostępu do danych osobowych, prawo do ich sprostowania, usunięcia lub ograniczenia przetwarzania oraz prawo do przenoszenia danych
+6) ma Pani/Pan prawo wniesienia skargi do organu nadzorczego
+7) podanie danych osobowych jest dobrowolne, jednakże odmowa podania danych może skutkować odmową realizacji usługi/umowy`,
 };
 
 // Nowa struktura przeciwwskazań - wspólna dla wszystkich formularzy
@@ -1146,55 +1155,72 @@ export const laseroweUsuwaniePostCare = [
 
 // DEPILACJA_LASEROWA - Depilacja laserowa
 export const depilacjaLaserowaContraindications: Record<string, string | ContraindicationWithFollowUp> = {
-  ciazaLaktacja: 'Jestem w ciąży lub karmię piersią',
-  chorobyNowotworowe: 'Choruję lub chorowałam/em na choroby nowotworowe',
-  epilepsja: 'Choruję na epilepsję',
-  cukrzycaNiewyrownana: 'Choruję na cukrzycę (szczególnie niewyrównaną)',
-  chorobyHormonalne: 'Występują choroby hormonalne (np. tarczyca, PCOS)',
-  chorobyAutoimmunologiczne: 'Występują choroby autoimmunologiczne',
-  sklonnoscBliznowce: 'Mam skłonność do powstawania bliznowców (keloidów)',
-  stanyZapalneRanyInfekcje: 'W miejscu zabiegowym występują stany zapalne, rany, infekcje, choroby skóry',
-  tatuazeZnamionaMakijazPermanentny: 'Posiadam tatuaże, znamiona lub makijaż permanentny w obszarze zabiegowym',
-  swiezaOpalenizna: 'W ciągu ostatnich 14 dni była świeża opalenizna (słońce/solarium)',
-  lekiSwiatlouczulajace: 'Przyjmuję leki, zioła lub suplementy światłouczulające',
-  antybiotyki: 'W ciągu ostatnich 14 dni przyjmowałam/em antybiotyki',
-  retinoidy: 'Stosuję lub stosowałam/em retinoidy lub witaminę A',
-  kosmetykiRetinolKwasySamoopalacz: 'W ciągu ostatnich 2 tygodni stosowałam/em kosmetyki z retinolem, kwasami, samoopalaczem',
+  ciazaLaktacja: 'Czy jest Pani/Pan w ciąży lub karmi piersią?',
+  chorobyNowotworowe: 'Czy choruje Pani/Pan lub chorowała/-ł na choroby nowotworowe?',
+  epilepsja: 'Czy choruje Pani/Pan na epilepsję?',
+  cukrzycaNiewyrownana: 'Czy choruje Pani/Pan na cukrzycę (szczególnie niewyrównaną)?',
+  chorobyHormonalne: 'Czy występują choroby hormonalne (np. tarczyca, PCOS)?',
+  chorobyAutoimmunologiczne: 'Czy występują choroby autoimmunologiczne?',
+  sklonnoscBliznowce: 'Czy ma Pani/Pan skłonność do powstawania bliznowców (keloidów)?',
+  stanyZapalneRanyInfekcje: 'Czy w miejscu zabiegowym występują: stany zapalne, rany, infekcje, choroby skóry?',
+  tatuazeZnamionaMakijazPermanentny: 'Czy posiada Pani/Pan tatuaże, znamiona lub makijaż permanentny w obszarze zabiegowym?',
+  swiezaOpalenizna: 'Czy w ciągu ostatnich 14 dni była świeża opalenizna (słońce/solarium)?',
+  lekiSwiatlouczulajace: 'Czy przyjmuje Pani/Pan leki, zioła lub suplementy światłouczulające?',
+  antybiotyki: 'Czy w ciągu ostatnich 14 dni przyjmowała/-ł Pani/Pan antybiotyki?',
+  retinoidy: 'Czy stosuje lub stosowała/-ł Pani/Pan retinoidy lub witaminę A?',
+  kosmetykiRetinolKwasySamoopalacz: {
+    text: 'Czy w ciągu ostatnich 2 tygodni stosowała/-ł Pani/Pan kosmetyki z: retinolem, kwasami, samoopalaczem?',
+    hasFollowUp: true,
+    followUpPlaceholder: 'Jeśli odpowiedź TAK – proszę podać szczegóły...',
+  },
+  inneChorobyLeki: {
+    text: 'Czy choruje Pani/Pan na inne choroby niewymienione powyżej lub przyjmuje na stałe jakiekolwiek leki, zioła bądź suplementy diety (w tym leki dostępne bez recepty)?',
+    hasFollowUp: true,
+    followUpPlaceholder: 'Jeśli tak, proszę wymienić jakie...',
+  },
 };
 
+export const depilacjaLaserowaPreCare = [
+  '14 dni przed zabiegiem nie opalać się ani nie korzystać z solarium',
+  '4–6 tygodni przed zabiegiem nie wyrywać włosów (wosk, depilator, pęseta)',
+  'Włosy można usuwać wyłącznie maszynką',
+  '14 dni przed zabiegiem nie stosować: leków i ziół światłouczulających, retinoidów, witaminy A, antybiotyków',
+  'Nie stosować kosmetyków z retinolem, kwasami i samoopalaczy',
+];
+
+export const depilacjaLaserowaPostCare = [
+  'Przez minimum 14 dni unikać słońca i stosować SPF 30–50',
+  'Przez 24–48 godzin unikać sauny, basenu i gorących kąpieli',
+  'Przez kilka dni nie stosować peelingów ani kosmetyków z alkoholem',
+  'Między zabiegami usuwać włosy wyłącznie maszynką',
+];
+
 export const depilacjaLaserowaNaturalReactions = [
-  'zaczerwienienie',
-  'obrzęk',
-  'pieczenie',
-  'przebarwienia',
-  'strupki',
-  'pęcherze',
+  'Zaczerwienienie',
+  'Obrzęk',
+  'Pieczenie',
+  'Przebarwienia',
+  'Strupki',
+  'Pęcherze',
 ];
 
 export const depilacjaLaserowaComplications = {
   czeste: [
-    'zaczerwienienie',
-    'obrzęk',
-    'pieczenie',
-    'przebarwienia',
-    'strupki',
-    'pęcherze',
+    'Zaczerwienienie',
+    'Obrzęk',
+    'Pieczenie',
   ],
   rzadkie: [
-    'reakcje alergiczne',
-    'zakażenie bakteryjne',
+    'Przebarwienia',
+    'Strupki',
+    'Pęcherze',
   ],
   bardzoRzadkie: [
-    'bliznowce',
+    'Bliznowce',
   ],
 };
 
-export const depilacjaLaserowaPostCare = [
-  'Przez minimum 14 dni unikać słońca i stosować SPF 30-50',
-  'Przez 24-48 godzin unikać sauny, basenu i gorących kąpieli',
-  'Przez kilka dni nie stosować peelingów ani kosmetyków z alkoholem',
-  'Między zabiegami usuwać włosy wyłącznie maszynką',
-];
+
 
 // Mapowanie typów na zestawy pytań
 export const contraindicationsByFormType: Record<FormType, Record<string, string | ContraindicationWithFollowUp>> = {
@@ -1203,7 +1229,7 @@ export const contraindicationsByFormType: Record<FormType, Record<string, string
   NEEDLE_MESOTHERAPY: mezoterapiaIglowaContraindications,
   INJECTION_LIPOLYSIS: lipolizaIniekcyjnaContraindications,
   PERMANENT_MAKEUP: makijazPermanentnyContraindications,
-  LASER_REMOVAL: laseroweUsuwanieContraindications,
+
   LASER_HAIR_REMOVAL: depilacjaLaserowaContraindications,
   WRINKLE_REDUCTION: wolumetriaTwarzyContraindications,
 };

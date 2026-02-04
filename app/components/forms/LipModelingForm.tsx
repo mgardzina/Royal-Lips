@@ -63,6 +63,7 @@ const initialFormData: ConsentFormData = {
   podpisMarketing: "",
   podpisFotografie: "",
   podpisRodo: "",
+  podpisRodo2: "",
   informacjaDodatkowa: "",
   zastrzeniaKlienta: "",
 };
@@ -1338,7 +1339,7 @@ export default function LipModelingForm({ onBack }: LipModelingFormProps) {
                     <div className="bg-white rounded-xl overflow-hidden min-h-[200px]">
                       <SignaturePad
                         label=""
-                        value={formData.podpisRodo}
+                        value={formData.podpisRodo || ""}
                         onChange={(sig) => {
                           handleInputChange("podpisRodo", sig);
                           // Auto-approve RODO consent when signed

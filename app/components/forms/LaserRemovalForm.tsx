@@ -21,9 +21,9 @@ import {
   depilacjaLaserowaNaturalReactions,
   depilacjaLaserowaComplications,
   depilacjaLaserowaPostCare,
+  depilacjaLaserowaPreCare,
   rodoInfo,
 } from "../../../types/booking";
-import AnatomyFaceSelector from "../AnatomyFaceSelector";
 
 interface LaserRemovalFormProps {
   onBack: () => void;
@@ -63,6 +63,7 @@ const initialFormData: ConsentFormData = {
   podpisMarketing: "",
   podpisFotografie: "",
   podpisRodo: "",
+  podpisRodo2: "",
   informacjaDodatkowa: "",
   zastrzeniaKlienta: "",
 };
@@ -122,7 +123,7 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
 
   const handleInputChange = (
     field: keyof ConsentFormData,
-    value: string | boolean,
+    value: string | boolean | null,
   ) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
@@ -590,303 +591,51 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
                       <label className="block text-sm text-[#6b6560] mb-2 font-medium">
                         Obszar Zabiegu
                       </label>
-                      <input
-                        type="text"
-                        className="w-full px-4 py-3 bg-white/80 border border-[#d4cec4] rounded-xl focus:border-[#8b7355] focus:ring-2 focus:ring-[#8b7355]/20 outline-none transition-all"
-                        placeholder="Np. Łydki, Pachy, Bikini..."
-                        value={formData.obszarZabiegu}
-                        onChange={(e) =>
-                          handleInputChange("obszarZabiegu", e.target.value)
-                        }
-                      />
-                    </div>
-                  </div>
-
-                  {/* Znieczulenie */}
-                  <div>
-                    <label className="block text-sm text-[#6b6560] mb-2 font-medium">
-                      Znieczulenie
-                    </label>
-                    <div className="space-y-4">
-                      {/* Anesthesia Selection */}
-                      <div className="flex flex-col gap-3">
-                        <button
-                          type="button"
-                          className="text-left p-4 rounded-xl border-2 border-[#8b7355] bg-[#8b7355]/5 shadow-md transition-all group"
-                        >
-                          <div className="flex justify-between items-center mb-1">
-                            <span className="font-serif text-lg font-medium text-[#8b7355]">
-                              Lidokaina 9,6%
-                            </span>
-                            <CheckCircle2 className="w-5 h-5 text-[#8b7355]" />
-                          </div>
-                          <p className="text-sm text-[#6b6560] leading-relaxed">
-                            Znieczulenie miejscowe jest zawsze stosowane podczas
-                            zabiegu.
-                          </p>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Additional History Section */}
-                  <div>
-                    <div className="bg-[#f8f6f3] p-5 rounded-xl border border-[#d4cec4] mb-6 space-y-4">
-                      <h3 className="font-serif text-[#4a4540] text-lg mb-2">
-                        Historia zabiegów ust
-                      </h3>
-                      <div className="space-y-3">
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                         {[
-                          "Usta modelowane pierwszy raz",
-                          "Usta modelowane drugi raz, w tym samym gabinecie",
-                          "Usta modelowane drugi raz, pierwszy raz w innym gabinecie",
-                        ].map((option) => (
-                          <label
-                            key={option}
-                            className="flex items-start gap-3 cursor-pointer group"
-                          >
-                            <div className="relative flex items-center pt-1">
-                              <input
-                                type="checkbox"
-                                checked={(
-                                  formData.informacjaDodatkowa || ""
-                                ).includes(option)}
-                                onChange={(e) => {
-                                  let parts = (
-                                    formData.informacjaDodatkowa || ""
-                                  )
-                                    .split("\n")
-                                    .filter(Boolean);
-
-                                  if (e.target.checked) {
-                                    // Remove other exclusive options if checked
-                                    const exclusiveGroup = [
-                                      "Usta modelowane pierwszy raz",
-                                      "Usta modelowane drugi raz, w tym samym gabinecie",
-                                      "Usta modelowane drugi raz, pierwszy raz w innym gabinecie",
-                                    ];
-                                    // Also remove the "Multiple times" option which starts with the prefix
-                                    const multipleTimesPrefix =
-                                      "Usta modelowane więcej razy";
-
-                                    parts = parts.filter(
-                                      (p) =>
-                                        !exclusiveGroup.includes(p) &&
-                                        !p.startsWith(multipleTimesPrefix),
-                                    );
-                                    parts.push(option);
-                                  } else {
-                                    parts = parts.filter((p) => p !== option);
-                                  }
-                                  handleInputChange(
-                                    "informacjaDodatkowa",
-                                    parts.join("\n"),
-                                  );
-                                }}
-                                className="w-5 h-5 rounded border-[#d4cec4] text-[#8b7355] focus:ring-[#8b7355] focus:ring-offset-0 accent-[#8b7355]"
-                              />
-                            </div>
-                            <span className="text-[#6b6560] text-sm group-hover:text-[#4a4540] transition-colors">
-                              {option}
-                            </span>
-                          </label>
-                        ))}
-
-                        {/* Multiple Times with customized input */}
-                        <div className="space-y-2">
-                          <label className="flex items-start gap-3 cursor-pointer group">
-                            <div className="relative flex items-center pt-1">
-                              <input
-                                type="checkbox"
-                                checked={(
-                                  formData.informacjaDodatkowa || ""
-                                ).includes("Usta modelowane więcej razy")}
-                                onChange={(e) => {
-                                  let parts = (
-                                    formData.informacjaDodatkowa || ""
-                                  ).split("\n");
-                                  const prefix =
-                                    "Usta modelowane więcej razy: ";
-                                  if (e.target.checked) {
-                                    // Remove other exclusive options
-                                    const exclusiveGroup = [
-                                      "Usta modelowane pierwszy raz",
-                                      "Usta modelowane drugi raz, w tym samym gabinecie",
-                                      "Usta modelowane drugi raz, pierwszy raz w innym gabinecie",
-                                    ];
-                                    parts = parts.filter(
-                                      (p) => !exclusiveGroup.includes(p),
-                                    );
-                                    parts.push(prefix);
-                                  } else {
-                                    parts = parts.filter(
-                                      (p) => !p.startsWith(prefix),
-                                    );
-                                  }
-                                  handleInputChange(
-                                    "informacjaDodatkowa",
-                                    parts.filter(Boolean).join("\n"),
-                                  );
-                                }}
-                                className="w-5 h-5 rounded border-[#d4cec4] text-[#8b7355] focus:ring-[#8b7355] focus:ring-offset-0 accent-[#8b7355]"
-                              />
-                            </div>
-                            <span className="text-[#6b6560] text-sm group-hover:text-[#4a4540] transition-colors">
-                              Usta modelowane więcej razy
-                            </span>
-                          </label>
-                          {(formData.informacjaDodatkowa || "").includes(
-                            "Usta modelowane więcej razy",
-                          ) && (
-                            <input
-                              type="text"
-                              className="w-full ml-8 px-3 py-2 text-sm bg-white border border-[#d4cec4] rounded-lg focus:border-[#8b7355] outline-none"
-                              placeholder="Kiedy, jaki preparat, ile razy?"
-                              value={
-                                (formData.informacjaDodatkowa || "")
-                                  .split("\n")
-                                  .find((p) =>
-                                    p.startsWith(
-                                      "Usta modelowane więcej razy: ",
-                                    ),
-                                  )
-                                  ?.replace(
-                                    "Usta modelowane więcej razy: ",
-                                    "",
-                                  ) || ""
-                              }
-                              onChange={(e) => {
-                                const parts = (
-                                  formData.informacjaDodatkowa || ""
-                                ).split("\n");
-                                const index = parts.findIndex((p) =>
-                                  p.startsWith("Usta modelowane więcej razy: "),
-                                );
-                                if (index !== -1) {
-                                  parts[index] =
-                                    `Usta modelowane więcej razy: ${e.target.value}`;
-                                  handleInputChange(
-                                    "informacjaDodatkowa",
-                                    parts.join("\n"),
-                                  );
-                                }
-                              }}
-                            />
-                          )}
-                        </div>
-
-                        {/* Hyaluronidase */}
-                        <label className="flex items-start gap-3 cursor-pointer group pt-2 border-t border-[#d4cec4]/50">
-                          <div className="relative flex items-center pt-1">
-                            <input
-                              type="checkbox"
-                              checked={(
-                                formData.informacjaDodatkowa || ""
-                              ).includes("Usta po hialuronidazie")}
-                              onChange={(e) => {
-                                let parts = (
-                                  formData.informacjaDodatkowa || ""
-                                ).split("\n");
-                                if (e.target.checked) {
-                                  parts.push("Usta po hialuronidazie");
-                                } else {
-                                  parts = parts.filter(
-                                    (p) => p !== "Usta po hialuronidazie",
-                                  );
-                                }
-                                handleInputChange(
-                                  "informacjaDodatkowa",
-                                  parts.filter(Boolean).join("\n"),
-                                );
-                              }}
-                              className="w-5 h-5 rounded border-[#d4cec4] text-[#8b7355] focus:ring-[#8b7355] focus:ring-offset-0 accent-[#8b7355]"
-                            />
-                          </div>
-                          <span className="text-[#6b6560] text-sm group-hover:text-[#4a4540] transition-colors">
-                            Usta po hialuronidazie
-                          </span>
-                        </label>
-
-                        {/* Other */}
-                        <div className="pt-2">
-                          <label className="block text-sm text-[#6b6560] mb-2 font-medium">
-                            Inne informacje
-                          </label>
-                          <textarea
-                            rows={3}
-                            className="w-full px-4 py-3 bg-white border border-[#d4cec4] rounded-xl focus:border-[#8b7355] outline-none text-sm"
-                            placeholder="Dodatkowe uwagi..."
-                            value={
-                              (formData.informacjaDodatkowa || "")
-                                .split("\n")
-                                .find((p) => p.startsWith("Inne: "))
-                                ?.replace("Inne: ", "") || ""
-                            }
-                            onChange={(e) => {
-                              const parts = (
-                                formData.informacjaDodatkowa || ""
-                              ).split("\n");
-                              const newVal = `Inne: ${e.target.value}`;
-                              const index = parts.findIndex((p) =>
-                                p.startsWith("Inne: "),
-                              );
-                              if (index !== -1) {
-                                if (e.target.value) {
-                                  parts[index] = newVal;
-                                } else {
-                                  parts.splice(index, 1);
-                                }
-                              } else if (e.target.value) {
-                                parts.push(newVal);
-                              }
-                              handleInputChange(
-                                "informacjaDodatkowa",
-                                parts.filter(Boolean).join("\n"),
-                              );
+                          "Wąsik",
+                          "Broda",
+                          "Twarz",
+                          "Pachy",
+                          "Ramiona",
+                          "Bikini",
+                          "Uda",
+                          "Łydki",
+                          "Całe nogi",
+                          "Plecy",
+                          "Klatka piersiowa",
+                          "Brzuch",
+                        ].map((area) => (
+                          <button
+                            key={area}
+                            type="button"
+                            onClick={() => {
+                              const current = formData.obszarZabiegu
+                                ? formData.obszarZabiegu.split(", ")
+                                : [];
+                              const newValue = current.includes(area)
+                                ? current.filter((i) => i !== area).join(", ")
+                                : [...current, area].join(", ");
+                              handleInputChange("obszarZabiegu", newValue);
                             }}
-                          />
-                        </div>
+                            className={`py-3 px-4 rounded-xl border-2 transition-all font-medium text-sm ${
+                              (formData.obszarZabiegu || "")
+                                .split(", ")
+                                .includes(area)
+                                ? "border-[#8b7355] bg-[#8b7355] text-white"
+                                : "border-[#d4cec4] bg-white text-[#6b6560] hover:border-[#8b7355] hover:text-[#8b7355]"
+                            }`}
+                          >
+                            {area}
+                          </button>
+                        ))}
                       </div>
-                    </div>
-                  </div>
-                  <div>
-                    <label className="block text-sm text-[#6b6560] mb-2 font-medium">
-                      Oczekiwany efekt
-                    </label>
-                    <div className="grid grid-cols-2 gap-3 mb-3">
-                      {[
-                        "Delikatny efekt",
-                        "Powiększenie",
-                        "Nawilżenie",
-                        "Wyrównanie asymetrii",
-                      ].map((effect) => (
-                        <button
-                          key={effect}
-                          type="button"
-                          onClick={() => {
-                            const current = formData.celEfektu
-                              ? formData.celEfektu.split(", ")
-                              : [];
-                            const newValue = current.includes(effect)
-                              ? current.filter((i) => i !== effect).join(", ")
-                              : [...current, effect].join(", ");
-                            handleInputChange("celEfektu", newValue);
-                          }}
-                          className={`py-3 px-4 rounded-xl border-2 transition-all font-medium text-sm ${
-                            formData.celEfektu.split(", ").includes(effect)
-                              ? "border-[#8b7355] bg-[#8b7355] text-white"
-                              : "border-[#d4cec4] bg-white text-[#6b6560] hover:border-[#8b7355] hover:text-[#8b7355]"
-                          }`}
-                        >
-                          {effect}
-                        </button>
-                      ))}
                     </div>
                   </div>
                 </div>
               </section>
 
-              {/* Wywiad Medyczny Hyaluronic */}
+              {/* Wywiad Medyczny Laser Removal */}
               <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
                 <h2 className="text-2xl font-serif text-[#4a3a2a] mb-6 flex items-center gap-3">
                   <span className="w-8 h-8 bg-[#8b7355] text-white rounded-full flex items-center justify-center text-sm font-sans">
@@ -899,52 +648,6 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
                 </p>
 
                 {/* Medications Input */}
-                <div className="bg-[#f8f6f3] p-5 rounded-xl border border-[#d4cec4] mb-6">
-                  <h3 className="font-serif text-[#4a4540] text-lg mb-2">
-                    PRZECIWSKAZANIA DO WYKONANIA ZABIEGU
-                  </h3>
-                  <label className="block text-sm text-[#6b6560] mb-2 font-medium">
-                    Proszę wpisać wykaz wszystkich leków przyjmowanych w ciągu
-                    ostatnich 6 miesięcy
-                  </label>
-                  <textarea
-                    rows={3}
-                    className="w-full px-4 py-3 bg-white border border-[#d4cec4] rounded-xl focus:border-[#8b7355] outline-none text-sm"
-                    placeholder="Wpisz leki lub wpisz 'BRAK'..."
-                    value={
-                      (formData.informacjaDodatkowa || "")
-                        .split("\n")
-                        .find((p) => p.startsWith("Leki (6 m-cy): "))
-                        ?.replace("Leki (6 m-cy): ", "") || ""
-                    }
-                    onChange={(e) => {
-                      const parts = (formData.informacjaDodatkowa || "").split(
-                        "\n",
-                      );
-                      const prefix = "Leki (6 m-cy): ";
-                      const newVal = `${prefix}${e.target.value}`;
-                      const index = parts.findIndex((p) =>
-                        p.startsWith(prefix),
-                      );
-
-                      if (index !== -1) {
-                        if (e.target.value) {
-                          parts[index] = newVal;
-                        } else {
-                          parts.splice(index, 1);
-                        }
-                      } else if (e.target.value) {
-                        parts.push(newVal);
-                      }
-
-                      handleInputChange(
-                        "informacjaDodatkowa",
-                        parts.filter(Boolean).join("\n"),
-                      );
-                    }}
-                  />
-                </div>
-
                 <div className="space-y-3">
                   {showContraindicationsWizard && !isWizardComplete ? (
                     <div
@@ -1139,41 +842,50 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
                     </ul>
                   </div>
 
-                  {/* Rzadkie powikłania */}
-                  <div className="bg-[#f8f6f3] p-5 rounded-xl border border-[#d4cec4]/50">
-                    <p className="text-sm font-medium text-[#4a4540] mb-3">
-                      MOŻLIWE POWIKŁANIA PO PRZEPROWADZONYM ZABIEGU – RZADKIE
+                  {/* MOŻLIWE REAKCJE SKÓRY */}
+                  <div className="bg-[#f8f6f3] p-5 rounded-xl border border-[#d4cec4]/50 mt-6">
+                    <p className="text-sm font-medium text-[#4a4540] mb-3 uppercase tracking-wide">
+                      MOŻLIWE REAKCJE SKÓRY
                     </p>
-                    <ul className="space-y-2 text-sm text-[#5a5550]">
-                      {depilacjaLaserowaComplications.rzadkie.map(
-                        (complication, index) => (
+                    <ul className="space-y-2 text-sm text-[#5a5550] mb-4">
+                      {depilacjaLaserowaNaturalReactions.map(
+                        (reaction, index) => (
                           <li key={index} className="flex items-start gap-2">
                             <span className="text-[#8b7355]">∙</span>
-                            <span>{complication}</span>
+                            <span>{reaction}</span>
                           </li>
                         ),
                       )}
                     </ul>
-                  </div>
-
-                  {/* Bardzo rzadkie powikłania */}
-                  <div className="bg-[#f8f6f3] p-5 rounded-xl border border-[#d4cec4]/50">
-                    <p className="text-sm font-medium text-[#4a4540] mb-3">
-                      MOŻLIWE POWIKŁANIA PO PRZEPROWADZONYM ZABIEGU – BARDZO
-                      RZADKIE
+                    <p className="text-sm text-[#8b7355] italic">
+                      Reakcje te są indywidualne i mogą wystąpić mimo
+                      prawidłowego wykonania zabiegu.
                     </p>
-                    <ul className="space-y-2 text-sm text-[#5a5550]">
-                      {depilacjaLaserowaComplications.bardzoRzadkie.map(
-                        (complication, index) => (
-                          <li key={index} className="flex items-start gap-2">
-                            <span className="text-[#8b7355]">∙</span>
-                            <span>{complication}</span>
-                          </li>
-                        ),
-                      )}
-                    </ul>
                   </div>
                 </div>
+              </section>
+
+              {/* Zalecenia Przed Zabiegiem */}
+              <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
+                <h2 className="text-2xl font-serif text-[#4a3a2a] mb-6 flex items-center gap-3">
+                  <span className="w-8 h-8 bg-[#8b7355] text-white rounded-full flex items-center justify-center text-sm font-sans">
+                    5
+                  </span>
+                  Zalecenia Przed Zabiegiem
+                </h2>
+                <ul className="space-y-3">
+                  {depilacjaLaserowaPreCare.map((instruction, index) => (
+                    <li
+                      key={index}
+                      className="flex items-start gap-3 bg-white/50 p-3 rounded-lg border border-[#d4cec4]/30"
+                    >
+                      <div className="w-1.5 h-1.5 rounded-full bg-[#8b7355] mt-2 flex-shrink-0" />
+                      <span className="text-[#5a5550] text-sm leading-relaxed">
+                        {instruction}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
               </section>
 
               {/* Zalecenia Pozabiegowe */}
@@ -1182,7 +894,7 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
                   <span className="w-8 h-8 bg-[#8b7355] text-white rounded-full flex items-center justify-center text-sm font-sans">
                     6
                   </span>
-                  Zalecenia Pozabiegowe
+                  Zalecenia Po Zabiegu
                 </h2>
 
                 <div className="bg-[#f8f6f3] p-5 rounded-xl border border-[#d4cec4]/50 mb-6">
@@ -1229,26 +941,25 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
           {/* KROK 2: RODO */}
           {currentStep === "RODO" && (
             <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+              {/* Card 1: CONSENT */}
               <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg overflow-hidden">
                 <div className="p-6 md:p-8">
                   <h3 className="text-2xl font-serif text-[#4a4540] mb-6">
-                    Klauzula Informacyjna RODO
+                    {rodoInfo.consentTitle}
                   </h3>
                   <div className="bg-[#f8f6f3] p-6 rounded-xl text-sm text-[#5a5550] leading-relaxed whitespace-pre-line max-h-[60vh] overflow-y-auto mb-6 border border-[#e5e0d8]">
-                    {rodoInfo.pelnyTekst}
+                    {rodoInfo.consentText}
                   </div>
-                  {/* Signature Area for RODO - Expanded and simplified */}
                   <div className="mt-8">
                     <p className="text-sm text-[#6b6560] mb-4 font-medium uppercase tracking-wide">
-                      Podpis Klienta:
+                      Podpis Klienta (Zgoda na przetwarzenie danych):
                     </p>
                     <div className="bg-white rounded-xl overflow-hidden min-h-[200px]">
                       <SignaturePad
                         label=""
-                        value={formData.podpisRodo}
+                        value={formData.podpisRodo || ""}
                         onChange={(sig) => {
                           handleInputChange("podpisRodo", sig);
-                          // Auto-approve RODO consent when signed
                           if (sig && !formData.zgodaPrzetwarzanieDanych) {
                             handleInputChange("zgodaPrzetwarzanieDanych", true);
                           }
@@ -1256,9 +967,36 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
                         date={formData.miejscowoscData}
                       />
                     </div>
+                  </div>
+                </div>
+              </section>
+
+              {/* Card 2: CLAUSE */}
+              <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg overflow-hidden">
+                <div className="p-6 md:p-8">
+                  <h3 className="text-2xl font-serif text-[#4a4540] mb-6">
+                    {rodoInfo.clauseTitle}
+                  </h3>
+                  <div className="bg-[#f8f6f3] p-6 rounded-xl text-sm text-[#5a5550] leading-relaxed whitespace-pre-line max-h-[60vh] overflow-y-auto mb-6 border border-[#e5e0d8]">
+                    {rodoInfo.clauseText}
+                  </div>
+                  <div className="mt-8">
+                    <p className="text-sm text-[#6b6560] mb-4 font-medium uppercase tracking-wide">
+                      Podpis Klienta (Klauzula informacyjna):
+                    </p>
+                    <div className="bg-white rounded-xl overflow-hidden min-h-[200px]">
+                      <SignaturePad
+                        label=""
+                        value={formData.podpisRodo2 || ""}
+                        onChange={(sig) => {
+                          handleInputChange("podpisRodo2", sig);
+                        }}
+                        date={formData.miejscowoscData}
+                      />
+                    </div>
                     <p className="text-xs text-[#8b8580] mt-3 italic">
-                      Złożenie podpisu jest równoznaczne z akceptacją powyższej
-                      klauzuli informacyjnej RODO.
+                      Złożenie podpisu jest równoznaczne z zapoznaniem się z
+                      powyższą klauzulą informacyjną RODO.
                     </p>
                   </div>
                 </div>
@@ -1275,7 +1013,7 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
                 <button
                   type="button"
                   onClick={() => setCurrentStep("TREATMENT")}
-                  disabled={!formData.podpisRodo}
+                  disabled={!formData.podpisRodo || !formData.podpisRodo2}
                   className="bg-[#8b7355] text-white py-3 px-8 rounded-xl text-lg font-medium shadow-lg hover:bg-[#7a6548] disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                 >
                   Dalej →
