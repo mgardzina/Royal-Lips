@@ -8,6 +8,8 @@ export default auth((req) => {
   const isAdminRoute = req.nextUrl.pathname.startsWith("/admin");
   const isLoginPage = req.nextUrl.pathname === "/admin/login";
 
+  console.log("[Middleware] Path:", req.nextUrl.pathname, "Auth:", !!req.auth);
+
   // Jeśli to strona logowania i użytkownik jest zalogowany - przekieruj na dashboard
   if (isLoginPage && isLoggedIn) {
     return NextResponse.redirect(new URL("/admin", req.url));
