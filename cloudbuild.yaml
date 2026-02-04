@@ -16,7 +16,7 @@ steps:
       - 'push'
       - 'gcr.io/$PROJECT_ID/royal-lips:$COMMIT_SHA'
 
-  - name: 'gcr.io/$PROJECT_ID/royal-lips:latest'
+  - name: 'gcr.io/cloud-builders/docker'
     args:
       - 'push'
       - 'gcr.io/$PROJECT_ID/royal-lips:latest'
