@@ -627,9 +627,7 @@ export default function FormDetailsPage() {
             {/* RODO / Główne */}
             <div className="bg-white/80 rounded-2xl shadow-sm border border-[#d4cec4] p-6">
               <div className="flex justify-between items-center mb-4 border-b border-[#f0ebe4] pb-2">
-                <h3 className="text-lg font-serif text-[#4a4540]">
-                  Oświadczenia i RODO
-                </h3>
+                Zgoda RODO
                 <span
                   className={`px-3 py-1 rounded-full text-xs font-medium ${form.podpisRodo ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}
                 >
