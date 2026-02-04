@@ -8,17 +8,14 @@ datasource db {
 }
 
 enum FormType {
-  HYALURONIC
-  PMU
-  LASER
-  // Nowe typy formularzy
-  MODELOWANIE_UST
-  WOLUMETRIA_TWARZY
-  MEZOTERAPIA_IGLOWA
-  LIPOLIZA_INIEKCYJNA
-  MAKIJAZ_PERMANENTNY
-  LASEROWE_USUWANIE
-  DEPILACJA_LASEROWA
+  LIP_AUGMENTATION
+  FACIAL_VOLUMETRY
+  NEEDLE_MESOTHERAPY
+  INJECTION_LIPOLYSIS
+  PERMANENT_MAKEUP
+  LASER_REMOVAL
+  LASER_HAIR_REMOVAL
+  WRINKLE_REDUCTION
 }
 
 // Klientka - identyfikowana po imieniu i nazwisku
@@ -59,7 +56,7 @@ model ClientNote {
 
 model ConsentForm {
   id        String   @id @default(uuid())
-  type      FormType @default(HYALURONIC)
+  type      FormType @default(LIP_AUGMENTATION)
   createdAt DateTime @default(now())
 
   // Dane osobowe

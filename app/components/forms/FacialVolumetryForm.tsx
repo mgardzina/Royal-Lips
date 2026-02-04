@@ -14,6 +14,7 @@ import SignaturePad from "@/components/SignaturePad";
 import SignatureVerificationModal from "@/components/SignatureVerificationModal";
 import { AuditLogData } from "@/app/actions/otp";
 import Footer from "@/app/components/Footer";
+import AnatomyFaceSelector from "../AnatomyFaceSelector";
 import {
   ConsentFormData,
   ContraindicationWithFollowUp,
@@ -29,7 +30,7 @@ interface FacialVolumetryFormProps {
 }
 
 const initialFormData: ConsentFormData = {
-  type: "WOLUMETRIA_TWARZY",
+  type: "FACIAL_VOLUMETRY",
   imieNazwisko: "",
   ulica: "",
   kodPocztowy: "",
@@ -114,8 +115,11 @@ export default function FacialVolumetryForm({
       i++
     ) {
       const key = contraindicationKeys[i];
-      // If this key hasn't been answered yet (doesn't exist in formData.przeciwwskazania)
-      if (formData.przeciwwskazania[key] === undefined) {
+      // If this key hasn't been answered yet (is null or undefined)
+      if (
+        formData.przeciwwskazania[key] === undefined ||
+        formData.przeciwwskazania[key] === null
+      ) {
         return i;
       }
     }
@@ -123,12 +127,15 @@ export default function FacialVolumetryForm({
   };
 
   // Update wizard completion status
-  useEffect(() => {
-    const isComplete = contraindicationKeys.every(
-      (key) => formData.przeciwwskazania[key] !== undefined,
-    );
-    setIsWizardComplete(isComplete);
-  }, [formData.przeciwwskazania, contraindicationKeys]);
+  // REMOVED: Auto-completion effect caused premature closing on last question follow-up
+  // useEffect(() => {
+  //   const isComplete = contraindicationKeys.every(
+  //     (key) =>
+  //       formData.przeciwwskazania[key] !== undefined &&
+  //       formData.przeciwwskazania[key] !== null,
+  //   );
+  //   setIsWizardComplete(isComplete);
+  // }, [formData.przeciwwskazania, contraindicationKeys]);
 
   // Scroll to top on step change
   useEffect(() => {
@@ -137,12 +144,37 @@ export default function FacialVolumetryForm({
 
   const handleWizardAnswer = (value: boolean) => {
     handleContraindicationChange(currentContraindicationKey, value);
-    if (currentContraindicationIndex < contraindicationKeys.length) {
+
+    // If answer is YES and has follow-up, stay on step to allow input
+    const hasFollowUp =
+      typeof currentContraindicationObject === "object" &&
+      currentContraindicationObject?.hasFollowUp;
+
+    if (value === true && hasFollowUp) {
+      return;
+    }
+
+    if (currentContraindicationIndex < contraindicationKeys.length - 1) {
       setCurrentContraindicationIndex((prev) => prev + 1);
+    } else {
+      setIsWizardComplete(true);
+    }
+  };
+
+  const handleNextStep = () => {
+    if (currentContraindicationIndex < contraindicationKeys.length - 1) {
+      setCurrentContraindicationIndex((prev) => prev + 1);
+    } else {
+      setIsWizardComplete(true);
     }
   };
 
   const resetWizard = () => {
+    // Clear all contraindication answers
+    setFormData((prev) => ({
+      ...prev,
+      przeciwwskazania: {},
+    }));
     setCurrentContraindicationIndex(0);
     setShowContraindicationsWizard(true);
     setIsWizardComplete(false);
@@ -656,23 +688,22 @@ export default function FacialVolumetryForm({
                           const baseName = currentName
                             .split(" (")[0]
                             .split(" - ")[0];
-                          const isSelected = baseName === product.name;
+                          const isSelectedProduct = baseName === product.name;
+
                           return (
-                            <button
+                            <div
                               key={product.name}
-                              type="button"
                               onClick={() => {
-                                // Preserve volume if switching products
-                                const volumePart = currentName.includes(" - ")
-                                  ? " - " + currentName.split(" - ")[1]
-                                  : "";
-                                handleInputChange(
-                                  "nazwaProduktu",
-                                  `${product.name}${volumePart}`,
-                                );
+                                // Select product only, reset volume if switching to new product
+                                if (!isSelectedProduct) {
+                                  handleInputChange(
+                                    "nazwaProduktu",
+                                    product.name,
+                                  );
+                                }
                               }}
-                              className={`text-left p-4 rounded-xl border-2 transition-all group ${
-                                isSelected
+                              className={`p-4 rounded-xl border-2 transition-all cursor-pointer ${
+                                isSelectedProduct
                                   ? "border-[#8b7355] bg-[#8b7355]/5 shadow-md"
                                   : "border-[#d4cec4] bg-white hover:border-[#8b7355]"
                               }`}
@@ -680,67 +711,60 @@ export default function FacialVolumetryForm({
                               <div className="flex justify-between items-center mb-1">
                                 <span
                                   className={`font-serif text-lg font-medium ${
-                                    isSelected
+                                    isSelectedProduct
                                       ? "text-[#8b7355]"
-                                      : "text-[#4a4540] group-hover:text-[#8b7355]"
+                                      : "text-[#4a4540]"
                                   }`}
                                 >
                                   {product.name}
                                 </span>
-                                {isSelected && (
+                                {isSelectedProduct && (
                                   <CheckCircle2 className="w-5 h-5 text-[#8b7355]" />
                                 )}
                               </div>
-                              <p className="text-sm text-[#6b6560] leading-relaxed">
+                              <p className="text-sm text-[#6b6560] leading-relaxed mb-4">
                                 {product.desc}
                               </p>
-                            </button>
+
+                              {/* Volume Selection inside Product Card */}
+                              {isSelectedProduct && (
+                                <div className="border-t border-[#d4cec4]/50 pt-3 animate-in fade-in slide-in-from-top-2 duration-300">
+                                  <p className="text-xs font-medium text-[#8b7355] mb-2 uppercase tracking-wide">
+                                    Wybierz ilość:
+                                  </p>
+                                  <div className="flex flex-wrap gap-2">
+                                    {["1.0", "2.0", "3.0", "4.0"].map((vol) => {
+                                      const isSelectedVolume =
+                                        currentName ===
+                                        `${product.name} - ${vol}ml`;
+                                      return (
+                                        <button
+                                          key={vol}
+                                          type="button"
+                                          onClick={(e) => {
+                                            e.stopPropagation(); // Prevent bubbling
+                                            handleInputChange(
+                                              "nazwaProduktu",
+                                              `${product.name} - ${vol}ml`,
+                                            );
+                                          }}
+                                          className={`px-3 py-1.5 rounded-lg border text-xs font-medium transition-all ${
+                                            isSelectedVolume
+                                              ? "border-[#8b7355] bg-[#8b7355] text-white shadow-sm"
+                                              : "border-[#d4cec4] bg-white text-[#6b6560] hover:border-[#8b7355] hover:text-[#8b7355]"
+                                          }`}
+                                        >
+                                          {vol} ml
+                                        </button>
+                                      );
+                                    })}
+                                  </div>
+                                </div>
+                              )}
+                            </div>
                           );
                         })}
                       </div>
-
-                      {/* Volume Selection */}
-                      {formData.nazwaProduktu && (
-                        <div className="space-y-4 animate-in fade-in slide-in-from-top-2">
-                          <div>
-                            <label className="block text-sm text-[#6b6560] mb-2 font-medium">
-                              Ilość preparatu (ml)
-                            </label>
-                            <div className="flex flex-wrap gap-2">
-                              {["1.0", "2.0", "3.0", "4.0"].map((vol) => {
-                                const currentVol =
-                                  (formData.nazwaProduktu || "").split(
-                                    " - ",
-                                  )[1] || "";
-                                const isSelected = currentVol === `${vol}ml`;
-                                return (
-                                  <button
-                                    key={vol}
-                                    type="button"
-                                    onClick={() => {
-                                      const currentName =
-                                        formData.nazwaProduktu || "";
-                                      const basePart =
-                                        currentName.split(" - ")[0];
-                                      handleInputChange(
-                                        "nazwaProduktu",
-                                        `${basePart} - ${vol}ml`,
-                                      );
-                                    }}
-                                    className={`px-4 py-2 rounded-lg border transition-all text-sm font-medium ${
-                                      isSelected
-                                        ? "border-[#8b7355] bg-[#8b7355] text-white"
-                                        : "border-[#d4cec4] bg-white text-[#6b6560] hover:border-[#8b7355]"
-                                    }`}
-                                  >
-                                    {vol} ml
-                                  </button>
-                                );
-                              })}
-                            </div>
-                          </div>
-                        </div>
-                      )}
                     </div>
                   </div>
 
@@ -770,6 +794,32 @@ export default function FacialVolumetryForm({
                           </p>
                         </button>
                       </div>
+                    </div>
+                  </div>
+
+                  {/* Obszar Zabiegu - Anatomy Face Selector */}
+                  <div>
+                    <label className="block text-sm text-[#6b6560] mb-2 font-medium">
+                      Obszar Zabiegu
+                    </label>
+                    <div className="bg-[#f8f6f3] p-4 rounded-xl border border-[#d4cec4]">
+                      <p className="text-xs text-[#6b6560] mb-4 text-center">
+                        Zaznacz na schemacie obszary, które mają zostać poddane
+                        zabiegowi.
+                      </p>
+                      <AnatomyFaceSelector
+                        initialSelected={
+                          formData.obszarZabiegu
+                            ? formData.obszarZabiegu.split(", ").filter(Boolean)
+                            : []
+                        }
+                        onSelect={(selectedIds) => {
+                          handleInputChange(
+                            "obszarZabiegu",
+                            selectedIds.join(", "),
+                          );
+                        }}
+                      />
                     </div>
                   </div>
 
@@ -1060,7 +1110,9 @@ export default function FacialVolumetryForm({
                 </div>
 
                 <div className="space-y-3">
-                  {showContraindicationsWizard && !isWizardComplete ? (
+                  {showContraindicationsWizard &&
+                  !isWizardComplete &&
+                  currentContraindicationIndex < contraindicationKeys.length ? (
                     <div
                       key={currentContraindicationIndex}
                       className="bg-[#f8f6f3] p-6 rounded-xl border border-[#d4cec4] max-w-2xl mx-auto shadow-sm"
@@ -1125,20 +1177,36 @@ export default function FacialVolumetryForm({
                         )}
 
                       <div className="grid grid-cols-2 gap-6 max-w-md mx-auto">
-                        <button
-                          type="button"
-                          onClick={() => handleWizardAnswer(false)}
-                          className="py-4 px-6 rounded-xl bg-white border-2 border-[#d4cec4] text-[#6b6560] active:border-green-500 active:bg-green-500 active:text-white md:hover:border-green-500 md:hover:bg-green-500 md:hover:text-white transition-all text-lg font-medium shadow-sm hover:shadow-md active:scale-95 flex items-center justify-center"
-                        >
-                          NIE
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => handleWizardAnswer(true)}
-                          className="py-4 px-6 rounded-xl bg-white border-2 border-[#d4cec4] text-[#6b6560] active:border-red-500 active:bg-red-500 active:text-white md:hover:border-red-500 md:hover:bg-red-500 md:hover:text-white transition-all text-lg font-medium shadow-sm hover:shadow-md active:scale-95 flex items-center justify-center"
-                        >
-                          TAK
-                        </button>
+                        {formData.przeciwwskazania[
+                          currentContraindicationKey
+                        ] !== true ||
+                        !currentContraindicationObject?.hasFollowUp ? (
+                          <>
+                            <button
+                              type="button"
+                              onClick={() => handleWizardAnswer(false)}
+                              className="py-4 px-6 rounded-xl bg-white border-2 border-[#d4cec4] text-[#6b6560] active:border-green-500 active:bg-green-500 active:text-white md:hover:border-green-500 md:hover:bg-green-500 md:hover:text-white transition-all text-lg font-medium shadow-sm hover:shadow-md active:scale-95 flex items-center justify-center"
+                            >
+                              NIE
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleWizardAnswer(true)}
+                              className="py-4 px-6 rounded-xl bg-white border-2 border-[#d4cec4] text-[#6b6560] active:border-red-500 active:bg-red-500 active:text-white md:hover:border-red-500 md:hover:bg-red-500 md:hover:text-white transition-all text-lg font-medium shadow-sm hover:shadow-md active:scale-95 flex items-center justify-center"
+                            >
+                              TAK
+                            </button>
+                          </>
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={handleNextStep}
+                            className="col-span-2 py-4 px-6 rounded-xl bg-[#8b7355] text-white hover:bg-[#7a6548] transition-all text-lg font-medium shadow-md active:scale-95 flex items-center justify-center gap-2"
+                          >
+                            Zatwierdź i przejdź dalej
+                            <ArrowLeft className="w-5 h-5 rotate-180" />
+                          </button>
+                        )}
                       </div>
 
                       <div className="mt-8 flex justify-between items-center border-t border-[#d4cec4]/50 pt-6">

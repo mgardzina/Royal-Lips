@@ -16,10 +16,17 @@ steps:
       - 'push'
       - 'gcr.io/$PROJECT_ID/royal-lips:$COMMIT_SHA'
 
-  - name: 'gcr.io/cloud-builders/docker'
+  - name: 'gcr.io/$PROJECT_ID/royal-lips:latest'
     args:
       - 'push'
       - 'gcr.io/$PROJECT_ID/royal-lips:latest'
+
+  # Update Database Schema
+  - name: 'gcr.io/$PROJECT_ID/royal-lips:$COMMIT_SHA'
+    entrypoint: 'npx'
+    args: ['prisma', 'db', 'push', '--accept-data-loss']
+    env:
+      - 'DATABASE_URL=${_DATABASE_URL}'
 
   # Deploy container image to Cloud Run
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'

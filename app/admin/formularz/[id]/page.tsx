@@ -18,6 +18,7 @@ import {
   XCircle,
 } from "lucide-react";
 import { contraindicationsByFormType, FormType } from "@/types/booking";
+import AnatomyFaceSelector from "@/app/components/AnatomyFaceSelector";
 
 // Funkcja do czyszczenia starego formatu nazwaProduktu (usuwanie emaila)
 const cleanNazwaProduktu = (nazwa: string | null): string | null => {
@@ -66,9 +67,14 @@ interface ConsentFormFull {
 }
 
 const formTypeLabels: Record<string, string> = {
-  HYALURONIC: "Kwas hialuronowy",
-  PMU: "Makijaż permanentny",
-  LASER: "Laser",
+  LIP_AUGMENTATION: "Modelowanie ust",
+  FACIAL_VOLUMETRY: "Wolumetria twarzy",
+  WRINKLE_REDUCTION: "Niwelowanie zmarszczek",
+  NEEDLE_MESOTHERAPY: "Mezoterapia igłowa",
+  INJECTION_LIPOLYSIS: "Lipoliza iniekcyjna",
+  PERMANENT_MAKEUP: "Makijaż permanentny (Legacy)",
+  LASER_REMOVAL: "Laserowe usuwanie",
+  LASER_HAIR_REMOVAL: "Depilacja laserowa",
 };
 
 export default function FormDetailsPage() {
@@ -499,6 +505,26 @@ export default function FormDetailsPage() {
                   </p>
                 )}
               </div>
+
+              {/* Visual Face Selector for Admin */}
+              <div className="mt-4 border-t border-[#d4cec4] pt-4">
+                <label className="block text-sm font-medium text-[#8b8580] mb-2">
+                  Wizualizacja obszaru zabiegu
+                </label>
+                <div className="bg-[#f8f6f3] rounded-xl border border-[#d4cec4] p-4 flex justify-center overflow-hidden">
+                  <div className="w-[300px] h-[300px] relative pointer-events-none">
+                    <div className="absolute top-0 left-0 w-full h-full transform scale-[0.3] origin-top-left">
+                      <AnatomyFaceSelector
+                        initialSelected={
+                          form.obszarZabiegu
+                            ? form.obszarZabiegu.split(",").map((s) => s.trim())
+                            : []
+                        }
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
               <div>
                 <label className="block text-sm font-medium text-[#8b8580] mb-1">
                   Cel / efekt
@@ -545,7 +571,7 @@ export default function FormDetailsPage() {
               {Object.entries(form.przeciwwskazania).map(([key, value]) => {
                 const labels =
                   contraindicationsByFormType[form.type as FormType] ||
-                  contraindicationsByFormType["HYALURONIC"];
+                  contraindicationsByFormType["LIP_AUGMENTATION"];
                 const label = labels[key] || key;
                 const currentValue =
                   editedForm.przeciwwskazania?.[key] ?? value;

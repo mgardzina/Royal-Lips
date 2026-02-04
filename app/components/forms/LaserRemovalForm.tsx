@@ -1,40 +1,36 @@
-"use client";
-
 import { useState, useEffect } from "react";
 import {
-  Instagram,
   Phone,
-  ChevronDown,
-  ChevronUp,
   Check,
   ArrowLeft,
+  Instagram,
   Mail,
   Shield,
   CheckCircle2,
-  Lock,
   X,
 } from "lucide-react";
 import { isAdult, getTodayDate } from "@/lib/dateUtils";
-import SignaturePad from "../../../components/SignaturePad";
+import SignaturePad from "@/components/SignaturePad";
 import SignatureVerificationModal from "@/components/SignatureVerificationModal";
 import { AuditLogData } from "@/app/actions/otp";
 import Footer from "@/app/components/Footer";
 import {
   ConsentFormData,
   ContraindicationWithFollowUp,
-  pmuContraindications,
-  pmuNaturalReactions,
-  pmuComplications,
-  pmuPostCare,
+  depilacjaLaserowaContraindications,
+  depilacjaLaserowaNaturalReactions,
+  depilacjaLaserowaComplications,
+  depilacjaLaserowaPostCare,
   rodoInfo,
 } from "../../../types/booking";
+import AnatomyFaceSelector from "../AnatomyFaceSelector";
 
-interface PmuFormProps {
+interface LaserRemovalFormProps {
   onBack: () => void;
 }
 
 const initialFormData: ConsentFormData = {
-  type: "PMU",
+  type: "LASER_HAIR_REMOVAL",
   imieNazwisko: "",
   ulica: "",
   kodPocztowy: "",
@@ -43,12 +39,19 @@ const initialFormData: ConsentFormData = {
   telefon: "",
   miejscowoscData: `Krosno, ${getTodayDate()}`,
   osobaPrzeprowadzajacaZabieg: "",
-  nazwaProduktu: "Pigment",
+  nazwaProduktu: "",
   obszarZabiegu: "",
   celEfektu: "",
   numerZabiegu: "",
-  przeciwwskazania: Object.keys(pmuContraindications).reduce(
-    (acc, key) => ({ ...acc, [key]: null }),
+  przeciwwskazania: Object.entries(depilacjaLaserowaContraindications).reduce(
+    (acc, [key, value]) => {
+      const hasFollowUp = typeof value === "object" && value.hasFollowUp;
+      return {
+        ...acc,
+        [key]: null,
+        ...(hasFollowUp ? { [`${key}_details`]: "" } : {}),
+      };
+    },
     {},
   ),
   zgodaPrzetwarzanieDanych: false,
@@ -64,16 +67,10 @@ const initialFormData: ConsentFormData = {
   zastrzeniaKlienta: "",
 };
 
-export default function PmuForm({ onBack }: PmuFormProps) {
+export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
   const [formData, setFormData] = useState<ConsentFormData>(initialFormData);
   const [email, setEmail] = useState("");
   const [birthDateError, setBirthDateError] = useState<string | null>(null);
-  const [expandedSections, setExpandedSections] = useState({
-    reakcje: true,
-    powiklania: true,
-    zalecenia: true,
-    rodo: true,
-  });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [currentContraindicationIndex, setCurrentContraindicationIndex] =
@@ -91,9 +88,18 @@ export default function PmuForm({ onBack }: PmuFormProps) {
   const [isSignatureVerified, setIsSignatureVerified] = useState(false);
   const [auditLog, setAuditLog] = useState<AuditLogData | null>(null);
 
-  const contraindicationKeys = Object.keys(pmuContraindications);
+  const contraindicationKeys = Object.keys(depilacjaLaserowaContraindications);
   const currentContraindicationKey =
     contraindicationKeys[currentContraindicationIndex];
+  const currentContraindicationValue = depilacjaLaserowaContraindications[
+    currentContraindicationKey
+  ] as string | ContraindicationWithFollowUp;
+  const currentContraindicationObject:
+    | ContraindicationWithFollowUp
+    | undefined =
+    typeof currentContraindicationValue === "string"
+      ? undefined
+      : currentContraindicationValue;
   const isWizardComplete =
     currentContraindicationIndex === contraindicationKeys.length;
 
@@ -112,10 +118,6 @@ export default function PmuForm({ onBack }: PmuFormProps) {
   const resetWizard = () => {
     setCurrentContraindicationIndex(0);
     setShowContraindicationsWizard(true);
-  };
-
-  const toggleSection = (section: keyof typeof expandedSections) => {
-    setExpandedSections((prev) => ({ ...prev, [section]: !prev[section] }));
   };
 
   const handleInputChange = (
@@ -151,7 +153,6 @@ export default function PmuForm({ onBack }: PmuFormProps) {
     // Validate age if full date is entered
     if (formatted.length === 10) {
       if (!isAdult(formatted)) {
-        // You might want to set an error state here
         setBirthDateError(
           "Musisz być osobą pełnoletnią, aby wypełnić formularz.",
         );
@@ -170,7 +171,8 @@ export default function PmuForm({ onBack }: PmuFormProps) {
     }));
   };
 
-  // Handler dla zweryfikowanego podpisu - przejście do RODO
+  // Handler dla zweryfikowanego podpisu
+  // Handler dla zweryfikowanego podpisu
   const handleSignatureVerified = (
     _signatureData: string,
     audit: AuditLogData,
@@ -187,7 +189,6 @@ export default function PmuForm({ onBack }: PmuFormProps) {
 
   // Generuj zawartość dokumentu do hashowania
   const getDocumentContent = () => {
-    // Hashujemy dane osobowe i medyczne jako "rdzeń" identyfikacji
     return JSON.stringify({
       type: formData.type,
       imieNazwisko: formData.imieNazwisko,
@@ -204,7 +205,6 @@ export default function PmuForm({ onBack }: PmuFormProps) {
 
     const submissionData = {
       ...formData,
-      nazwaProduktu: "Pigment",
       email: email || null,
       auditLog: auditLog, // Dodaj audit log do danych
       signatureStatus: isSignatureVerified ? "SIGNED" : "PENDING",
@@ -275,14 +275,13 @@ export default function PmuForm({ onBack }: PmuFormProps) {
     );
   }
 
-  // Helper to determining if Step 1 is valid to proceed (basic validation)
+  // Basic validation for Step 1
   const isStep1Valid =
     formData.imieNazwisko &&
     formData.telefon &&
     formData.telefon.replace(/\D/g, "").length === 9 &&
     formData.miejscowoscData &&
     formData.dataUrodzenia &&
-    formData.obszarZabiegu &&
     isWizardComplete &&
     !birthDateError;
 
@@ -371,15 +370,15 @@ export default function PmuForm({ onBack }: PmuFormProps) {
 
           <div className="text-center">
             <h1 className="text-3xl md:text-4xl font-serif text-[#4a3a2a] mb-2">
-              Karta Klienta
+              Depilacja Laserowa
             </h1>
             <p className="text-[#8b7355] text-lg font-light tracking-wide uppercase">
-              Makijaż Permanentny
+              Laser Diodowy
             </p>
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-8">
+        <form onSubmit={handleSubmit} className="space-y-6">
           {/* KROK 1: DANE I WYWIAD */}
           {currentStep === "DATA" && (
             <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -438,11 +437,11 @@ export default function PmuForm({ onBack }: PmuFormProps) {
                       />
                     </div>
                   </div>
-                  {/* Adres */}
+
                   <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="md:col-span-2">
                       <label className="block text-sm text-[#6b6560] mb-2 font-medium">
-                        Ulica i numer domu/mieszkania
+                        Ulica i numer
                       </label>
                       <input
                         type="text"
@@ -493,12 +492,10 @@ export default function PmuForm({ onBack }: PmuFormProps) {
                     </label>
                     <input
                       type="text"
-                      inputMode="numeric"
                       value={formData.dataUrodzenia}
                       onChange={(e) => handleBirthDateChange(e.target.value)}
                       className="w-full px-4 py-3 bg-white/80 border border-[#d4cec4] rounded-xl focus:border-[#8b7355] focus:ring-2 focus:ring-[#8b7355]/20 outline-none transition-all"
                       placeholder="DD.MM.RRRR"
-                      maxLength={10}
                     />
                     {birthDateError && (
                       <div className="mt-2 flex items-center gap-2 text-red-600 text-sm animate-in fade-in slide-in-from-top-1">
@@ -529,70 +526,338 @@ export default function PmuForm({ onBack }: PmuFormProps) {
                 </div>
               </section>
 
-              {/* Zakres zabiegu PMU */}
+              {/* Informacja o Zabiegu */}
               <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
                 <h2 className="text-2xl font-serif text-[#4a3a2a] mb-6 flex items-center gap-3">
                   <span className="w-8 h-8 bg-[#8b7355] text-white rounded-full flex items-center justify-center text-sm font-sans">
                     2
                   </span>
-                  Obszar Zabiegu
+                  Informacja o Zabiegu
+                </h2>
+                <div className="prose prose-sm max-w-none text-[#5a5550] leading-relaxed space-y-4">
+                  <p>
+                    Zabieg depilacji laserowej przy użyciu lasera diodowego jest
+                    zabiegiem kosmetologicznym mającym na celu trwałą redukcję
+                    owłosienia. Działanie lasera opiera się na selektywnym
+                    pochłanianiu energii światła przez melaninę zawartą we
+                    włosach, która następnie przekształcana jest w ciepło.
+                    Powstałe w ten sposób ciepło prowadzi do uszkodzenia mieszka
+                    włosowego, co hamuje dalszy wzrost włosa. Laser diodowy
+                    penetruje głębiej w skórę niż inne typy laserów, dzięki
+                    czemu skutecznie działa na włosy ciemniejsze i głębiej
+                    osadzone, przy minimalnym oddziaływaniu na otaczającą skórę.
+                  </p>
+                  <p>
+                    Zabieg jest najbardziej skuteczny w przypadku włosów
+                    znajdujących się w fazie wzrostu, zwanej fazą anagenu. Z
+                    tego powodu osiągnięcie optymalnych efektów wymaga wykonania
+                    serii zabiegów w odstępach kilku tygodni, aby objąć
+                    wszystkie włosy w różnych fazach cyklu wzrostu. Czas trwania
+                    pojedynczej sesji zależy od wielkości obszaru poddanego
+                    zabiegowi i może wynosić od kilkunastu minut do około
+                    godziny.
+                  </p>
+                  <p>
+                    Efekty depilacji laserowej mogą się różnić w zależności od
+                    rodzaju włosów, fototypu skóry, gospodarki hormonalnej oraz
+                    indywidualnych predyspozycji organizmu. Zabieg zwykle
+                    prowadzi do znacznej redukcji owłosienia po kilku sesjach,
+                    jednak nie gwarantuje całkowitego i trwałego usunięcia
+                    włosów.
+                  </p>
+                  <p>
+                    Po zabiegu skóra może reagować zaczerwienieniem, obrzękiem,
+                    pieczeniem lub swędzeniem, a w niektórych przypadkach mogą
+                    pojawić się strupki, pęcherze lub tymczasowe przebarwienia.
+                    Reakcje te są indywidualne i mogą wystąpić nawet przy
+                    prawidłowym wykonaniu zabiegu i przestrzeganiu zaleceń
+                    pielęgnacyjnych.
+                  </p>
+                </div>
+              </section>
+
+              {/* Szczegóły Zabiegu */}
+              <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
+                <h2 className="text-2xl font-serif text-[#4a3a2a] mb-6 flex items-center gap-3">
+                  <span className="w-8 h-8 bg-[#8b7355] text-white rounded-full flex items-center justify-center text-sm font-sans">
+                    3
+                  </span>
+                  Szczegóły Zabiegu
                 </h2>
                 <div className="space-y-6">
                   <div>
-                    <label className="block text-sm text-[#6b6560] mb-2 font-medium">
-                      Obszar zabiegu
-                    </label>
-                    <div className="grid grid-cols-2 gap-3 mb-3">
-                      {["Brwi", "Usta", "Kreski górne", "Kreski dolne"].map(
-                        (area) => (
-                          <button
-                            key={area}
-                            type="button"
-                            onClick={() => {
-                              const current = formData.obszarZabiegu
-                                ? formData.obszarZabiegu.split(", ")
-                                : [];
-                              const newValue = current.includes(area)
-                                ? current.filter((i) => i !== area).join(", ")
-                                : [...current, area].join(", ");
-                              handleInputChange("obszarZabiegu", newValue);
-                            }}
-                            className={`py-3 px-4 rounded-xl border-2 transition-all font-medium text-sm ${
-                              formData.obszarZabiegu.split(", ").includes(area)
-                                ? "border-[#8b7355] bg-[#8b7355] text-white"
-                                : "border-[#d4cec4] bg-white text-[#6b6560] hover:border-[#8b7355] hover:text-[#8b7355]"
-                            }`}
-                          >
-                            {area}
-                          </button>
-                        ),
-                      )}
+                    <div>
+                      <label className="block text-sm text-[#6b6560] mb-2 font-medium">
+                        Obszar Zabiegu
+                      </label>
+                      <input
+                        type="text"
+                        className="w-full px-4 py-3 bg-white/80 border border-[#d4cec4] rounded-xl focus:border-[#8b7355] focus:ring-2 focus:ring-[#8b7355]/20 outline-none transition-all"
+                        placeholder="Np. Łydki, Pachy, Bikini..."
+                        value={formData.obszarZabiegu}
+                        onChange={(e) =>
+                          handleInputChange("obszarZabiegu", e.target.value)
+                        }
+                      />
                     </div>
-                    <input
-                      type="text"
-                      value={formData.obszarZabiegu}
-                      onChange={(e) =>
-                        handleInputChange("obszarZabiegu", e.target.value)
-                      }
-                      className="w-full px-4 py-3 bg-white/80 border border-[#d4cec4] rounded-xl focus:border-[#8b7355] focus:ring-2 focus:ring-[#8b7355]/20 outline-none transition-all"
-                      placeholder="Inny (wpisz ręcznie)..."
-                    />
-                    <p className="text-xs text-[#8b8580] mt-2">
-                      Ustalono, iż celem zabiegu jest makijaż permanentny w
-                      powyższym obszarze.
-                    </p>
                   </div>
 
+                  {/* Znieczulenie */}
+                  <div>
+                    <label className="block text-sm text-[#6b6560] mb-2 font-medium">
+                      Znieczulenie
+                    </label>
+                    <div className="space-y-4">
+                      {/* Anesthesia Selection */}
+                      <div className="flex flex-col gap-3">
+                        <button
+                          type="button"
+                          className="text-left p-4 rounded-xl border-2 border-[#8b7355] bg-[#8b7355]/5 shadow-md transition-all group"
+                        >
+                          <div className="flex justify-between items-center mb-1">
+                            <span className="font-serif text-lg font-medium text-[#8b7355]">
+                              Lidokaina 9,6%
+                            </span>
+                            <CheckCircle2 className="w-5 h-5 text-[#8b7355]" />
+                          </div>
+                          <p className="text-sm text-[#6b6560] leading-relaxed">
+                            Znieczulenie miejscowe jest zawsze stosowane podczas
+                            zabiegu.
+                          </p>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Additional History Section */}
+                  <div>
+                    <div className="bg-[#f8f6f3] p-5 rounded-xl border border-[#d4cec4] mb-6 space-y-4">
+                      <h3 className="font-serif text-[#4a4540] text-lg mb-2">
+                        Historia zabiegów ust
+                      </h3>
+                      <div className="space-y-3">
+                        {[
+                          "Usta modelowane pierwszy raz",
+                          "Usta modelowane drugi raz, w tym samym gabinecie",
+                          "Usta modelowane drugi raz, pierwszy raz w innym gabinecie",
+                        ].map((option) => (
+                          <label
+                            key={option}
+                            className="flex items-start gap-3 cursor-pointer group"
+                          >
+                            <div className="relative flex items-center pt-1">
+                              <input
+                                type="checkbox"
+                                checked={(
+                                  formData.informacjaDodatkowa || ""
+                                ).includes(option)}
+                                onChange={(e) => {
+                                  let parts = (
+                                    formData.informacjaDodatkowa || ""
+                                  )
+                                    .split("\n")
+                                    .filter(Boolean);
+
+                                  if (e.target.checked) {
+                                    // Remove other exclusive options if checked
+                                    const exclusiveGroup = [
+                                      "Usta modelowane pierwszy raz",
+                                      "Usta modelowane drugi raz, w tym samym gabinecie",
+                                      "Usta modelowane drugi raz, pierwszy raz w innym gabinecie",
+                                    ];
+                                    // Also remove the "Multiple times" option which starts with the prefix
+                                    const multipleTimesPrefix =
+                                      "Usta modelowane więcej razy";
+
+                                    parts = parts.filter(
+                                      (p) =>
+                                        !exclusiveGroup.includes(p) &&
+                                        !p.startsWith(multipleTimesPrefix),
+                                    );
+                                    parts.push(option);
+                                  } else {
+                                    parts = parts.filter((p) => p !== option);
+                                  }
+                                  handleInputChange(
+                                    "informacjaDodatkowa",
+                                    parts.join("\n"),
+                                  );
+                                }}
+                                className="w-5 h-5 rounded border-[#d4cec4] text-[#8b7355] focus:ring-[#8b7355] focus:ring-offset-0 accent-[#8b7355]"
+                              />
+                            </div>
+                            <span className="text-[#6b6560] text-sm group-hover:text-[#4a4540] transition-colors">
+                              {option}
+                            </span>
+                          </label>
+                        ))}
+
+                        {/* Multiple Times with customized input */}
+                        <div className="space-y-2">
+                          <label className="flex items-start gap-3 cursor-pointer group">
+                            <div className="relative flex items-center pt-1">
+                              <input
+                                type="checkbox"
+                                checked={(
+                                  formData.informacjaDodatkowa || ""
+                                ).includes("Usta modelowane więcej razy")}
+                                onChange={(e) => {
+                                  let parts = (
+                                    formData.informacjaDodatkowa || ""
+                                  ).split("\n");
+                                  const prefix =
+                                    "Usta modelowane więcej razy: ";
+                                  if (e.target.checked) {
+                                    // Remove other exclusive options
+                                    const exclusiveGroup = [
+                                      "Usta modelowane pierwszy raz",
+                                      "Usta modelowane drugi raz, w tym samym gabinecie",
+                                      "Usta modelowane drugi raz, pierwszy raz w innym gabinecie",
+                                    ];
+                                    parts = parts.filter(
+                                      (p) => !exclusiveGroup.includes(p),
+                                    );
+                                    parts.push(prefix);
+                                  } else {
+                                    parts = parts.filter(
+                                      (p) => !p.startsWith(prefix),
+                                    );
+                                  }
+                                  handleInputChange(
+                                    "informacjaDodatkowa",
+                                    parts.filter(Boolean).join("\n"),
+                                  );
+                                }}
+                                className="w-5 h-5 rounded border-[#d4cec4] text-[#8b7355] focus:ring-[#8b7355] focus:ring-offset-0 accent-[#8b7355]"
+                              />
+                            </div>
+                            <span className="text-[#6b6560] text-sm group-hover:text-[#4a4540] transition-colors">
+                              Usta modelowane więcej razy
+                            </span>
+                          </label>
+                          {(formData.informacjaDodatkowa || "").includes(
+                            "Usta modelowane więcej razy",
+                          ) && (
+                            <input
+                              type="text"
+                              className="w-full ml-8 px-3 py-2 text-sm bg-white border border-[#d4cec4] rounded-lg focus:border-[#8b7355] outline-none"
+                              placeholder="Kiedy, jaki preparat, ile razy?"
+                              value={
+                                (formData.informacjaDodatkowa || "")
+                                  .split("\n")
+                                  .find((p) =>
+                                    p.startsWith(
+                                      "Usta modelowane więcej razy: ",
+                                    ),
+                                  )
+                                  ?.replace(
+                                    "Usta modelowane więcej razy: ",
+                                    "",
+                                  ) || ""
+                              }
+                              onChange={(e) => {
+                                const parts = (
+                                  formData.informacjaDodatkowa || ""
+                                ).split("\n");
+                                const index = parts.findIndex((p) =>
+                                  p.startsWith("Usta modelowane więcej razy: "),
+                                );
+                                if (index !== -1) {
+                                  parts[index] =
+                                    `Usta modelowane więcej razy: ${e.target.value}`;
+                                  handleInputChange(
+                                    "informacjaDodatkowa",
+                                    parts.join("\n"),
+                                  );
+                                }
+                              }}
+                            />
+                          )}
+                        </div>
+
+                        {/* Hyaluronidase */}
+                        <label className="flex items-start gap-3 cursor-pointer group pt-2 border-t border-[#d4cec4]/50">
+                          <div className="relative flex items-center pt-1">
+                            <input
+                              type="checkbox"
+                              checked={(
+                                formData.informacjaDodatkowa || ""
+                              ).includes("Usta po hialuronidazie")}
+                              onChange={(e) => {
+                                let parts = (
+                                  formData.informacjaDodatkowa || ""
+                                ).split("\n");
+                                if (e.target.checked) {
+                                  parts.push("Usta po hialuronidazie");
+                                } else {
+                                  parts = parts.filter(
+                                    (p) => p !== "Usta po hialuronidazie",
+                                  );
+                                }
+                                handleInputChange(
+                                  "informacjaDodatkowa",
+                                  parts.filter(Boolean).join("\n"),
+                                );
+                              }}
+                              className="w-5 h-5 rounded border-[#d4cec4] text-[#8b7355] focus:ring-[#8b7355] focus:ring-offset-0 accent-[#8b7355]"
+                            />
+                          </div>
+                          <span className="text-[#6b6560] text-sm group-hover:text-[#4a4540] transition-colors">
+                            Usta po hialuronidazie
+                          </span>
+                        </label>
+
+                        {/* Other */}
+                        <div className="pt-2">
+                          <label className="block text-sm text-[#6b6560] mb-2 font-medium">
+                            Inne informacje
+                          </label>
+                          <textarea
+                            rows={3}
+                            className="w-full px-4 py-3 bg-white border border-[#d4cec4] rounded-xl focus:border-[#8b7355] outline-none text-sm"
+                            placeholder="Dodatkowe uwagi..."
+                            value={
+                              (formData.informacjaDodatkowa || "")
+                                .split("\n")
+                                .find((p) => p.startsWith("Inne: "))
+                                ?.replace("Inne: ", "") || ""
+                            }
+                            onChange={(e) => {
+                              const parts = (
+                                formData.informacjaDodatkowa || ""
+                              ).split("\n");
+                              const newVal = `Inne: ${e.target.value}`;
+                              const index = parts.findIndex((p) =>
+                                p.startsWith("Inne: "),
+                              );
+                              if (index !== -1) {
+                                if (e.target.value) {
+                                  parts[index] = newVal;
+                                } else {
+                                  parts.splice(index, 1);
+                                }
+                              } else if (e.target.value) {
+                                parts.push(newVal);
+                              }
+                              handleInputChange(
+                                "informacjaDodatkowa",
+                                parts.filter(Boolean).join("\n"),
+                              );
+                            }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                   <div>
                     <label className="block text-sm text-[#6b6560] mb-2 font-medium">
                       Oczekiwany efekt
                     </label>
                     <div className="grid grid-cols-2 gap-3 mb-3">
                       {[
-                        "Naturalny efekt",
-                        "Podkreślenie konturu",
-                        "Ombre / Cieniowanie",
-                        "Pełne wypełnienie",
+                        "Delikatny efekt",
+                        "Powiększenie",
+                        "Nawilżenie",
                         "Wyrównanie asymetrii",
                       ].map((effect) => (
                         <button
@@ -617,38 +882,68 @@ export default function PmuForm({ onBack }: PmuFormProps) {
                         </button>
                       ))}
                     </div>
-                    <input
-                      type="text"
-                      value={formData.celEfektu}
-                      onChange={(e) =>
-                        handleInputChange("celEfektu", e.target.value)
-                      }
-                      className="w-full px-4 py-3 bg-white/80 border border-[#d4cec4] rounded-xl focus:border-[#8b7355] focus:ring-2 focus:ring-[#8b7355]/20 outline-none transition-all"
-                      placeholder="Inny (wpisz ręcznie)..."
-                    />
-                  </div>
-
-                  <div className="p-4 bg-white/50 rounded-xl">
-                    <p className="text-sm text-[#5a5550]">
-                      Przyjmuję do wiadomości, że efekt finalny jest
-                      indywidualny i zależy od rodzaju skóry, ilości pigmentu i
-                      techniki. Ilość zabiegów jest uwarunkowana indywidualnie.
-                    </p>
                   </div>
                 </div>
               </section>
 
-              {/* Wywiad Medyczny */}
+              {/* Wywiad Medyczny Hyaluronic */}
               <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
                 <h2 className="text-2xl font-serif text-[#4a3a2a] mb-6 flex items-center gap-3">
                   <span className="w-8 h-8 bg-[#8b7355] text-white rounded-full flex items-center justify-center text-sm font-sans">
-                    3
+                    4
                   </span>
                   Wywiad Medyczny
                 </h2>
                 <p className="text-sm text-[#6b6560] mb-6">
                   Czy posiadasz którekolwiek z poniższych przeciwwskazań?
                 </p>
+
+                {/* Medications Input */}
+                <div className="bg-[#f8f6f3] p-5 rounded-xl border border-[#d4cec4] mb-6">
+                  <h3 className="font-serif text-[#4a4540] text-lg mb-2">
+                    PRZECIWSKAZANIA DO WYKONANIA ZABIEGU
+                  </h3>
+                  <label className="block text-sm text-[#6b6560] mb-2 font-medium">
+                    Proszę wpisać wykaz wszystkich leków przyjmowanych w ciągu
+                    ostatnich 6 miesięcy
+                  </label>
+                  <textarea
+                    rows={3}
+                    className="w-full px-4 py-3 bg-white border border-[#d4cec4] rounded-xl focus:border-[#8b7355] outline-none text-sm"
+                    placeholder="Wpisz leki lub wpisz 'BRAK'..."
+                    value={
+                      (formData.informacjaDodatkowa || "")
+                        .split("\n")
+                        .find((p) => p.startsWith("Leki (6 m-cy): "))
+                        ?.replace("Leki (6 m-cy): ", "") || ""
+                    }
+                    onChange={(e) => {
+                      const parts = (formData.informacjaDodatkowa || "").split(
+                        "\n",
+                      );
+                      const prefix = "Leki (6 m-cy): ";
+                      const newVal = `${prefix}${e.target.value}`;
+                      const index = parts.findIndex((p) =>
+                        p.startsWith(prefix),
+                      );
+
+                      if (index !== -1) {
+                        if (e.target.value) {
+                          parts[index] = newVal;
+                        } else {
+                          parts.splice(index, 1);
+                        }
+                      } else if (e.target.value) {
+                        parts.push(newVal);
+                      }
+
+                      handleInputChange(
+                        "informacjaDodatkowa",
+                        parts.filter(Boolean).join("\n"),
+                      );
+                    }}
+                  />
+                </div>
 
                 <div className="space-y-3">
                   {showContraindicationsWizard && !isWizardComplete ? (
@@ -672,31 +967,53 @@ export default function PmuForm({ onBack }: PmuFormProps) {
                       </div>
 
                       <h4 className="text-xl md:text-2xl font-serif text-[#4a4540] mb-8 min-h-[5rem] flex items-center justify-center text-center">
-                        {typeof pmuContraindications[
-                          currentContraindicationKey
-                        ] === "string"
-                          ? (pmuContraindications[
-                              currentContraindicationKey
-                            ] as string)
-                          : (
-                              pmuContraindications[
-                                currentContraindicationKey
-                              ] as ContraindicationWithFollowUp
-                            ).text}
+                        {typeof currentContraindicationValue === "string"
+                          ? currentContraindicationValue
+                          : currentContraindicationValue.text}
                       </h4>
+
+                      {/* Show follow-up input if user answered TAK and question has follow-up */}
+                      {formData.przeciwwskazania[currentContraindicationKey] ===
+                        true &&
+                        currentContraindicationObject?.hasFollowUp && (
+                          <div className="mb-6 animate-in fade-in slide-in-from-top-2">
+                            <input
+                              type="text"
+                              className="w-full px-4 py-3 text-base bg-white border-2 border-[#d4cec4] rounded-xl focus:border-[#8b7355] outline-none transition-colors"
+                              placeholder={
+                                currentContraindicationObject.followUpPlaceholder
+                              }
+                              value={String(
+                                formData.przeciwwskazania[
+                                  `${currentContraindicationKey}_details`
+                                ] ?? "",
+                              )}
+                              onChange={(e) => {
+                                setFormData((prev) => ({
+                                  ...prev,
+                                  przeciwwskazania: {
+                                    ...prev.przeciwwskazania,
+                                    [`${currentContraindicationKey}_details`]:
+                                      e.target.value,
+                                  },
+                                }));
+                              }}
+                            />
+                          </div>
+                        )}
 
                       <div className="grid grid-cols-2 gap-6 max-w-md mx-auto">
                         <button
                           type="button"
                           onClick={() => handleWizardAnswer(false)}
-                          className="py-4 px-6 rounded-xl bg-white border-2 border-[#d4cec4] text-[#6b6560] active:border-green-500 active:bg-green-500 active:text-white md:hover:border-green-500 md:hover:bg-green-500 md:hover:text-white transition-all text-lg font-medium shadow-sm hover:shadow-md active:scale-95 flex flex-col items-center justify-center gap-2"
+                          className="py-4 px-6 rounded-xl bg-white border-2 border-[#d4cec4] text-[#6b6560] active:border-green-500 active:bg-green-500 active:text-white md:hover:border-green-500 md:hover:bg-green-500 md:hover:text-white transition-all text-lg font-medium shadow-sm hover:shadow-md active:scale-95 flex items-center justify-center"
                         >
                           NIE
                         </button>
                         <button
                           type="button"
                           onClick={() => handleWizardAnswer(true)}
-                          className="py-4 px-6 rounded-xl bg-white border-2 border-[#d4cec4] text-[#6b6560] active:border-red-500 active:bg-red-500 active:text-white md:hover:border-red-500 md:hover:bg-red-500 md:hover:text-white transition-all text-lg font-medium shadow-sm hover:shadow-md active:scale-95 flex flex-col items-center justify-center gap-2"
+                          className="py-4 px-6 rounded-xl bg-white border-2 border-[#d4cec4] text-[#6b6560] active:border-red-500 active:bg-red-500 active:text-white md:hover:border-red-500 md:hover:bg-red-500 md:hover:text-white transition-all text-lg font-medium shadow-sm hover:shadow-md active:scale-95 flex items-center justify-center"
                         >
                           TAK
                         </button>
@@ -741,43 +1058,157 @@ export default function PmuForm({ onBack }: PmuFormProps) {
                         </button>
                       </div>
 
-                      {Object.entries(pmuContraindications).map(
-                        ([key, label], index) => (
-                          <div
-                            key={key}
-                            className={`flex items-center gap-4 p-4 rounded-xl transition-colors ${
-                              formData.przeciwwskazania[key]
-                                ? "bg-red-50 border border-red-100"
-                                : "bg-green-50/50 border border-green-100/50"
-                            }`}
-                          >
-                            <span className="text-[#8b7355] font-medium min-w-[1.5rem] mt-0.5">
-                              {index + 1}.
-                            </span>
-                            <div className="flex-1">
-                              <p className="text-[#5a5550] text-sm leading-relaxed">
-                                {typeof label === "string"
-                                  ? label
-                                  : (label as ContraindicationWithFollowUp)
-                                      .text}
-                              </p>
+                      {Object.entries(depilacjaLaserowaContraindications).map(
+                        ([key, value], index) => {
+                          const questionText =
+                            typeof value === "string" ? value : value.text;
+                          const hasFollowUp =
+                            typeof value === "object" && value.hasFollowUp;
+                          const followUpDetails =
+                            formData.przeciwwskazania[`${key}_details`];
+
+                          return (
+                            <div
+                              key={key}
+                              className={`flex items-start gap-4 p-4 rounded-xl transition-colors ${
+                                formData.przeciwwskazania[key]
+                                  ? "bg-red-50 border border-red-100"
+                                  : "bg-green-50/50 border border-green-100/50"
+                              }`}
+                            >
+                              <span className="text-[#8b7355] font-medium min-w-[1.5rem] mt-0.5">
+                                {index + 1}.
+                              </span>
+                              <div className="flex-1">
+                                <p className="text-[#5a5550] text-sm leading-relaxed">
+                                  {questionText}
+                                </p>
+                                {hasFollowUp &&
+                                  formData.przeciwwskazania[key] &&
+                                  followUpDetails && (
+                                    <p className="text-[#8b7355] text-xs mt-2 italic">
+                                      → {followUpDetails}
+                                    </p>
+                                  )}
+                              </div>
+                              <div className="ml-2">
+                                {formData.przeciwwskazania[key] ? (
+                                  <span className="inline-flex items-center px-3 py-1 bg-red-100 text-red-700 text-xs font-bold rounded-full border border-red-200 whitespace-nowrap">
+                                    TAK
+                                  </span>
+                                ) : (
+                                  <span className="inline-flex items-center px-3 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full border border-green-200 whitespace-nowrap">
+                                    NIE
+                                  </span>
+                                )}
+                              </div>
                             </div>
-                            <div className="ml-2">
-                              {formData.przeciwwskazania[key] ? (
-                                <span className="inline-flex items-center px-3 py-1 bg-red-100 text-red-700 text-xs font-bold rounded-full border border-red-200 whitespace-nowrap">
-                                  TAK
-                                </span>
-                              ) : (
-                                <span className="inline-flex items-center px-3 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full border border-green-200 whitespace-nowrap">
-                                  NIE
-                                </span>
-                              )}
-                            </div>
-                          </div>
-                        ),
+                          );
+                        },
                       )}
                     </div>
                   )}
+                </div>
+              </section>
+
+              {/* Skutki Uboczne i Powikłania */}
+              <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
+                <h2 className="text-2xl font-serif text-[#4a3a2a] mb-6 flex items-center gap-3">
+                  <span className="w-8 h-8 bg-[#8b7355] text-white rounded-full flex items-center justify-center text-sm font-sans">
+                    5
+                  </span>
+                  Informacje o Skutkach Ubocznych i Powikłaniach
+                </h2>
+
+                <div className="space-y-6">
+                  {/* Częste skutki uboczne */}
+                  <div className="bg-[#f8f6f3] p-5 rounded-xl border border-[#d4cec4]/50">
+                    <p className="text-sm font-medium text-[#4a4540] mb-3">
+                      MOŻLIWE DO WYSTĄPIENIA SKUTKI UBOCZNE PO PRZEPROWADZONYM
+                      ZABIEGU - CZĘSTE
+                    </p>
+                    <ul className="space-y-2 text-sm text-[#5a5550]">
+                      {depilacjaLaserowaNaturalReactions.map(
+                        (reaction, index) => (
+                          <li key={index} className="flex items-start gap-2">
+                            <span className="text-[#8b7355]">∙</span>
+                            <span>{reaction}</span>
+                          </li>
+                        ),
+                      )}
+                    </ul>
+                  </div>
+
+                  {/* Rzadkie powikłania */}
+                  <div className="bg-[#f8f6f3] p-5 rounded-xl border border-[#d4cec4]/50">
+                    <p className="text-sm font-medium text-[#4a4540] mb-3">
+                      MOŻLIWE POWIKŁANIA PO PRZEPROWADZONYM ZABIEGU – RZADKIE
+                    </p>
+                    <ul className="space-y-2 text-sm text-[#5a5550]">
+                      {depilacjaLaserowaComplications.rzadkie.map(
+                        (complication, index) => (
+                          <li key={index} className="flex items-start gap-2">
+                            <span className="text-[#8b7355]">∙</span>
+                            <span>{complication}</span>
+                          </li>
+                        ),
+                      )}
+                    </ul>
+                  </div>
+
+                  {/* Bardzo rzadkie powikłania */}
+                  <div className="bg-[#f8f6f3] p-5 rounded-xl border border-[#d4cec4]/50">
+                    <p className="text-sm font-medium text-[#4a4540] mb-3">
+                      MOŻLIWE POWIKŁANIA PO PRZEPROWADZONYM ZABIEGU – BARDZO
+                      RZADKIE
+                    </p>
+                    <ul className="space-y-2 text-sm text-[#5a5550]">
+                      {depilacjaLaserowaComplications.bardzoRzadkie.map(
+                        (complication, index) => (
+                          <li key={index} className="flex items-start gap-2">
+                            <span className="text-[#8b7355]">∙</span>
+                            <span>{complication}</span>
+                          </li>
+                        ),
+                      )}
+                    </ul>
+                  </div>
+                </div>
+              </section>
+
+              {/* Zalecenia Pozabiegowe */}
+              <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
+                <h2 className="text-2xl font-serif text-[#4a3a2a] mb-6 flex items-center gap-3">
+                  <span className="w-8 h-8 bg-[#8b7355] text-white rounded-full flex items-center justify-center text-sm font-sans">
+                    6
+                  </span>
+                  Zalecenia Pozabiegowe
+                </h2>
+
+                <div className="bg-[#f8f6f3] p-5 rounded-xl border border-[#d4cec4]/50 mb-6">
+                  <p className="text-sm text-[#5a5550] leading-relaxed mb-4">
+                    <strong>
+                      Niniejszym oświadczam, że zostałam/em poinformowana/y o
+                      konieczności stosowania się po przeprowadzonym zabiegu do
+                      przestrzegania następujących zaleceń:
+                    </strong>
+                  </p>
+                  <ul className="space-y-2 text-sm text-[#5a5550]">
+                    {depilacjaLaserowaPostCare.map((instruction, index) => (
+                      <li key={index} className="flex items-start gap-2">
+                        <span className="text-[#8b7355]">∙</span>
+                        <span
+                          className={
+                            instruction.startsWith("UWAGA")
+                              ? "font-bold text-[#bfa07a]"
+                              : ""
+                          }
+                        >
+                          {instruction}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               </section>
 
@@ -806,7 +1237,6 @@ export default function PmuForm({ onBack }: PmuFormProps) {
                   <div className="bg-[#f8f6f3] p-6 rounded-xl text-sm text-[#5a5550] leading-relaxed whitespace-pre-line max-h-[60vh] overflow-y-auto mb-6 border border-[#e5e0d8]">
                     {rodoInfo.pelnyTekst}
                   </div>
-
                   {/* Signature Area for RODO - Expanded and simplified */}
                   <div className="mt-8">
                     <p className="text-sm text-[#6b6560] mb-4 font-medium uppercase tracking-wide">
@@ -835,7 +1265,6 @@ export default function PmuForm({ onBack }: PmuFormProps) {
               </section>
 
               <div className="flex justify-between pt-4 pb-12">
-                {/* Powrót zablokowany - Weryfikacja SMS jest bramą jednokierunkową w tej sesji (uproszczenie) lub można wrócić do danych */}
                 <button
                   type="button"
                   onClick={() => setCurrentStep("DATA")}
@@ -855,51 +1284,55 @@ export default function PmuForm({ onBack }: PmuFormProps) {
             </div>
           )}
 
-          {/* KROK 3: ZABIEG (Ryzyko, Powikłania, Oświadczenia) */}
+          {/* KROK 3: ZABIEG */}
           {currentStep === "TREATMENT" && (
             <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-              {/* Świadomość ryzyka PMU */}
+              {/* Ryzyko Hyaluronic */}
               <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg">
                 <div className="p-6 md:p-8">
                   <h3 className="text-2xl font-serif text-[#4a4540] mb-6 border-b border-[#d4cec4] pb-2">
-                    Świadomość Ryzyka i Powikłań
+                    Świadomość Ryzyka
                   </h3>
                   <p className="text-sm text-[#6b6560] mb-4">
                     Zostałam/em poinformowana/y o przebiegu zabiegu i możliwości
-                    naturalnego wystąpienia po zabiegu reakcji organizmu:
+                    naturalnego wystąpienia ryzyka:
                   </p>
 
                   <div className="space-y-6">
                     <div className="bg-[#f8f6f3] p-5 rounded-xl border border-[#d4cec4]/50">
                       <p className="text-sm font-medium text-[#4a4540] mb-3">
-                        Możliwe naturalne reakcje na zabieg:
+                        Możliwe naturalne reakcje:
                       </p>
                       <ul className="space-y-2 text-sm text-[#5a5550]">
-                        {pmuNaturalReactions.map((reaction, index) => (
-                          <li key={index} className="flex items-start gap-2">
-                            <span className="text-[#8b7355]">•</span>
-                            {reaction}
-                          </li>
-                        ))}
+                        {depilacjaLaserowaNaturalReactions.map(
+                          (reaction, index) => (
+                            <li key={index} className="flex items-start gap-2">
+                              <span className="text-[#8b7355]">•</span>
+                              {reaction}
+                            </li>
+                          ),
+                        )}
                       </ul>
                     </div>
 
                     <div className="bg-[#f8f6f3] p-5 rounded-xl border border-[#d4cec4]/50">
                       <p className="text-sm font-medium text-[#4a4540] mb-3">
-                        Możliwe powikłania (rzadkie i bardzo rzadkie):
+                        Możliwe powikłania:
                       </p>
                       <div className="space-y-3 text-sm text-[#5a5550]">
                         <p>
                           <span className="font-medium">Częste:</span>{" "}
-                          {pmuComplications.czeste.join(", ")}
+                          {depilacjaLaserowaComplications.czeste.join(", ")}
                         </p>
                         <p>
                           <span className="font-medium">Rzadkie:</span>{" "}
-                          {pmuComplications.rzadkie.join(", ")}
+                          {depilacjaLaserowaComplications.rzadkie.join(", ")}
                         </p>
                         <p>
                           <span className="font-medium">Bardzo rzadkie:</span>{" "}
-                          {pmuComplications.bardzoRzadkie.join(", ")}
+                          {depilacjaLaserowaComplications.bardzoRzadkie.join(
+                            ", ",
+                          )}
                         </p>
                       </div>
                     </div>
@@ -907,7 +1340,7 @@ export default function PmuForm({ onBack }: PmuFormProps) {
                 </div>
               </section>
 
-              {/* Zalecenia */}
+              {/* Zalecenia Laserowe */}
               <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg">
                 <div className="p-6 md:p-8">
                   <h3 className="text-2xl font-serif text-[#4a4540] mb-6 border-b border-[#d4cec4] pb-2">
@@ -917,12 +1350,12 @@ export default function PmuForm({ onBack }: PmuFormProps) {
                     Zobowiązuję się do przestrzegania następujących zaleceń:
                   </p>
                   <ul className="space-y-2 text-[#5a5550] text-sm bg-white/50 p-4 rounded-xl border border-[#d4cec4]/30">
-                    {pmuPostCare.map((instruction, index) => (
+                    {depilacjaLaserowaPostCare.map((instruction, index) => (
                       <li key={index} className="flex items-start gap-2">
                         <span className="text-[#8b7355]">•</span>
                         <span
                           className={
-                            instruction.includes("UWAGA")
+                            instruction.startsWith("UWAGA")
                               ? "font-bold text-[#bfa07a]"
                               : ""
                           }
@@ -955,14 +1388,20 @@ export default function PmuForm({ onBack }: PmuFormProps) {
                       Osoba przeprowadzająca zabieg poinformowała mnie o
                       powyższych okolicznościach, oraz udzieliła mi niezbędnych
                       odpowiedzi oraz wszelkich informacji co do zachowania po
-                      zabiegu.
+                      zabiegu, oraz w zakresie zadawanych przez mnie pytań, i
+                      nie wnoszę do tej informacji zastrzeżeń, oraz że są one
+                      dla mnie w pełni zrozumiałe.
                     </li>
                     <li>
                       Podane przeze mnie w niniejszym oświadczeniu odpowiedzi, w
-                      szczególności co do stanu zdrowia, są zgodne z prawdą.
+                      szczególności co do stanu zdrowia, oraz braku ewentualnych
+                      przeciwwskazań są zgodne z prawdą, i opierają się na mojej
+                      wiedzy co do stanu mojego zdrowia, bez zatajania
+                      czegokolwiek.
                     </li>
                   </ol>
                 </div>
+
                 {/* Podpis pod Zabiegiem (Nowy, obowiązkowy) */}
                 <div className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8 mt-8">
                   <h3 className="text-xl font-serif text-[#4a4540] mb-4 border-b border-[#d4cec4] pb-2">
@@ -978,6 +1417,8 @@ export default function PmuForm({ onBack }: PmuFormProps) {
                     value={formData.podpisDane}
                     onChange={(sig) => {
                       handleInputChange("podpisDane", sig);
+                      // Możemy tu też ustawić flagę zgody, np. zgodaPomocPrawna (repurposed) lub po prostu polegać na podpisie
+                      // Dla spójności z backendem, ustawmy zgodaPomocPrawna na true
                       handleInputChange("zgodaPomocPrawna", !!sig);
                     }}
                     date={formData.miejscowoscData}
@@ -1005,13 +1446,13 @@ export default function PmuForm({ onBack }: PmuFormProps) {
             </div>
           )}
 
-          {/* KROK 4: MARKETING I ZGODY DODATKOWE */}
+          {/* KROK 4: MARKETING */}
           {currentStep === "MARKETING" && (
             <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
               <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
                 <h3 className="text-2xl font-serif text-[#4a4540] mb-6 flex items-center gap-3">
                   <span className="w-8 h-8 bg-[#8b7355] text-white rounded-full flex items-center justify-center text-sm font-sans">
-                    4
+                    7
                   </span>
                   Zgody Dodatkowe
                 </h3>
@@ -1079,49 +1520,6 @@ export default function PmuForm({ onBack }: PmuFormProps) {
                       onChange={(sig) => {
                         handleInputChange("podpisFotografie", sig);
                         handleInputChange("zgodaFotografie", !!sig);
-                      }}
-                      date={formData.miejscowoscData}
-                    />
-                  </div>
-                </div>
-
-                {/* Zgoda prawna */}
-                <div className="bg-white/60 backdrop-blur-sm rounded-xl shadow-sm overflow-hidden border border-[#e5e0d8] hover:shadow-md transition-shadow">
-                  <div className="p-6">
-                    <h4 className="font-serif text-[#4a4540] text-lg mb-3">
-                      Zgoda na Pomoc Prawną
-                    </h4>
-                    <p className="text-sm text-[#5a5550] leading-relaxed mb-6">
-                      Wyrażam zgodę na przetwarzanie moich danych osobowych (w
-                      tym danych wrażliwych) przez podmioty świadczące pomoc
-                      prawną na rzecz salonu, w przypadku wystąpienia roszczeń.
-                    </p>
-                    <SignaturePad
-                      label="Podpis (Zgadzam się)"
-                      // This uses podpisRodo? Wait, likely a bug in original code using podpisRodo for legal consent?
-                      // Checking original code: Checked => updates zgodaPomocPrawna. Signature => podpisRodo?
-                      // Line 998: handleInputChange("podpisRodo", sig).
-                      // This seems WRONG if podpisRodo was already used in Step 2.
-                      // However, strictly refactoring visualization, I should probably check if we need separate signature.
-                      // ConsentFormData has: podpisDane, podpisMarketing, podpisFotografie, podpisRodo.
-                      // It DOES NOT have 'podpisPomocPrawna'.
-                      // Assuming 'podpisRodo' is reused or I should use 'podpisDane'?
-                      // ACTUALLY, usually Legal consent is tied to the main RODO signature or just a checkbox.
-                      // Since I don't have a field for it, I'll reuse 'podpisRodo' if that was the intent,
-                      // OR (better) I should assume the user acts on "zgodaPomocPrawna" boolean.
-                      // But wait, the previous code lines 994-1001 SHOWED a signature pad updating "podpisRodo".
-                      // This overwrites the MAIN RODO signature from Step 2!! This is a BUG in the previous code.
-                      // Since I can't add fields to Schema right now easily (or I can?), I will check Schema.
-                      // Schema has: `podpisDane String?`, `podpisMarketing String?`, `podpisFotografie String?`, `podpisRodo String?`.
-                      // It seems I am out of signature fields.
-                      // I will temporarily COMMENT OUT the signature for Legal Consent and make it a toggle/checkbox INSIDE the card,
-                      // OR just reuse the checkbox/toggle since I lack a DB field for a 5th signature.
-                      // Wait, 'podpisDane' is empty in initialFormData. Maybe utilize that?
-                      // Let's use 'podpisDane' for 'Pomoc Prawna' for now to avoid overwriting RODO.
-                      value={formData.podpisDane}
-                      onChange={(sig) => {
-                        handleInputChange("podpisDane", sig);
-                        handleInputChange("zgodaPomocPrawna", !!sig);
                       }}
                       date={formData.miejscowoscData}
                     />

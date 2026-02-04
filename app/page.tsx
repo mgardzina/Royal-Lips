@@ -2,10 +2,10 @@
 
 import { useState } from "react";
 import SelectionScreen from "./components/SelectionScreen";
-import HyaluronicForm from "./components/forms/HyaluronicForm";
-import PmuForm from "./components/forms/PmuForm";
-import LaserForm from "./components/forms/LaserForm";
+import FacialVolumetryForm from "./components/forms/FacialVolumetryForm";
+
 import LipModelingForm from "./components/forms/LipModelingForm";
+import WrinkleLevelingForm from "./components/forms/WrinkleLevelingForm";
 import { FormType } from "../types/booking";
 
 export default function HomePage() {
@@ -24,14 +24,13 @@ export default function HomePage() {
 
   // Renderowanie odpowiedniego formularza
   switch (selectedForm) {
-    case "MODELOWANIE_UST":
+    case "LIP_AUGMENTATION":
       return <LipModelingForm onBack={() => setSelectedForm(null)} />;
-    case "HYALURONIC":
-      return <HyaluronicForm onBack={() => setSelectedForm(null)} />;
-    case "PMU":
-      return <PmuForm onBack={() => setSelectedForm(null)} />;
-    case "LASER":
-      return <LaserForm onBack={() => setSelectedForm(null)} />;
+    case "FACIAL_VOLUMETRY":
+      return <FacialVolumetryForm onBack={() => setSelectedForm(null)} />;
+
+    case "WRINKLE_REDUCTION":
+      return <WrinkleLevelingForm onBack={() => setSelectedForm(null)} />;
     default:
       return <div>Formularz nieznany</div>;
   }

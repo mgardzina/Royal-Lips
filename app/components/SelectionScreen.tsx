@@ -7,6 +7,36 @@ const LipsIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
+const SyringeIcon = ({ className }: { className?: string }) => (
+  <svg viewBox="0 0 490.588 490.588" fill="currentColor" className={className}>
+    <g>
+      <path
+        d="M263.641,66.98c-4.267-4.053-10.987-3.947-15.04,0.213c-3.947,4.16-3.947,10.667,0,14.827l23.36,23.36L59.694,317.754
+				c-8.96,8.96-6.08,18.667-3.947,25.707c0.427,1.28,0.853,2.667,1.173,4.267l14.72,56.213L3.268,472.314
+				c-4.267,4.053-4.373,10.88-0.213,15.04c4.16,4.16,10.88,4.373,15.04,0.213c0.107-0.107,0.213-0.213,0.213-0.213l68.053-67.947
+				l56.96,14.72c1.6,0.32,3.2,0.853,4.587,1.173c3.52,1.173,7.147,1.813,10.88,1.92c5.333,0.107,10.453-2.133,14.187-5.973
+				l212.267-212.373l23.253,23.253c4.267,4.053,10.987,3.947,15.04-0.213c3.947-4.16,3.947-10.667,0-14.827L263.641,66.98z
+				 M158.681,415.887c-0.427-0.107-3.2-0.64-4.907-1.173c-1.707-0.533-3.733-1.067-5.44-1.387l-54.187-13.973
+				c-0.32-0.64-0.64-1.173-1.067-1.707c-0.32-0.32-0.747-0.533-1.173-0.747l-14.4-54.4c-0.427-1.813-0.96-3.413-1.387-4.907
+				c-0.533-1.92-1.28-4.48-1.387-4.693l20.267-20.373l36.267,36.267c4.267,4.053,10.987,3.947,15.04-0.213
+				c3.947-4.16,3.947-10.667,0-14.827l-36.267-36.267l29.013-29.12c0.32,2.133,1.28,4.16,2.773,5.76l21.333,21.333
+				c4.267,4.053,10.987,3.947,15.04-0.213c3.947-4.16,3.947-10.667,0-14.827l-21.333-21.333c-1.6-1.493-3.52-2.453-5.76-2.773
+				l30.507-30.507c0.32,2.133,1.28,4.16,2.773,5.76l32,32c4.267,4.053,10.987,3.947,15.04-0.213c3.947-4.16,3.947-10.667,0-14.827
+				l-32-32c-1.6-1.493-3.627-2.453-5.76-2.773l23.68-23.787l20.267,20.267c4.267,4.053,10.987,3.947,15.04-0.213
+				c3.947-4.16,3.947-10.667,0-14.827l-20.267-20.267l22.293-22.293l25.6,25.6c4.267,4.053,10.987,3.947,15.04-0.213
+				c3.947-4.16,3.947-10.667,0-14.827l-25.6-25.6l16.96-16.96l83.2,83.2L158.681,415.887z"
+      />
+      <path
+        d="M487.641,109.647L380.975,2.98c-4.267-4.053-10.987-3.947-15.04,0.213c-3.947,4.16-3.947,10.667,0,14.827l24.427,24.533
+				L333.934,98.98c-4.267,4.053-4.373,10.88-0.213,15.04c4.053,4.267,10.88,4.373,15.04,0.213c0.107-0.107,0.213-0.213,0.213-0.213
+				l56.427-56.427l27.627,27.627l-56.427,56.427c-4.267,4.053-4.373,10.88-0.213,15.04c4.053,4.267,10.88,4.373,15.04,0.213
+				c0.107-0.107,0.213-0.213,0.213-0.213l56.427-56.427l24.427,24.427c4.267,4.053,10.987,3.947,15.04-0.213
+				C491.588,120.314,491.588,113.807,487.641,109.647z"
+      />
+    </g>
+  </svg>
+);
+
 interface SelectionScreenProps {
   onSelect: (type: FormType) => void;
 }
@@ -27,57 +57,23 @@ export default function SelectionScreen({ onSelect }: SelectionScreenProps) {
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {/* Kwas Hialuronowy */}
           <button
-            onClick={() => onSelect("HYALURONIC")}
+            onClick={() => onSelect("FACIAL_VOLUMETRY")}
             className="group relative bg-white/60 backdrop-blur-sm p-8 rounded-2xl shadow-lg border border-[#d4cec4] hover:border-[#8b7355] hover:bg-white/80 transition-all duration-300 flex flex-col items-center gap-6"
           >
             <div className="w-20 h-20 bg-[#efe9e1] rounded-full flex items-center justify-center group-hover:bg-[#8b7355]/10 transition-colors">
-              <Syringe className="w-10 h-10 text-[#8b7355] group-hover:scale-110 transition-transform duration-300" />
+              <SyringeIcon className="w-10 h-10 text-[#8b7355] group-hover:scale-110 transition-transform duration-300" />
             </div>
             <div className="text-center">
               <h3 className="text-xl font-serif text-[#4a4540] mb-2 font-medium">
                 Wolumetria Twarzy
               </h3>
-              <p className="text-sm text-[#8b8580]">Kwas hialuronowy</p>
-            </div>
-          </button>
-
-          {/* Makijaż Permanentny */}
-          <button
-            onClick={() => onSelect("PMU")}
-            className="group relative bg-white/60 backdrop-blur-sm p-8 rounded-2xl shadow-lg border border-[#d4cec4] hover:border-[#8b7355] hover:bg-white/80 transition-all duration-300 flex flex-col items-center gap-6"
-          >
-            <div className="w-20 h-20 bg-[#efe9e1] rounded-full flex items-center justify-center group-hover:bg-[#8b7355]/10 transition-colors">
-              <PenTool className="w-10 h-10 text-[#8b7355] group-hover:scale-110 transition-transform duration-300" />
-            </div>
-            <div className="text-center">
-              <h3 className="text-xl font-serif text-[#4a4540] mb-2 font-medium">
-                Makijaż Permanentny
-              </h3>
-              <p className="text-sm text-[#8b8580]">Brwi, usta, kreski</p>
-            </div>
-          </button>
-
-          {/* Laser Q-Switch */}
-          <button
-            onClick={() => onSelect("LASER")}
-            className="group relative bg-white/60 backdrop-blur-sm p-8 rounded-2xl shadow-lg border border-[#d4cec4] hover:border-[#8b7355] hover:bg-white/80 transition-all duration-300 flex flex-col items-center gap-6"
-          >
-            <div className="w-20 h-20 bg-[#efe9e1] rounded-full flex items-center justify-center group-hover:bg-[#8b7355]/10 transition-colors">
-              <Zap className="w-10 h-10 text-[#8b7355] group-hover:scale-110 transition-transform duration-300" />
-            </div>
-            <div className="text-center">
-              <h3 className="text-xl font-serif text-[#4a4540] mb-2 font-medium">
-                Laser Q-Switch
-              </h3>
-              <p className="text-sm text-[#8b8580]">
-                Usuwanie makijażu / tatuażu
-              </p>
+              <p className="text-sm text-[#8b8580]">Modelowanie twarzy</p>
             </div>
           </button>
 
           {/* Modelowanie Ust */}
           <button
-            onClick={() => onSelect("MODELOWANIE_UST")}
+            onClick={() => onSelect("LIP_AUGMENTATION")}
             className="group relative bg-white/60 backdrop-blur-sm p-8 rounded-2xl shadow-lg border border-[#d4cec4] hover:border-[#8b7355] hover:bg-white/80 transition-all duration-300 flex flex-col items-center gap-6 lg:col-start-2"
           >
             <div className="w-20 h-20 bg-[#efe9e1] rounded-full flex items-center justify-center group-hover:bg-[#8b7355]/10 transition-colors">
@@ -88,6 +84,21 @@ export default function SelectionScreen({ onSelect }: SelectionScreenProps) {
                 Modelowanie / Powiększanie Ust
               </h3>
               <p className="text-sm text-[#8b8580]">Kwas hialuronowy</p>
+            </div>
+          </button>
+          {/* Niwelowanie Zmarszczek */}
+          <button
+            onClick={() => onSelect("WRINKLE_REDUCTION")}
+            className="group relative bg-white/60 backdrop-blur-sm p-8 rounded-2xl shadow-lg border border-[#d4cec4] hover:border-[#8b7355] hover:bg-white/80 transition-all duration-300 flex flex-col items-center gap-6"
+          >
+            <div className="w-20 h-20 bg-[#efe9e1] rounded-full flex items-center justify-center group-hover:bg-[#8b7355]/10 transition-colors">
+              <Sparkles className="w-10 h-10 text-[#8b7355] group-hover:scale-110 transition-transform duration-300" />
+            </div>
+            <div className="text-center">
+              <h3 className="text-xl font-serif text-[#4a4540] mb-2 font-medium">
+                Niwelowanie Zmarszczek
+              </h3>
+              <p className="text-sm text-[#8b8580]">Botoks / Kwas</p>
             </div>
           </button>
         </div>

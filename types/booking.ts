@@ -1,14 +1,12 @@
 export type FormType =
-  | 'HYALURONIC'
-  | 'PMU'
-  | 'LASER'
-  | 'MODELOWANIE_UST'
-  | 'WOLUMETRIA_TWARZY'
-  | 'MEZOTERAPIA_IGLOWA'
-  | 'LIPOLIZA_INIEKCYJNA'
-  | 'MAKIJAZ_PERMANENTNY'
-  | 'LASEROWE_USUWANIE'
-  | 'DEPILACJA_LASEROWA';
+  | 'LIP_AUGMENTATION'
+  | 'FACIAL_VOLUMETRY'
+  | 'NEEDLE_MESOTHERAPY'
+  | 'INJECTION_LIPOLYSIS'
+  | 'PERMANENT_MAKEUP'
+  | 'LASER_REMOVAL'
+  | 'LASER_HAIR_REMOVAL'
+  | 'WRINKLE_REDUCTION';
 
 export interface ConsentFormData {
   type: FormType;
@@ -680,37 +678,60 @@ export const modelowanieUstPostCare = [
 
 // WOLUMETRIA_TWARZY - Wolumetria twarzy kwasem hialuronowym
 export const wolumetriaTwarzyContraindications: Record<string, string | ContraindicationWithFollowUp> = {
-  ciazaLaktacja: 'Jestem w ciąży lub w okresie laktacji',
-  zapalenieZakazenieSkory: 'Mam zapalenie lub zakażenie skóry (trądzik, opryszczka, zapalenia skórne, alergiczne lub grzybicze zmiany, naczyniaki, liszaje, brodawczaki, przerwania ciągłości naskórka, poparzenia słoneczne)',
-  chorobySerca: 'Choruję na choroby serca',
-  chorobyAutoimmunologiczne: 'Choruję na choroby autoimmunologiczne',
-  cukrzyca: 'Choruję na cukrzycę',
-  chemioterapiaRadioterapia: 'W ciągu ostatniego roku byłam/em poddawana chemioterapii lub radioterapii',
-  nowotwor: 'Choruję na nowotwór',
-  hivZoltaczka: 'Choruję na HIV lub żółtaczkę',
-  zaburzeniaTarczycy: 'Choruję na zaburzenia pracy tarczycy',
-  luszczycaAktywna: 'Choruję na łuszczycę',
-  epilepsja: 'Choruję na epilepsję',
-  problemyGojenieRan: 'Mam problem/trudności z gojeniem ran',
-  alergiaSkładnikiPreparatu: 'Posiadam alergie na składniki preparatu',
-  alergiaZnieczulenie: 'Mam alergie na preparaty stosowane do miejscowego znieczulenia',
-  chorobyImmunologiczne: 'Choruję na choroby immunologiczne (reumatoidalne zapalenie stawów, łuszczycowe zapalenie stawów, wrzodziejące zapalenie jelita grubego, chorobę Crohna, zesztywniające zapalenie stawów)',
-  bielactwo: 'Choruję na bielactwo',
-  porfiriaSkorna: 'Choruję na porfirię skórną',
-  podatnoscBlizny: 'Mam podatność na przerost blizn',
-  alkoholNarkotyki: 'W ciągu ostatnich 2 dni przyjmowałam/em alkohol lub inne środki odurzające',
-  lekiRyzykoKrwawienia: 'Stosuję leki zwiększające ryzyko krwawienia (aspiryna, paracetamol, witamina E, inne)',
-  problemyKrzepliwoscKrwi: 'Występują problemy z krzepliwością krwi',
-  problemyKrazeniem: 'Mam problemy z krążeniem',
-  wypelniaczeSkorneKwasHialuronowy: 'Korzystałam/em z wypełniaczy skórnych - kwasu hialuronowego',
-  zastrzykiBotoks: 'Korzystałam/em z zastrzyków z użyciem botoksu',
-  antybiotykoterapia: 'Jestem w trakcie stosowania antybiotykoterapii',
-  lekiMiejscowe: 'Stosuję leki do aplikacji miejscowej w obszarze objętym zabiegiem',
-  temperaturaPrzeziebienie: 'Mam podniesioną temperaturę ciała lub jestem przeziębiona/y w dniu zabiegu',
-  sklonnosciSinceKrwawienie: 'Mam skłonności do sińców lub krwawienia',
-  tatuaze: 'Posiadam tatuaże',
-  makijazPermanentny: 'Posiadam makijaż permanentny',
-  zabiegiChirurgiczneTwarz: 'Korzystałam/em z zabiegów chirurgicznych w okolicy twarzy',
+  ciazaLaktacja: 'Czy jest Pani w ciąży lub w okresie laktacji?',
+  zapalenieZakazenieSkory: 'Czy ma Pani/Pan zapalenie lub zakażenie skóry (trądzik, opryszczka, zapalenia skórne, alergiczne lub grzybicze zmiany w okolicach podlegających zabiegowi, naczyniaki, liszaje, brodawczaki, przerwania ciągłości naskórka, poparzenia słoneczne?)',
+  chorobySerca: 'Czy choruje Pani/Pan na choroby serca?',
+  chorobyAutoimmunologiczne: 'Czy choruje Pani/Pan na choroby autoimmunologiczne?',
+  cukrzyca: 'Czy choruje Pani/Pan na cukrzycę?',
+  chemioterapiaRadioterapia: 'Czy w ciągu ostatniego roku była/był Pan poddawana chemioterapii lub radioterapii?',
+  nowotwor: 'Czy choruje Pani/Pan na nowotwór?',
+  hivZoltaczka: 'Czy choruje Pani/Pan na HIV lub żółtaczkę?',
+  zaburzeniaTarczycy: 'Czy choruje Pani/Pan na zaburzenia pracy tarczycy?',
+  luszczycaAktywna: 'Czy choruje Pani/Pan na łuszczycę?',
+  epilepsja: 'Czy choruje Pani/Pan na epilepsję?',
+  problemyGojenieRan: 'Czy ma Pani/Pan problem/trudności z gojeniem ran?',
+  alergiaSkładnikiPreparatu: 'Czy posiada Pani/Pan alergie na składniki preparatu?',
+  alergiaZnieczulenie: 'Czy ma Pani/Pan alergie na preparaty stosowane do miejscowego znieczulenia?',
+  chorobyImmunologiczne: {
+    text: 'Czy choruje Pani/Pan na choroby immunologiczne (reumatoidalne zapalenie stawów, łuszczycowe zapalenie stawów, wrzodziejące zapalenie jelita grubego, chorobę Crohna, zesztywniające zapalenie stawów etc.)',
+    hasFollowUp: true,
+    followUpPlaceholder: 'Jeżeli tak, to jakie?'
+  },
+  bielactwo: 'Czy choruje Pani/Pan na bielactwo?',
+  porfiriaSkorna: 'Czy choruje Pani/Pan na portfirie skórną?',
+  podatnoscBlizny: 'Czy ma Pani/Pan podatność na przerost blizn?',
+  alkoholNarkotyki: 'Czy w ciągu ostatnich 2 dni przyjmowała Pani/Pan alkohol lub inne środki odurzające?',
+  lekiRyzykoKrwawienia: 'Czy stosuje Pani/Pan leki zwiększające ryzyko krwawienia? (aspiryna, paracetamol, witamina E, inne)',
+  problemyKrzepliwoscKrwi: 'Czy występują problemy z krzepliwością krwi?',
+  
+  // WZGLĘDNE PRZECIWSKAZANIA
+  problemyKrazeniem: 'Czy ma Pani/Pan problemy z krążeniem?',
+
+  // CZASOWE PRZECIWSKAZANIA
+  wypelniaczeSkorneKwasHialuronowy: 'Czy korzystała Pani/Pan z wypełniaczy skórnych - kwasu hialuronowego?',
+  zastrzykiBotoks: 'Czy korzystała Pani/Pan z zastrzyków z użyciem botoksu?',
+  antybiotykoterapia: 'Czy jest Pani/Pan w trakcie stosowania antybiotykoterapii?',
+  lekiMiejscowe: 'Czy stosuje Pani/Pan leki do aplikacji miejscowej w obszarze objętym zabiegiem?',
+  temperaturaPrzeziebienie: 'Czy ma Pani/Pan podniesioną temperaturę ciała lub jest przeziębiona w dniu zabiegu?',
+  sklonnosciSinceKrwawienie: 'Czy ma Pani/Pan skłonności do sińców lub krwawienia?',
+
+  // INNE
+  tatuaze: 'Czy posiada Pani/Pan tatuaże?',
+  makijazPermanentny: {
+    text: 'Czy posiada Pani/Pan makijaż permanentny?',
+    hasFollowUp: true,
+    followUpPlaceholder: 'Jeżeli tak, to kiedy został wykonany i jaką techniką?'
+  },
+  zabiegiChirurgiczneTwarz: {
+    text: 'Czy korzystała Pani/Pan z zabiegów chirurgicznych w okolicy twarzy?',
+    hasFollowUp: true,
+    followUpPlaceholder: 'Jeżeli tak, to z jakich?'
+  },
+  inneSchorzenia: {
+    text: 'Czy posiada Pani/Pan inne schorzenia niewymienione?',
+    hasFollowUp: true,
+    followUpPlaceholder: 'Proszę podać jakie'
+  },
 };
 
 export const wolumetriaTwarzyNaturalReactions = [
@@ -1124,7 +1145,7 @@ export const laseroweUsuwaniePostCare = [
 ];
 
 // DEPILACJA_LASEROWA - Depilacja laserowa
-export const depilacjaLaserowaContraindications: Record<string, string> = {
+export const depilacjaLaserowaContraindications: Record<string, string | ContraindicationWithFollowUp> = {
   ciazaLaktacja: 'Jestem w ciąży lub karmię piersią',
   chorobyNowotworowe: 'Choruję lub chorowałam/em na choroby nowotworowe',
   epilepsja: 'Choruję na epilepsję',
@@ -1177,16 +1198,14 @@ export const depilacjaLaserowaPostCare = [
 
 // Mapowanie typów na zestawy pytań
 export const contraindicationsByFormType: Record<FormType, Record<string, string | ContraindicationWithFollowUp>> = {
-  HYALURONIC: hyaluronicContraindications,
-  PMU: pmuContraindications,
-  LASER: laserContraindications,
-  MODELOWANIE_UST: modelowanieUstContraindications,
-  WOLUMETRIA_TWARZY: wolumetriaTwarzyContraindications,
-  MEZOTERAPIA_IGLOWA: mezoterapiaIglowaContraindications,
-  LIPOLIZA_INIEKCYJNA: lipolizaIniekcyjnaContraindications,
-  MAKIJAZ_PERMANENTNY: makijazPermanentnyContraindications,
-  LASEROWE_USUWANIE: laseroweUsuwanieContraindications,
-  DEPILACJA_LASEROWA: depilacjaLaserowaContraindications,
+  LIP_AUGMENTATION: modelowanieUstContraindications,
+  FACIAL_VOLUMETRY: wolumetriaTwarzyContraindications,
+  NEEDLE_MESOTHERAPY: mezoterapiaIglowaContraindications,
+  INJECTION_LIPOLYSIS: lipolizaIniekcyjnaContraindications,
+  PERMANENT_MAKEUP: makijazPermanentnyContraindications,
+  LASER_REMOVAL: laseroweUsuwanieContraindications,
+  LASER_HAIR_REMOVAL: depilacjaLaserowaContraindications,
+  WRINKLE_REDUCTION: wolumetriaTwarzyContraindications,
 };
 
 // Zachowanie kompatybilności wstecznej (dla starych importów)

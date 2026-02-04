@@ -1,39 +1,36 @@
-"use client";
-
 import { useState, useEffect } from "react";
 import {
-  ChevronDown,
-  ChevronUp,
+  Phone,
   Check,
   ArrowLeft,
-  Mail,
   Instagram,
-  Phone,
+  Mail,
   Shield,
   CheckCircle2,
   X,
 } from "lucide-react";
 import { isAdult, getTodayDate } from "@/lib/dateUtils";
-import SignaturePad from "../../../components/SignaturePad";
+import SignaturePad from "@/components/SignaturePad";
 import SignatureVerificationModal from "@/components/SignatureVerificationModal";
 import { AuditLogData } from "@/app/actions/otp";
 import Footer from "@/app/components/Footer";
+import AnatomyFaceSelector from "../AnatomyFaceSelector";
 import {
   ConsentFormData,
   ContraindicationWithFollowUp,
-  laserContraindications,
-  laserNaturalReactions,
-  laserComplications,
-  laserPostCare,
+  wolumetriaTwarzyContraindications,
+  wolumetriaTwarzyNaturalReactions,
+  wolumetriaTwarzyComplications,
+  wolumetriaTwarzyPostCare,
   rodoInfo,
 } from "../../../types/booking";
 
-interface LaserFormProps {
+interface FacialVolumetryFormProps {
   onBack: () => void;
 }
 
 const initialFormData: ConsentFormData = {
-  type: "LASER",
+  type: "WRINKLE_REDUCTION",
   imieNazwisko: "",
   ulica: "",
   kodPocztowy: "",
@@ -46,8 +43,15 @@ const initialFormData: ConsentFormData = {
   obszarZabiegu: "",
   celEfektu: "",
   numerZabiegu: "",
-  przeciwwskazania: Object.keys(laserContraindications).reduce(
-    (acc, key) => ({ ...acc, [key]: null }),
+  przeciwwskazania: Object.entries(wolumetriaTwarzyContraindications).reduce(
+    (acc, [key, value]) => {
+      const hasFollowUp = typeof value === "object" && value.hasFollowUp;
+      return {
+        ...acc,
+        [key]: null,
+        ...(hasFollowUp ? { [`${key}_details`]: "" } : {}),
+      };
+    },
     {},
   ),
   zgodaPrzetwarzanieDanych: false,
@@ -63,22 +67,19 @@ const initialFormData: ConsentFormData = {
   zastrzeniaKlienta: "",
 };
 
-export default function LaserForm({ onBack }: LaserFormProps) {
+export default function FacialVolumetryForm({
+  onBack,
+}: FacialVolumetryFormProps) {
   const [formData, setFormData] = useState<ConsentFormData>(initialFormData);
   const [email, setEmail] = useState("");
   const [birthDateError, setBirthDateError] = useState<string | null>(null);
-  const [expandedSections, setExpandedSections] = useState({
-    reakcje: true,
-    powiklania: true,
-    zalecenia: true,
-    rodo: true,
-  });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [currentContraindicationIndex, setCurrentContraindicationIndex] =
     useState(0);
   const [showContraindicationsWizard, setShowContraindicationsWizard] =
     useState(true);
+  const [isWizardComplete, setIsWizardComplete] = useState(false);
 
   // Form Steps: DATA -> SMS -> RODO -> TREATMENT -> MARKETING
   const [currentStep, setCurrentStep] = useState<
@@ -90,11 +91,51 @@ export default function LaserForm({ onBack }: LaserFormProps) {
   const [isSignatureVerified, setIsSignatureVerified] = useState(false);
   const [auditLog, setAuditLog] = useState<AuditLogData | null>(null);
 
-  const contraindicationKeys = Object.keys(laserContraindications);
+  const contraindicationKeys = Object.keys(wolumetriaTwarzyContraindications);
   const currentContraindicationKey =
     contraindicationKeys[currentContraindicationIndex];
-  const isWizardComplete =
-    currentContraindicationIndex === contraindicationKeys.length;
+  const currentContraindicationValue =
+    wolumetriaTwarzyContraindications[currentContraindicationKey];
+  const currentContraindicationObject:
+    | ContraindicationWithFollowUp
+    | undefined =
+    typeof currentContraindicationValue === "string"
+      ? undefined
+      : currentContraindicationValue;
+
+  // Calculate next potential question index (skipping completed wizard steps)
+  const getNextIncompleteIndex = () => {
+    // If wizard not started or just starting
+    if (currentContraindicationIndex === -1) return 0;
+
+    // Check from current index onwards
+    for (
+      let i = currentContraindicationIndex;
+      i < contraindicationKeys.length;
+      i++
+    ) {
+      const key = contraindicationKeys[i];
+      // If this key hasn't been answered yet (is null or undefined)
+      if (
+        formData.przeciwwskazania[key] === undefined ||
+        formData.przeciwwskazania[key] === null
+      ) {
+        return i;
+      }
+    }
+    return -1; // All done
+  };
+
+  // Update wizard completion status
+  // REMOVED: Auto-completion effect caused premature closing on last question follow-up
+  // useEffect(() => {
+  //   const isComplete = contraindicationKeys.every(
+  //     (key) =>
+  //       formData.przeciwwskazania[key] !== undefined &&
+  //       formData.przeciwwskazania[key] !== null,
+  //   );
+  //   setIsWizardComplete(isComplete);
+  // }, [formData.przeciwwskazania, contraindicationKeys]);
 
   // Scroll to top on step change
   useEffect(() => {
@@ -103,18 +144,40 @@ export default function LaserForm({ onBack }: LaserFormProps) {
 
   const handleWizardAnswer = (value: boolean) => {
     handleContraindicationChange(currentContraindicationKey, value);
-    if (currentContraindicationIndex < contraindicationKeys.length) {
+
+    // If answer is YES and has follow-up, stay on step to allow input
+    const hasFollowUp =
+      typeof currentContraindicationObject === "object" &&
+      currentContraindicationObject?.hasFollowUp;
+
+    if (value === true && hasFollowUp) {
+      return;
+    }
+
+    if (currentContraindicationIndex < contraindicationKeys.length - 1) {
       setCurrentContraindicationIndex((prev) => prev + 1);
+    } else {
+      setIsWizardComplete(true);
+    }
+  };
+
+  const handleNextStep = () => {
+    if (currentContraindicationIndex < contraindicationKeys.length - 1) {
+      setCurrentContraindicationIndex((prev) => prev + 1);
+    } else {
+      setIsWizardComplete(true);
     }
   };
 
   const resetWizard = () => {
+    // Clear all contraindication answers
+    setFormData((prev) => ({
+      ...prev,
+      przeciwwskazania: {},
+    }));
     setCurrentContraindicationIndex(0);
     setShowContraindicationsWizard(true);
-  };
-
-  const toggleSection = (section: keyof typeof expandedSections) => {
-    setExpandedSections((prev) => ({ ...prev, [section]: !prev[section] }));
+    setIsWizardComplete(false);
   };
 
   const handleInputChange = (
@@ -272,14 +335,13 @@ export default function LaserForm({ onBack }: LaserFormProps) {
     );
   }
 
-  // Basic validation check for Step 1
+  // Basic validation for Step 1
   const isStep1Valid =
     formData.imieNazwisko &&
     formData.telefon &&
     formData.telefon.replace(/\D/g, "").length === 9 &&
     formData.miejscowoscData &&
     formData.dataUrodzenia &&
-    formData.obszarZabiegu &&
     isWizardComplete &&
     !birthDateError;
 
@@ -368,10 +430,10 @@ export default function LaserForm({ onBack }: LaserFormProps) {
 
           <div className="text-center">
             <h1 className="text-3xl md:text-4xl font-serif text-[#4a3a2a] mb-2">
-              Laser Q-Switch
+              Wolumetria Twarzy
             </h1>
             <p className="text-[#8b7355] text-lg font-light tracking-wide uppercase">
-              Zgoda na zabieg
+              Kwas Hialuronowy / Stymulatory Tkankowe
             </p>
           </div>
         </div>
@@ -524,71 +586,443 @@ export default function LaserForm({ onBack }: LaserFormProps) {
                 </div>
               </section>
 
-              {/* Zakres Zabiegu Laser */}
+              {/* Informacja o Zabiegu */}
               <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
                 <h2 className="text-2xl font-serif text-[#4a3a2a] mb-6 flex items-center gap-3">
                   <span className="w-8 h-8 bg-[#8b7355] text-white rounded-full flex items-center justify-center text-sm font-sans">
                     2
                   </span>
-                  Obszar Zabiegu
+                  Informacja o Zabiegu
+                </h2>
+                <div className="prose prose-sm max-w-none text-[#5a5550] leading-relaxed space-y-4">
+                  <p>
+                    Wolumetria twarzy to zabieg medycyny estetycznej, którego
+                    celem jest przywrócenie lub poprawa objętości tkanek
+                    miękkich twarzy, modelowanie konturów oraz redukcja oznak
+                    starzenia się, takich jak utrata jędrności i opadanie owalu.
+                    Zabieg wykonywany jest przy użyciu kwasu hialuronowego lub
+                    stymulatorów tkankowych. Jest to zabieg inwazyjny, związany
+                    z przerwaniem ciągłości naskórka, dlatego nie jest
+                    pozbawiony ryzyka.
+                  </p>
+                  <p>
+                    Zabieg polega na wstrzyknięciu preparatu za pomocą igły lub
+                    kaniuli w wybrane obszary twarzy, takie jak kości
+                    policzkowe, linia żuchwy, broda, skronie czy dolina łez.
+                    Celem zabiegu jest przywrócenie młodzieńczego wyglądu,
+                    poprawa proporcji twarzy, wypełnienie ubytków objętości,
+                    redukcja zmarszczek oraz poprawa ogólnej kondycji i
+                    jędrności skóry.
+                  </p>
+                  <p>
+                    Zabieg wykonywany jest przy użyciu produktów takich jak:
+                    Stylage L, Stylage XL (kwas hialuronowy) lub Neauvia
+                    Stimulate, Radiesse (stymulatory tkankowe). Wybór preparatu
+                    zależy od indywidualnych potrzeb klienta i oczekiwanych
+                    efektów.
+                  </p>
+                  <p>
+                    Zabieg odbywa się zawsze po wykluczeniu wszelkich
+                    przeciwwskazań. W rozmowie z Klientem określane są potrzeby
+                    i oczekiwania, a specjalista dobiera odpowiedni preparat i
+                    jego ilość.
+                  </p>
+                  <p>
+                    Kolejnym etapem jest znieczulenie, które minimalizuje
+                    dyskomfort podczas zabiegu. Próg bólu odczuwany jest
+                    indywidualnie. Zastosowanie znieczulenia gwarantuje
+                    zminimalizowanie bólu. Czas zabiegu zależny jest od obszaru
+                    aplikacji oraz cech indywidualnych skóry, ale średnio trwa
+                    około godziny. Efekt końcowy widoczny jest po kilku dniach
+                    (kwas hialuronowy) lub kilku tygodniach (stymulatory
+                    tkankowe) od przeprowadzonego zabiegu.
+                  </p>
+                  <p>
+                    Efekty zabiegu wolumetrii twarzy nie są trwałe. W przypadku
+                    kwasu hialuronowego utrzymują się od 6 do 18 miesięcy,
+                    natomiast w przypadku stymulatorów tkankowych od 12 do 24
+                    miesięcy. Czas utrzymywania się efektu zależy od rodzaju
+                    preparatu, wstrzykniętej ilości, techniki iniekcji, a także
+                    od indywidualnych cech organizmu i stylu życia. Specjalista
+                    informuje Klienta, że efekty zabiegu nie są identyczne w
+                    przypadku każdego Klienta.
+                  </p>
+                </div>
+              </section>
+
+              {/* Szczegóły Zabiegu */}
+              <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
+                <h2 className="text-2xl font-serif text-[#4a3a2a] mb-6 flex items-center gap-3">
+                  <span className="w-8 h-8 bg-[#8b7355] text-white rounded-full flex items-center justify-center text-sm font-sans">
+                    3
+                  </span>
+                  Szczegóły Zabiegu
                 </h2>
                 <div className="space-y-6">
                   <div>
                     <label className="block text-sm text-[#6b6560] mb-2 font-medium">
-                      Użycie lasera Q-switch w obszarze
+                      Nazwa preparatu
                     </label>
-                    <div className="grid grid-cols-2 gap-3 mb-3">
-                      {[
-                        "Twarz",
-                        "Szyja",
-                        "Dekolt",
-                        "Dłonie",
-                        "Plecy",
-                        "Nogi",
-                      ].map((area) => (
-                        <button
-                          key={area}
-                          type="button"
-                          onClick={() => {
-                            const current = formData.obszarZabiegu
-                              ? formData.obszarZabiegu.split(", ")
-                              : [];
-                            const newValue = current.includes(area)
-                              ? current.filter((i) => i !== area).join(", ")
-                              : [...current, area].join(", ");
-                            handleInputChange("obszarZabiegu", newValue);
-                          }}
-                          className={`py-3 px-4 rounded-xl border-2 transition-all font-medium text-sm ${
-                            formData.obszarZabiegu.split(", ").includes(area)
-                              ? "border-[#8b7355] bg-[#8b7355] text-white"
-                              : "border-[#d4cec4] bg-white text-[#6b6560] hover:border-[#8b7355] hover:text-[#8b7355]"
-                          }`}
-                        >
-                          {area}
-                        </button>
-                      ))}
+                    <div className="space-y-4">
+                      {/* Product Selection */}
+                      <div className="flex flex-col gap-3">
+                        {[
+                          {
+                            name: "Revolax Deep ",
+                            desc: "Gęstszy żel, który świetnie utrzymuje kształt. Polecany dla osób oczekujących wyraźniejszego powiększenia ust lub wypełnienia bruzd nosowo-wargowych.",
+                          },
+                          {
+                            name: "Revolax Sub-Q",
+                            desc: "Najgęstszy preparat, który imituje twardość kości. Używany do wyostrzania rysów: linii żuchwy i brody.",
+                          },
+                          {
+                            name: "Neuramis Deep",
+                            desc: "Plastyczny i miękki żel. Doskonały dla osób ceniących subtelny, naturalny wygląd ust (soft lips) oraz do spłycania średnich zmarszczek.",
+                          },
+                          {
+                            name: "Neuramis Volume",
+                            desc: "Preparat liftingujący. Służy do przywracania utraconej objętości w policzkach i poprawy owalu twarzy.",
+                          },
+                        ].map((product) => {
+                          const currentName = formData.nazwaProduktu || "";
+                          const baseName = currentName
+                            .split(" (")[0]
+                            .split(" - ")[0];
+                          const isSelectedProduct = baseName === product.name;
+
+                          return (
+                            <div
+                              key={product.name}
+                              onClick={() => {
+                                // Select product only, reset volume if switching to new product
+                                if (!isSelectedProduct) {
+                                  handleInputChange(
+                                    "nazwaProduktu",
+                                    product.name,
+                                  );
+                                }
+                              }}
+                              className={`p-4 rounded-xl border-2 transition-all cursor-pointer ${
+                                isSelectedProduct
+                                  ? "border-[#8b7355] bg-[#8b7355]/5 shadow-md"
+                                  : "border-[#d4cec4] bg-white hover:border-[#8b7355]"
+                              }`}
+                            >
+                              <div className="flex justify-between items-center mb-1">
+                                <span
+                                  className={`font-serif text-lg font-medium ${
+                                    isSelectedProduct
+                                      ? "text-[#8b7355]"
+                                      : "text-[#4a4540]"
+                                  }`}
+                                >
+                                  {product.name}
+                                </span>
+                                {isSelectedProduct && (
+                                  <CheckCircle2 className="w-5 h-5 text-[#8b7355]" />
+                                )}
+                              </div>
+                              <p className="text-sm text-[#6b6560] leading-relaxed mb-4">
+                                {product.desc}
+                              </p>
+
+                              {/* Volume Selection inside Product Card */}
+                              {isSelectedProduct && (
+                                <div className="border-t border-[#d4cec4]/50 pt-3 animate-in fade-in slide-in-from-top-2 duration-300">
+                                  <p className="text-xs font-medium text-[#8b7355] mb-2 uppercase tracking-wide">
+                                    Wybierz ilość:
+                                  </p>
+                                  <div className="flex flex-wrap gap-2">
+                                    {["1.0", "2.0", "3.0", "4.0"].map((vol) => {
+                                      const isSelectedVolume =
+                                        currentName ===
+                                        `${product.name} - ${vol}ml`;
+                                      return (
+                                        <button
+                                          key={vol}
+                                          type="button"
+                                          onClick={(e) => {
+                                            e.stopPropagation(); // Prevent bubbling
+                                            handleInputChange(
+                                              "nazwaProduktu",
+                                              `${product.name} - ${vol}ml`,
+                                            );
+                                          }}
+                                          className={`px-3 py-1.5 rounded-lg border text-xs font-medium transition-all ${
+                                            isSelectedVolume
+                                              ? "border-[#8b7355] bg-[#8b7355] text-white shadow-sm"
+                                              : "border-[#d4cec4] bg-white text-[#6b6560] hover:border-[#8b7355] hover:text-[#8b7355]"
+                                          }`}
+                                        >
+                                          {vol} ml
+                                        </button>
+                                      );
+                                    })}
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
                     </div>
-                    <input
-                      type="text"
-                      value={formData.obszarZabiegu}
-                      onChange={(e) =>
-                        handleInputChange("obszarZabiegu", e.target.value)
-                      }
-                      className="w-full px-4 py-3 bg-white/80 border border-[#d4cec4] rounded-xl focus:border-[#8b7355] focus:ring-2 focus:ring-[#8b7355]/20 outline-none transition-all"
-                      placeholder="Inny (wpisz ręcznie)..."
-                    />
+                  </div>
+
+                  {/* Znieczulenie */}
+                  <div>
+                    <label className="block text-sm text-[#6b6560] mb-2 font-medium">
+                      Znieczulenie
+                    </label>
+                    <div className="space-y-4">
+                      {/* Anesthesia Selection */}
+                      <div className="flex flex-col gap-3">
+                        <button
+                          type="button"
+                          className="text-left p-4 rounded-xl border-2 border-[#8b7355] bg-[#8b7355]/5 shadow-md transition-all group"
+                        >
+                          <div className="flex justify-between items-center mb-1">
+                            <span className="font-serif text-lg font-medium text-[#8b7355]">
+                              Lidokaina 9,6%
+                            </span>
+                            <CheckCircle2 className="w-5 h-5 text-[#8b7355]" />
+                          </div>
+                          <p className="text-sm text-[#6b6560] leading-relaxed">
+                            Środek znieczulający miejscowo w formie kremu.
+                            Powoduje czasowe, odwracalne zablokowanie czucia na
+                            powierzchni skóry, eliminując ból podczas
+                            nakłuwania.
+                          </p>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Obszar Zabiegu - Anatomy Face Selector */}
+                  <div>
+                    <label className="block text-sm text-[#6b6560] mb-2 font-medium">
+                      Obszar Zabiegu
+                    </label>
+                    <div className="bg-[#f8f6f3] p-4 rounded-xl border border-[#d4cec4]">
+                      <p className="text-xs text-[#6b6560] mb-4 text-center">
+                        Zaznacz na schemacie obszary, które mają zostać poddane
+                        zabiegowi.
+                      </p>
+                      <AnatomyFaceSelector
+                        initialSelected={
+                          formData.obszarZabiegu
+                            ? formData.obszarZabiegu.split(", ").filter(Boolean)
+                            : []
+                        }
+                        onSelect={(selectedIds) => {
+                          handleInputChange(
+                            "obszarZabiegu",
+                            selectedIds.join(", "),
+                          );
+                        }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Additional History Section */}
+                  <div>
+                    <div className="bg-[#f8f6f3] p-5 rounded-xl border border-[#d4cec4] mb-6 space-y-4">
+                      <h3 className="font-serif text-[#4a4540] text-lg mb-2">
+                        Historia zabiegów wolumetrycznych
+                      </h3>
+                      <div className="space-y-3">
+                        {[
+                          "Zabieg wykonywany pierwszy raz",
+                          "Zabieg wykonywany drugi raz, w tym samym gabinecie",
+                          "Zabieg wykonywany drugi raz, pierwszy raz w innym gabinecie",
+                        ].map((option) => (
+                          <label
+                            key={option}
+                            className="flex items-start gap-3 cursor-pointer group"
+                          >
+                            <div className="relative flex items-center pt-1">
+                              <input
+                                type="checkbox"
+                                checked={(
+                                  formData.informacjaDodatkowa || ""
+                                ).includes(option)}
+                                onChange={(e) => {
+                                  let parts = (
+                                    formData.informacjaDodatkowa || ""
+                                  )
+                                    .split("\n")
+                                    .filter(Boolean);
+
+                                  if (e.target.checked) {
+                                    // Remove other exclusive options if checked
+                                    const exclusiveGroup = [
+                                      "Zabieg wykonywany pierwszy raz",
+                                      "Zabieg wykonywany drugi raz, w tym samym gabinecie",
+                                      "Zabieg wykonywany drugi raz, pierwszy raz w innym gabinecie",
+                                    ];
+                                    // Also remove the "Multiple times" option which starts with the prefix
+                                    const multipleTimesPrefix =
+                                      "Zabieg wykonywany więcej razy";
+
+                                    parts = parts.filter(
+                                      (p) =>
+                                        !exclusiveGroup.includes(p) &&
+                                        !p.startsWith(multipleTimesPrefix),
+                                    );
+                                    parts.push(option);
+                                  } else {
+                                    parts = parts.filter((p) => p !== option);
+                                  }
+                                  handleInputChange(
+                                    "informacjaDodatkowa",
+                                    parts.join("\n"),
+                                  );
+                                }}
+                                className="w-5 h-5 rounded border-[#d4cec4] text-[#8b7355] focus:ring-[#8b7355] focus:ring-offset-0 accent-[#8b7355]"
+                              />
+                            </div>
+                            <span className="text-[#6b6560] text-sm group-hover:text-[#4a4540] transition-colors">
+                              {option}
+                            </span>
+                          </label>
+                        ))}
+
+                        {/* Multiple Times with customized input */}
+                        <div className="space-y-2">
+                          <label className="flex items-start gap-3 cursor-pointer group">
+                            <div className="relative flex items-center pt-1">
+                              <input
+                                type="checkbox"
+                                checked={(
+                                  formData.informacjaDodatkowa || ""
+                                ).includes("Zabieg wykonywany więcej razy")}
+                                onChange={(e) => {
+                                  let parts = (
+                                    formData.informacjaDodatkowa || ""
+                                  ).split("\n");
+                                  const prefix =
+                                    "Zabieg wykonywany więcej razy: ";
+                                  if (e.target.checked) {
+                                    // Remove other exclusive options
+                                    const exclusiveGroup = [
+                                      "Zabieg wykonywany pierwszy raz",
+                                      "Zabieg wykonywany drugi raz, w tym samym gabinecie",
+                                      "Zabieg wykonywany drugi raz, pierwszy raz w innym gabinecie",
+                                    ];
+                                    parts = parts.filter(
+                                      (p) => !exclusiveGroup.includes(p),
+                                    );
+                                    parts.push(prefix);
+                                  } else {
+                                    parts = parts.filter(
+                                      (p) => !p.startsWith(prefix),
+                                    );
+                                  }
+                                  handleInputChange(
+                                    "informacjaDodatkowa",
+                                    parts.filter(Boolean).join("\n"),
+                                  );
+                                }}
+                                className="w-5 h-5 rounded border-[#d4cec4] text-[#8b7355] focus:ring-[#8b7355] focus:ring-offset-0 accent-[#8b7355]"
+                              />
+                            </div>
+                            <span className="text-[#6b6560] text-sm group-hover:text-[#4a4540] transition-colors">
+                              Zabieg wykonywany więcej razy
+                            </span>
+                          </label>
+                          {(formData.informacjaDodatkowa || "").includes(
+                            "Zabieg wykonywany więcej razy",
+                          ) && (
+                            <input
+                              type="text"
+                              className="w-full ml-8 px-3 py-2 text-sm bg-white border border-[#d4cec4] rounded-lg focus:border-[#8b7355] outline-none"
+                              placeholder="Kiedy, jaki preparat, ile razy?"
+                              value={
+                                (formData.informacjaDodatkowa || "")
+                                  .split("\n")
+                                  .find((p) =>
+                                    p.startsWith(
+                                      "Zabieg wykonywany więcej razy: ",
+                                    ),
+                                  )
+                                  ?.replace(
+                                    "Zabieg wykonywany więcej razy: ",
+                                    "",
+                                  ) || ""
+                              }
+                              onChange={(e) => {
+                                const parts = (
+                                  formData.informacjaDodatkowa || ""
+                                ).split("\n");
+                                const index = parts.findIndex((p) =>
+                                  p.startsWith(
+                                    "Zabieg wykonywany więcej razy: ",
+                                  ),
+                                );
+                                if (index !== -1) {
+                                  parts[index] =
+                                    `Zabieg wykonywany więcej razy: ${e.target.value}`;
+                                  handleInputChange(
+                                    "informacjaDodatkowa",
+                                    parts.join("\n"),
+                                  );
+                                }
+                              }}
+                            />
+                          )}
+                        </div>
+
+                        {/* Other */}
+                        <div className="pt-2">
+                          <label className="block text-sm text-[#6b6560] mb-2 font-medium">
+                            Inne informacje
+                          </label>
+                          <textarea
+                            rows={3}
+                            className="w-full px-4 py-3 bg-white border border-[#d4cec4] rounded-xl focus:border-[#8b7355] outline-none text-sm"
+                            placeholder="Dodatkowe uwagi..."
+                            value={
+                              (formData.informacjaDodatkowa || "")
+                                .split("\n")
+                                .find((p) => p.startsWith("Inne: "))
+                                ?.replace("Inne: ", "") || ""
+                            }
+                            onChange={(e) => {
+                              const parts = (
+                                formData.informacjaDodatkowa || ""
+                              ).split("\n");
+                              const newVal = `Inne: ${e.target.value}`;
+                              const index = parts.findIndex((p) =>
+                                p.startsWith("Inne: "),
+                              );
+                              if (index !== -1) {
+                                if (e.target.value) {
+                                  parts[index] = newVal;
+                                } else {
+                                  parts.splice(index, 1);
+                                }
+                              } else if (e.target.value) {
+                                parts.push(newVal);
+                              }
+                              handleInputChange(
+                                "informacjaDodatkowa",
+                                parts.filter(Boolean).join("\n"),
+                              );
+                            }}
+                          />
+                        </div>
+                      </div>
+                    </div>
                   </div>
                   <div>
                     <label className="block text-sm text-[#6b6560] mb-2 font-medium">
-                      Uzyskanie efektu
+                      Oczekiwany efekt
                     </label>
                     <div className="grid grid-cols-2 gap-3 mb-3">
                       {[
-                        "Usunięcie tatuażu",
-                        "Usunięcie makijażu permanentnego",
-                        "Rozjaśnienie (Cover)",
-                        "Peeling węglowy (Carbon Peel)",
-                        "Zamykanie naczynek",
+                        "Poprawa owalu twarzy",
+                        "Wypełnienie ubytków objętości",
+                        "Redukcja zmarszczek",
+                        "Poprawa jędrności skóry",
                       ].map((effect) => (
                         <button
                           key={effect}
@@ -612,38 +1046,73 @@ export default function LaserForm({ onBack }: LaserFormProps) {
                         </button>
                       ))}
                     </div>
-                    <input
-                      type="text"
-                      value={formData.celEfektu}
-                      onChange={(e) =>
-                        handleInputChange("celEfektu", e.target.value)
-                      }
-                      className="w-full px-4 py-3 bg-white/80 border border-[#d4cec4] rounded-xl focus:border-[#8b7355] focus:ring-2 focus:ring-[#8b7355]/20 outline-none transition-all"
-                      placeholder="Inny (wpisz ręcznie)..."
-                    />
-                  </div>
-                  <div className="p-4 bg-white/50 rounded-xl">
-                    <p className="text-sm text-[#5a5550]">
-                      Efekt jest indywidualny i zależy od skóry i głębokości
-                      pigmentu.
-                    </p>
                   </div>
                 </div>
               </section>
 
-              {/* Wywiad Medyczny Laser */}
+              {/* Wywiad Medyczny Hyaluronic */}
               <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
-                <h2 className="text-2xl font-serif text-[#4a3a2a] mb-6 flex items-center gap-3">
+                <h2 className="text-2xl font-serif text-[#4a4540] mb-6 flex items-center gap-3">
                   <span className="w-8 h-8 bg-[#8b7355] text-white rounded-full flex items-center justify-center text-sm font-sans">
-                    3
+                    4
                   </span>
                   Wywiad Medyczny
                 </h2>
                 <p className="text-sm text-[#6b6560] mb-6">
                   Czy posiadasz którekolwiek z poniższych przeciwwskazań?
                 </p>
+
+                {/* Medications Input */}
+                <div className="bg-[#f8f6f3] p-5 rounded-xl border border-[#d4cec4] mb-6">
+                  <h3 className="font-serif text-[#4a4540] text-lg mb-2">
+                    PRZECIWSKAZANIA DO WYKONANIA ZABIEGU
+                  </h3>
+                  <label className="block text-sm text-[#6b6560] mb-2 font-medium">
+                    Proszę wpisać wykaz wszystkich leków przyjmowanych w ciągu
+                    ostatnich 6 miesięcy
+                  </label>
+                  <textarea
+                    rows={3}
+                    className="w-full px-4 py-3 bg-white border border-[#d4cec4] rounded-xl focus:border-[#8b7355] outline-none text-sm"
+                    placeholder="Wpisz leki lub wpisz 'BRAK'..."
+                    value={
+                      (formData.informacjaDodatkowa || "")
+                        .split("\n")
+                        .find((p) => p.startsWith("Leki (6 m-cy): "))
+                        ?.replace("Leki (6 m-cy): ", "") || ""
+                    }
+                    onChange={(e) => {
+                      const parts = (formData.informacjaDodatkowa || "").split(
+                        "\n",
+                      );
+                      const prefix = "Leki (6 m-cy): ";
+                      const newVal = `${prefix}${e.target.value}`;
+                      const index = parts.findIndex((p) =>
+                        p.startsWith(prefix),
+                      );
+
+                      if (index !== -1) {
+                        if (e.target.value) {
+                          parts[index] = newVal;
+                        } else {
+                          parts.splice(index, 1);
+                        }
+                      } else if (e.target.value) {
+                        parts.push(newVal);
+                      }
+
+                      handleInputChange(
+                        "informacjaDodatkowa",
+                        parts.filter(Boolean).join("\n"),
+                      );
+                    }}
+                  />
+                </div>
+
                 <div className="space-y-3">
-                  {showContraindicationsWizard && !isWizardComplete ? (
+                  {showContraindicationsWizard &&
+                  !isWizardComplete &&
+                  currentContraindicationIndex < contraindicationKeys.length ? (
                     <div
                       key={currentContraindicationIndex}
                       className="bg-[#f8f6f3] p-6 rounded-xl border border-[#d4cec4] max-w-2xl mx-auto shadow-sm"
@@ -664,34 +1133,80 @@ export default function LaserForm({ onBack }: LaserFormProps) {
                       </div>
 
                       <h4 className="text-xl md:text-2xl font-serif text-[#4a4540] mb-8 min-h-[5rem] flex items-center justify-center text-center">
-                        {typeof laserContraindications[
+                        {typeof wolumetriaTwarzyContraindications[
                           currentContraindicationKey
                         ] === "string"
-                          ? (laserContraindications[
+                          ? (wolumetriaTwarzyContraindications[
                               currentContraindicationKey
                             ] as string)
                           : (
-                              laserContraindications[
+                              wolumetriaTwarzyContraindications[
                                 currentContraindicationKey
                               ] as ContraindicationWithFollowUp
                             ).text}
                       </h4>
 
+                      {/* Show follow-up input if user answered TAK and question has follow-up */}
+                      {formData.przeciwwskazania[currentContraindicationKey] ===
+                        true &&
+                        currentContraindicationObject?.hasFollowUp && (
+                          <div className="mb-6 animate-in fade-in slide-in-from-top-2">
+                            <input
+                              type="text"
+                              className="w-full px-4 py-3 text-base bg-white border-2 border-[#d4cec4] rounded-xl focus:border-[#8b7355] outline-none transition-colors"
+                              placeholder={
+                                currentContraindicationObject.followUpPlaceholder
+                              }
+                              value={String(
+                                formData.przeciwwskazania[
+                                  `${currentContraindicationKey}_details`
+                                ] ?? "",
+                              )}
+                              onChange={(e) => {
+                                setFormData((prev) => ({
+                                  ...prev,
+                                  przeciwwskazania: {
+                                    ...prev.przeciwwskazania,
+                                    [`${currentContraindicationKey}_details`]:
+                                      e.target.value,
+                                  },
+                                }));
+                              }}
+                            />
+                          </div>
+                        )}
+
                       <div className="grid grid-cols-2 gap-6 max-w-md mx-auto">
-                        <button
-                          type="button"
-                          onClick={() => handleWizardAnswer(false)}
-                          className="py-4 px-6 rounded-xl bg-white border-2 border-[#d4cec4] text-[#6b6560] active:border-green-500 active:bg-green-500 active:text-white md:hover:border-green-500 md:hover:bg-green-500 md:hover:text-white transition-all text-lg font-medium shadow-sm hover:shadow-md active:scale-95 flex flex-col items-center justify-center gap-2"
-                        >
-                          NIE
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => handleWizardAnswer(true)}
-                          className="py-4 px-6 rounded-xl bg-white border-2 border-[#d4cec4] text-[#6b6560] active:border-red-500 active:bg-red-500 active:text-white md:hover:border-red-500 md:hover:bg-red-500 md:hover:text-white transition-all text-lg font-medium shadow-sm hover:shadow-md active:scale-95 flex flex-col items-center justify-center gap-2"
-                        >
-                          TAK
-                        </button>
+                        {formData.przeciwwskazania[
+                          currentContraindicationKey
+                        ] !== true ||
+                        !currentContraindicationObject?.hasFollowUp ? (
+                          <>
+                            <button
+                              type="button"
+                              onClick={() => handleWizardAnswer(false)}
+                              className="py-4 px-6 rounded-xl bg-white border-2 border-[#d4cec4] text-[#6b6560] active:border-green-500 active:bg-green-500 active:text-white md:hover:border-green-500 md:hover:bg-green-500 md:hover:text-white transition-all text-lg font-medium shadow-sm hover:shadow-md active:scale-95 flex items-center justify-center"
+                            >
+                              NIE
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleWizardAnswer(true)}
+                              className="py-4 px-6 rounded-xl bg-white border-2 border-[#d4cec4] text-[#6b6560] active:border-red-500 active:bg-red-500 active:text-white md:hover:border-red-500 md:hover:bg-red-500 md:hover:text-white transition-all text-lg font-medium shadow-sm hover:shadow-md active:scale-95 flex items-center justify-center"
+                            >
+                              TAK
+                            </button>
+                          </>
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={handleNextStep}
+                            className="col-span-2 py-4 px-6 rounded-xl bg-[#8b7355] text-white hover:bg-[#7a6548] transition-all text-lg font-medium shadow-md active:scale-95 flex items-center justify-center gap-2"
+                          >
+                            Zatwierdź i przejdź dalej
+                            <ArrowLeft className="w-5 h-5 rotate-180" />
+                          </button>
+                        )}
                       </div>
 
                       <div className="mt-8 flex justify-between items-center border-t border-[#d4cec4]/50 pt-6">
@@ -733,43 +1248,161 @@ export default function LaserForm({ onBack }: LaserFormProps) {
                         </button>
                       </div>
 
-                      {Object.entries(laserContraindications).map(
-                        ([key, label], index) => (
-                          <div
-                            key={key}
-                            className={`flex items-center gap-4 p-4 rounded-xl transition-colors ${
-                              formData.przeciwwskazania[key]
-                                ? "bg-red-50 border border-red-100"
-                                : "bg-green-50/50 border border-green-100/50"
-                            }`}
-                          >
-                            <span className="text-[#8b7355] font-medium min-w-[1.5rem] mt-0.5">
-                              {index + 1}.
-                            </span>
-                            <div className="flex-1">
-                              <p className="text-[#5a5550] text-sm leading-relaxed">
-                                {typeof label === "string"
-                                  ? label
-                                  : (label as ContraindicationWithFollowUp)
-                                      .text}
-                              </p>
+                      {Object.entries(wolumetriaTwarzyContraindications).map(
+                        ([key, value], index) => {
+                          const questionText =
+                            typeof value === "string" ? value : value.text;
+                          const hasFollowUp =
+                            typeof value === "object" && value.hasFollowUp;
+                          const followUpDetails =
+                            formData.przeciwwskazania[`${key}_details`];
+
+                          return (
+                            <div
+                              key={key}
+                              className={`flex items-start gap-4 p-4 rounded-xl transition-colors ${
+                                formData.przeciwwskazania[key]
+                                  ? "bg-red-50 border border-red-100"
+                                  : "bg-green-50/50 border border-green-100/50"
+                              }`}
+                            >
+                              <span className="text-[#8b7355] font-medium min-w-[1.5rem] mt-0.5">
+                                {index + 1}.
+                              </span>
+                              <div className="flex-1">
+                                <p className="text-[#5a5550] text-sm leading-relaxed">
+                                  {questionText}
+                                </p>
+                                {hasFollowUp &&
+                                  formData.przeciwwskazania[key] &&
+                                  followUpDetails && (
+                                    <p className="text-[#8b7355] text-xs mt-2 italic">
+                                      → {followUpDetails}
+                                    </p>
+                                  )}
+                              </div>
+                              <div className="ml-2">
+                                {formData.przeciwwskazania[key] ? (
+                                  <span className="inline-flex items-center px-3 py-1 bg-red-100 text-red-700 text-xs font-bold rounded-full border border-red-200 whitespace-nowrap">
+                                    TAK
+                                  </span>
+                                ) : (
+                                  <span className="inline-flex items-center px-3 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full border border-green-200 whitespace-nowrap">
+                                    NIE
+                                  </span>
+                                )}
+                              </div>
                             </div>
-                            <div className="ml-2">
-                              {formData.przeciwwskazania[key] ? (
-                                <span className="inline-flex items-center px-3 py-1 bg-red-100 text-red-700 text-xs font-bold rounded-full border border-red-200 whitespace-nowrap">
-                                  TAK
-                                </span>
-                              ) : (
-                                <span className="inline-flex items-center px-3 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full border border-green-200 whitespace-nowrap">
-                                  NIE
-                                </span>
-                              )}
+                          );
+                        },
+                      )}
+                    </div>
+                  )}
+                </div>
+              </section>
+
+              {/* Skutki Uboczne i Powikłania */}
+              <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
+                <h2 className="text-2xl font-serif text-[#4a4540] mb-6 flex items-center gap-3">
+                  <span className="w-8 h-8 bg-[#8b7355] text-white rounded-full flex items-center justify-center text-sm font-sans">
+                    5
+                  </span>
+                  Informacje o Skutkach Ubocznych i Powikłaniach
+                </h2>
+
+                <div className="space-y-6">
+                  {/* Częste skutki uboczne */}
+                  <div className="bg-[#f8f6f3] p-5 rounded-xl border border-[#d4cec4]/50">
+                    <p className="text-sm font-medium text-[#4a4540] mb-3">
+                      MOŻLIWE DO WYSTĄPIENIA SKUTKI UBOCZNE PO PRZEPROWADZONYM
+                      ZABIEGU - CZĘSTE
+                    </p>
+                    <div className="space-y-4">
+                      {wolumetriaTwarzyNaturalReactions.map(
+                        (reaction, index) => (
+                          <div key={index} className="flex items-start gap-3">
+                            <div className="mt-1">
+                              <Check className="w-5 h-5 text-[#8b7355]" />
                             </div>
+                            <p className="text-[#6b6560] leading-relaxed">
+                              {reaction}
+                            </p>
                           </div>
                         ),
                       )}
                     </div>
-                  )}
+                  </div>
+
+                  {/* Rzadkie powikłania */}
+                  <div className="bg-[#f8f6f3] p-5 rounded-xl border border-[#d4cec4]/50">
+                    <p className="text-sm font-medium text-[#4a4540] mb-3">
+                      MOŻLIWE POWIKŁANIA PO PRZEPROWADZONYM ZABIEGU – RZADKIE
+                    </p>
+                    <ul className="space-y-2 text-sm text-[#5a5550]">
+                      {wolumetriaTwarzyComplications.rzadkie.map(
+                        (complication, index) => (
+                          <li key={index} className="flex items-start gap-2">
+                            <span className="text-[#8b7355]">∙</span>
+                            <span>{complication}</span>
+                          </li>
+                        ),
+                      )}
+                    </ul>
+                  </div>
+
+                  {/* Bardzo rzadkie powikłania */}
+                  <div className="bg-[#f8f6f3] p-5 rounded-xl border border-[#d4cec4]/50">
+                    <p className="text-sm font-medium text-[#4a4540] mb-3">
+                      MOŻLIWE POWIKŁANIA PO PRZEPROWADZONYM ZABIEGU – BARDZO
+                      RZADKIE
+                    </p>
+                    <ul className="space-y-2 text-sm text-[#5a5550]">
+                      {wolumetriaTwarzyComplications.bardzoRzadkie.map(
+                        (complication, index) => (
+                          <li key={index} className="flex items-start gap-2">
+                            <span className="text-[#8b7355]">∙</span>
+                            <span>{complication}</span>
+                          </li>
+                        ),
+                      )}
+                    </ul>
+                  </div>
+                </div>
+              </section>
+
+              {/* Zalecenia Pozabiegowe */}
+              <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
+                <h2 className="text-2xl font-serif text-[#4a3a2a] mb-6 flex items-center gap-3">
+                  <span className="w-8 h-8 bg-[#8b7355] text-white rounded-full flex items-center justify-center text-sm font-sans">
+                    6
+                  </span>
+                  Zalecenia Pozabiegowe
+                </h2>
+
+                <div className="bg-[#f8f6f3] p-5 rounded-xl border border-[#d4cec4]/50 mb-6">
+                  <p className="text-sm text-[#5a5550] leading-relaxed mb-4">
+                    <strong>
+                      Niniejszym oświadczam, że zostałam/em poinformowana/y o
+                      konieczności stosowania się po przeprowadzonym zabiegu do
+                      przestrzegania następujących zaleceń:
+                    </strong>
+                  </p>
+                  <ul className="space-y-2 text-sm text-[#5a5550]">
+                    {wolumetriaTwarzyPostCare.map((instruction, index) => (
+                      <li key={index} className="flex items-start gap-2">
+                        <span className="text-[#8b7355]">∙</span>
+                        <span
+                          className={
+                            instruction.startsWith("UWAGA")
+                              ? "font-bold text-[#bfa07a]"
+                              : ""
+                          }
+                        >
+                          {instruction}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               </section>
 
@@ -787,7 +1420,7 @@ export default function LaserForm({ onBack }: LaserFormProps) {
             </div>
           )}
 
-          {/* KROK 2: RODO (same logic as PMU) */}
+          {/* KROK 2: RODO */}
           {currentStep === "RODO" && (
             <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
               <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg overflow-hidden">
@@ -848,7 +1481,7 @@ export default function LaserForm({ onBack }: LaserFormProps) {
           {/* KROK 3: ZABIEG */}
           {currentStep === "TREATMENT" && (
             <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-              {/* Ryzyko Laser */}
+              {/* Ryzyko Hyaluronic */}
               <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg">
                 <div className="p-6 md:p-8">
                   <h3 className="text-2xl font-serif text-[#4a4540] mb-6 border-b border-[#d4cec4] pb-2">
@@ -865,31 +1498,35 @@ export default function LaserForm({ onBack }: LaserFormProps) {
                         Możliwe naturalne reakcje:
                       </p>
                       <ul className="space-y-2 text-sm text-[#5a5550]">
-                        {laserNaturalReactions.map((reaction, index) => (
-                          <li key={index} className="flex items-start gap-2">
-                            <span className="text-[#8b7355]">•</span>
-                            {reaction}
-                          </li>
-                        ))}
+                        {wolumetriaTwarzyNaturalReactions.map(
+                          (reaction, index) => (
+                            <li key={index} className="flex items-start gap-2">
+                              <span className="text-[#8b7355]">•</span>
+                              {reaction}
+                            </li>
+                          ),
+                        )}
                       </ul>
                     </div>
 
                     <div className="bg-[#f8f6f3] p-5 rounded-xl border border-[#d4cec4]/50">
                       <p className="text-sm font-medium text-[#4a4540] mb-3">
-                        Możliwe powikłania (rzadkie i bardzo rzadkie):
+                        Możliwe powikłania:
                       </p>
                       <div className="space-y-3 text-sm text-[#5a5550]">
                         <p>
                           <span className="font-medium">Częste:</span>{" "}
-                          {laserComplications.czeste.join(", ")}
+                          {wolumetriaTwarzyComplications.czeste.join(", ")}
                         </p>
                         <p>
                           <span className="font-medium">Rzadkie:</span>{" "}
-                          {laserComplications.rzadkie.join(", ")}
+                          {wolumetriaTwarzyComplications.rzadkie.join(", ")}
                         </p>
                         <p>
                           <span className="font-medium">Bardzo rzadkie:</span>{" "}
-                          {laserComplications.bardzoRzadkie.join(", ")}
+                          {wolumetriaTwarzyComplications.bardzoRzadkie.join(
+                            ", ",
+                          )}
                         </p>
                       </div>
                     </div>
@@ -897,7 +1534,7 @@ export default function LaserForm({ onBack }: LaserFormProps) {
                 </div>
               </section>
 
-              {/* Zalecenia Laser */}
+              {/* Zalecenia Hyaluronic */}
               <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg">
                 <div className="p-6 md:p-8">
                   <h3 className="text-2xl font-serif text-[#4a4540] mb-6 border-b border-[#d4cec4] pb-2">
@@ -907,10 +1544,18 @@ export default function LaserForm({ onBack }: LaserFormProps) {
                     Zobowiązuję się do przestrzegania następujących zaleceń:
                   </p>
                   <ul className="space-y-2 text-[#5a5550] text-sm bg-white/50 p-4 rounded-xl border border-[#d4cec4]/30">
-                    {laserPostCare.map((instruction, index) => (
+                    {wolumetriaTwarzyPostCare.map((instruction, index) => (
                       <li key={index} className="flex items-start gap-2">
                         <span className="text-[#8b7355]">•</span>
-                        {instruction}
+                        <span
+                          className={
+                            instruction.startsWith("UWAGA")
+                              ? "font-bold text-[#bfa07a]"
+                              : ""
+                          }
+                        >
+                          {instruction}
+                        </span>
                       </li>
                     ))}
                   </ul>
@@ -950,6 +1595,7 @@ export default function LaserForm({ onBack }: LaserFormProps) {
                     </li>
                   </ol>
                 </div>
+
                 {/* Podpis pod Zabiegiem (Nowy, obowiązkowy) */}
                 <div className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8 mt-8">
                   <h3 className="text-xl font-serif text-[#4a4540] mb-4 border-b border-[#d4cec4] pb-2">
@@ -965,6 +1611,8 @@ export default function LaserForm({ onBack }: LaserFormProps) {
                     value={formData.podpisDane}
                     onChange={(sig) => {
                       handleInputChange("podpisDane", sig);
+                      // Możemy tu też ustawić flagę zgody, np. zgodaPomocPrawna (repurposed) lub po prostu polegać na podpisie
+                      // Dla spójności z backendem, ustawmy zgodaPomocPrawna na true
                       handleInputChange("zgodaPomocPrawna", !!sig);
                     }}
                     date={formData.miejscowoscData}
@@ -998,7 +1646,7 @@ export default function LaserForm({ onBack }: LaserFormProps) {
               <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
                 <h3 className="text-2xl font-serif text-[#4a4540] mb-6 flex items-center gap-3">
                   <span className="w-8 h-8 bg-[#8b7355] text-white rounded-full flex items-center justify-center text-sm font-sans">
-                    4
+                    7
                   </span>
                   Zgody Dodatkowe
                 </h3>
