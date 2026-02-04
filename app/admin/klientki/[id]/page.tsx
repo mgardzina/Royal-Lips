@@ -719,7 +719,7 @@ export default function ClientDetailsPage({
                 return timelineItems.map((item) => (
                   <div
                     key={`${item.type}-${item.id}`}
-                    className="bg-white rounded-xl p-4 border border-[#e5e0d8] shadow-sm hover:shadow-md transition-shadow"
+                    className="group bg-white rounded-xl p-4 border border-[#e5e0d8] shadow-sm hover:shadow-md transition-shadow"
                   >
                     <div className="flex items-start gap-3">
                       <span
@@ -801,7 +801,7 @@ export default function ClientDetailsPage({
                               </span>
 
                               {item.type === "visit" && (
-                                <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <div className="flex items-center gap-1">
                                   <button
                                     onClick={() =>
                                       startEditingHistory({
