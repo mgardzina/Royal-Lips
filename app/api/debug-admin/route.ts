@@ -9,7 +9,7 @@ export async function GET() {
   try {
     const count = await prisma.adminUser.count();
     let message = `Found ${count} admin users.`;
-    let users = [];
+    let users: string[] = [];
 
     if (count === 0) {
       console.log('No admin user found. Creating default admin...');
