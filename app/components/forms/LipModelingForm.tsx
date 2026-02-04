@@ -1,6 +1,15 @@
 import { useState, useEffect } from "react";
-import { Phone, Check, ArrowLeft, Instagram, Mail, Shield, CheckCircle2, X } from "lucide-react";
-import { isAdult } from "@/lib/dateUtils";
+import {
+  Phone,
+  Check,
+  ArrowLeft,
+  Instagram,
+  Mail,
+  Shield,
+  CheckCircle2,
+  X,
+} from "lucide-react";
+import { isAdult, getTodayDate } from "@/lib/dateUtils";
 import SignaturePad from "@/components/SignaturePad";
 import SignatureVerificationModal from "@/components/SignatureVerificationModal";
 import { AuditLogData } from "@/app/actions/otp";
@@ -14,6 +23,7 @@ import {
   modelowanieUstPostCare,
   rodoInfo,
 } from "../../../types/booking";
+import AnatomyFaceSelector from "../AnatomyFaceSelector";
 
 interface LipModelingFormProps {
   onBack: () => void;
@@ -24,10 +34,10 @@ const initialFormData: ConsentFormData = {
   imieNazwisko: "",
   ulica: "",
   kodPocztowy: "",
-  miasto: "",
+  miasto: "Krosno",
   dataUrodzenia: "",
   telefon: "",
-  miejscowoscData: "",
+  miejscowoscData: `Krosno, ${getTodayDate()}`,
   osobaPrzeprowadzajacaZabieg: "",
   nazwaProduktu: "",
   obszarZabiegu: "",
@@ -81,11 +91,12 @@ export default function LipModelingForm({ onBack }: LipModelingFormProps) {
   const contraindicationKeys = Object.keys(modelowanieUstContraindications);
   const currentContraindicationKey =
     contraindicationKeys[currentContraindicationIndex];
-  const currentContraindicationValue =
-    modelowanieUstContraindications[
-      currentContraindicationKey
-    ] as string | ContraindicationWithFollowUp;
-  const currentContraindicationObject: ContraindicationWithFollowUp | undefined =
+  const currentContraindicationValue = modelowanieUstContraindications[
+    currentContraindicationKey
+  ] as string | ContraindicationWithFollowUp;
+  const currentContraindicationObject:
+    | ContraindicationWithFollowUp
+    | undefined =
     typeof currentContraindicationValue === "string"
       ? undefined
       : currentContraindicationValue;
@@ -603,7 +614,9 @@ export default function LipModelingForm({ onBack }: LipModelingFormProps) {
                           },
                         ].map((product) => {
                           const currentName = formData.nazwaProduktu || "";
-                          const baseName = currentName.split(" (")[0].split(" - ")[0];
+                          const baseName = currentName
+                            .split(" (")[0]
+                            .split(" - ")[0];
                           const isSelected = baseName === product.name;
                           return (
                             <button
@@ -711,7 +724,8 @@ export default function LipModelingForm({ onBack }: LipModelingFormProps) {
                             <CheckCircle2 className="w-5 h-5 text-[#8b7355]" />
                           </div>
                           <p className="text-sm text-[#6b6560] leading-relaxed">
-                            Znieczulenie miejscowe jest zawsze stosowane podczas zabiegu.
+                            Znieczulenie miejscowe jest zawsze stosowane podczas
+                            zabiegu.
                           </p>
                         </button>
                       </div>
@@ -1072,13 +1086,11 @@ export default function LipModelingForm({ onBack }: LipModelingFormProps) {
                               placeholder={
                                 currentContraindicationObject.followUpPlaceholder
                               }
-                              value={
-                                String(
-                                  formData.przeciwwskazania[
-                                    `${currentContraindicationKey}_details`
-                                  ] ?? "",
-                                )
-                              }
+                              value={String(
+                                formData.przeciwwskazania[
+                                  `${currentContraindicationKey}_details`
+                                ] ?? "",
+                              )}
                               onChange={(e) => {
                                 setFormData((prev) => ({
                                   ...prev,
@@ -1215,7 +1227,8 @@ export default function LipModelingForm({ onBack }: LipModelingFormProps) {
                   {/* Częste skutki uboczne */}
                   <div className="bg-[#f8f6f3] p-5 rounded-xl border border-[#d4cec4]/50">
                     <p className="text-sm font-medium text-[#4a4540] mb-3">
-                      MOŻLIWE DO WYSTĄPIENIA SKUTKI UBOCZNE PO PRZEPROWADZONYM ZABIEGU - CZĘSTE
+                      MOŻLIWE DO WYSTĄPIENIA SKUTKI UBOCZNE PO PRZEPROWADZONYM
+                      ZABIEGU - CZĘSTE
                     </p>
                     <ul className="space-y-2 text-sm text-[#5a5550]">
                       {modelowanieUstNaturalReactions.map((reaction, index) => (
@@ -1233,27 +1246,32 @@ export default function LipModelingForm({ onBack }: LipModelingFormProps) {
                       MOŻLIWE POWIKŁANIA PO PRZEPROWADZONYM ZABIEGU – RZADKIE
                     </p>
                     <ul className="space-y-2 text-sm text-[#5a5550]">
-                      {modelowanieUstComplications.rzadkie.map((complication, index) => (
-                        <li key={index} className="flex items-start gap-2">
-                          <span className="text-[#8b7355]">∙</span>
-                          <span>{complication}</span>
-                        </li>
-                      ))}
+                      {modelowanieUstComplications.rzadkie.map(
+                        (complication, index) => (
+                          <li key={index} className="flex items-start gap-2">
+                            <span className="text-[#8b7355]">∙</span>
+                            <span>{complication}</span>
+                          </li>
+                        ),
+                      )}
                     </ul>
                   </div>
 
                   {/* Bardzo rzadkie powikłania */}
                   <div className="bg-[#f8f6f3] p-5 rounded-xl border border-[#d4cec4]/50">
                     <p className="text-sm font-medium text-[#4a4540] mb-3">
-                      MOŻLIWE POWIKŁANIA PO PRZEPROWADZONYM ZABIEGU – BARDZO RZADKIE
+                      MOŻLIWE POWIKŁANIA PO PRZEPROWADZONYM ZABIEGU – BARDZO
+                      RZADKIE
                     </p>
                     <ul className="space-y-2 text-sm text-[#5a5550]">
-                      {modelowanieUstComplications.bardzoRzadkie.map((complication, index) => (
-                        <li key={index} className="flex items-start gap-2">
-                          <span className="text-[#8b7355]">∙</span>
-                          <span>{complication}</span>
-                        </li>
-                      ))}
+                      {modelowanieUstComplications.bardzoRzadkie.map(
+                        (complication, index) => (
+                          <li key={index} className="flex items-start gap-2">
+                            <span className="text-[#8b7355]">∙</span>
+                            <span>{complication}</span>
+                          </li>
+                        ),
+                      )}
                     </ul>
                   </div>
                 </div>
@@ -1270,7 +1288,11 @@ export default function LipModelingForm({ onBack }: LipModelingFormProps) {
 
                 <div className="bg-[#f8f6f3] p-5 rounded-xl border border-[#d4cec4]/50 mb-6">
                   <p className="text-sm text-[#5a5550] leading-relaxed mb-4">
-                    <strong>Niniejszym oświadczam, że zostałam/em poinformowana/y o konieczności stosowania się po przeprowadzonym zabiegu do przestrzegania następujących zaleceń:</strong>
+                    <strong>
+                      Niniejszym oświadczam, że zostałam/em poinformowana/y o
+                      konieczności stosowania się po przeprowadzonym zabiegu do
+                      przestrzegania następujących zaleceń:
+                    </strong>
                   </p>
                   <ul className="space-y-2 text-sm text-[#5a5550]">
                     {modelowanieUstPostCare.map((instruction, index) => (

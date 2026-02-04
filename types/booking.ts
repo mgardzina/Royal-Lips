@@ -679,7 +679,7 @@ export const modelowanieUstPostCare = [
 ];
 
 // WOLUMETRIA_TWARZY - Wolumetria twarzy kwasem hialuronowym
-export const wolumetriaTwarzyContraindications: Record<string, string> = {
+export const wolumetriaTwarzyContraindications: Record<string, string | ContraindicationWithFollowUp> = {
   ciazaLaktacja: 'Jestem w ciąży lub w okresie laktacji',
   zapalenieZakazenieSkory: 'Mam zapalenie lub zakażenie skóry (trądzik, opryszczka, zapalenia skórne, alergiczne lub grzybicze zmiany, naczyniaki, liszaje, brodawczaki, przerwania ciągłości naskórka, poparzenia słoneczne)',
   chorobySerca: 'Choruję na choroby serca',

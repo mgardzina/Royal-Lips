@@ -14,13 +14,14 @@ import {
   Lock,
   X,
 } from "lucide-react";
-import { isAdult } from "@/lib/dateUtils";
+import { isAdult, getTodayDate } from "@/lib/dateUtils";
 import SignaturePad from "../../../components/SignaturePad";
 import SignatureVerificationModal from "@/components/SignatureVerificationModal";
 import { AuditLogData } from "@/app/actions/otp";
 import Footer from "@/app/components/Footer";
 import {
   ConsentFormData,
+  ContraindicationWithFollowUp,
   pmuContraindications,
   pmuNaturalReactions,
   pmuComplications,
@@ -37,10 +38,10 @@ const initialFormData: ConsentFormData = {
   imieNazwisko: "",
   ulica: "",
   kodPocztowy: "",
-  miasto: "",
+  miasto: "Krosno",
   dataUrodzenia: "",
   telefon: "",
-  miejscowoscData: "",
+  miejscowoscData: `Krosno, ${getTodayDate()}`,
   osobaPrzeprowadzajacaZabieg: "",
   nazwaProduktu: "Pigment",
   obszarZabiegu: "",
@@ -671,7 +672,17 @@ export default function PmuForm({ onBack }: PmuFormProps) {
                       </div>
 
                       <h4 className="text-xl md:text-2xl font-serif text-[#4a4540] mb-8 min-h-[5rem] flex items-center justify-center text-center">
-                        {pmuContraindications[currentContraindicationKey]}
+                        {typeof pmuContraindications[
+                          currentContraindicationKey
+                        ] === "string"
+                          ? (pmuContraindications[
+                              currentContraindicationKey
+                            ] as string)
+                          : (
+                              pmuContraindications[
+                                currentContraindicationKey
+                              ] as ContraindicationWithFollowUp
+                            ).text}
                       </h4>
 
                       <div className="grid grid-cols-2 gap-6 max-w-md mx-auto">
@@ -745,7 +756,10 @@ export default function PmuForm({ onBack }: PmuFormProps) {
                             </span>
                             <div className="flex-1">
                               <p className="text-[#5a5550] text-sm leading-relaxed">
-                                {label}
+                                {typeof label === "string"
+                                  ? label
+                                  : (label as ContraindicationWithFollowUp)
+                                      .text}
                               </p>
                             </div>
                             <div className="ml-2">
