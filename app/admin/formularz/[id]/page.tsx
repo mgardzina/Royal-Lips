@@ -613,7 +613,9 @@ export default function FormDetailsPage() {
                         )}
                       </>
                     )}
-                    <span className="text-sm text-[#5a5550]">{label}</span>
+                    <span className="text-sm text-[#5a5550]">
+                      {typeof label === "string" ? label : label.text}
+                    </span>
                   </div>
                 );
               })}

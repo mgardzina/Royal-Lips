@@ -11,6 +11,14 @@ enum FormType {
   HYALURONIC
   PMU
   LASER
+  // Nowe typy formularzy
+  MODELOWANIE_UST
+  WOLUMETRIA_TWARZY
+  MEZOTERAPIA_IGLOWA
+  LIPOLIZA_INIEKCYJNA
+  MAKIJAZ_PERMANENTNY
+  LASEROWE_USUWANIE
+  DEPILACJA_LASEROWA
 }
 
 // Klientka - identyfikowana po imieniu i nazwisku

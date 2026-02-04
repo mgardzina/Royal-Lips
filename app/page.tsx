@@ -5,6 +5,7 @@ import SelectionScreen from "./components/SelectionScreen";
 import HyaluronicForm from "./components/forms/HyaluronicForm";
 import PmuForm from "./components/forms/PmuForm";
 import LaserForm from "./components/forms/LaserForm";
+import LipModelingForm from "./components/forms/LipModelingForm";
 import { FormType } from "../types/booking";
 
 export default function HomePage() {
@@ -23,6 +24,8 @@ export default function HomePage() {
 
   // Renderowanie odpowiedniego formularza
   switch (selectedForm) {
+    case "MODELOWANIE_UST":
+      return <LipModelingForm onBack={() => setSelectedForm(null)} />;
     case "HYALURONIC":
       return <HyaluronicForm onBack={() => setSelectedForm(null)} />;
     case "PMU":

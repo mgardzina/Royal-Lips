@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 interface FaceSelectorProps {
   selectedZones: string[];
   onChange: (zones: string[]) => void;
+  allowedCategories?: string[]; // Optional: limit visible categories
 }
 
 // Kategorie stref zabiegowych
@@ -68,6 +69,7 @@ const ZONE_CATEGORIES = [
 export const FaceSelector: React.FC<FaceSelectorProps> = ({
   selectedZones,
   onChange,
+  allowedCategories,
 }) => {
   const toggleZone = (label: string) => {
     if (selectedZones.includes(label)) {
@@ -79,6 +81,10 @@ export const FaceSelector: React.FC<FaceSelectorProps> = ({
 
   const isSelected = (label: string) => selectedZones.includes(label);
 
+  const visibleCategories = allowedCategories
+    ? ZONE_CATEGORIES.filter((cat) => allowedCategories.includes(cat.category))
+    : ZONE_CATEGORIES;
+
   return (
     <div className="w-full">
       <p className="text-sm text-[#4a4540] mb-4 font-medium text-center">
@@ -86,7 +92,7 @@ export const FaceSelector: React.FC<FaceSelectorProps> = ({
       </p>
 
       <div className="space-y-4">
-        {ZONE_CATEGORIES.map((category) => (
+        {visibleCategories.map((category) => (
           <div key={category.category} className="bg-white/50 rounded-xl p-3">
             <p className="text-xs font-semibold mb-2 px-1 text-[#8b7355]">
               {category.category}
