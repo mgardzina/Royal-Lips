@@ -21,6 +21,17 @@ steps:
       - 'push'
       - 'gcr.io/$PROJECT_ID/royal-lips:latest'
 
+  # Fix permissions for Cloud SQL Proxy
+  - name: 'ubuntu'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - 'chmod 777 /cloudsql'
+    volumes:
+      - name: 'cloudsql'
+        path: '/cloudsql'
+    id: 'fix-permissions'
+
   # Update Database Schema using Cloud SQL Proxy
   - name: 'gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.8.0'
     args:
@@ -29,7 +40,7 @@ steps:
     volumes:
       - name: 'cloudsql'
         path: '/cloudsql'
-    waitFor: ['-']
+    waitFor: ['fix-permissions']
     id: 'cloud-sql-proxy'
 
   - name: 'node:20-alpine'
