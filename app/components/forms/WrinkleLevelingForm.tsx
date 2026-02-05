@@ -15,6 +15,7 @@ import SignatureVerificationModal from "@/components/SignatureVerificationModal"
 import { AuditLogData } from "@/app/actions/otp";
 import Footer from "@/app/components/Footer";
 import AnatomyFaceSelector from "../AnatomyFaceSelector";
+import SpecialistSignature from "./SpecialistSignature";
 import {
   ConsentFormData,
   ContraindicationWithFollowUp,
@@ -82,9 +83,9 @@ export default function FacialVolumetryForm({
     useState(true);
   const [isWizardComplete, setIsWizardComplete] = useState(false);
 
-  // Form Steps: DATA -> SMS -> RODO -> TREATMENT -> MARKETING
+  // Form Steps: DATA -> RODO -> RODO2 -> TREATMENT -> MARKETING
   const [currentStep, setCurrentStep] = useState<
-    "DATA" | "RODO" | "TREATMENT" | "MARKETING"
+    "DATA" | "RODO" | "RODO2" | "TREATMENT" | "MARKETING"
   >("DATA");
 
   // Digital Signature State
@@ -351,17 +352,9 @@ export default function FacialVolumetryForm({
       {/* Header */}
       <header className="bg-[#4a4540]/95 backdrop-blur-sm sticky top-0 z-50 shadow-lg">
         <div className="max-w-4xl mx-auto px-4 py-4 flex justify-between items-center">
-          <div className="flex items-center gap-4">
-            <button
-              onClick={onBack}
-              className="text-white/80 hover:text-white transition-colors"
-            >
-              <ArrowLeft className="w-6 h-6" />
-            </button>
-            <h1 className="text-xl md:text-2xl font-serif text-white tracking-wider">
-              ROYAL LIPS
-            </h1>
-          </div>
+          <h1 className="text-xl md:text-2xl font-serif text-white tracking-wider">
+            ROYAL LIPS
+          </h1>
           <div className="flex items-center gap-4">
             <a
               href="tel:+48792377737"
@@ -413,10 +406,18 @@ export default function FacialVolumetryForm({
               <span>→</span>
               <span
                 className={
+                  currentStep === "RODO2" ? "text-[#8b7355] font-bold" : ""
+                }
+              >
+                3. RODO 2
+              </span>
+              <span>→</span>
+              <span
+                className={
                   currentStep === "TREATMENT" ? "text-[#8b7355] font-bold" : ""
                 }
               >
-                3. Zabieg
+                4. Zabieg
               </span>
               <span>→</span>
               <span
@@ -424,7 +425,7 @@ export default function FacialVolumetryForm({
                   currentStep === "MARKETING" ? "text-[#8b7355] font-bold" : ""
                 }
               >
-                4. Zgody
+                5. Zgody
               </span>
             </div>
           </div>
@@ -1178,37 +1179,50 @@ export default function FacialVolumetryForm({
                         )}
 
                       <div className="grid grid-cols-2 gap-6 max-w-md mx-auto">
-                        {formData.przeciwwskazania[
-                          currentContraindicationKey
-                        ] !== true ||
-                        !currentContraindicationObject?.hasFollowUp ? (
-                          <>
-                            <button
-                              type="button"
-                              onClick={() => handleWizardAnswer(false)}
-                              className="py-4 px-6 rounded-xl bg-white border-2 border-[#d4cec4] text-[#6b6560] active:border-green-500 active:bg-green-500 active:text-white md:hover:border-green-500 md:hover:bg-green-500 md:hover:text-white transition-all text-lg font-medium shadow-sm hover:shadow-md active:scale-95 flex items-center justify-center"
-                            >
-                              NIE
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => handleWizardAnswer(true)}
-                              className="py-4 px-6 rounded-xl bg-white border-2 border-[#d4cec4] text-[#6b6560] active:border-red-500 active:bg-red-500 active:text-white md:hover:border-red-500 md:hover:bg-red-500 md:hover:text-white transition-all text-lg font-medium shadow-sm hover:shadow-md active:scale-95 flex items-center justify-center"
-                            >
-                              TAK
-                            </button>
-                          </>
-                        ) : (
-                          <button
-                            type="button"
-                            onClick={handleNextStep}
-                            className="col-span-2 py-4 px-6 rounded-xl bg-[#8b7355] text-white hover:bg-[#7a6548] transition-all text-lg font-medium shadow-md active:scale-95 flex items-center justify-center gap-2"
-                          >
-                            Zatwierdź i przejdź dalej
-                            <ArrowLeft className="w-5 h-5 rotate-180" />
-                          </button>
-                        )}
+                        <button
+                          type="button"
+                          onClick={() => handleWizardAnswer(false)}
+                          className={`py-4 px-6 rounded-xl border-2 transition-all text-lg font-medium shadow-sm hover:shadow-md active:scale-95 flex items-center justify-center ${
+                            currentContraindicationObject?.hasFollowUp &&
+                            formData.przeciwwskazania[
+                              currentContraindicationKey
+                            ] === false
+                              ? "border-green-500 bg-green-500 text-white"
+                              : "bg-white border-[#d4cec4] text-[#6b6560] active:border-green-500 active:bg-green-500 active:text-white md:hover:border-green-500 md:hover:bg-green-500 md:hover:text-white"
+                          }`}
+                        >
+                          NIE
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleWizardAnswer(true)}
+                          className={`py-4 px-6 rounded-xl border-2 transition-all text-lg font-medium shadow-sm hover:shadow-md active:scale-95 flex items-center justify-center ${
+                            currentContraindicationObject?.hasFollowUp &&
+                            formData.przeciwwskazania[
+                              currentContraindicationKey
+                            ] === true
+                              ? "border-red-500 bg-red-500 text-white"
+                              : "bg-white border-[#d4cec4] text-[#6b6560] active:border-red-500 active:bg-red-500 active:text-white md:hover:border-red-500 md:hover:bg-red-500 md:hover:text-white"
+                          }`}
+                        >
+                          TAK
+                        </button>
                       </div>
+
+                      {currentContraindicationObject?.hasFollowUp &&
+                        formData.przeciwwskazania[
+                          currentContraindicationKey
+                        ] !== null && (
+                          <div className="max-w-md mx-auto mt-4">
+                            <button
+                              type="button"
+                              onClick={handleNextStep}
+                              className="w-full py-4 px-6 rounded-xl bg-[#8b7355] text-white transition-all text-lg font-medium shadow-sm hover:shadow-md hover:bg-[#7a6548] active:scale-95 flex items-center justify-center"
+                            >
+                              Dalej →
+                            </button>
+                          </div>
+                        )}
 
                       <div className="mt-8 flex justify-between items-center border-t border-[#d4cec4]/50 pt-6">
                         <button
@@ -1427,15 +1441,14 @@ export default function FacialVolumetryForm({
               <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg overflow-hidden">
                 <div className="p-6 md:p-8">
                   <h3 className="text-2xl font-serif text-[#4a4540] mb-6">
-                    Klauzula Informacyjna RODO
+                    {rodoInfo.consentTitle}
                   </h3>
                   <div className="bg-[#f8f6f3] p-6 rounded-xl text-sm text-[#5a5550] leading-relaxed whitespace-pre-line max-h-[60vh] overflow-y-auto mb-6 border border-[#e5e0d8]">
-                    {rodoInfo.pelnyTekst}
+                    {rodoInfo.consentText}
                   </div>
-                  {/* Signature Area for RODO - Expanded and simplified */}
                   <div className="mt-8">
                     <p className="text-sm text-[#6b6560] mb-4 font-medium uppercase tracking-wide">
-                      Podpis Klienta:
+                      Podpis Klienta (Zgoda na przetwarzanie danych):
                     </p>
                     <div className="bg-white rounded-xl overflow-hidden min-h-[200px]">
                       <SignaturePad
@@ -1443,7 +1456,6 @@ export default function FacialVolumetryForm({
                         value={formData.podpisRodo || ""}
                         onChange={(sig) => {
                           handleInputChange("podpisRodo", sig);
-                          // Auto-approve RODO consent when signed
                           if (sig && !formData.zgodaPrzetwarzanieDanych) {
                             handleInputChange("zgodaPrzetwarzanieDanych", true);
                           }
@@ -1451,10 +1463,6 @@ export default function FacialVolumetryForm({
                         date={formData.miejscowoscData}
                       />
                     </div>
-                    <p className="text-xs text-[#8b8580] mt-3 italic">
-                      Złożenie podpisu jest równoznaczne z akceptacją powyższej
-                      klauzuli informacyjnej RODO.
-                    </p>
                   </div>
                 </div>
               </section>
@@ -1469,7 +1477,7 @@ export default function FacialVolumetryForm({
                 </button>
                 <button
                   type="button"
-                  onClick={() => setCurrentStep("TREATMENT")}
+                  onClick={() => setCurrentStep("RODO2")}
                   disabled={!formData.podpisRodo}
                   className="bg-[#8b7355] text-white py-3 px-8 rounded-xl text-lg font-medium shadow-lg hover:bg-[#7a6548] disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                 >
@@ -1479,7 +1487,60 @@ export default function FacialVolumetryForm({
             </div>
           )}
 
-          {/* KROK 3: ZABIEG */}
+          {/* KROK 3: RODO 2 */}
+          {currentStep === "RODO2" && (
+            <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+              <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg overflow-hidden">
+                <div className="p-6 md:p-8">
+                  <h3 className="text-2xl font-serif text-[#4a4540] mb-6">
+                    {rodoInfo.clauseTitle}
+                  </h3>
+                  <div className="bg-[#f8f6f3] p-6 rounded-xl text-sm text-[#5a5550] leading-relaxed whitespace-pre-line max-h-[60vh] overflow-y-auto mb-6 border border-[#e5e0d8]">
+                    {rodoInfo.clauseText}
+                  </div>
+                  <div className="mt-8">
+                    <p className="text-sm text-[#6b6560] mb-4 font-medium uppercase tracking-wide">
+                      Podpis Klienta (Klauzula informacyjna):
+                    </p>
+                    <div className="bg-white rounded-xl overflow-hidden min-h-[200px]">
+                      <SignaturePad
+                        label=""
+                        value={formData.podpisRodo2 || ""}
+                        onChange={(sig) => {
+                          handleInputChange("podpisRodo2", sig);
+                        }}
+                        date={formData.miejscowoscData}
+                      />
+                    </div>
+                    <p className="text-xs text-[#8b8580] mt-3 italic">
+                      Złożenie podpisu jest równoznaczne z zapoznaniem się z
+                      powyższą klauzulą informacyjną RODO.
+                    </p>
+                  </div>
+                </div>
+              </section>
+
+              <div className="flex justify-between pt-4 pb-12">
+                <button
+                  type="button"
+                  onClick={() => setCurrentStep("RODO")}
+                  className="text-[#6b5540] hover:text-[#4a3a2a] px-6 py-3 font-medium transition-colors"
+                >
+                  ← Wróć do RODO
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setCurrentStep("TREATMENT")}
+                  disabled={!formData.podpisRodo2}
+                  className="bg-[#8b7355] text-white py-3 px-8 rounded-xl text-lg font-medium shadow-lg hover:bg-[#7a6548] disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                >
+                  Dalej →
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* KROK 4: ZABIEG */}
           {currentStep === "TREATMENT" && (
             <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
               {/* Ryzyko Hyaluronic */}
@@ -1569,32 +1630,95 @@ export default function FacialVolumetryForm({
                   Oświadczenia
                 </h3>
                 <div className="bg-[#f8f6f3] p-5 rounded-xl mb-6 border border-[#d4cec4]/50">
-                  <p className="text-sm text-[#5a5550] leading-relaxed">
-                    <strong>Oświadczam, że:</strong>
+                  <h4 className="font-serif text-[#4a4540] text-lg mb-4">
+                    OŚWIADCZENIE I ŚWIADOMA ZGODA NA ZABIEG REDUKCJI ZMARSZCZEK
+                    (WYPEŁNIANIE / BIOSTYMULACJA)
+                  </h4>
+                  <p className="text-sm text-[#5a5550] mb-4">
+                    Ja, niżej podpisana/y, po przeprowadzeniu szczegółowego
+                    wywiadu i konsultacji ze Specjalistą, oświadczam, że:
                   </p>
-                  <ol className="list-decimal ml-5 mt-2 text-sm text-[#5a5550] space-y-2">
-                    <li>
-                      Jestem świadoma/y przebiegu zabiegu, jego celu, oraz
-                      okoliczności jego przeprowadzenia i zasad obowiązujących
-                      po wykonaniu zabiegu, oraz że świadomie i dobrowolnie
-                      poddaję się zabiegowi.
-                    </li>
-                    <li>
-                      Osoba przeprowadzająca zabieg poinformowała mnie o
-                      powyższych okolicznościach, oraz udzieliła mi niezbędnych
-                      odpowiedzi oraz wszelkich informacji co do zachowania po
-                      zabiegu, oraz w zakresie zadawanych przez mnie pytań, i
-                      nie wnoszę do tej informacji zastrzeżeń, oraz że są one
-                      dla mnie w pełni zrozumiałe.
-                    </li>
-                    <li>
-                      Podane przeze mnie w niniejszym oświadczeniu odpowiedzi, w
-                      szczególności co do stanu zdrowia, oraz braku ewentualnych
-                      przeciwwskazań są zgodne z prawdą, i opierają się na mojej
-                      wiedzy co do stanu mojego zdrowia, bez zatajania
-                      czegokolwiek.
-                    </li>
-                  </ol>
+
+                  <div className="space-y-4 text-sm text-[#5a5550] leading-relaxed">
+                    <p>
+                      <strong>Stan zdrowia i świadomość:</strong> Udzieliłam/em
+                      pełnych i prawdziwych odpowiedzi na pytania zawarte w
+                      ankiecie zdrowotnej. Oświadczam, że nie zataiłam/em
+                      żadnych chorób, alergii ani przyjmowanych leków, które
+                      mogłyby stanowić przeciwwskazanie do zabiegu. W chwili
+                      podpisywania niniejszego dokumentu nie jestem pod wpływem
+                      alkoholu, narkotyków ani innych środków odurzających.
+                      Decyzję o poddaniu się zabiegowi redukcji zmarszczek
+                      podejmuję w pełni świadomie, dobrowolnie i w sposób
+                      przemyślany, nie będąc pod presją osób trzecich.
+                    </p>
+                    <p>
+                      <strong>Informacja o zabiegu i higiena:</strong>{" "}
+                      Otrzymałam/em wyczerpujące informacje na temat zabiegu,
+                      techniki podania preparatu, wskazań oraz przebiegu
+                      procedury. Miałam/em możliwość zadawania pytań i
+                      uzyskałam/em na nie zrozumiałe odpowiedzi. Potwierdzam, że
+                      materiały (w tym ampułkostrzykawka z preparatem) użyte do
+                      zabiegu są sterylne, jednorazowe i zostały otwarte w mojej
+                      obecności. W Salonie zachowane są najwyższe normy
+                      higieniczne.
+                    </p>
+                    <p>
+                      <strong>Ryzyko i powikłania:</strong> Zostałam/em
+                      poinformowana/y o możliwych skutkach ubocznych, takich
+                      jak: opuchlizna, zaczerwienienie, zasinienia (krwiaki),
+                      drobne grudki, tkliwość w miejscu podania, które są
+                      naturalną reakcją organizmu i mogą utrzymywać się przez
+                      kilka dni. Mam świadomość ryzyka wystąpienia reakcji
+                      alergicznej na składniki preparatu lub środek
+                      znieczulający. Akceptuję to ryzyko. Oświadczam, że
+                      rozumiejąc ryzyko powikłań, nie będę wnosić roszczeń
+                      odszkodowawczych w przypadku wystąpienia typowych
+                      następstw zabiegu, o których zostałam/em uprzedzona/y
+                      przed jego rozpoczęciem.
+                    </p>
+                    <p>
+                      <strong>Efekty, trwałość i brak gwarancji:</strong>{" "}
+                      Zostałam/em poinformowana/y, że efekt końcowy zależy od
+                      indywidualnych cech organizmu (głębokości zmarszczek,
+                      kondycji skóry, wieku, trybu życia) oraz ilości użytego
+                      preparatu. Przyjmuję do wiadomości, że efekty zabiegu
+                      utrzymują się zazwyczaj od 6 do 12 miesięcy (w zależności
+                      od rodzaju preparatu i metabolizmu pacjenta), a zabieg
+                      należy powtarzać dla podtrzymania rezultatu. Rozumiem, że
+                      całkowite wygładzenie głębokich bruzd może wymagać więcej
+                      niż jednego zabiegu. Nie udziela się gwarancji na 100%
+                      usunięcie zmarszczki ani na identyczny efekt jak u innych
+                      osób. Rozbieżność między moimi oczekiwaniami a realnym
+                      rezultatem określonym przez Specjalistę nie stanowi
+                      podstawy do reklamacji.
+                    </p>
+                    <p>
+                      <strong>Zalecenia pozabiegowe:</strong> Zobowiązuję się do
+                      ścisłego przestrzegania zaleceń pozabiegowych (m.in.
+                      unikanie sauny, solarium, makijażu w miejscu podania,
+                      masowania miejsca zabiegowego - chyba że zalecono
+                      inaczej). Mam świadomość, że nieprzestrzeganie zaleceń
+                      może prowadzić do powikłań, takich jak infekcje, stany
+                      zapalne, przemieszczenie się preparatu lub powstanie
+                      nierówności, za co Specjalista nie ponosi
+                      odpowiedzialności.
+                    </p>
+                    <p>
+                      <strong>Kwalifikacje wykonującego:</strong> Oświadczam, że
+                      mam pełną świadomość, iż Specjalista wykonujący zabieg nie
+                      jest lekarzem medycyny estetycznej, ale posiada
+                      odpowiednie przeszkolenie i bogate doświadczenie w
+                      zakresie wykonywanych zabiegów. Akceptuję ten fakt i w
+                      przypadku wykonania zabiegu zgodnie z zasadami sztuki, a
+                      nieuzyskania spodziewanego przeze mnie efektu, nie będę
+                      wnosić roszczeń do osoby wykonującej zabieg.
+                    </p>
+                    <p className="mt-4 font-medium text-[#8b7355]">
+                      * W przypadku osoby niepełnoletniej wymagany jest podpis
+                      rodzica lub opiekuna prawnego.
+                    </p>
+                  </div>
                 </div>
 
                 {/* Podpis pod Zabiegiem (Nowy, obowiązkowy) */}
@@ -1619,6 +1743,7 @@ export default function FacialVolumetryForm({
                     date={formData.miejscowoscData}
                   />
                 </div>
+                <SpecialistSignature date={formData.miejscowoscData} />
               </section>
 
               <div className="flex justify-between pt-4 pb-12">

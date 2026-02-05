@@ -17,12 +17,13 @@ import Footer from "@/app/components/Footer";
 import {
   ConsentFormData,
   ContraindicationWithFollowUp,
-  modelowanieUstContraindications,
   modelowanieUstNaturalReactions,
   modelowanieUstComplications,
   modelowanieUstPostCare,
   rodoInfo,
 } from "../../../types/booking";
+import { modelowanieUstContraindications } from "../../../types/booking";
+import SpecialistSignature from "./SpecialistSignature";
 import AnatomyFaceSelector from "../AnatomyFaceSelector";
 
 interface LipModelingFormProps {
@@ -79,9 +80,9 @@ export default function LipModelingForm({ onBack }: LipModelingFormProps) {
   const [showContraindicationsWizard, setShowContraindicationsWizard] =
     useState(true);
 
-  // Form Steps: DATA -> SMS -> RODO -> TREATMENT -> MARKETING
+  // Form Steps: DATA -> RODO -> RODO2 -> TREATMENT -> MARKETING
   const [currentStep, setCurrentStep] = useState<
-    "DATA" | "RODO" | "TREATMENT" | "MARKETING"
+    "DATA" | "RODO" | "RODO2" | "TREATMENT" | "MARKETING"
   >("DATA");
 
   // Digital Signature State
@@ -111,6 +112,20 @@ export default function LipModelingForm({ onBack }: LipModelingFormProps) {
 
   const handleWizardAnswer = (value: boolean) => {
     handleContraindicationChange(currentContraindicationKey, value);
+    // For follow-up questions, don't auto-advance — user must click "Dalej"
+    const currentValue =
+      modelowanieUstContraindications[currentContraindicationKey];
+    const hasFollowUp =
+      typeof currentValue === "object" && currentValue.hasFollowUp;
+    if (hasFollowUp) {
+      return;
+    }
+    if (currentContraindicationIndex < contraindicationKeys.length) {
+      setCurrentContraindicationIndex((prev) => prev + 1);
+    }
+  };
+
+  const handleWizardNext = () => {
     if (currentContraindicationIndex < contraindicationKeys.length) {
       setCurrentContraindicationIndex((prev) => prev + 1);
     }
@@ -291,17 +306,9 @@ export default function LipModelingForm({ onBack }: LipModelingFormProps) {
       {/* Header */}
       <header className="bg-[#4a4540]/95 backdrop-blur-sm sticky top-0 z-50 shadow-lg">
         <div className="max-w-4xl mx-auto px-4 py-4 flex justify-between items-center">
-          <div className="flex items-center gap-4">
-            <button
-              onClick={onBack}
-              className="text-white/80 hover:text-white transition-colors"
-            >
-              <ArrowLeft className="w-6 h-6" />
-            </button>
-            <h1 className="text-xl md:text-2xl font-serif text-white tracking-wider">
-              ROYAL LIPS
-            </h1>
-          </div>
+          <h1 className="text-xl md:text-2xl font-serif text-white tracking-wider">
+            ROYAL LIPS
+          </h1>
           <div className="flex items-center gap-4">
             <a
               href="tel:+48792377737"
@@ -353,10 +360,18 @@ export default function LipModelingForm({ onBack }: LipModelingFormProps) {
               <span>→</span>
               <span
                 className={
+                  currentStep === "RODO2" ? "text-[#8b7355] font-bold" : ""
+                }
+              >
+                3. RODO 2
+              </span>
+              <span>→</span>
+              <span
+                className={
                   currentStep === "TREATMENT" ? "text-[#8b7355] font-bold" : ""
                 }
               >
-                3. Zabieg
+                4. Zabieg
               </span>
               <span>→</span>
               <span
@@ -364,7 +379,7 @@ export default function LipModelingForm({ onBack }: LipModelingFormProps) {
                   currentStep === "MARKETING" ? "text-[#8b7355] font-bold" : ""
                 }
               >
-                4. Zgody
+                5. Zgody
               </span>
             </div>
           </div>
@@ -1102,18 +1117,47 @@ export default function LipModelingForm({ onBack }: LipModelingFormProps) {
                         <button
                           type="button"
                           onClick={() => handleWizardAnswer(false)}
-                          className="py-4 px-6 rounded-xl bg-white border-2 border-[#d4cec4] text-[#6b6560] active:border-green-500 active:bg-green-500 active:text-white md:hover:border-green-500 md:hover:bg-green-500 md:hover:text-white transition-all text-lg font-medium shadow-sm hover:shadow-md active:scale-95 flex items-center justify-center"
+                          className={`py-4 px-6 rounded-xl border-2 transition-all text-lg font-medium shadow-sm hover:shadow-md active:scale-95 flex items-center justify-center ${
+                            currentContraindicationObject?.hasFollowUp &&
+                            formData.przeciwwskazania[
+                              currentContraindicationKey
+                            ] === false
+                              ? "border-green-500 bg-green-500 text-white"
+                              : "bg-white border-[#d4cec4] text-[#6b6560] active:border-green-500 active:bg-green-500 active:text-white md:hover:border-green-500 md:hover:bg-green-500 md:hover:text-white"
+                          }`}
                         >
                           NIE
                         </button>
                         <button
                           type="button"
                           onClick={() => handleWizardAnswer(true)}
-                          className="py-4 px-6 rounded-xl bg-white border-2 border-[#d4cec4] text-[#6b6560] active:border-red-500 active:bg-red-500 active:text-white md:hover:border-red-500 md:hover:bg-red-500 md:hover:text-white transition-all text-lg font-medium shadow-sm hover:shadow-md active:scale-95 flex items-center justify-center"
+                          className={`py-4 px-6 rounded-xl border-2 transition-all text-lg font-medium shadow-sm hover:shadow-md active:scale-95 flex items-center justify-center ${
+                            currentContraindicationObject?.hasFollowUp &&
+                            formData.przeciwwskazania[
+                              currentContraindicationKey
+                            ] === true
+                              ? "border-red-500 bg-red-500 text-white"
+                              : "bg-white border-[#d4cec4] text-[#6b6560] active:border-red-500 active:bg-red-500 active:text-white md:hover:border-red-500 md:hover:bg-red-500 md:hover:text-white"
+                          }`}
                         >
                           TAK
                         </button>
                       </div>
+
+                      {currentContraindicationObject?.hasFollowUp &&
+                        formData.przeciwwskazania[
+                          currentContraindicationKey
+                        ] !== null && (
+                          <div className="max-w-md mx-auto mt-4">
+                            <button
+                              type="button"
+                              onClick={handleWizardNext}
+                              className="w-full py-4 px-6 rounded-xl bg-[#8b7355] text-white transition-all text-lg font-medium shadow-sm hover:shadow-md hover:bg-[#7a6548] active:scale-95 flex items-center justify-center"
+                            >
+                              Dalej →
+                            </button>
+                          </div>
+                        )}
 
                       <div className="mt-8 flex justify-between items-center border-t border-[#d4cec4]/50 pt-6">
                         <button
@@ -1326,15 +1370,15 @@ export default function LipModelingForm({ onBack }: LipModelingFormProps) {
               <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg overflow-hidden">
                 <div className="p-6 md:p-8">
                   <h3 className="text-2xl font-serif text-[#4a4540] mb-6">
-                    Klauzula Informacyjna RODO
+                    {rodoInfo.consentTitle}
                   </h3>
                   <div className="bg-[#f8f6f3] p-6 rounded-xl text-sm text-[#5a5550] leading-relaxed whitespace-pre-line max-h-[60vh] overflow-y-auto mb-6 border border-[#e5e0d8]">
-                    {rodoInfo.pelnyTekst}
+                    {rodoInfo.consentText}
                   </div>
-                  {/* Signature Area for RODO - Expanded and simplified */}
+                  {/* Signature Area for RODO */}
                   <div className="mt-8">
                     <p className="text-sm text-[#6b6560] mb-4 font-medium uppercase tracking-wide">
-                      Podpis Klienta:
+                      Podpis Klienta (Zgoda na przetwarzanie danych):
                     </p>
                     <div className="bg-white rounded-xl overflow-hidden min-h-[200px]">
                       <SignaturePad
@@ -1350,10 +1394,6 @@ export default function LipModelingForm({ onBack }: LipModelingFormProps) {
                         date={formData.miejscowoscData}
                       />
                     </div>
-                    <p className="text-xs text-[#8b8580] mt-3 italic">
-                      Złożenie podpisu jest równoznaczne z akceptacją powyższej
-                      klauzuli informacyjnej RODO.
-                    </p>
                   </div>
                 </div>
               </section>
@@ -1368,7 +1408,7 @@ export default function LipModelingForm({ onBack }: LipModelingFormProps) {
                 </button>
                 <button
                   type="button"
-                  onClick={() => setCurrentStep("TREATMENT")}
+                  onClick={() => setCurrentStep("RODO2")}
                   disabled={!formData.podpisRodo}
                   className="bg-[#8b7355] text-white py-3 px-8 rounded-xl text-lg font-medium shadow-lg hover:bg-[#7a6548] disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                 >
@@ -1378,7 +1418,61 @@ export default function LipModelingForm({ onBack }: LipModelingFormProps) {
             </div>
           )}
 
-          {/* KROK 3: ZABIEG */}
+          {/* KROK 3: RODO 2 */}
+          {currentStep === "RODO2" && (
+            <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+              <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg overflow-hidden">
+                <div className="p-6 md:p-8">
+                  <h3 className="text-2xl font-serif text-[#4a4540] mb-6">
+                    {rodoInfo.clauseTitle}
+                  </h3>
+                  <div className="bg-[#f8f6f3] p-6 rounded-xl text-sm text-[#5a5550] leading-relaxed whitespace-pre-line max-h-[60vh] overflow-y-auto mb-6 border border-[#e5e0d8]">
+                    {rodoInfo.clauseText}
+                  </div>
+                  {/* Signature Area for RODO 2 */}
+                  <div className="mt-8">
+                    <p className="text-sm text-[#6b6560] mb-4 font-medium uppercase tracking-wide">
+                      Podpis Klienta (Klauzula informacyjna):
+                    </p>
+                    <div className="bg-white rounded-xl overflow-hidden min-h-[200px]">
+                      <SignaturePad
+                        label=""
+                        value={formData.podpisRodo2 || ""}
+                        onChange={(sig) => {
+                          handleInputChange("podpisRodo2", sig);
+                        }}
+                        date={formData.miejscowoscData}
+                      />
+                    </div>
+                    <p className="text-xs text-[#8b8580] mt-3 italic">
+                      Złożenie podpisu jest równoznaczne z zapoznaniem się z
+                      powyższą klauzulą informacyjną RODO.
+                    </p>
+                  </div>
+                </div>
+              </section>
+
+              <div className="flex justify-between pt-4 pb-12">
+                <button
+                  type="button"
+                  onClick={() => setCurrentStep("RODO")}
+                  className="text-[#6b5540] hover:text-[#4a3a2a] px-6 py-3 font-medium transition-colors"
+                >
+                  ← Wróć do RODO
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setCurrentStep("TREATMENT")}
+                  disabled={!formData.podpisRodo2}
+                  className="bg-[#8b7355] text-white py-3 px-8 rounded-xl text-lg font-medium shadow-lg hover:bg-[#7a6548] disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                >
+                  Dalej →
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* KROK 4: ZABIEG */}
           {currentStep === "TREATMENT" && (
             <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
               {/* Ryzyko Hyaluronic */}
@@ -1466,32 +1560,88 @@ export default function LipModelingForm({ onBack }: LipModelingFormProps) {
                   Oświadczenia
                 </h3>
                 <div className="bg-[#f8f6f3] p-5 rounded-xl mb-6 border border-[#d4cec4]/50">
-                  <p className="text-sm text-[#5a5550] leading-relaxed">
-                    <strong>Oświadczam, że:</strong>
+                  <h4 className="font-serif text-[#4a4540] text-lg mb-4">
+                    OŚWIADCZENIE I ŚWIADOMA ZGODA NA ZABIEG MODELOWANIA /
+                    POWIĘKSZANIA UST
+                  </h4>
+                  <p className="text-sm text-[#5a5550] mb-4">
+                    Ja, niżej podpisana/y, po przeprowadzeniu szczegółowego
+                    wywiadu i konsultacji ze Specjalistą, oświadczam, że:
                   </p>
-                  <ol className="list-decimal ml-5 mt-2 text-sm text-[#5a5550] space-y-2">
-                    <li>
-                      Jestem świadoma/y przebiegu zabiegu, jego celu, oraz
-                      okoliczności jego przeprowadzenia i zasad obowiązujących
-                      po wykonaniu zabiegu, oraz że świadomie i dobrowolnie
-                      poddaję się zabiegowi.
-                    </li>
-                    <li>
-                      Osoba przeprowadzająca zabieg poinformowała mnie o
-                      powyższych okolicznościach, oraz udzieliła mi niezbędnych
-                      odpowiedzi oraz wszelkich informacji co do zachowania po
-                      zabiegu, oraz w zakresie zadawanych przez mnie pytań, i
-                      nie wnoszę do tej informacji zastrzeżeń, oraz że są one
-                      dla mnie w pełni zrozumiałe.
-                    </li>
-                    <li>
-                      Podane przeze mnie w niniejszym oświadczeniu odpowiedzi, w
-                      szczególności co do stanu zdrowia, oraz braku ewentualnych
-                      przeciwwskazań są zgodne z prawdą, i opierają się na mojej
-                      wiedzy co do stanu mojego zdrowia, bez zatajania
-                      czegokolwiek.
-                    </li>
-                  </ol>
+
+                  <div className="space-y-4 text-sm text-[#5a5550] leading-relaxed">
+                    <p>
+                      <strong>Stan zdrowia i świadomość:</strong> Udzieliłam/em
+                      pełnych i prawdziwych odpowiedzi na pytania dotyczące
+                      mojego stanu zdrowia. Oświadczam, że nie występują u mnie
+                      żadne przeciwwskazania medyczne, fizyczne lub psychiczne,
+                      które mogłyby wpłynąć na moją decyzję. W chwili
+                      podpisywania niniejszego dokumentu nie jestem pod wpływem
+                      alkoholu, narkotyków ani innych środków odurzających.
+                      Decyzję o poddaniu się zabiegowi podejmuję w pełni
+                      świadomie, dobrowolnie i w sposób przemyślany.
+                    </p>
+                    <p>
+                      <strong>Informacja o zabiegu i higiena:</strong>{" "}
+                      Otrzymałam/em wyczerpujące informacje na temat zabiegu,
+                      techniki jego wykonania, wskazań oraz przebiegu. Miałam/em
+                      możliwość zadawania pytań i uzyskałam/em na nie zrozumiałe
+                      odpowiedzi. Potwierdzam, że materiały (w tym
+                      ampułkostrzykawka z preparatem) użyte do zabiegu są
+                      sterylne, jednorazowe i zostały otwarte w mojej obecności.
+                    </p>
+                    <p>
+                      <strong>Ryzyko i powikłania:</strong> Zostałam/em
+                      poinformowana/y o możliwych skutkach ubocznych, takich
+                      jak: opuchlizna, zaczerwienienie, zasinienia (krwiaki),
+                      tkliwość, które mogą utrzymywać się przez kilka dni. Mam
+                      świadomość ryzyka wystąpienia reakcji alergicznej na
+                      środek znieczulający lub wstrzyknięty preparat. Akceptuję
+                      to ryzyko i nie będę wnosić roszczeń z tytułu
+                      indywidualnej reakcji mojego organizmu. Oświadczam, że
+                      rozumiejąc ryzyko powikłań, nie będę wnosić roszczeń
+                      odszkodowawczych w przypadku wystąpienia typowych
+                      następstw zabiegu lub powikłań, o których zostałam/em
+                      uprzedzona/y.
+                    </p>
+                    <p>
+                      <strong>Efekty i brak gwarancji:</strong> Zostałam/em
+                      poinformowana/y, że efekt końcowy zależy od indywidualnych
+                      cech organizmu (biochemii, rodzaju skóry, plastyczności
+                      tkanek, kształtu anatomicznego) oraz ilości użytego
+                      preparatu (np. różnica przy użyciu 1 ml jest zależna od
+                      wielkości obszaru zabiegowego). Przyjmuję do wiadomości,
+                      że efekty zabiegu utrzymują się zazwyczaj od 1 miesiąca do
+                      1 roku, co jest kwestią indywidualną. Rozumiem, że
+                      medycyna estetyczna i kosmetologia nie są naukami
+                      ścisłymi, w związku z czym nie udziela się gwarancji na
+                      uzyskanie identycznego efektu jak u innych osób, ani na
+                      100% zadowolenie z rezultatu estetycznego. Rozbieżność
+                      między moimi oczekiwaniami a realnym rezultatem
+                      (określonym przez Specjalistę) nie stanowi podstawy do
+                      roszczeń.
+                    </p>
+                    <p>
+                      <strong>Zalecenia pozabiegowe:</strong> Zobowiązuję się do
+                      ścisłego przestrzegania zaleceń pozabiegowych, które
+                      zostały mi przekazane i wyjaśnione. Mam świadomość, że
+                      nieprzestrzeganie zaleceń (np. higieny, unikania pewnych
+                      czynników) może prowadzić do poważnych powikłań, takich
+                      jak zakażenia, przemieszczenie preparatu czy powstanie
+                      blizn, za co Specjalista nie ponosi odpowiedzialności.
+                    </p>
+                    <p>
+                      <strong>Kwalifikacje wykonującego:</strong> Oświadczam, że
+                      mam pełną świadomość, iż Specjalista wykonujący zabieg nie
+                      jest lekarzem medycyny, ale posiada odpowiednie
+                      przeszkolenie i doświadczenie w zakresie wykonywanych
+                      zabiegów estetycznych. Akceptuję ten fakt.
+                    </p>
+                    <p className="mt-4 font-medium text-[#8b7355]">
+                      * W przypadku osoby niepełnoletniej wymagany jest podpis
+                      rodzica lub opiekuna prawnego.
+                    </p>
+                  </div>
                 </div>
 
                 {/* Podpis pod Zabiegiem (Nowy, obowiązkowy) */}
@@ -1516,6 +1666,7 @@ export default function LipModelingForm({ onBack }: LipModelingFormProps) {
                     date={formData.miejscowoscData}
                   />
                 </div>
+                <SpecialistSignature date={formData.miejscowoscData} />
               </section>
 
               <div className="flex justify-between pt-4 pb-12">

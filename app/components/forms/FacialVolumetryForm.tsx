@@ -15,6 +15,7 @@ import SignatureVerificationModal from "@/components/SignatureVerificationModal"
 import { AuditLogData } from "@/app/actions/otp";
 import Footer from "@/app/components/Footer";
 import AnatomyFaceSelector from "../AnatomyFaceSelector";
+import SpecialistSignature from "./SpecialistSignature";
 import {
   ConsentFormData,
   ContraindicationWithFollowUp,
@@ -1178,37 +1179,50 @@ export default function FacialVolumetryForm({
                         )}
 
                       <div className="grid grid-cols-2 gap-6 max-w-md mx-auto">
-                        {formData.przeciwwskazania[
-                          currentContraindicationKey
-                        ] !== true ||
-                        !currentContraindicationObject?.hasFollowUp ? (
-                          <>
-                            <button
-                              type="button"
-                              onClick={() => handleWizardAnswer(false)}
-                              className="py-4 px-6 rounded-xl bg-white border-2 border-[#d4cec4] text-[#6b6560] active:border-green-500 active:bg-green-500 active:text-white md:hover:border-green-500 md:hover:bg-green-500 md:hover:text-white transition-all text-lg font-medium shadow-sm hover:shadow-md active:scale-95 flex items-center justify-center"
-                            >
-                              NIE
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => handleWizardAnswer(true)}
-                              className="py-4 px-6 rounded-xl bg-white border-2 border-[#d4cec4] text-[#6b6560] active:border-red-500 active:bg-red-500 active:text-white md:hover:border-red-500 md:hover:bg-red-500 md:hover:text-white transition-all text-lg font-medium shadow-sm hover:shadow-md active:scale-95 flex items-center justify-center"
-                            >
-                              TAK
-                            </button>
-                          </>
-                        ) : (
-                          <button
-                            type="button"
-                            onClick={handleNextStep}
-                            className="col-span-2 py-4 px-6 rounded-xl bg-[#8b7355] text-white hover:bg-[#7a6548] transition-all text-lg font-medium shadow-md active:scale-95 flex items-center justify-center gap-2"
-                          >
-                            Zatwierdź i przejdź dalej
-                            <ArrowLeft className="w-5 h-5 rotate-180" />
-                          </button>
-                        )}
+                        <button
+                          type="button"
+                          onClick={() => handleWizardAnswer(false)}
+                          className={`py-4 px-6 rounded-xl border-2 transition-all text-lg font-medium shadow-sm hover:shadow-md active:scale-95 flex items-center justify-center ${
+                            currentContraindicationObject?.hasFollowUp &&
+                            formData.przeciwwskazania[
+                              currentContraindicationKey
+                            ] === false
+                              ? "border-green-500 bg-green-500 text-white"
+                              : "bg-white border-[#d4cec4] text-[#6b6560] active:border-green-500 active:bg-green-500 active:text-white md:hover:border-green-500 md:hover:bg-green-500 md:hover:text-white"
+                          }`}
+                        >
+                          NIE
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleWizardAnswer(true)}
+                          className={`py-4 px-6 rounded-xl border-2 transition-all text-lg font-medium shadow-sm hover:shadow-md active:scale-95 flex items-center justify-center ${
+                            currentContraindicationObject?.hasFollowUp &&
+                            formData.przeciwwskazania[
+                              currentContraindicationKey
+                            ] === true
+                              ? "border-red-500 bg-red-500 text-white"
+                              : "bg-white border-[#d4cec4] text-[#6b6560] active:border-red-500 active:bg-red-500 active:text-white md:hover:border-red-500 md:hover:bg-red-500 md:hover:text-white"
+                          }`}
+                        >
+                          TAK
+                        </button>
                       </div>
+
+                      {currentContraindicationObject?.hasFollowUp &&
+                        formData.przeciwwskazania[
+                          currentContraindicationKey
+                        ] !== null && (
+                          <div className="max-w-md mx-auto mt-4">
+                            <button
+                              type="button"
+                              onClick={handleNextStep}
+                              className="w-full py-4 px-6 rounded-xl bg-[#8b7355] text-white transition-all text-lg font-medium shadow-sm hover:shadow-md hover:bg-[#7a6548] active:scale-95 flex items-center justify-center"
+                            >
+                              Dalej →
+                            </button>
+                          </div>
+                        )}
 
                       <div className="mt-8 flex justify-between items-center border-t border-[#d4cec4]/50 pt-6">
                         <button
@@ -1569,32 +1583,89 @@ export default function FacialVolumetryForm({
                   Oświadczenia
                 </h3>
                 <div className="bg-[#f8f6f3] p-5 rounded-xl mb-6 border border-[#d4cec4]/50">
-                  <p className="text-sm text-[#5a5550] leading-relaxed">
-                    <strong>Oświadczam, że:</strong>
+                  <h4 className="font-serif text-[#4a4540] text-lg mb-4">
+                    OŚWIADCZENIE I ŚWIADOMA ZGODA NA ZABIEG WOLUMETRII TWARZY
+                    (MODELOWANIE KWASEM HIALURONOWYM)
+                  </h4>
+                  <p className="text-sm text-[#5a5550] mb-4">
+                    Ja, niżej podpisana/y, po przeprowadzeniu szczegółowego
+                    wywiadu i konsultacji ze Specjalistą, oświadczam, że:
                   </p>
-                  <ol className="list-decimal ml-5 mt-2 text-sm text-[#5a5550] space-y-2">
-                    <li>
-                      Jestem świadoma/y przebiegu zabiegu, jego celu, oraz
-                      okoliczności jego przeprowadzenia i zasad obowiązujących
-                      po wykonaniu zabiegu, oraz że świadomie i dobrowolnie
-                      poddaję się zabiegowi.
-                    </li>
-                    <li>
-                      Osoba przeprowadzająca zabieg poinformowała mnie o
-                      powyższych okolicznościach, oraz udzieliła mi niezbędnych
-                      odpowiedzi oraz wszelkich informacji co do zachowania po
-                      zabiegu, oraz w zakresie zadawanych przez mnie pytań, i
-                      nie wnoszę do tej informacji zastrzeżeń, oraz że są one
-                      dla mnie w pełni zrozumiałe.
-                    </li>
-                    <li>
-                      Podane przeze mnie w niniejszym oświadczeniu odpowiedzi, w
-                      szczególności co do stanu zdrowia, oraz braku ewentualnych
-                      przeciwwskazań są zgodne z prawdą, i opierają się na mojej
-                      wiedzy co do stanu mojego zdrowia, bez zatajania
-                      czegokolwiek.
-                    </li>
-                  </ol>
+
+                  <div className="space-y-4 text-sm text-[#5a5550] leading-relaxed">
+                    <p>
+                      <strong>Stan zdrowia i świadomość:</strong> Udzieliłam/em
+                      pełnych i prawdziwych odpowiedzi na pytania dotyczące
+                      mojego stanu zdrowia. Oświadczam, że nie występują u mnie
+                      żadne przeciwwskazania medyczne, fizyczne lub psychiczne,
+                      które mogłyby wpłynąć na moją decyzję. Mam świadomość
+                      ryzyka wystąpienia reakcji alergicznej na środek
+                      znieczulający lub wstrzyknięty preparat (kwas
+                      hialuronowy). Akceptuję to ryzyko i w przypadku
+                      wystąpienia reakcji uczuleniowej przyjmuję na siebie
+                      odpowiedzialność za skutki jej wystąpienia. Decyzję o
+                      poddaniu się zabiegowi wolumetrii podejmuję w pełni
+                      świadomie, dobrowolnie i w sposób przemyślany.
+                    </p>
+                    <p>
+                      <strong>Informacja o zabiegu i higiena:</strong>{" "}
+                      Otrzymałam/em wyczerpujące informacje na temat zabiegu,
+                      techniki jego wykonania, wskazań oraz przebiegu. Miałam/em
+                      możliwość zadawania pytań i uzyskałam/em na nie zrozumiałe
+                      odpowiedzi. Potwierdzam, że materiały (w tym
+                      ampułkostrzykawka z kwasem hialuronowym) użyte do zabiegu
+                      są sterylne, jednorazowe i zostały otwarte w mojej
+                      obecności. W Salonie zachowane są najwyższe normy
+                      higieniczne.
+                    </p>
+                    <p>
+                      <strong>Ryzyko i powikłania:</strong> Zostałam/em
+                      poinformowana/y o możliwych skutkach ubocznych, takich
+                      jak: opuchlizna, zaczerwienienie, zasinienia (krwiaki),
+                      tkliwość, które mogą utrzymywać się przez kilka dni w
+                      zależności od mojego trybu życia. Oświadczam, że
+                      rozumiejąc ryzyko powikłań, nie będę wnosić roszczeń
+                      odszkodowawczych w przypadku wystąpienia typowych
+                      następstw zabiegu, o których zostałam/em uprzedzona/y.
+                    </p>
+                    <p>
+                      <strong>Efekty, trwałość i brak gwarancji:</strong>{" "}
+                      Zostałam/em poinformowana/y, że efekt końcowy zależy od
+                      indywidualnych cech organizmu (biochemii, rodzaju skóry,
+                      ilości wstrzykniętego preparatu) oraz zastosowanej
+                      techniki. Przyjmuję do wiadomości, że efekty zabiegu
+                      wolumetrii utrzymują się zazwyczaj od 1 roku do 2 lat, co
+                      jest kwestią indywidualną, a zabieg należy powtarzać dla
+                      podtrzymania rezultatu. Rozumiem, że nie udziela się
+                      gwarancji na uzyskanie identycznego efektu jak u innych
+                      osób, ani na 100% zadowolenie z rezultatu estetycznego.
+                      Rozbieżność między moimi oczekiwaniami a realnym
+                      rezultatem (określonym przez Specjalistę jako możliwy do
+                      osiągnięcia) nie stanowi podstawy do roszczeń.
+                    </p>
+                    <p>
+                      <strong>Zalecenia pozabiegowe:</strong> Zobowiązuję się do
+                      ścisłego przestrzegania zaleceń pozabiegowych, które
+                      zostały mi przekazane i wyjaśnione. Mam świadomość, że
+                      nieprzestrzeganie zaleceń może prowadzić do poważnych
+                      powikłań, takich jak zakażenia czy powstanie blizn, za co
+                      Specjalista nie ponosi odpowiedzialności.
+                    </p>
+                    <p>
+                      <strong>Kwalifikacje wykonującego:</strong> Oświadczam, że
+                      mam pełną świadomość, iż Specjalista wykonujący zabieg nie
+                      jest lekarzem medycyny estetycznej, ale posiada bogate
+                      doświadczenie i przeszkolenie w zakresie wykonywanych
+                      zabiegów. Akceptuję ten fakt i w przypadku wykonania
+                      zabiegu zgodnie z zasadami i etyką pracy, a nieuzyskania
+                      spodziewanego efektu, nie będę wnosić roszczeń do osoby
+                      wykonującej zabieg.
+                    </p>
+                    <p className="mt-4 font-medium text-[#8b7355]">
+                      * W przypadku osoby niepełnoletniej wymagany jest podpis
+                      rodzica lub opiekuna prawnego.
+                    </p>
+                  </div>
                 </div>
 
                 {/* Podpis pod Zabiegiem (Nowy, obowiązkowy) */}
@@ -1619,6 +1690,7 @@ export default function FacialVolumetryForm({
                     date={formData.miejscowoscData}
                   />
                 </div>
+                <SpecialistSignature date={formData.miejscowoscData} />
               </section>
 
               <div className="flex justify-between pt-4 pb-12">

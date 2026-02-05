@@ -17,21 +17,22 @@ import Footer from "@/app/components/Footer";
 import {
   ConsentFormData,
   ContraindicationWithFollowUp,
-  depilacjaLaserowaNaturalReactions,
-  depilacjaLaserowaComplications,
-  depilacjaLaserowaPostCare,
-  depilacjaLaserowaPreCare,
   rodoInfo,
+  mezoterapiaIglowaContraindications,
+  mezoterapiaIglowaCategoryBreaks,
+  mezoterapiaIglowaNaturalReactions,
+  mezoterapiaIglowaComplications,
+  mezoterapiaIglowaComplicationsVeryRare,
+  mezoterapiaIglowaPostCare,
 } from "../../../types/booking";
-import { depilacjaLaserowaContraindications } from "../../../types/booking";
 import SpecialistSignature from "./SpecialistSignature";
 
-interface LaserRemovalFormProps {
+interface NeedleMesotherapyFormProps {
   onBack: () => void;
 }
 
 const initialFormData: ConsentFormData = {
-  type: "LASER_HAIR_REMOVAL",
+  type: "NEEDLE_MESOTHERAPY",
   imieNazwisko: "",
   ulica: "",
   kodPocztowy: "",
@@ -44,7 +45,7 @@ const initialFormData: ConsentFormData = {
   obszarZabiegu: "",
   celEfektu: "",
   numerZabiegu: "",
-  przeciwwskazania: Object.entries(depilacjaLaserowaContraindications).reduce(
+  przeciwwskazania: Object.entries(mezoterapiaIglowaContraindications).reduce(
     (acc, [key, value]) => {
       const hasFollowUp = typeof value === "object" && value.hasFollowUp;
       return {
@@ -67,9 +68,13 @@ const initialFormData: ConsentFormData = {
   podpisRodo2: "",
   informacjaDodatkowa: "",
   zastrzeniaKlienta: "",
+  wykazLekow: "", // INITIALIZE
+  inneSchorzenia: "", // INITIALIZE
 };
 
-export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
+export default function NeedleMesotherapyForm({
+  onBack,
+}: NeedleMesotherapyFormProps) {
   const [formData, setFormData] = useState<ConsentFormData>(initialFormData);
   const [email, setEmail] = useState("");
   const [birthDateError, setBirthDateError] = useState<string | null>(null);
@@ -90,10 +95,11 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
   const [isSignatureVerified, setIsSignatureVerified] = useState(false);
   const [auditLog, setAuditLog] = useState<AuditLogData | null>(null);
 
-  const contraindicationKeys = Object.keys(depilacjaLaserowaContraindications);
+  const contraindicationKeys = Object.keys(mezoterapiaIglowaContraindications);
   const currentContraindicationKey =
     contraindicationKeys[currentContraindicationIndex];
-  const currentContraindicationValue = depilacjaLaserowaContraindications[
+
+  const currentContraindicationValue = mezoterapiaIglowaContraindications[
     currentContraindicationKey
   ] as string | ContraindicationWithFollowUp;
   const currentContraindicationObject:
@@ -114,7 +120,7 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
     handleContraindicationChange(currentContraindicationKey, value);
     // For follow-up questions, don't auto-advance — user must click "Dalej"
     const currentValue =
-      depilacjaLaserowaContraindications[currentContraindicationKey];
+      mezoterapiaIglowaContraindications[currentContraindicationKey];
     const hasFollowUp =
       typeof currentValue === "object" && currentValue.hasFollowUp;
     if (hasFollowUp) {
@@ -138,7 +144,7 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
 
   const handleInputChange = (
     field: keyof ConsentFormData,
-    value: string | boolean | null,
+    value: string | boolean,
   ) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
@@ -180,7 +186,10 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
     }
   };
 
-  const handleContraindicationChange = (key: string, value: boolean) => {
+  const handleContraindicationChange = (
+    key: string,
+    value: boolean | string,
+  ) => {
     setFormData((prev) => ({
       ...prev,
       przeciwwskazania: { ...prev.przeciwwskazania, [key]: value },
@@ -386,10 +395,10 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
 
           <div className="text-center">
             <h1 className="text-3xl md:text-4xl font-serif text-[#4a3a2a] mb-2">
-              Depilacja Laserowa
+              Mezoterapia Igłowa
             </h1>
             <p className="text-[#8b7355] text-lg font-light tracking-wide uppercase">
-              Laser Diodowy
+              Zabieg rewitalizacji i odżywiania skóry
             </p>
           </div>
         </div>
@@ -552,42 +561,74 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
                 </h2>
                 <div className="prose prose-sm max-w-none text-[#5a5550] leading-relaxed space-y-4">
                   <p>
-                    Zabieg depilacji laserowej przy użyciu lasera diodowego jest
-                    zabiegiem kosmetologicznym mającym na celu trwałą redukcję
-                    owłosienia. Działanie lasera opiera się na selektywnym
-                    pochłanianiu energii światła przez melaninę zawartą we
-                    włosach, która następnie przekształcana jest w ciepło.
-                    Powstałe w ten sposób ciepło prowadzi do uszkodzenia mieszka
-                    włosowego, co hamuje dalszy wzrost włosa. Laser diodowy
-                    penetruje głębiej w skórę niż inne typy laserów, dzięki
-                    czemu skutecznie działa na włosy ciemniejsze i głębiej
-                    osadzone, przy minimalnym oddziaływaniu na otaczającą skórę.
+                    <strong>INFORMACJA O ZABIEGU</strong>
+                    <br />
+                    Zabieg mezoterapii igłowej polega na bezpośrednim podaniu
+                    cienką igłą małych dawek substancji aktywnych śródskórnie w
+                    miejsca, które zostaną poddane zabiegowi. Wstrzyknięcie
+                    substancji do obszaru tkanki poddanej zabiegowi tworzy
+                    depozyt, z którego substancja zostaje uwalniana stopniowo.
                   </p>
                   <p>
-                    Zabieg jest najbardziej skuteczny w przypadku włosów
-                    znajdujących się w fazie wzrostu, zwanej fazą anagenu. Z
-                    tego powodu osiągnięcie optymalnych efektów wymaga wykonania
-                    serii zabiegów w odstępach kilku tygodni, aby objąć
-                    wszystkie włosy w różnych fazach cyklu wzrostu. Czas trwania
-                    pojedynczej sesji zależy od wielkości obszaru poddanego
-                    zabiegowi i może wynosić od kilkunastu minut do około
-                    godziny.
+                    Wskazaniem do zabiegu są: przebarwienia, skóra zmęczona -
+                    wymagająca rewitalizacji, łojotok, osłabienie włosów i
+                    wypadanie włosów, łysienie, cellulit a także stosuje się w
+                    profilaktyce przeciwstarzeniowej skóry oraz w usuwaniu
+                    objawów starzenia się skóry związanych z wiekiem, ekspozycją
+                    na słońce jak również paleniem tytoniu.
+                  </p>
+                  <div className="bg-[#f8f6f3] p-4 rounded-xl border border-[#d4cec4]/50 space-y-4">
+                    <p>
+                      <strong>Mezoterapia igłowa twarzy</strong> jest jednym z
+                      najlepszych zabiegów, który skutecznie redukuje zmarszczki
+                      mimiczne i chroni skórę przed negatywnym działaniem
+                      czynników zewnętrznych występujących w środowisku. Do
+                      mezoterapii twarzy najczęściej stosowane są preparaty na
+                      bazie kwasu hialuronowego oraz witamin A, C, E a także
+                      oraz czynnych substancji aktywnych.
+                    </p>
+                    <p>
+                      <strong>Mezoterapia igłowa szyi i dekoltu</strong> - obok
+                      twarzy - jest obszarem najczęściej poddawanym zabiegowi
+                      mezoterapii. Poprawia elastyczność i odżywia skórę. W
+                      miejscach, takich jak szyja czy dekolt, skóra szybko traci
+                      blask, a po zabiegu jest nie tylko zregenerowana i
+                      odmłodzona, ale też bardzo mocno nawilżona. Zmniejszone i
+                      wygładzone zostają także zmarszczki i bruzdy.
+                    </p>
+                    <p>
+                      <strong>Mezoterapia igłowa skóry głowy</strong> stosowana
+                      jest jako profilaktyka i leczenie łysienia. Jej wykonanie
+                      przywraca prawidłowe krążenie w skórze głowy, które
+                      pobudza wzrost nowych mieszków włosowych. Szczególnie
+                      polecana jest dla osób cierpiących na łysienie plackowate
+                      oraz androgenowe.
+                    </p>
+                  </div>
+                  <p>
+                    Zabieg mezoterapii igłowej wykonywany jest z użyciem jednego
+                    z wybranych produktów lub mieszanki produktów. Zabieg odbywa
+                    się zawsze po wykluczeniu wszelkich przeciwwskazań do
+                    wykonania zabiegu. W rozmowie określone zostają potrzeby i
+                    oczekiwania od wykonania zabiegu mezoterapii igłowej.
                   </p>
                   <p>
-                    Efekty depilacji laserowej mogą się różnić w zależności od
-                    rodzaju włosów, fototypu skóry, gospodarki hormonalnej oraz
-                    indywidualnych predyspozycji organizmu. Zabieg zwykle
-                    prowadzi do znacznej redukcji owłosienia po kilku sesjach,
-                    jednak nie gwarantuje całkowitego i trwałego usunięcia
-                    włosów.
+                    Kolejnym etapem jest znieczulenie, które minimalizuje
+                    dyskomfort podczas zabiegu. Próg bólu odczuwany jest
+                    indywidualnie oraz uzależniony jest od rodzaju skóry.
+                    Stosowane jest znieczulenie <strong>Lidokaina 9,6%</strong>.
+                    Zastosowanie znieczulenia gwarantuje zminimalizowanie bólu,
+                    który w większości przypadków określany jest, jako niemal
+                    nie odczuwalny.
                   </p>
                   <p>
-                    Po zabiegu skóra może reagować zaczerwienieniem, obrzękiem,
-                    pieczeniem lub swędzeniem, a w niektórych przypadkach mogą
-                    pojawić się strupki, pęcherze lub tymczasowe przebarwienia.
-                    Reakcje te są indywidualne i mogą wystąpić nawet przy
-                    prawidłowym wykonaniu zabiegu i przestrzeganiu zaleceń
-                    pielęgnacyjnych.
+                    Czas trwania zabiegu zależny jest od cech indywidualnych
+                    naskórka, ale średnio trwa ok. godziny. W celu uzyskania
+                    optymalnego efektu utrzymującego się przez ok. 6–12 miesięcy
+                    zaleca się wykonanie pełnej serii zabiegów, powtarzanych w
+                    odstępach co 2–4 tygodnie. Zabieg mezoterapii igłowej nie
+                    jest zabiegiem trwałym, dla podtrzymania efektu zaleca się
+                    wykonywanie zabiegu przypominającego co 3–6 miesięcy.
                   </p>
                 </div>
               </section>
@@ -602,55 +643,180 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
                 </h2>
                 <div className="space-y-6">
                   <div>
-                    <div>
-                      <label className="block text-sm text-[#6b6560] mb-2 font-medium">
-                        Obszar Zabiegu
-                      </label>
-                      <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                    <label className="block text-sm text-[#6b6560] mb-2 font-medium">
+                      Nazwa preparatu
+                    </label>
+                    <div className="space-y-4">
+                      {/* Product Selection */}
+                      <div className="flex flex-col gap-3">
                         {[
-                          "Wąsik",
-                          "Broda",
-                          "Twarz",
-                          "Pachy",
-                          "Ramiona",
-                          "Bikini",
-                          "Uda",
-                          "Łydki",
-                          "Całe nogi",
-                          "Plecy",
-                          "Klatka piersiowa",
-                          "Brzuch",
-                        ].map((area) => (
-                          <button
-                            key={area}
-                            type="button"
-                            onClick={() => {
-                              const current = formData.obszarZabiegu
-                                ? formData.obszarZabiegu.split(", ")
-                                : [];
-                              const newValue = current.includes(area)
-                                ? current.filter((i) => i !== area).join(", ")
-                                : [...current, area].join(", ");
-                              handleInputChange("obszarZabiegu", newValue);
-                            }}
-                            className={`py-3 px-4 rounded-xl border-2 transition-all font-medium text-sm ${
-                              (formData.obszarZabiegu || "")
-                                .split(", ")
-                                .includes(area)
-                                ? "border-[#8b7355] bg-[#8b7355] text-white"
-                                : "border-[#d4cec4] bg-white text-[#6b6560] hover:border-[#8b7355] hover:text-[#8b7355]"
-                            }`}
-                          >
-                            {area}
-                          </button>
-                        ))}
+                          {
+                            name: "Kwas hialuronowy Jetema - Vitten hydro plus",
+                            desc: "Nawilżenie i rewitalizacja skóry.",
+                          },
+                          {
+                            name: "Pink Glow",
+                            desc: "Zaawansowana mezoterapia, odżywienie i blask.",
+                          },
+                          {
+                            name: "Witaminy C",
+                            desc: "Rozświetlenie, antyoksydacja i poprawa kolorytu.",
+                          },
+                        ].map((product) => {
+                          const currentName = formData.nazwaProduktu || "";
+                          // Check if base product name matches (ignoring volume suffix)
+                          const baseName =
+                            currentName.includes(" - ") &&
+                            !product.name.includes(" - ")
+                              ? currentName
+                                  .split(" - ")
+                                  .slice(0, -1)
+                                  .join(" - ") // Handle "Product - Name - 1.0ml" case if product name has dash
+                              : currentName.split(" - ")[0]; // Simple split for standard cases
+
+                          // More robust check: does currentName start with product.name?
+                          const isSelectedProduct = currentName.startsWith(
+                            product.name,
+                          );
+
+                          return (
+                            <div
+                              key={product.name}
+                              onClick={() => {
+                                // Select product only, reset volume if switching to new product
+                                if (!isSelectedProduct) {
+                                  handleInputChange(
+                                    "nazwaProduktu",
+                                    product.name,
+                                  );
+                                }
+                              }}
+                              className={`p-4 rounded-xl border-2 transition-all cursor-pointer ${
+                                isSelectedProduct
+                                  ? "border-[#8b7355] bg-[#8b7355]/5 shadow-md"
+                                  : "border-[#d4cec4] bg-white hover:border-[#8b7355]"
+                              }`}
+                            >
+                              <div className="flex justify-between items-center mb-1">
+                                <span
+                                  className={`font-serif text-lg font-medium ${
+                                    isSelectedProduct
+                                      ? "text-[#8b7355]"
+                                      : "text-[#4a4540]"
+                                  }`}
+                                >
+                                  {product.name}
+                                </span>
+                                {isSelectedProduct && (
+                                  <CheckCircle2 className="w-5 h-5 text-[#8b7355]" />
+                                )}
+                              </div>
+                              <p className="text-sm text-[#6b6560] leading-relaxed mb-4">
+                                {product.desc}
+                              </p>
+
+                              {/* Volume Selection inside Product Card */}
+                              {isSelectedProduct && (
+                                <div className="border-t border-[#d4cec4]/50 pt-3 animate-in fade-in slide-in-from-top-2 duration-300">
+                                  <p className="text-xs font-medium text-[#8b7355] mb-2 uppercase tracking-wide">
+                                    Wybierz ilość:
+                                  </p>
+                                  <div className="flex flex-wrap gap-2">
+                                    {["1.0", "2.0", "3.0", "4.0"].map((vol) => {
+                                      const isSelectedVolume =
+                                        currentName ===
+                                        `${product.name} - ${vol}ml`;
+                                      return (
+                                        <button
+                                          key={vol}
+                                          type="button"
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            handleInputChange(
+                                              "nazwaProduktu",
+                                              `${product.name} - ${vol}ml`,
+                                            );
+                                          }}
+                                          className={`px-3 py-1.5 rounded-lg border text-xs font-medium transition-all ${
+                                            isSelectedVolume
+                                              ? "border-[#8b7355] bg-[#8b7355] text-white shadow-sm"
+                                              : "border-[#d4cec4] bg-white text-[#6b6560] hover:border-[#8b7355] hover:text-[#8b7355]"
+                                          }`}
+                                        >
+                                          {vol} ml
+                                        </button>
+                                      );
+                                    })}
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })}
                       </div>
+                    </div>
+                  </div>
+
+                  {/* Znieczulenie */}
+                  <div>
+                    <label className="block text-sm text-[#6b6560] mb-2 font-medium">
+                      Znieczulenie
+                    </label>
+                    <div className="space-y-4">
+                      {/* Anesthesia Selection */}
+                      <div className="flex flex-col gap-3">
+                        <button
+                          type="button"
+                          className="text-left p-4 rounded-xl border-2 border-[#8b7355] bg-[#8b7355]/5 shadow-md transition-all group"
+                        >
+                          <div className="flex justify-between items-center mb-1">
+                            <span className="font-serif text-lg font-medium text-[#8b7355]">
+                              Lidokaina 9,6%
+                            </span>
+                            <CheckCircle2 className="w-5 h-5 text-[#8b7355]" />
+                          </div>
+                          <p className="text-sm text-[#6b6560] leading-relaxed">
+                            Znieczulenie miejscowe jest zawsze stosowane podczas
+                            zabiegu.
+                          </p>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  {/* Obszar zabiegu */}
+                  <div>
+                    <label className="block text-sm text-[#6b6560] mb-2 font-medium">
+                      Obszar zabiegu
+                    </label>
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-3">
+                      {[
+                        "Twarz",
+                        "Szyja",
+                        "Dekolt",
+                        "Okolice Oczu",
+                        "Okolice Ud",
+                        "Głowa",
+                      ].map((area) => (
+                        <button
+                          key={area}
+                          type="button"
+                          onClick={() =>
+                            handleInputChange("obszarZabiegu", area)
+                          }
+                          className={`py-3 px-4 rounded-xl border-2 transition-all font-medium text-sm ${
+                            formData.obszarZabiegu === area
+                              ? "border-[#8b7355] bg-[#8b7355] text-white"
+                              : "border-[#d4cec4] bg-white text-[#6b6560] hover:border-[#8b7355] hover:text-[#8b7355]"
+                          }`}
+                        >
+                          {area}
+                        </button>
+                      ))}
                     </div>
                   </div>
                 </div>
               </section>
 
-              {/* Wywiad Medyczny Laser Removal */}
               <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
                 <h2 className="text-2xl font-serif text-[#4a3a2a] mb-6 flex items-center gap-3">
                   <span className="w-8 h-8 bg-[#8b7355] text-white rounded-full flex items-center justify-center text-sm font-sans">
@@ -658,165 +824,186 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
                   </span>
                   Wywiad Medyczny
                 </h2>
+
+                {/* Sekcja Wykaz Leki */}
+                <div className="mb-8">
+                  <label className="block text-sm font-bold text-[#4a4540] mb-3 uppercase tracking-wide">
+                    PRZECIWSKAZANIA DO WYKONANIA ZABIEGU
+                  </label>
+                  <label className="block text-sm text-[#6b6560] mb-2 font-medium">
+                    Proszę wpisać wykaz wszystkich leków przyjmowanych w ciągu
+                    ostatnich 6 miesięcy:
+                  </label>
+                  <textarea
+                    value={formData.wykazLekow || ""}
+                    onChange={(e) =>
+                      handleInputChange("wykazLekow", e.target.value)
+                    }
+                    className="w-full h-24 px-4 py-3 bg-white/80 border border-[#d4cec4] rounded-xl focus:border-[#8b7355] focus:ring-2 focus:ring-[#8b7355]/20 outline-none transition-all resize-none"
+                    placeholder="Wpisz nazwy leków..."
+                  />
+                </div>
+
                 <p className="text-sm text-[#6b6560] mb-6">
                   Czy posiadasz którekolwiek z poniższych przeciwwskazań?
                 </p>
 
-                {/* Medications Input */}
-                <div className="space-y-3">
-                  {showContraindicationsWizard && !isWizardComplete ? (
-                    <div
-                      key={currentContraindicationIndex}
-                      className="bg-[#f8f6f3] p-6 rounded-xl border border-[#d4cec4] max-w-2xl mx-auto shadow-sm"
-                    >
-                      <div className="flex justify-between items-center mb-6">
-                        <span className="text-sm font-medium text-[#8b7355]">
-                          Pytanie {currentContraindicationIndex + 1} z{" "}
-                          {contraindicationKeys.length}
-                        </span>
-                        <div className="h-2 w-24 bg-[#d4cec4] rounded-full overflow-hidden">
-                          <div
-                            className="h-full bg-[#8b7355] transition-all duration-300"
-                            style={{
-                              width: `${((currentContraindicationIndex + 1) / contraindicationKeys.length) * 100}%`,
-                            }}
-                          ></div>
-                        </div>
-                      </div>
+                {showContraindicationsWizard ? (
+                  <div className="bg-[#f8f6f3] p-6 rounded-xl border border-[#d4cec4] max-w-2xl mx-auto shadow-sm animate-in slide-in-from-right-4 duration-300">
+                    {/* Category Header */}
 
-                      <h4 className="text-xl md:text-2xl font-serif text-[#4a4540] mb-8 min-h-[5rem] flex items-center justify-center text-center">
-                        {typeof currentContraindicationValue === "string"
-                          ? currentContraindicationValue
-                          : currentContraindicationValue.text}
-                      </h4>
-
-                      {/* Show follow-up input if user answered TAK and question has follow-up */}
-                      {formData.przeciwwskazania[currentContraindicationKey] ===
-                        true &&
-                        currentContraindicationObject?.hasFollowUp && (
-                          <div className="mb-6 animate-in fade-in slide-in-from-top-2">
-                            <input
-                              type="text"
-                              className="w-full px-4 py-3 text-base bg-white border-2 border-[#d4cec4] rounded-xl focus:border-[#8b7355] outline-none transition-colors"
-                              placeholder={
-                                currentContraindicationObject.followUpPlaceholder
-                              }
-                              value={String(
-                                formData.przeciwwskazania[
-                                  `${currentContraindicationKey}_details`
-                                ] ?? "",
-                              )}
-                              onChange={(e) => {
-                                setFormData((prev) => ({
-                                  ...prev,
-                                  przeciwwskazania: {
-                                    ...prev.przeciwwskazania,
-                                    [`${currentContraindicationKey}_details`]:
-                                      e.target.value,
-                                  },
-                                }));
-                              }}
-                            />
-                          </div>
-                        )}
-
-                      <div className="grid grid-cols-2 gap-6 max-w-md mx-auto">
-                        <button
-                          type="button"
-                          onClick={() => handleWizardAnswer(false)}
-                          className={`py-4 px-6 rounded-xl border-2 transition-all text-lg font-medium shadow-sm hover:shadow-md active:scale-95 flex items-center justify-center ${
-                            currentContraindicationObject?.hasFollowUp &&
-                            formData.przeciwwskazania[
-                              currentContraindicationKey
-                            ] === false
-                              ? "border-green-500 bg-green-500 text-white"
-                              : "bg-white border-[#d4cec4] text-[#6b6560] active:border-green-500 active:bg-green-500 active:text-white md:hover:border-green-500 md:hover:bg-green-500 md:hover:text-white"
-                          }`}
-                        >
-                          NIE
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => handleWizardAnswer(true)}
-                          className={`py-4 px-6 rounded-xl border-2 transition-all text-lg font-medium shadow-sm hover:shadow-md active:scale-95 flex items-center justify-center ${
-                            currentContraindicationObject?.hasFollowUp &&
-                            formData.przeciwwskazania[
-                              currentContraindicationKey
-                            ] === true
-                              ? "border-red-500 bg-red-500 text-white"
-                              : "bg-white border-[#d4cec4] text-[#6b6560] active:border-red-500 active:bg-red-500 active:text-white md:hover:border-red-500 md:hover:bg-red-500 md:hover:text-white"
-                          }`}
-                        >
-                          TAK
-                        </button>
-                      </div>
-
-                      {currentContraindicationObject?.hasFollowUp &&
-                        formData.przeciwwskazania[
-                          currentContraindicationKey
-                        ] !== null && (
-                          <div className="max-w-md mx-auto mt-4">
-                            <button
-                              type="button"
-                              onClick={handleWizardNext}
-                              className="w-full py-4 px-6 rounded-xl bg-[#8b7355] text-white transition-all text-lg font-medium shadow-sm hover:shadow-md hover:bg-[#7a6548] active:scale-95 flex items-center justify-center"
-                            >
-                              Dalej →
-                            </button>
-                          </div>
-                        )}
-
-                      <div className="mt-8 flex justify-between items-center border-t border-[#d4cec4]/50 pt-6">
-                        <button
-                          type="button"
-                          onClick={() =>
-                            setCurrentContraindicationIndex((prev) =>
-                              Math.max(0, prev - 1),
-                            )
-                          }
-                          disabled={currentContraindicationIndex === 0}
-                          className="flex items-center gap-2 text-sm text-[#8b8580] disabled:opacity-0 hover:text-[#8b7355] transition-colors"
-                        >
-                          <ArrowLeft className="w-4 h-4" />
-                          Poprzednie
-                        </button>
-                        <span className="text-xs text-[#d4cec4] uppercase tracking-wider font-medium">
-                          Krok {currentContraindicationIndex + 1}
-                        </span>
+                    <div className="flex justify-between items-center mb-8">
+                      <span className="text-sm font-medium text-[#8b7355]">
+                        Pytanie {currentContraindicationIndex + 1} z{" "}
+                        {contraindicationKeys.length}
+                      </span>
+                      <div className="h-2 w-24 bg-[#d4cec4] rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-[#8b7355] transition-all duration-300"
+                          style={{
+                            width: `${
+                              ((currentContraindicationIndex + 1) /
+                                contraindicationKeys.length) *
+                              100
+                            }%`,
+                          }}
+                        />
                       </div>
                     </div>
-                  ) : (
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between p-4 bg-green-50 border border-green-200 rounded-xl mb-6">
-                        <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                            <Check className="w-5 h-5 text-green-600" />
-                          </div>
-                          <span className="text-green-800 font-medium">
-                            Wywiad medyczny zakończony
-                          </span>
-                        </div>
-                        <button
-                          type="button"
-                          onClick={resetWizard}
-                          className="text-sm text-green-700 hover:text-green-900 font-medium underline"
-                        >
-                          Edytuj odpowiedzi
-                        </button>
+
+                    <div className="flex flex-col items-center text-center gap-6 mb-8">
+                      <div className="space-y-6 w-full max-w-2xl">
+                        <h3 className="text-xl md:text-2xl font-serif text-[#4a3a2a] leading-relaxed">
+                          {typeof currentContraindicationValue === "string"
+                            ? currentContraindicationValue
+                            : currentContraindicationValue.text}
+                        </h3>
+                        {currentContraindicationObject?.hasFollowUp &&
+                          formData.przeciwwskazania[
+                            currentContraindicationKey
+                          ] === true && (
+                            <div className="animate-in fade-in slide-in-from-top-2 max-w-md mx-auto w-full text-left">
+                              <input
+                                type="text"
+                                autoFocus
+                                value={String(
+                                  formData.przeciwwskazania[
+                                    `${currentContraindicationKey}_details`
+                                  ] || "",
+                                )}
+                                onChange={(e) =>
+                                  handleContraindicationChange(
+                                    `${currentContraindicationKey}_details`,
+                                    e.target.value,
+                                  )
+                                }
+                                className="w-full px-4 py-3 bg-white border border-[#d4cec4] rounded-xl focus:border-[#8b7355] focus:ring-2 focus:ring-[#8b7355]/20 outline-none transition-all"
+                                placeholder={
+                                  currentContraindicationObject.followUpPlaceholder ||
+                                  "Podaj szczegóły..."
+                                }
+                              />
+                            </div>
+                          )}
                       </div>
+                    </div>
 
-                      {Object.entries(depilacjaLaserowaContraindications).map(
-                        ([key, value], index) => {
-                          const questionText =
-                            typeof value === "string" ? value : value.text;
-                          const hasFollowUp =
-                            typeof value === "object" && value.hasFollowUp;
-                          const followUpDetails =
-                            formData.przeciwwskazania[`${key}_details`];
+                    <div className="grid grid-cols-2 gap-6 max-w-md mx-auto">
+                      <button
+                        type="button"
+                        onClick={() => handleWizardAnswer(false)}
+                        className={`py-4 px-6 rounded-xl border-2 transition-all text-lg font-medium shadow-sm hover:shadow-md active:scale-95 flex items-center justify-center ${
+                          currentContraindicationObject?.hasFollowUp &&
+                          formData.przeciwwskazania[
+                            currentContraindicationKey
+                          ] === false
+                            ? "border-green-500 bg-green-500 text-white"
+                            : "bg-white border-[#d4cec4] text-[#6b6560] active:border-green-500 active:bg-green-500 active:text-white md:hover:border-green-500 md:hover:bg-green-500 md:hover:text-white"
+                        }`}
+                      >
+                        NIE
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleWizardAnswer(true)}
+                        className={`py-4 px-6 rounded-xl border-2 transition-all text-lg font-medium shadow-sm hover:shadow-md active:scale-95 flex items-center justify-center ${
+                          currentContraindicationObject?.hasFollowUp &&
+                          formData.przeciwwskazania[
+                            currentContraindicationKey
+                          ] === true
+                            ? "border-red-500 bg-red-500 text-white"
+                            : "bg-white border-[#d4cec4] text-[#6b6560] active:border-red-500 active:bg-red-500 active:text-white md:hover:border-red-500 md:hover:bg-red-500 md:hover:text-white"
+                        }`}
+                      >
+                        TAK
+                      </button>
+                    </div>
 
-                          return (
+                    {currentContraindicationObject?.hasFollowUp &&
+                      formData.przeciwwskazania[currentContraindicationKey] !==
+                        null && (
+                        <div className="max-w-md mx-auto mt-4">
+                          <button
+                            type="button"
+                            onClick={handleWizardNext}
+                            className="w-full py-4 px-6 rounded-xl bg-[#8b7355] text-white transition-all text-lg font-medium shadow-sm hover:shadow-md hover:bg-[#7a6548] active:scale-95 flex items-center justify-center"
+                          >
+                            Dalej →
+                          </button>
+                        </div>
+                      )}
+
+                    <div className="mt-8 flex justify-between items-center border-t border-[#d4cec4]/50 pt-6">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setCurrentContraindicationIndex((prev) =>
+                            Math.max(0, prev - 1),
+                          )
+                        }
+                        disabled={currentContraindicationIndex === 0}
+                        className="flex items-center gap-2 text-sm text-[#8b8580] disabled:opacity-0 hover:text-[#8b7355] transition-colors"
+                      >
+                        <ArrowLeft className="w-4 h-4" />
+                        Poprzednie
+                      </button>
+                      <span className="text-xs text-[#d4cec4] uppercase tracking-wider font-medium">
+                        Krok {currentContraindicationIndex + 1}
+                      </span>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between p-4 bg-green-50 border border-green-200 rounded-xl mb-6">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                          <Check className="w-5 h-5 text-green-600" />
+                        </div>
+                        <span className="text-green-800 font-medium">
+                          Wywiad medyczny zakończony
+                        </span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={resetWizard}
+                        className="text-sm text-green-700 hover:text-green-900 font-medium underline"
+                      >
+                        Edytuj odpowiedzi
+                      </button>
+                    </div>
+
+                    {Object.entries(mezoterapiaIglowaContraindications).map(
+                      ([key, value], index) => {
+                        const questionText =
+                          typeof value === "string" ? value : value.text;
+                        const hasFollowUp =
+                          typeof value === "object" && value.hasFollowUp;
+                        const followUpDetails =
+                          formData.przeciwwskazania[`${key}_details`];
+
+                        return (
+                          <div key={key}>
                             <div
-                              key={key}
                               className={`flex items-start gap-4 p-4 rounded-xl transition-colors ${
                                 formData.przeciwwskazania[key]
                                   ? "bg-red-50 border border-red-100"
@@ -834,7 +1021,7 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
                                   formData.przeciwwskazania[key] &&
                                   followUpDetails && (
                                     <p className="text-[#8b7355] text-xs mt-2 italic">
-                                      → {followUpDetails}
+                                      → {followUpDetails as string}
                                     </p>
                                   )}
                               </div>
@@ -850,11 +1037,26 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
                                 )}
                               </div>
                             </div>
-                          );
-                        },
-                      )}
-                    </div>
-                  )}
+                          </div>
+                        );
+                      },
+                    )}
+                  </div>
+                )}
+
+                {/* Inne schorzenia */}
+                <div className="mt-8">
+                  <label className="block text-sm text-[#6b6560] mb-2 font-medium">
+                    Inne schorzenia, proszę podać jakie:
+                  </label>
+                  <textarea
+                    value={formData.inneSchorzenia || ""}
+                    onChange={(e) =>
+                      handleInputChange("inneSchorzenia", e.target.value)
+                    }
+                    className="w-full h-24 px-4 py-3 bg-white/80 border border-[#d4cec4] rounded-xl focus:border-[#8b7355] focus:ring-2 focus:ring-[#8b7355]/20 outline-none transition-all resize-none"
+                    placeholder="Opisz inne schorzenia..."
+                  />
                 </div>
               </section>
 
@@ -871,65 +1073,68 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
                   {/* Częste skutki uboczne */}
                   <div className="bg-[#f8f6f3] p-5 rounded-xl border border-[#d4cec4]/50">
                     <p className="text-sm font-medium text-[#4a4540] mb-3">
-                      MOŻLIWE DO WYSTĄPIENIA SKUTKI UBOCZNE PO PRZEPROWADZONYM
-                      ZABIEGU - CZĘSTE
+                      MOŻLIWE DO WYSTĄPIENIA REAKCJE PO PRZEPROWADZONYM ZABIEGU
+                      - CZĘSTE
+                    </p>
+                    <p className="text-sm text-[#5a5550] mb-3">
+                      Zostałem/am poinformowany/a o przebiegu zabiegu i
+                      możliwości naturalnego wystąpienia po zabiegu reakcji
+                      organizmu:
                     </p>
                     <ul className="space-y-2 text-sm text-[#5a5550]">
-                      {depilacjaLaserowaNaturalReactions.map(
+                      {mezoterapiaIglowaNaturalReactions.map(
                         (reaction, index) => (
                           <li key={index} className="flex items-start gap-2">
                             <span className="text-[#8b7355]">∙</span>
                             <span>{reaction}</span>
+                          </li>
+                        ),
+                      )}
+                    </ul>
+                    <p className="text-sm font-bold text-[#bfa07a] mt-4">
+                      UWAGA! Zabieg mezoterapii igłowej przeprowadzany w trakcie
+                      menstruacji może być bardziej bolesny, ponieważ odczuwanie
+                      bólu w tym czasie jest zwykle zwiększone.
+                    </p>
+                  </div>
+
+                  {/* Rzadkie powikłania */}
+                  <div className="bg-[#f8f6f3] p-5 rounded-xl border border-[#d4cec4]/50">
+                    <p className="text-sm font-medium text-[#4a4540] mb-3">
+                      MOŻLIWE POWIKŁANIA PO PRZEPROWADZONYM ZABIEGU – RZADKIE
+                    </p>
+                    <ul className="space-y-2 text-sm text-[#5a5550]">
+                      {mezoterapiaIglowaComplications.map(
+                        (complication, index) => (
+                          <li key={index} className="flex items-start gap-2">
+                            <span className="text-[#8b7355]">∙</span>
+                            <span>{complication}</span>
                           </li>
                         ),
                       )}
                     </ul>
                   </div>
 
-                  {/* MOŻLIWE REAKCJE SKÓRY */}
-                  <div className="bg-[#f8f6f3] p-5 rounded-xl border border-[#d4cec4]/50 mt-6">
-                    <p className="text-sm font-medium text-[#4a4540] mb-3 uppercase tracking-wide">
-                      MOŻLIWE REAKCJE SKÓRY
+                  {/* Bardzo rzadkie powikłania - NEW SECTION */}
+                  <div className="bg-[#f8f6f3] p-5 rounded-xl border border-[#d4cec4]/50">
+                    <p className="text-sm font-medium text-[#4a4540] mb-3">
+                      MOŻLIWE POWIKŁANIA PO PRZEPROWADZONYM ZABIEGU – BARDZO
+                      RZADKIE
                     </p>
-                    <ul className="space-y-2 text-sm text-[#5a5550] mb-4">
-                      {depilacjaLaserowaNaturalReactions.map(
-                        (reaction, index) => (
+                    <ul className="space-y-2 text-sm text-[#5a5550]">
+                      {mezoterapiaIglowaComplicationsVeryRare.map(
+                        (complication, index) => (
                           <li key={index} className="flex items-start gap-2">
                             <span className="text-[#8b7355]">∙</span>
-                            <span>{reaction}</span>
+                            <span>{complication}</span>
                           </li>
                         ),
                       )}
                     </ul>
-                    <p className="text-sm text-[#8b7355] italic">
-                      Reakcje te są indywidualne i mogą wystąpić mimo
-                      prawidłowego wykonania zabiegu.
-                    </p>
                   </div>
+
+                  {/* Empty div for layout balance if needed, or remove */}
                 </div>
-              </section>
-
-              {/* Zalecenia Przed Zabiegiem */}
-              <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
-                <h2 className="text-2xl font-serif text-[#4a3a2a] mb-6 flex items-center gap-3">
-                  <span className="w-8 h-8 bg-[#8b7355] text-white rounded-full flex items-center justify-center text-sm font-sans">
-                    5
-                  </span>
-                  Zalecenia Przed Zabiegiem
-                </h2>
-                <ul className="space-y-3">
-                  {depilacjaLaserowaPreCare.map((instruction, index) => (
-                    <li
-                      key={index}
-                      className="flex items-start gap-3 bg-white/50 p-3 rounded-lg border border-[#d4cec4]/30"
-                    >
-                      <div className="w-1.5 h-1.5 rounded-full bg-[#8b7355] mt-2 flex-shrink-0" />
-                      <span className="text-[#5a5550] text-sm leading-relaxed">
-                        {instruction}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
               </section>
 
               {/* Zalecenia Pozabiegowe */}
@@ -938,19 +1143,19 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
                   <span className="w-8 h-8 bg-[#8b7355] text-white rounded-full flex items-center justify-center text-sm font-sans">
                     6
                   </span>
-                  Zalecenia Po Zabiegu
+                  Zalecenia Pozabiegowe
                 </h2>
 
                 <div className="bg-[#f8f6f3] p-5 rounded-xl border border-[#d4cec4]/50 mb-6">
                   <p className="text-sm text-[#5a5550] leading-relaxed mb-4">
-                    <strong>
-                      Niniejszym oświadczam, że zostałam/em poinformowana/y o
-                      konieczności stosowania się po przeprowadzonym zabiegu do
-                      przestrzegania następujących zaleceń:
-                    </strong>
+                    <strong>ZALECENIA PO PRZEPROWADZONYM ZABIEGU</strong>
+                    <br />
+                    Niniejszym oświadczam, że zostałam/em poinformowana o
+                    konieczności stosowania się po przeprowadzonym zabiegu do
+                    przestrzegania następujących zaleceń:
                   </p>
                   <ul className="space-y-2 text-sm text-[#5a5550]">
-                    {depilacjaLaserowaPostCare.map((instruction, index) => (
+                    {mezoterapiaIglowaPostCare.map((instruction, index) => (
                       <li key={index} className="flex items-start gap-2">
                         <span className="text-[#8b7355]">∙</span>
                         <span
@@ -993,6 +1198,7 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
                   <div className="bg-[#f8f6f3] p-6 rounded-xl text-sm text-[#5a5550] leading-relaxed whitespace-pre-line max-h-[60vh] overflow-y-auto mb-6 border border-[#e5e0d8]">
                     {rodoInfo.consentText}
                   </div>
+                  {/* Signature Area for RODO */}
                   <div className="mt-8">
                     <p className="text-sm text-[#6b6560] mb-4 font-medium uppercase tracking-wide">
                       Podpis Klienta (Zgoda na przetwarzanie danych):
@@ -1003,6 +1209,7 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
                         value={formData.podpisRodo || ""}
                         onChange={(sig) => {
                           handleInputChange("podpisRodo", sig);
+                          // Auto-approve RODO consent when signed
                           if (sig && !formData.zgodaPrzetwarzanieDanych) {
                             handleInputChange("zgodaPrzetwarzanieDanych", true);
                           }
@@ -1045,6 +1252,7 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
                   <div className="bg-[#f8f6f3] p-6 rounded-xl text-sm text-[#5a5550] leading-relaxed whitespace-pre-line max-h-[60vh] overflow-y-auto mb-6 border border-[#e5e0d8]">
                     {rodoInfo.clauseText}
                   </div>
+                  {/* Signature Area for RODO 2 */}
                   <div className="mt-8">
                     <p className="text-sm text-[#6b6560] mb-4 font-medium uppercase tracking-wide">
                       Podpis Klienta (Klauzula informacyjna):
@@ -1107,7 +1315,7 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
                         Możliwe naturalne reakcje:
                       </p>
                       <ul className="space-y-2 text-sm text-[#5a5550]">
-                        {depilacjaLaserowaNaturalReactions.map(
+                        {mezoterapiaIglowaNaturalReactions.map(
                           (reaction, index) => (
                             <li key={index} className="flex items-start gap-2">
                               <span className="text-[#8b7355]">•</span>
@@ -1124,18 +1332,8 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
                       </p>
                       <div className="space-y-3 text-sm text-[#5a5550]">
                         <p>
-                          <span className="font-medium">Częste:</span>{" "}
-                          {depilacjaLaserowaComplications.czeste.join(", ")}
-                        </p>
-                        <p>
-                          <span className="font-medium">Rzadkie:</span>{" "}
-                          {depilacjaLaserowaComplications.rzadkie.join(", ")}
-                        </p>
-                        <p>
-                          <span className="font-medium">Bardzo rzadkie:</span>{" "}
-                          {depilacjaLaserowaComplications.bardzoRzadkie.join(
-                            ", ",
-                          )}
+                          <span className="font-medium">Powikłania:</span>{" "}
+                          {mezoterapiaIglowaComplications.join(", ")}
                         </p>
                       </div>
                     </div>
@@ -1143,7 +1341,7 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
                 </div>
               </section>
 
-              {/* Zalecenia Laserowe */}
+              {/* Zalecenia Hyaluronic */}
               <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg">
                 <div className="p-6 md:p-8">
                   <h3 className="text-2xl font-serif text-[#4a4540] mb-6 border-b border-[#d4cec4] pb-2">
@@ -1153,7 +1351,7 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
                     Zobowiązuję się do przestrzegania następujących zaleceń:
                   </p>
                   <ul className="space-y-2 text-[#5a5550] text-sm bg-white/50 p-4 rounded-xl border border-[#d4cec4]/30">
-                    {depilacjaLaserowaPostCare.map((instruction, index) => (
+                    {mezoterapiaIglowaPostCare.map((instruction, index) => (
                       <li key={index} className="flex items-start gap-2">
                         <span className="text-[#8b7355]">•</span>
                         <span
@@ -1171,6 +1369,174 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
                 </div>
               </section>
 
+              {/* Regulamin Salonu */}
+              <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg">
+                <div className="p-6 md:p-8">
+                  <h3 className="text-2xl font-serif text-[#4a4540] mb-6 border-b border-[#d4cec4] pb-2">
+                    Regulamin Salonu
+                  </h3>
+                  <p className="text-sm text-[#5a5550] mb-4 font-medium">
+                    Jestem świadoma poniższych zasad, wynikających z regulaminu
+                    Salonu:
+                  </p>
+                  <ol className="list-decimal pl-5 space-y-3 text-sm text-[#5a5550] leading-relaxed">
+                    <li>
+                      Dokonanie zapisu na zabieg oznacza pełną akceptację
+                      regulaminu oraz wymienione poniżej zasady.
+                    </li>
+                    <li>
+                      Przy rezerwacji terminu na makijaż permanentny wymagana
+                      jest opłata (zadatek) w wysokości 50% wartości zabiegu.
+                    </li>
+                    <li>
+                      Na uregulowanie zadatku Klient/ka ma 3 dni od momentu
+                      zapisu. Jeśli tego nie zrobi rezerwacja zostaje
+                      automatycznie anulowana, a zarezerwowany dotychczas termin
+                      staje się dostępny dla innych Klientów.
+                    </li>
+                    <li>
+                      Jeżeli zabieg się odbędzie, to jego cena pomniejszona jest
+                      o wartość zadatku.
+                    </li>
+                    <li>
+                      Zadatek można uregulować przelewem na konto bankowe. Numer
+                      konta dostępny jest na stronie www, na miejscu, po
+                      kontakcie telefonicznym lub na FB:{" "}
+                      <span className="font-medium text-[#4a4540]">
+                        NUMER KONTA 76249000050000460039252048
+                      </span>{" "}
+                      — w tytule przelewu należy wpisać datę zabiegu oraz imię i
+                      nazwisko Klienta.
+                    </li>
+                    <li>
+                      Rezerwując termin warto jest się upewnić, że nie ma
+                      żadnych przeciwwskazań do wykonania zabiegu.
+                    </li>
+                    <li>
+                      Konsultacja dotycząca wykonania zabiegu makijażu
+                      permanentnego jest zawsze bezpłatna. Jeśli masz
+                      jakiekolwiek wątpliwości dotyczące zabiegu umów się
+                      telefonicznie na bezpłatną konsultację.
+                    </li>
+                    <li>
+                      Klientka ma prawo odwołać wizytę na 3 dni przed planowanym
+                      terminem. Jeśli odwołanie wizyty odbędzie się w terminie
+                      krótszym niż 3 dni przed planowanym zabiegiem wówczas
+                      Klient zobowiązuje się na swoje miejsce znaleźć inną
+                      osobę. Jeśli na zarezerwowaną wizytę nie znajdzie się
+                      osoba chętna wówczas przedpłata przepada.
+                    </li>
+                    <li>
+                      Klientka ma prawo do zmiany terminu wizyty najpóźniej na
+                      24h przed planowaną wizytą, rezygnacja z terminu w
+                      ostatniej chwili tj. tego samego dnia skutkuje wpisaniem
+                      Klientki na naszą „Czarną listę&quot;. Rozumiemy sytuacje
+                      wyjątkowe i przypadki losowe (należy je potwierdzić np.
+                      zwolnieniem lekarskim).
+                    </li>
+                    <li>
+                      Klientki, które miały kiedykolwiek wykonywany makijaż
+                      permanentny na danym obszarze (nawet mało widoczny) są
+                      zobowiązane przy zapisie powiadomić o tym fakcie recepcję,
+                      ponieważ zdarza się, że zabieg makijażu permanentnego
+                      powinien zostać poprzedzony laserowym usuwaniem śladów po
+                      starym, a to wymaga innego czasu oraz sprzętu.
+                    </li>
+                    <li>
+                      Podczas zabiegu makijażu permanentnego wykonywana jest
+                      wizualizacja i wybierana jest odpowiednia metoda makijażu
+                      permanentnego. Rodzaj metody oraz pigmenty wybierane są
+                      przez linergistkę i dopasowane do naturalnej urody
+                      Klientki.
+                    </li>
+                    <li>
+                      Linergistka ma prawo do odmowy wykonania usługi, jeżeli
+                      oczekiwania Klientki co do kształtu są niezgodne z
+                      klasycznym układem brwi.
+                    </li>
+                    <li>
+                      Decydując się na zabieg należy zapoznać się z pracami,
+                      stylem i techniką linergistek w Salonie.
+                    </li>
+                    <li>
+                      W przypadku, gdy Klientka nie akceptuje proponowanego
+                      kształtu, metody i koloru pigmentu oraz decyduje o
+                      rezygnacji z pigmentacji podczas wizyty — zadatek nie jest
+                      zwracany.
+                    </li>
+                    <li>
+                      Jeżeli Klientka, która skorzystała z usługi makijażu
+                      permanentnego w naszym salonie ma uwagi co do
+                      koloru/kształtu itp. to w ciągu 2 miesięcy od wykonania
+                      może je do nas zgłosić (i zostaną one bezpłatnie
+                      skorygowane), natomiast wszelkie sugestie po upływie 2
+                      miesięcy od zabiegu będą wyceniane indywidualnie.
+                    </li>
+                    <li>
+                      Jeśli Klientka ma umówioną darmową korektę przysługującą w
+                      ciągu 50 dni od daty zabiegu makijażu i na tę wizytę nie
+                      przyjdzie/nie odwoła na 24 godz. to uważa się ją za odbytą
+                      i kolejna umówiona korekta jest już płatna — dokładną cenę
+                      usługi w tej sytuacji ustala linergistka podczas wizyty.
+                      Każdy 1 miesiąc opóźnienia to dodatkowa opłata 100 zł.
+                    </li>
+                    <li>
+                      Jeżeli Klientka jest z zagranicy i nie może odbyć korekty
+                      w ciągu 50 dni od daty pierwszego zabiegu, to istnieje
+                      możliwość wydłużenia umownego okresu do 3 miesięcy po
+                      pierwszej pigmentacji, należy jednak zgłosić fakt
+                      przebywania za granicą linergistce, która zanotuje
+                      informacje w systemie i tylko na tej podstawie okres
+                      korekty wydłuża się. Jeśli Klientka nie zgłosi się w
+                      terminie 3 miesięcy od dnia pierwszej wizyty na korektę
+                      makijażu, to po tym czasie korekta jest już płatna. Cenę
+                      ustala linergistka podczas wizyty.
+                    </li>
+                    <li>
+                      Jeżeli Klientka, która wykonywała zabieg makijażu
+                      permanentnego brwi w naszym Salonie po zabiegu dowiaduje
+                      się o ciąży i odkłada korektę makijażu do okresu po
+                      porodzie, i chce dokonać korekty np. po ok. roku to
+                      wówczas cena zabiegu to 50% aktualnej ceny makijażu
+                      permanentnego.
+                    </li>
+                    <li>
+                      Makijaż permanentny zmienia swoją intensywność w kolejnych
+                      miesiącach po zabiegu dlatego po roku zaleca się wykonanie
+                      korekty płatnej, której koszt zgodnie z cennikiem to 50%
+                      aktualnej ceny makijażu permanentnego. Jeżeli natomiast
+                      będzie potrzebna dodatkowa pigmentacja jej koszt to 200zł.
+                      Korekta po upływie min. 2 latach od ostatniego zabiegu
+                      makijażu permanentnego to koszt 100% aktualnej ceny lub w
+                      wyjątkowych sytuacjach wycena indywidualna.
+                    </li>
+                    <li>
+                      Korekty makijażu permanentnego po innych salonach są
+                      zawsze wyceniane indywidualnie i zwykle traktowane jako
+                      usługa wykonywana od początku + koszt usuwania laserem
+                      wyceniany jest indywidualnie.
+                    </li>
+                    <li>
+                      Zastrzegamy sobie prawo do zmiany poszczególnych punktów
+                      regulaminu.
+                    </li>
+                    <li>
+                      Zastrzegamy sobie prawo do zmiany ustalonego wcześniej
+                      terminu wizyty po ustaleniu z Klientką innego, dogodnego
+                      dla obu stron.
+                    </li>
+                    <li>
+                      Korekta po około roku dotyczy głównie makijażu
+                      permanentnego brwi, ponieważ pigment w innych częściach
+                      utrzymuje się dłużej w związku z tym np. usta po roku są
+                      wyraźnie zabarwione i nie wymagają korekty. Brwi natomiast
+                      znajdują się w strefie T, co skutkuje szybszym
+                      wypłukiwaniem barwnika.
+                    </li>
+                  </ol>
+                </div>
+              </section>
+
               {/* Oświadczenia */}
               <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
                 <h3 className="text-2xl font-serif text-[#4a4540] mb-6 border-b border-[#d4cec4] pb-2">
@@ -1178,65 +1544,117 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
                 </h3>
                 <div className="bg-[#f8f6f3] p-5 rounded-xl mb-6 border border-[#d4cec4]/50">
                   <h4 className="font-serif text-[#4a4540] text-lg mb-4">
-                    OŚWIADCZENIE I ŚWIADOMA ZGODA NA ZABIEG DEPILACJI LASEROWEJ
+                    OŚWIADCZENIE I ŚWIADOMA ZGODA NA ZABIEG MEZOTERAPII IGŁOWEJ
                   </h4>
                   <p className="text-sm text-[#5a5550] mb-4">
-                    Ja, niżej podpisana/y, oświadczam, że:
+                    Ja, niżej podpisana/y, po przeprowadzeniu szczegółowego
+                    wywiadu i konsultacji ze Specjalistą, oświadczam, że:
                   </p>
 
                   <div className="space-y-4 text-sm text-[#5a5550] leading-relaxed">
                     <p>
-                      <strong>Stan zdrowia:</strong> Wszystkie informacje podane
-                      przeze mnie w ankiecie zdrowotnej oraz podczas wywiadu są
-                      prawdziwe, kompletne i zgodne z moim aktualnym stanem
-                      zdrowia. Nie zataiłam/em żadnych informacji o chorobach,
-                      alergiach, ekspozycji na słońce/solarium oraz
-                      przyjmowanych lekach i suplementach (zwłaszcza
-                      światłouczulających). Jestem świadoma/y, że zatajenie
-                      informacji może wpłynąć na bezpieczeństwo i skuteczność
-                      zabiegu oraz zwiększyć ryzyko powikłań.
+                      <strong>Stan zdrowia i odpowiedzialność:</strong>{" "}
+                      Specjalista poinformował mnie o przeciwwskazaniach do
+                      zabiegu. Oświadczam, że nie występują u mnie żadne z nich
+                      (m.in. ciąża, cukrzyca, choroby krwi, aktywne infekcje).
                     </p>
                     <p>
-                      <strong>Informacja o zabiegu:</strong> Otrzymałam/em
-                      wyczerpujące informacje na temat zabiegu depilacji laserem
-                      diodowym, jego przebiegu, wskazań oraz zaleceń dotyczących
-                      pielęgnacji skóry przed i po zabiegu. Miałam/em możliwość
-                      zadawania pytań i uzyskałam/em na nie zrozumiale
-                      odpowiedzi.
+                      Udzieliłam/em pełnych i prawdziwych informacji o moim
+                      stanie zdrowia. Mam pełną świadomość, że zatajenie
+                      informacji lub podanie nieprawdy traktowane będzie jako
+                      moje przyczynienie się do powstania ewentualnej szkody. W
+                      przypadku zatajenia przeciwwskazań biorę na siebie pełną
+                      odpowiedzialność za negatywne skutki zabiegu i zrzekam się
+                      wszelkich roszczeń wobec osoby wykonującej zabieg.
+                    </p>
+
+                    <p>
+                      <strong>Informacja o zabiegu i higiena:</strong>{" "}
+                      Otrzymałam/em wyczerpujące informacje na temat zabiegu
+                      mezoterapii igłowej, techniki jego wykonania oraz celu.
+                      Miałam/em możliwość zadawania pytań i uzyskałam/em na nie
+                      jasne odpowiedzi.
                     </p>
                     <p>
-                      <strong>Efekty i brak gwarancji:</strong> Zostałam/em
-                      poinformowana/y, że skuteczność depilacji zależy od
-                      indywidualnych cech organizmu (m.in. gospodarki
-                      hormonalnej, koloru i grubości włosa, fazy wzrostu włosa).
-                      Rozumiem, że zabieg należy wykonywać w serii (zazwyczaj co
-                      4-8 tygodni) i przyjmuję do wiadomości, że nie jest
-                      możliwe udzielenie 100% gwarancji usunięcia wszystkich
-                      włosów w określonym czasie. Oświadczam, że brak
-                      oczekiwanego rezultatu estetycznego nie będzie podstawą do
-                      roszczeń reklamacyjnych.
+                      Potwierdzam, że materiały użyte do zabiegu (igły,
+                      strzykawki) są sterylne, jednorazowe i zostały otwarte w
+                      mojej obecności. W Salonie zachowane są najwyższe normy
+                      higieniczne.
+                    </p>
+
+                    <p>
+                      <strong>Przebieg i rekonwalescencja:</strong> Zostałam/em
+                      poinformowana/y, że po zabiegu naturalnym objawem jest
+                      opuchlizna i zaczerwienienie skóry, które ustępują
+                      zazwyczaj w ciągu 3-4 dni, w zależności od trybu życia.
+                      Mogą również pojawić się drobne sińce i krwiaki w
+                      miejscach wkłuć.
                     </p>
                     <p>
-                      <strong>Skutki uboczne i odpowiedzialność:</strong> Mam
-                      świadomość, że po zabiegu mogą wystąpić przejściowe
-                      reakcje niepożądane, takie jak: zaczerwienienie, obrzęk,
-                      pieczenie czy drobne strupki. Akceptuję to ryzyko.
+                      Wiem, że mogę powrócić do codziennych czynności po
+                      zabiegu, jednak zobowiązuję się do ograniczenia stosowania
+                      makijażu i drażniących kosmetyków przez 24 godziny.
+                    </p>
+
+                    <p>
+                      <strong>Częstotliwość i trwałość efektów:</strong>{" "}
+                      Poinformowano mnie, że czas trwania zabiegu zależy od
+                      obszaru i cech naskórka (średnio ok. 1h).
                     </p>
                     <p>
-                      <strong>Decyzja:</strong> Decyzję o poddaniu się zabiegowi
-                      podejmuję w pełni świadomie i dobrowolnie. Oświadczam, że
-                      w przypadku wykonania zabiegu zgodnie z zasadami sztuki i
-                      etyki zawodowej, nie będę wnosić żadnych roszczeń
-                      finansowych ani prawnych do osoby wykonującej zabieg w
-                      związku z wystąpieniem typowych reakcji po-zabiegowych lub
-                      brakiem całkowitego usunięcia owłosienia.
+                      W celu uzyskania optymalnego efektu utrzymującego się
+                      przez ok. 6–12 miesięcy, zaleca się wykonanie pełnej serii
+                      zabiegów (zazwyczaj 3 do 6 powtórzeń), w odstępach co 2–4
+                      tygodnie.
                     </p>
+                    <p>
+                      Rozumiem, że zabieg mezoterapii nie jest zabiegiem trwałym
+                      i dla podtrzymania efektu zaleca się wykonywanie zabiegu
+                      przypominającego co 3–6 miesięcy.
+                    </p>
+
+                    <p>
+                      <strong>Brak gwarancji i czynniki indywidualne:</strong>{" "}
+                      Poinformowano mnie, że efekty zabiegu zależą od wielu
+                      czynników (wiek, biochemia, rodzaj skóry, styl życia) i
+                      nie da się w pełni zagwarantować identycznego rezultatu u
+                      każdego klienta.
+                    </p>
+                    <p>
+                      Oświadczam, że brak uzyskania oczekiwanego przeze mnie
+                      subiektywnego efektu nie będzie podstawą do roszczeń, o
+                      ile zabieg został wykonany zgodnie ze sztuką.
+                    </p>
+
+                    <p>
+                      <strong>Kwalifikacje i decyzja:</strong> Oświadczam, że
+                      mam świadomość, iż Specjalista wykonujący zabieg nie jest
+                      lekarzem medycyny estetycznej, ale posiada bogate
+                      doświadczenie i przeszkolenie w zakresie wykonywanych
+                      zabiegów.
+                    </p>
+                    <p>
+                      Decyzję o poddaniu się zabiegowi podejmuję świadomie,
+                      dobrowolnie i na własną odpowiedzialność, akceptując
+                      ryzyko zabiegowe.
+                    </p>
+
+                    <p className="font-bold border-t border-[#d4cec4]/50 pt-4 mt-4">
+                      AKCEPTACJA REGULAMINU: Oświadczam, że zapoznałam/em się z
+                      Regulaminem Salonu dostępnym na stronie internetowej oraz
+                      w recepcji. W pełni akceptuję jego postanowienia, w tym
+                      zasady dotyczące rezerwacji, zadatków, korekt oraz
+                      reklamacji.
+                    </p>
+
                     <p className="mt-4 font-medium text-[#8b7355]">
                       * W przypadku osoby niepełnoletniej wymagany jest podpis
                       rodzica lub opiekuna prawnego.
                     </p>
                   </div>
                 </div>
+
+                {/* Podpis pod Zabiegiem (Nowy, obowiązkowy) */}
                 <div className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8 mt-8">
                   <h3 className="text-xl font-serif text-[#4a4540] mb-4 border-b border-[#d4cec4] pb-2">
                     Potwierdzenie Zgody na Zabieg

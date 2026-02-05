@@ -20,6 +20,8 @@ import {
 import { contraindicationsByFormType, FormType } from "@/types/booking";
 import AnatomyFaceSelector from "@/app/components/AnatomyFaceSelector";
 
+import SpecialistSignature from "@/app/components/forms/SpecialistSignature";
+
 // Funkcja do czyszczenia starego formatu nazwaProduktu (usuwanie emaila)
 const cleanNazwaProduktu = (nazwa: string | null): string | null => {
   if (!nazwa) return null;
@@ -52,7 +54,7 @@ interface ConsentFormFull {
   nazwaProduktu: string | null;
   obszarZabiegu: string | null;
   celEfektu: string | null;
-  przeciwwskazania: Record<string, boolean | null>;
+  przeciwwskazania: Record<string, boolean | string | null>;
   zgodaPrzetwarzanieDanych: boolean;
   zgodaMarketing: boolean;
   zgodaFotografie: boolean;
@@ -63,6 +65,7 @@ interface ConsentFormFull {
   podpisFotografie: string | null;
   podpisRodo: string | null;
   informacjaDodatkowa: string | null;
+  osobaPrzeprowadzajacaZabieg: string | null;
   clientId: string | null;
 }
 
@@ -504,6 +507,29 @@ export default function FormDetailsPage() {
                   </p>
                 )}
               </div>
+              <div>
+                <label className="block text-sm font-medium text-[#8b8580] mb-1">
+                  Osoba przeprowadzająca zabieg
+                </label>
+                {isEditing ? (
+                  <input
+                    type="text"
+                    value={editedForm.osobaPrzeprowadzajacaZabieg || ""}
+                    onChange={(e) =>
+                      setEditedForm({
+                        ...editedForm,
+                        osobaPrzeprowadzajacaZabieg: e.target.value,
+                      })
+                    }
+                    className="w-full px-3 py-2 bg-white border border-[#d4cec4] rounded-lg focus:border-[#8b7355] focus:ring-2 focus:ring-[#8b7355]/20 outline-none"
+                    placeholder="Imię i Nazwisko Specjalisty"
+                  />
+                ) : (
+                  <p className="text-[#5a5550]">
+                    {form.osobaPrzeprowadzajacaZabieg || "Nie przypisano"}
+                  </p>
+                )}
+              </div>
 
               {/* Visual Face Selector for Admin */}
               <div className="mt-4 border-t border-[#d4cec4] pt-4">
@@ -582,6 +608,7 @@ export default function FormDetailsPage() {
                   >
                     {isEditing ? (
                       <div className="flex gap-1 flex-shrink-0">
+                        {/* Edycja jest uproszczona - tylko bool, dla tekstowych trzeba by dodać input */}
                         <button
                           type="button"
                           onClick={() =>
@@ -594,7 +621,8 @@ export default function FormDetailsPage() {
                             })
                           }
                           className={`min-w-[40px] text-center px-2 py-1 text-xs rounded font-medium transition-colors ${
-                            currentValue === true
+                            currentValue === true ||
+                            typeof currentValue === "string"
                               ? "bg-red-500 text-white"
                               : "bg-red-100 text-red-600 hover:bg-red-200"
                           }`}
@@ -623,7 +651,16 @@ export default function FormDetailsPage() {
                       </div>
                     ) : (
                       <>
-                        {value === true ? (
+                        {typeof value === "string" ? (
+                          <div className="flex flex-col items-start gap-1">
+                            <span className="min-w-[44px] text-center px-2 py-1 bg-red-100 text-red-600 text-xs rounded font-medium flex-shrink-0">
+                              TAK
+                            </span>
+                            <span className="text-xs text-[#8b7355] font-medium italic">
+                              "{value}"
+                            </span>
+                          </div>
+                        ) : value === true ? (
                           <span className="min-w-[44px] text-center px-2 py-1 bg-red-100 text-red-600 text-xs rounded font-medium flex-shrink-0">
                             TAK
                           </span>
@@ -833,6 +870,11 @@ export default function FormDetailsPage() {
                   Klient nie wyraził zgody.
                 </p>
               )}
+            </div>
+
+            {/* Specialist Signature */}
+            <div className="bg-white/80 rounded-2xl shadow-sm border border-[#d4cec4] p-6">
+              <SpecialistSignature date={form.miejscowoscData} />
             </div>
           </div>
         )}

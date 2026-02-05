@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
 
 export default function RegulaminPage() {
   return (
@@ -17,10 +16,9 @@ export default function RegulaminPage() {
             </Link>
             <Link
               href="/"
-              className="flex items-center space-x-2 text-[#f8f6f3] hover:text-[#8b7355] transition-colors font-light text-sm tracking-wider uppercase"
+              className="text-[#f8f6f3] hover:text-[#8b7355] transition-colors font-light text-sm tracking-wider uppercase"
             >
-              <ArrowLeft className="w-4 h-4" />
-              <span>Powrót</span>
+              Powrót
             </Link>
           </div>
         </div>
@@ -29,11 +27,14 @@ export default function RegulaminPage() {
       {/* Header */}
       <section className="pt-40 pb-12 px-4 border-b border-[#4a4540]/10">
         <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-4xl md:text-5xl font-serif font-light text-[#4a4540] mb-4 tracking-wider">
+          <h1 className="text-4xl md:text-5xl font-serif font-light text-[#4a4540] mb-2 tracking-wider">
             REGULAMIN
           </h1>
-          <p className="text-sm text-[#8b8580] font-light">
-            Ostatnia aktualizacja: Styczeń 2026
+          <p className="text-lg text-[#8b7355] font-light tracking-wide">
+            Świadczenia Usług
+          </p>
+          <p className="text-sm text-[#8b8580] font-light mt-2">
+            Royal Lips – Joanna Wielgos
           </p>
         </div>
       </section>
@@ -41,154 +42,276 @@ export default function RegulaminPage() {
       {/* Content */}
       <section className="py-16 px-4">
         <div className="max-w-4xl mx-auto">
-          <div className="bg-white/60 backdrop-blur-sm p-8 md:p-12 space-y-8 rounded-2xl shadow-sm border border-[#d4cec4]">
+          <div className="bg-white/60 backdrop-blur-sm p-8 md:p-12 space-y-10 rounded-2xl shadow-sm border border-[#d4cec4]">
+            {/* §1 */}
             <div>
               <h2 className="text-xl font-serif font-light text-[#4a4540] mb-4 tracking-wider uppercase">
-                1. Postanowienia ogólne
+                §1. Postanowienia ogólne
               </h2>
-              <p className="text-[#4a4540]/80 font-light leading-relaxed">
-                Niniejszy regulamin określa zasady korzystania z usług
-                świadczonych przez Royal Lips - Joanna Wielgos, z siedzibą przy
-                ul. Pużaka 37, 38-400 Krosno, REGION:180685260, NIP:6842237473.
-                Korzystanie z usług oznacza akceptację niniejszego regulaminu.
-              </p>
+              <div className="text-[#4a4540]/80 font-light leading-relaxed space-y-3">
+                <p>
+                  Niniejszy Regulamin określa zasady korzystania z usług
+                  kosmetycznych i makijażu permanentnego świadczonych przez firmę
+                  Royal Lips – Joanna Wielgos, z siedzibą przy ul. Pużaka 37,
+                  38-400 Krosno, NIP: 6842237473, REGON: 180685260 (zwaną dalej
+                  „Salonem").
+                </p>
+                <p>
+                  Klientem Salonu może być każda osoba pełnoletnia. Osoby
+                  niepełnoletnie mogą korzystać z usług wyłącznie za pisemną
+                  zgodą rodzica lub opiekuna prawnego.
+                </p>
+                <p>
+                  Przystąpienie do zabiegu jest równoznaczne z akceptacją
+                  postanowień niniejszego Regulaminu.
+                </p>
+                <p>
+                  Ceny usług podane w cenniku (na stronie internetowej lub
+                  w Salonie) są cenami brutto i wyrażone są w polskich złotych.
+                </p>
+              </div>
             </div>
 
+            {/* §2 */}
             <div>
               <h2 className="text-xl font-serif font-light text-[#4a4540] mb-4 tracking-wider uppercase">
-                2. Rezerwacja wizyt
+                §2. Rezerwacja wizyt i płatności
               </h2>
-              <ul className="list-disc list-inside text-[#4a4540]/80 font-light space-y-2 ml-4">
-                <li>
-                  Rezerwacji wizyty można dokonać przez formularz online,
-                  telefonicznie lub przez media społecznościowe.
-                </li>
-                <li>
-                  Po dokonaniu rezerwacji skontaktujemy się w celu potwierdzenia
-                  terminu w ciągu 24 godzin.
-                </li>
-                <li>
-                  Rezerwacja jest wiążąca po otrzymaniu potwierdzenia od studia.
-                </li>
-                <li>
-                  Przed zabiegiem wymagane jest wypełnienie formularza wywiadu
-                  zdrowotnego.
-                </li>
-              </ul>
+              <div className="text-[#4a4540]/80 font-light leading-relaxed space-y-3">
+                <p>Rezerwacji wizyty można dokonać:</p>
+                <ul className="list-disc list-inside space-y-1 ml-4">
+                  <li>telefonicznie,</li>
+                  <li>
+                    poprzez media społecznościowe (Facebook/Instagram),
+                  </li>
+                  <li>osobiście w Salonie.</li>
+                </ul>
+                <p>
+                  Rezerwacja terminu na zabieg makijażu permanentnego wymaga
+                  wpłaty zadatku w wysokości{" "}
+                  <strong>50% wartości zabiegu</strong>.
+                </p>
+                <p>
+                  Zadatek należy wpłacić w terminie{" "}
+                  <strong>3 dni</strong> od momentu wstępnej rezerwacji. Brak
+                  wpłaty w tym terminie skutkuje automatycznym anulowaniem
+                  rezerwacji.
+                </p>
+                <p>
+                  Wpłaty można dokonać przelewem na konto bankowe:
+                </p>
+                <div className="bg-[#f8f6f3] p-4 rounded-xl border border-[#d4cec4]/50 my-2">
+                  <p className="font-medium text-[#4a4540]">
+                    76 2490 0005 0000 4600 3925 2048
+                  </p>
+                  <p className="text-sm mt-1">
+                    Tytuł przelewu: Data zabiegu oraz Imię i Nazwisko Klientki.
+                  </p>
+                </div>
+                <p>
+                  W dniu zabiegu cena usługi pomniejszana jest o kwotę
+                  wpłaconego zadatku. Pozostałą część kwoty Klient uiszcza na
+                  miejscu gotówką lub kartą płatniczą.
+                </p>
+              </div>
             </div>
 
+            {/* §3 */}
             <div>
               <h2 className="text-xl font-serif font-light text-[#4a4540] mb-4 tracking-wider uppercase">
-                3. Odwoływanie i zmiana terminu
+                §3. Odwoływanie i zmiana terminu wizyty
               </h2>
-              <ul className="list-disc list-inside text-[#4a4540]/80 font-light space-y-2 ml-4">
-                <li>
-                  Odwołanie lub zmiana terminu wizyty powinna nastąpić minimum
-                  24 godziny przed umówionym terminem.
-                </li>
-                <li>
+              <div className="text-[#4a4540]/80 font-light leading-relaxed space-y-3">
+                <p>
+                  Klient ma prawo do bezkosztowej zmiany terminu wizyty
+                  najpóźniej na <strong>3 dni</strong> przed planowanym
+                  zabiegiem. W takim przypadku zadatek przechodzi na nowy
+                  termin.
+                </p>
+                <p>
+                  W przypadku odwołania wizyty lub chęci zmiany terminu na mniej
+                  niż 3 dni przed zabiegiem, wpłacony zadatek przepada (zgodnie
+                  z art. 394 Kodeksu Cywilnego jako rekompensata za utracony
+                  czas pracy).
+                </p>
+                <p>
+                  Wyjątek stanowią zdarzenia losowe i nagłe choroby,
+                  potwierdzone odpowiednim dokumentem (np. zwolnieniem
+                  lekarskim), które należy zgłosić niezwłocznie. W takich
+                  sytuacjach Salon może wyrazić zgodę na przeniesienie zadatku
+                  na inny termin.
+                </p>
+                <p>
                   W przypadku niestawienia się na wizytę bez wcześniejszego
-                  powiadomienia, studio zastrzega sobie prawo do pobrania opłaty
-                  za rezerwację przy kolejnej wizycie.
-                </li>
-                <li>
-                  W przypadku spóźnienia powyżej 15 minut, wizyta może zostać
-                  skrócona lub przełożona na inny termin.
-                </li>
-              </ul>
+                  powiadomienia, zadatek przepada w całości. Salon zastrzega
+                  sobie również prawo do odmowy przyjęcia kolejnych rezerwacji od
+                  takiej osoby lub wymagania przedpłaty 100% wartości usługi.
+                </p>
+                <p>
+                  Spóźnienie Klienta powyżej 15 minut może skutkować skróceniem
+                  czasu zabiegu lub koniecznością przełożenia go na inny termin
+                  (co może wiązać się z przepadkiem zadatku, jeśli czas nie
+                  pozwoli na wykonanie pełnej usługi).
+                </p>
+              </div>
             </div>
 
+            {/* §4 */}
             <div>
               <h2 className="text-xl font-serif font-light text-[#4a4540] mb-4 tracking-wider uppercase">
-                4. Przeciwwskazania do zabiegu
+                §4. Przeciwwskazania i kwalifikacja do zabiegu
               </h2>
-              <p className="text-[#4a4540]/80 font-light leading-relaxed mb-4">
-                Zabiegi makijażu permanentnego nie mogą być wykonane w
-                przypadku:
-              </p>
-              <ul className="list-disc list-inside text-[#4a4540]/80 font-light space-y-2 ml-4">
-                <li>Ciąży i karmienia piersią</li>
-                <li>Cukrzycy (wymagana konsultacja z lekarzem)</li>
-                <li>Chorób autoimmunologicznych</li>
-                <li>Aktywnej opryszczki w miejscu zabiegu</li>
-                <li>Przyjmowania leków rozrzedzających krew</li>
-                <li>Chorób skóry w miejscu zabiegu</li>
-                <li>Skłonności do bliznowców</li>
-                <li>Chemioterapii lub radioterapii</li>
-              </ul>
+              <div className="text-[#4a4540]/80 font-light leading-relaxed space-y-3">
+                <p>
+                  Przed przystąpieniem do zabiegu Klient zobowiązany jest do
+                  wypełnienia Karty Klienta oraz ankiety zdrowotnej. Zatajenie
+                  informacji o stanie zdrowia (przeciwwskazaniach) zwalnia Salon
+                  z odpowiedzialności za ewentualne powikłania.
+                </p>
+                <p>
+                  Bezwzględnymi przeciwwskazaniami do zabiegu są m.in.:
+                </p>
+                <ul className="list-disc list-inside space-y-1 ml-4">
+                  <li>ciąża, karmienie piersią,</li>
+                  <li>aktywna opryszczka,</li>
+                  <li>choroby nowotworowe (bez zgody lekarza),</li>
+                  <li>nieustabilizowana cukrzyca,</li>
+                  <li>łuszczyca w miejscu zabiegu,</li>
+                  <li>przyjmowanie leków rozrzedzających krew.</li>
+                </ul>
+                <p>
+                  Klientki posiadające „stary" makijaż permanentny (wykonany
+                  w innym salonie) są zobowiązane poinformować o tym fakcie przy
+                  zapisie. Salon zastrzega sobie prawo do odmowy wykonania
+                  pigmentacji naprawczej lub skierowania Klientki na zabieg
+                  laserowego usuwania (dodatkowo płatny).
+                </p>
+                <p>
+                  Korekty makijażu po innych salonach są traktowane jako nowy
+                  zabieg i podlegają indywidualnej wycenie.
+                </p>
+              </div>
             </div>
 
+            {/* §5 */}
             <div>
               <h2 className="text-xl font-serif font-light text-[#4a4540] mb-4 tracking-wider uppercase">
-                5. Przygotowanie do zabiegu
+                §5. Przebieg zabiegu i efekty (gwarancja)
               </h2>
-              <ul className="list-disc list-inside text-[#4a4540]/80 font-light space-y-2 ml-4">
-                <li>
-                  Przed zabiegiem nie należy spożywać alkoholu (min. 24h przed)
-                </li>
-                <li>Nie należy opalać się (min. 2 tygodnie przed)</li>
-                <li>
-                  Nie stosować retinolu i kwasów w miejscu zabiegu (min. 2
-                  tygodnie przed)
-                </li>
-                <li>Poinformować o wszystkich przyjmowanych lekach</li>
-                <li>Przyjść na zabieg bez makijażu w okolicy zabiegu</li>
-              </ul>
+              <div className="text-[#4a4540]/80 font-light leading-relaxed space-y-3">
+                <p>
+                  Każdy zabieg poprzedzony jest bezpłatną konsultacją, podczas
+                  której dobierana jest metoda, kolor oraz wykonywany jest
+                  rysunek wstępny (wizualizacja).
+                </p>
+                <p>
+                  Linergistka ma prawo odmówić wykonania zabiegu, jeśli
+                  oczekiwania Klientki co do kształtu lub koloru są niezgodne
+                  z estetyką, anatomią twarzy lub zasadami sztuki PMU.
+                </p>
+                <p>
+                  W przypadku braku akceptacji przez Klientkę proponowanego
+                  kształtu i rezygnacji z zabiegu w dniu wizyty, wpłacony
+                  zadatek pokrywa koszt konsultacji i czasu zarezerwowanego dla
+                  pracownika i nie podlega zwrotowi.
+                </p>
+                <p>
+                  Efekt zabiegu jest kwestią indywidualną i zależy od rodzaju
+                  skóry, wieku oraz przestrzegania zaleceń pozabiegowych. Salon
+                  nie udziela gwarancji na trwałość makijażu (nie jest możliwe
+                  przewidzenie dokładnego czasu utrzymywania się pigmentu
+                  w skórze).
+                </p>
+              </div>
             </div>
 
+            {/* §6 */}
             <div>
               <h2 className="text-xl font-serif font-light text-[#4a4540] mb-4 tracking-wider uppercase">
-                6. Gwarancja i korekta
+                §6. Korekta (dopigmentowanie)
               </h2>
-              <p className="text-[#4a4540]/80 font-light leading-relaxed">
-                Korekta jest wliczona w cenę zabiegu i powinna być wykonana w
-                terminie 4-8 tygodni od pierwszego zabiegu. Brak stawienia się
-                na korektę w wyznaczonym terminie skutkuje utratą gwarancji.
-                Efekt końcowy zależy od indywidualnych predyspozycji skóry i
-                przestrzegania zaleceń pozabiegowych.
-              </p>
+              <div className="text-[#4a4540]/80 font-light leading-relaxed space-y-3">
+                <p>
+                  Pierwsza korekta (uzupełniająca) jest wliczona w cenę
+                  podstawowego zabiegu (chyba że cennik stanowi inaczej)
+                  i powinna zostać wykonana w terminie od{" "}
+                  <strong>4 do 8 tygodni</strong> od pierwszego zabiegu.
+                </p>
+                <p>
+                  Jeżeli Klientka nie stawi się na korektę w wyznaczonym
+                  terminie (do 8 tygodni) lub odwoła ją później niż 24h przed
+                  wizytą, korekta przepada. Wykonanie dopigmentowania
+                  w późniejszym terminie jest płatne dodatkowo (każdy miesiąc
+                  zwłoki to dopłata 100 zł lub wg aktualnej wyceny).
+                </p>
+                <p>
+                  Dla Klientek mieszkających na stałe za granicą, termin
+                  bezpłatnej korekty może zostać wydłużony do 3 miesięcy, pod
+                  warunkiem zgłoszenia tego faktu podczas pierwszego zabiegu.
+                </p>
+                <div className="bg-[#f8f6f3] p-4 rounded-xl border border-[#d4cec4]/50 my-2">
+                  <p className="font-medium text-[#4a4540] mb-2">
+                    Odświeżenie makijażu po roku (tzw. „Refresh"):
+                  </p>
+                  <ul className="list-disc list-inside space-y-1 ml-2">
+                    <li>Do 1,5 roku od zabiegu: 50% aktualnej ceny z cennika.</li>
+                    <li>
+                      Powyżej 2 lat: 100% ceny (traktowane jako nowy zabieg).
+                    </li>
+                  </ul>
+                </div>
+                <p>
+                  W przypadku ciąży wykrytej po pierwszym zabiegu, Klientka może
+                  wykonać korektę po porodzie/karmieniu (np. po roku) za 50%
+                  ceny aktualnej.
+                </p>
+              </div>
             </div>
 
+            {/* §7 */}
             <div>
               <h2 className="text-xl font-serif font-light text-[#4a4540] mb-4 tracking-wider uppercase">
-                7. Płatności
+                §7. Reklamacje
               </h2>
-              <ul className="list-disc list-inside text-[#4a4540]/80 font-light space-y-2 ml-4">
-                <li>Płatność następuje po wykonaniu zabiegu</li>
-                <li>Akceptujemy płatność gotówką oraz kartą</li>
-                <li>
-                  Ceny usług dostępne są w cenniku na stronie lub w studio
-                </li>
-                <li>
-                  Studio zastrzega sobie prawo do zmiany cen bez wcześniejszego
-                  powiadomienia
-                </li>
-              </ul>
+              <div className="text-[#4a4540]/80 font-light leading-relaxed space-y-3">
+                <p>
+                  Klient ma prawo do złożenia reklamacji w przypadku
+                  niezadowolenia z usługi.
+                </p>
+                <p>
+                  Reklamacje należy składać pisemnie na adres e-mail:{" "}
+                  <strong>kontakt@royallips.pl</strong> w terminie do{" "}
+                  <strong>14 dni</strong> od wykonania usługi. Zgłoszenie
+                  powinno zawierać opis problemu oraz dokumentację
+                  fotograficzną.
+                </p>
+                <p>
+                  Ewentualne poprawki w ramach reklamacji (jeśli są uzasadnione
+                  błędami technicznymi) wykonywane są bezpłatnie w terminie do
+                  2 miesięcy od zabiegu. Wszelkie uwagi zgłaszane po upływie
+                  2 miesięcy będą traktowane jako nowe zlecenia płatne.
+                </p>
+              </div>
             </div>
 
+            {/* §8 */}
             <div>
               <h2 className="text-xl font-serif font-light text-[#4a4540] mb-4 tracking-wider uppercase">
-                8. Reklamacje
+                §8. Postanowienia końcowe
               </h2>
-              <p className="text-[#4a4540]/80 font-light leading-relaxed">
-                Reklamacje należy zgłaszać pisemnie na adres email:
-                kontakt@royallips.pl w terminie 14 dni od wykonania zabiegu.
-                Reklamacja powinna zawierać opis problemu oraz dokumentację
-                fotograficzną. Reklamacje rozpatrywane są w terminie 14 dni
-                roboczych.
-              </p>
-            </div>
-
-            <div>
-              <h2 className="text-xl font-serif font-light text-[#4a4540] mb-4 tracking-wider uppercase">
-                9. Postanowienia końcowe
-              </h2>
-              <p className="text-[#4a4540]/80 font-light leading-relaxed">
-                Studio zastrzega sobie prawo do zmiany regulaminu. О wszelkich
-                zmianach klienci będą informowani na stronie internetowej. W
-                sprawach nieuregulowanych niniejszym regulaminem zastosowanie
-                mają przepisy Kodeksu Cywilnego.
-              </p>
+              <div className="text-[#4a4540]/80 font-light leading-relaxed space-y-3">
+                <p>
+                  Salon zastrzega sobie prawo do zmiany cennika oraz godzin
+                  otwarcia. Zmiany nie dotyczą rezerwacji, na które został już
+                  wpłacony zadatek (obowiązuje cena z dnia rezerwacji, chyba że
+                  upłynęło ponad 6 miesięcy).
+                </p>
+                <p>
+                  W sprawach nieuregulowanych niniejszym Regulaminem zastosowanie
+                  mają przepisy Kodeksu Cywilnego.
+                </p>
+                <p>Regulamin wchodzi w życie z dniem publikacji.</p>
+              </div>
             </div>
           </div>
         </div>

@@ -3,6 +3,7 @@ import {
   Phone,
   Check,
   ArrowLeft,
+  ArrowRight,
   Instagram,
   Mail,
   Shield,
@@ -17,21 +18,21 @@ import Footer from "@/app/components/Footer";
 import {
   ConsentFormData,
   ContraindicationWithFollowUp,
-  depilacjaLaserowaNaturalReactions,
-  depilacjaLaserowaComplications,
-  depilacjaLaserowaPostCare,
-  depilacjaLaserowaPreCare,
+  laseroweUsuwanieNaturalReactions,
+  laseroweUsuwanieComplications,
+  laseroweUsuwaniePostCare,
+  laseroweUsuwaniePreCare,
   rodoInfo,
 } from "../../../types/booking";
-import { depilacjaLaserowaContraindications } from "../../../types/booking";
+import { laseroweUsuwanieContraindications } from "../../../types/booking";
 import SpecialistSignature from "./SpecialistSignature";
 
-interface LaserRemovalFormProps {
+interface LaserTattoRemovalFormProps {
   onBack: () => void;
 }
 
 const initialFormData: ConsentFormData = {
-  type: "LASER_HAIR_REMOVAL",
+  type: "LASER_TATTOO_REMOVAL",
   imieNazwisko: "",
   ulica: "",
   kodPocztowy: "",
@@ -44,13 +45,15 @@ const initialFormData: ConsentFormData = {
   obszarZabiegu: "",
   celEfektu: "",
   numerZabiegu: "",
-  przeciwwskazania: Object.entries(depilacjaLaserowaContraindications).reduce(
+  przeciwwskazania: Object.entries(laseroweUsuwanieContraindications).reduce(
     (acc, [key, value]) => {
-      const hasFollowUp = typeof value === "object" && value.hasFollowUp;
+      // W przypadku laseroweUsuwanieContraindications wartości są stringami, więc nie ma followUp w definicji typu Record<string, string>
+      // Ale jeśli zmieniliśmy typ w booking.ts na Record<string, string | ContraindicationWithFollowUp>, to musimy to obsłużyć.
+      // W booking.ts: export const laseroweUsuwanieContraindications: Record<string, string> = { ... }
+      // Więc followUp jest false.
       return {
         ...acc,
         [key]: null,
-        ...(hasFollowUp ? { [`${key}_details`]: "" } : {}),
       };
     },
     {},
@@ -69,7 +72,9 @@ const initialFormData: ConsentFormData = {
   zastrzeniaKlienta: "",
 };
 
-export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
+export default function LaserTattoRemovalForm({
+  onBack,
+}: LaserTattoRemovalFormProps) {
   const [formData, setFormData] = useState<ConsentFormData>(initialFormData);
   const [email, setEmail] = useState("");
   const [birthDateError, setBirthDateError] = useState<string | null>(null);
@@ -90,10 +95,10 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
   const [isSignatureVerified, setIsSignatureVerified] = useState(false);
   const [auditLog, setAuditLog] = useState<AuditLogData | null>(null);
 
-  const contraindicationKeys = Object.keys(depilacjaLaserowaContraindications);
+  const contraindicationKeys = Object.keys(laseroweUsuwanieContraindications);
   const currentContraindicationKey =
     contraindicationKeys[currentContraindicationIndex];
-  const currentContraindicationValue = depilacjaLaserowaContraindications[
+  const currentContraindicationValue = laseroweUsuwanieContraindications[
     currentContraindicationKey
   ] as string | ContraindicationWithFollowUp;
   const currentContraindicationObject:
@@ -112,12 +117,11 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
 
   const handleWizardAnswer = (value: boolean) => {
     handleContraindicationChange(currentContraindicationKey, value);
-    // For follow-up questions, don't auto-advance — user must click "Dalej"
-    const currentValue =
-      depilacjaLaserowaContraindications[currentContraindicationKey];
-    const hasFollowUp =
-      typeof currentValue === "object" && currentValue.hasFollowUp;
-    if (hasFollowUp) {
+    // If question has follow-up and user answered TAK, don't auto-advance
+    // The user needs to fill in the details first
+    const hasFollowUp = currentContraindicationObject?.hasFollowUp;
+    if (value && hasFollowUp) {
+      // Don't advance - the UI will show the follow-up input
       return;
     }
     if (currentContraindicationIndex < contraindicationKeys.length) {
@@ -125,6 +129,7 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
     }
   };
 
+  // Handler for advancing after filling in follow-up details
   const handleWizardNext = () => {
     if (currentContraindicationIndex < contraindicationKeys.length) {
       setCurrentContraindicationIndex((prev) => prev + 1);
@@ -385,11 +390,12 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
           </div>
 
           <div className="text-center">
-            <h1 className="text-3xl md:text-4xl font-serif text-[#4a3a2a] mb-2">
-              Depilacja Laserowa
-            </h1>
+            <h1 className="text-3xl md:text-4xl font-serif text-[#4a3a2a] mb-2"></h1>
             <p className="text-[#8b7355] text-lg font-light tracking-wide uppercase">
-              Laser Diodowy
+              Usuwanie Makijażu Permanentnego i Tatuażu
+            </p>
+            <p className="text-[#8b7355] text-lg font-light tracking-wide uppercase">
+              Laser Pikosekundowy
             </p>
           </div>
         </div>
@@ -552,42 +558,98 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
                 </h2>
                 <div className="prose prose-sm max-w-none text-[#5a5550] leading-relaxed space-y-4">
                   <p>
-                    Zabieg depilacji laserowej przy użyciu lasera diodowego jest
-                    zabiegiem kosmetologicznym mającym na celu trwałą redukcję
-                    owłosienia. Działanie lasera opiera się na selektywnym
-                    pochłanianiu energii światła przez melaninę zawartą we
-                    włosach, która następnie przekształcana jest w ciepło.
-                    Powstałe w ten sposób ciepło prowadzi do uszkodzenia mieszka
-                    włosowego, co hamuje dalszy wzrost włosa. Laser diodowy
-                    penetruje głębiej w skórę niż inne typy laserów, dzięki
-                    czemu skutecznie działa na włosy ciemniejsze i głębiej
-                    osadzone, przy minimalnym oddziaływaniu na otaczającą skórę.
+                    Zabieg laserowego usuwania makijażu permanentnego lub
+                    tatuażu polega na niszczeniu barwnika odpowiednią wiązką
+                    światła i rozbijaniu go na mniejsze cząsteczki. Są one z
+                    kolei pochłaniane przez specjalne komórki w organizmie
+                    człowieka - tak zwane makrofagi, oczyszczające organizm z
+                    różnych szkodliwych substancji.
                   </p>
                   <p>
-                    Zabieg jest najbardziej skuteczny w przypadku włosów
-                    znajdujących się w fazie wzrostu, zwanej fazą anagenu. Z
-                    tego powodu osiągnięcie optymalnych efektów wymaga wykonania
-                    serii zabiegów w odstępach kilku tygodni, aby objąć
-                    wszystkie włosy w różnych fazach cyklu wzrostu. Czas trwania
-                    pojedynczej sesji zależy od wielkości obszaru poddanego
-                    zabiegowi i może wynosić od kilkunastu minut do około
-                    godziny.
+                    Wskazaniem do zabiegu jest chęć usunięcia makijażu
+                    permanentnego i tatuażu, poprawa samopoczucia psychicznego i
+                    akceptacja.
                   </p>
                   <p>
-                    Efekty depilacji laserowej mogą się różnić w zależności od
-                    rodzaju włosów, fototypu skóry, gospodarki hormonalnej oraz
-                    indywidualnych predyspozycji organizmu. Zabieg zwykle
-                    prowadzi do znacznej redukcji owłosienia po kilku sesjach,
-                    jednak nie gwarantuje całkowitego i trwałego usunięcia
-                    włosów.
+                    Po wykluczeniu przeciwwskazań do zabiegu Specjalista
+                    wykonuje próbę lasera, która pozwala sprawdzić reakcję
+                    Klienta na działanie wiązki światła. Jeśli nie występują
+                    żadne reakcje niepożądane, można przystąpić do właściwego
+                    zabiegu.
                   </p>
                   <p>
-                    Po zabiegu skóra może reagować zaczerwienieniem, obrzękiem,
-                    pieczeniem lub swędzeniem, a w niektórych przypadkach mogą
-                    pojawić się strupki, pęcherze lub tymczasowe przebarwienia.
-                    Reakcje te są indywidualne i mogą wystąpić nawet przy
-                    prawidłowym wykonaniu zabiegu i przestrzeganiu zaleceń
-                    pielęgnacyjnych.
+                    Metoda lasera Picosecond Laser - Oshun Technology, który
+                    jest używany do zabiegu działa w szybki sposób liczony w
+                    nanosekundach i dostarcza odpowiednią długość wiązki
+                    laserowej w głąb skóry. Wiązka absorbowana przez barwnik
+                    makijażu lub tatuażu rozbija barwnik jako otorbienie na
+                    drobne fragmenty, wystarczająco by w ciągu najbliższych
+                    kilku tygodni od przeprowadzonego zabiegu zostały całkowicie
+                    usunięte ze skóry. Niektóre cząstki położone w skórze bardzo
+                    płytko zostaną usunięte wraz z powierzchownym złuszczeniem
+                    się naskórka. Druga część rozproszonych pigmentów w
+                    głębszych warstwach skóry, zostanie wchłonięta przez
+                    organizm i odprowadzana do więzów chłonnych. Efekt
+                    rozkładania przez makrofagi cząsteczek barwnika trwa do
+                    kilku tygodni, dlatego wykonanie kolejnego zabiegu w krótkim
+                    czasie od wykonania ostatniego zabiegu nie jest zalecane.
+                    Zmiany są widoczne po pierwszym zabiegu, nie zawsze
+                    bezpośrednio po jego przeprowadzeniu ale w okresie od 3 – 4
+                    tygodni.
+                  </p>
+                  <p>
+                    Podczas pracy lasera słychać „strzały” gdy laser trafia w
+                    barwnik. Jest to zabieg bezpieczny. Ilość powstałego ciepła
+                    jest niewielka dlatego zabieg pozbawiony jest ryzyka
+                    termicznego uszkodzenia okolicznych tkanek. W trakcie sesji
+                    laserowych – w zależności od rodzaju pigmentu – pod wpływem
+                    wiązki laserowej barwnik może zmieniać swój odcień na
+                    łososiowy, pomarańczowy, szary. W przypadku usuwania
+                    barwnika z czerwieni wargowej barwnik może stać się
+                    ciemniejszy. Jest to przejściowe z uwagi na reakcję barwnika
+                    na wiązkę lasera.
+                  </p>
+                  <p>
+                    Zabieg wykonywany jest w kilku seriach, dzięki którym
+                    barwnik ulega stopniowemu rozjaśnieniu. W przypadku tatuażu
+                    jest konieczność wykonania od 3 – 10 zabiegów - w przypadku
+                    tatuaży amatorskich i 6 w przypadku tatuaży profesjonalnych.
+                  </p>
+                  <p>
+                    Przy usuwania makijażu permanentnego wymagane jest wykonanie
+                    od 2 - 4 zabiegów. Pomiędzy zabiegami powinna występować co
+                    najmniej 4 tyg. przerwa. Jest to niezbędny czas na
+                    wchłonięcie się rozbitego barwnika i regeneracji skóry. Z
+                    każdym powtórzeniem zabiegu makijaż czy tatuaż są coraz
+                    bledsze aż dochodzi do jego całkowitego zniknięcia. Zabieg
+                    może trwać od kilku minut do około 1 godziny, w zależności
+                    od powierzchni z jakiej barwnik ma zostać usunięty. Zabieg
+                    nie jest przyjemny a indywidualne odczucia będą uzależnione
+                    od odporności na ból każdego Klienta. Brak jest
+                    przeciwwskazań do zastosowania znieczulenia, ale jego
+                    zastosowanie może sprawić, że zastosowane znieczulenie może
+                    blokować docieranie wiązki lasera do głębokich warstw skóry,
+                    przez co zabieg może być mniej efektywny.
+                  </p>
+                  <p>Ilość zabiegów jest uzależniona od:</p>
+                  <ul className="list-disc pl-5 space-y-1">
+                    <li>koloru barwnika</li>
+                    <li>wielkości i gęstości zawartego w skórze barwnika</li>
+                    <li>typu barwnika</li>
+                    <li>głębokości osadzonego pigmentu</li>
+                    <li>
+                      odcienia skóry (im mniej jest opalona skóry, tym zabieg
+                      jest bardziej bezpieczny, efektywny i pozbawiony
+                      skłonności do przebarwień)
+                    </li>
+                    <li>
+                      indywidualnej reakcji immunologicznej na działanie lasera
+                    </li>
+                  </ul>
+                  <p>
+                    Określenie z góry konkretnej liczby zabiegów, które należy
+                    wykonać jest niemożliwe. Wykonanie kolejnego zabiegu jest
+                    możliwe po upływie minimum 4 tyg. przerwy.
                   </p>
                 </div>
               </section>
@@ -601,49 +663,154 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
                   Szczegóły Zabiegu
                 </h2>
                 <div className="space-y-6">
+                  {/* Rodzaj Zabiegu */}
                   <div>
-                    <div>
-                      <label className="block text-sm text-[#6b6560] mb-2 font-medium">
-                        Obszar Zabiegu
-                      </label>
-                      <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                        {[
-                          "Wąsik",
-                          "Broda",
-                          "Twarz",
-                          "Pachy",
-                          "Ramiona",
-                          "Bikini",
-                          "Uda",
-                          "Łydki",
-                          "Całe nogi",
-                          "Plecy",
-                          "Klatka piersiowa",
-                          "Brzuch",
-                        ].map((area) => (
+                    <label className="block text-sm text-[#6b6560] mb-2 font-medium">
+                      Zabieg dotyczy *
+                    </label>
+                    <div className="flex flex-col gap-3">
+                      {[
+                        {
+                          value: "Makijaż permanentny",
+                          desc: "Usuwanie pigmentu z brwi, ust, kresek itp.",
+                        },
+                        {
+                          value: "Tatuaż",
+                          desc: "Usuwanie tatuażu artystycznego z różnych części ciała.",
+                        },
+                      ].map((option) => {
+                        const isSelected =
+                          formData.nazwaProduktu === option.value;
+                        return (
                           <button
-                            key={area}
+                            key={option.value}
                             type="button"
-                            onClick={() => {
-                              const current = formData.obszarZabiegu
-                                ? formData.obszarZabiegu.split(", ")
-                                : [];
-                              const newValue = current.includes(area)
-                                ? current.filter((i) => i !== area).join(", ")
-                                : [...current, area].join(", ");
-                              handleInputChange("obszarZabiegu", newValue);
-                            }}
-                            className={`py-3 px-4 rounded-xl border-2 transition-all font-medium text-sm ${
-                              (formData.obszarZabiegu || "")
-                                .split(", ")
-                                .includes(area)
-                                ? "border-[#8b7355] bg-[#8b7355] text-white"
-                                : "border-[#d4cec4] bg-white text-[#6b6560] hover:border-[#8b7355] hover:text-[#8b7355]"
+                            onClick={() =>
+                              handleInputChange("nazwaProduktu", option.value)
+                            }
+                            className={`text-left p-4 rounded-xl border-2 transition-all ${
+                              isSelected
+                                ? "border-[#8b7355] bg-[#8b7355]/5 shadow-md"
+                                : "border-[#d4cec4] bg-white hover:border-[#8b7355]"
                             }`}
                           >
-                            {area}
+                            <div className="flex justify-between items-center mb-1">
+                              <span
+                                className={`font-serif text-lg font-medium ${
+                                  isSelected
+                                    ? "text-[#8b7355]"
+                                    : "text-[#4a4540]"
+                                }`}
+                              >
+                                {option.value}
+                              </span>
+                              {isSelected && (
+                                <CheckCircle2 className="w-5 h-5 text-[#8b7355]" />
+                              )}
+                            </div>
+                            <p className="text-sm text-[#6b6560] leading-relaxed">
+                              {option.desc}
+                            </p>
                           </button>
-                        ))}
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Część ciała */}
+                  <div>
+                    <label className="block text-sm text-[#6b6560] mb-2 font-medium">
+                      Zabieg wykonywany jest na części ciała *
+                    </label>
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                      {[
+                        "Brwi",
+                        "Usta",
+                        "Kreska górna",
+                        "Kreska dolna",
+                        "Przedramię",
+                        "Ramię",
+                        "Plecy",
+                        "Klatka piersiowa",
+                        "Łydka",
+                        "Udo",
+                        "Dłoń",
+                        "Szyja",
+                      ].map((area) => (
+                        <button
+                          key={area}
+                          type="button"
+                          onClick={() => {
+                            const current = formData.obszarZabiegu
+                              ? formData.obszarZabiegu.split(", ")
+                              : [];
+                            const newValue = current.includes(area)
+                              ? current.filter((i) => i !== area).join(", ")
+                              : [...current, area].join(", ");
+                            handleInputChange("obszarZabiegu", newValue);
+                          }}
+                          className={`py-3 px-4 rounded-xl border-2 transition-all font-medium text-sm ${
+                            (formData.obszarZabiegu || "")
+                              .split(", ")
+                              .includes(area)
+                              ? "border-[#8b7355] bg-[#8b7355] text-white"
+                              : "border-[#d4cec4] bg-white text-[#6b6560] hover:border-[#8b7355] hover:text-[#8b7355]"
+                          }`}
+                        >
+                          {area}
+                        </button>
+                      ))}
+                    </div>
+                    {/* Inne - pole tekstowe */}
+                    <div className="mt-3">
+                      <input
+                        type="text"
+                        value={
+                          (formData.obszarZabiegu || "")
+                            .split(", ")
+                            .find((p) => p.startsWith("Inne: "))
+                            ?.replace("Inne: ", "") || ""
+                        }
+                        onChange={(e) => {
+                          const currentParts = (formData.obszarZabiegu || "")
+                            .split(", ")
+                            .filter((p) => !p.startsWith("Inne: "));
+                          if (e.target.value) {
+                            currentParts.push(`Inne: ${e.target.value}`);
+                          }
+                          handleInputChange(
+                            "obszarZabiegu",
+                            currentParts.filter(Boolean).join(", "),
+                          );
+                        }}
+                        className="w-full px-4 py-3 bg-white/80 border border-[#d4cec4] rounded-xl focus:border-[#8b7355] focus:ring-2 focus:ring-[#8b7355]/20 outline-none transition-all"
+                        placeholder="Inne (wpisz ręcznie)..."
+                      />
+                    </div>
+                  </div>
+
+                  {/* Znieczulenie */}
+                  <div>
+                    <label className="block text-sm text-[#6b6560] mb-2 font-medium">
+                      Znieczulenie
+                    </label>
+                    <div className="space-y-4">
+                      <div className="flex flex-col gap-3">
+                        <button
+                          type="button"
+                          className="text-left p-4 rounded-xl border-2 border-[#8b7355] bg-[#8b7355]/5 shadow-md transition-all group"
+                        >
+                          <div className="flex justify-between items-center mb-1">
+                            <span className="font-serif text-lg font-medium text-[#8b7355]">
+                              Lidokaina 9,6%
+                            </span>
+                            <CheckCircle2 className="w-5 h-5 text-[#8b7355]" />
+                          </div>
+                          <p className="text-sm text-[#6b6560] leading-relaxed">
+                            Znieczulenie miejscowe może być stosowane w celu
+                            zminimalizowania dyskomfortu podczas zabiegu.
+                          </p>
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -694,12 +861,13 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
                       {formData.przeciwwskazania[currentContraindicationKey] ===
                         true &&
                         currentContraindicationObject?.hasFollowUp && (
-                          <div className="mb-6 animate-in fade-in slide-in-from-top-2">
+                          <div className="space-y-4 animate-in fade-in slide-in-from-top-2 mb-6">
                             <input
                               type="text"
                               className="w-full px-4 py-3 text-base bg-white border-2 border-[#d4cec4] rounded-xl focus:border-[#8b7355] outline-none transition-colors"
                               placeholder={
-                                currentContraindicationObject.followUpPlaceholder
+                                currentContraindicationObject.followUpPlaceholder ||
+                                "Wpisz szczegóły..."
                               }
                               value={String(
                                 formData.przeciwwskazania[
@@ -805,7 +973,7 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
                         </button>
                       </div>
 
-                      {Object.entries(depilacjaLaserowaContraindications).map(
+                      {Object.entries(laseroweUsuwanieContraindications).map(
                         ([key, value], index) => {
                           const questionText =
                             typeof value === "string" ? value : value.text;
@@ -875,7 +1043,7 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
                       ZABIEGU - CZĘSTE
                     </p>
                     <ul className="space-y-2 text-sm text-[#5a5550]">
-                      {depilacjaLaserowaNaturalReactions.map(
+                      {laseroweUsuwanieNaturalReactions.map(
                         (reaction, index) => (
                           <li key={index} className="flex items-start gap-2">
                             <span className="text-[#8b7355]">∙</span>
@@ -892,7 +1060,7 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
                       MOŻLIWE REAKCJE SKÓRY
                     </p>
                     <ul className="space-y-2 text-sm text-[#5a5550] mb-4">
-                      {depilacjaLaserowaNaturalReactions.map(
+                      {laseroweUsuwanieNaturalReactions.map(
                         (reaction, index) => (
                           <li key={index} className="flex items-start gap-2">
                             <span className="text-[#8b7355]">∙</span>
@@ -913,12 +1081,12 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
               <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
                 <h2 className="text-2xl font-serif text-[#4a3a2a] mb-6 flex items-center gap-3">
                   <span className="w-8 h-8 bg-[#8b7355] text-white rounded-full flex items-center justify-center text-sm font-sans">
-                    5
+                    6
                   </span>
                   Zalecenia Przed Zabiegiem
                 </h2>
                 <ul className="space-y-3">
-                  {depilacjaLaserowaPreCare.map((instruction, index) => (
+                  {laseroweUsuwaniePreCare.map((instruction, index) => (
                     <li
                       key={index}
                       className="flex items-start gap-3 bg-white/50 p-3 rounded-lg border border-[#d4cec4]/30"
@@ -936,7 +1104,7 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
               <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
                 <h2 className="text-2xl font-serif text-[#4a3a2a] mb-6 flex items-center gap-3">
                   <span className="w-8 h-8 bg-[#8b7355] text-white rounded-full flex items-center justify-center text-sm font-sans">
-                    6
+                    7
                   </span>
                   Zalecenia Po Zabiegu
                 </h2>
@@ -950,7 +1118,7 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
                     </strong>
                   </p>
                   <ul className="space-y-2 text-sm text-[#5a5550]">
-                    {depilacjaLaserowaPostCare.map((instruction, index) => (
+                    {laseroweUsuwaniePostCare.map((instruction, index) => (
                       <li key={index} className="flex items-start gap-2">
                         <span className="text-[#8b7355]">∙</span>
                         <span
@@ -985,6 +1153,7 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
           {/* KROK 2: RODO */}
           {currentStep === "RODO" && (
             <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+              {/* Card 1: CONSENT */}
               <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg overflow-hidden">
                 <div className="p-6 md:p-8">
                   <h3 className="text-2xl font-serif text-[#4a4540] mb-6">
@@ -1037,6 +1206,7 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
           {/* KROK 3: RODO 2 */}
           {currentStep === "RODO2" && (
             <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+              {/* Card 2: CLAUSE */}
               <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg overflow-hidden">
                 <div className="p-6 md:p-8">
                   <h3 className="text-2xl font-serif text-[#4a4540] mb-6">
@@ -1107,7 +1277,7 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
                         Możliwe naturalne reakcje:
                       </p>
                       <ul className="space-y-2 text-sm text-[#5a5550]">
-                        {depilacjaLaserowaNaturalReactions.map(
+                        {laseroweUsuwanieNaturalReactions.map(
                           (reaction, index) => (
                             <li key={index} className="flex items-start gap-2">
                               <span className="text-[#8b7355]">•</span>
@@ -1125,15 +1295,15 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
                       <div className="space-y-3 text-sm text-[#5a5550]">
                         <p>
                           <span className="font-medium">Częste:</span>{" "}
-                          {depilacjaLaserowaComplications.czeste.join(", ")}
+                          {laseroweUsuwanieComplications.czeste.join(", ")}
                         </p>
                         <p>
                           <span className="font-medium">Rzadkie:</span>{" "}
-                          {depilacjaLaserowaComplications.rzadkie.join(", ")}
+                          {laseroweUsuwanieComplications.rzadkie.join(", ")}
                         </p>
                         <p>
                           <span className="font-medium">Bardzo rzadkie:</span>{" "}
-                          {depilacjaLaserowaComplications.bardzoRzadkie.join(
+                          {laseroweUsuwanieComplications.bardzoRzadkie.join(
                             ", ",
                           )}
                         </p>
@@ -1153,7 +1323,7 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
                     Zobowiązuję się do przestrzegania następujących zaleceń:
                   </p>
                   <ul className="space-y-2 text-[#5a5550] text-sm bg-white/50 p-4 rounded-xl border border-[#d4cec4]/30">
-                    {depilacjaLaserowaPostCare.map((instruction, index) => (
+                    {laseroweUsuwaniePostCare.map((instruction, index) => (
                       <li key={index} className="flex items-start gap-2">
                         <span className="text-[#8b7355]">•</span>
                         <span
@@ -1178,58 +1348,88 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
                 </h3>
                 <div className="bg-[#f8f6f3] p-5 rounded-xl mb-6 border border-[#d4cec4]/50">
                   <h4 className="font-serif text-[#4a4540] text-lg mb-4">
-                    OŚWIADCZENIE I ŚWIADOMA ZGODA NA ZABIEG DEPILACJI LASEROWEJ
+                    OŚWIADCZENIE I ŚWIADOMA ZGODA NA ZABIEG LASEROWEGO USUWANIA
+                    MAKIJAŻU PERMANENTNEGO / TATUAŻU
                   </h4>
                   <p className="text-sm text-[#5a5550] mb-4">
-                    Ja, niżej podpisana/y, oświadczam, że:
+                    Ja, niżej podpisana/y, po przeprowadzeniu szczegółowego
+                    wywiadu i konsultacji ze Specjalistą, oświadczam, że:
                   </p>
 
                   <div className="space-y-4 text-sm text-[#5a5550] leading-relaxed">
                     <p>
-                      <strong>Stan zdrowia:</strong> Wszystkie informacje podane
-                      przeze mnie w ankiecie zdrowotnej oraz podczas wywiadu są
-                      prawdziwe, kompletne i zgodne z moim aktualnym stanem
-                      zdrowia. Nie zataiłam/em żadnych informacji o chorobach,
-                      alergiach, ekspozycji na słońce/solarium oraz
-                      przyjmowanych lekach i suplementach (zwłaszcza
-                      światłouczulających). Jestem świadoma/y, że zatajenie
-                      informacji może wpłynąć na bezpieczeństwo i skuteczność
-                      zabiegu oraz zwiększyć ryzyko powikłań.
+                      <strong>Stan zdrowia i odpowiedzialność:</strong>{" "}
+                      Oświadczam, że Specjalista poinformował mnie o
+                      przeciwwskazaniach do zabiegu. Potwierdzam, że nie
+                      występują u mnie żadne z wymienionych czynników (np.
+                      ciąża, świeża opalenizna, przyjmowanie leków
+                      światłouczulających, aktywne infekcje).
+                      <br />
+                      Udzieliłam/em pełnych i prawdziwych informacji o moim
+                      stanie zdrowia. Mam pełną świadomość, że zatajenie
+                      informacji lub podanie nieprawdy traktowane będzie jako
+                      moje przyczynienie się do powstania ewentualnej szkody
+                      (np. poparzeń, przebarwień, rozstroju zdrowia). W takiej
+                      sytuacji zwalniam osobę wykonującą zabieg z
+                      odpowiedzialności za negatywne skutki i powikłania.
                     </p>
                     <p>
-                      <strong>Informacja o zabiegu:</strong> Otrzymałam/em
-                      wyczerpujące informacje na temat zabiegu depilacji laserem
-                      diodowym, jego przebiegu, wskazań oraz zaleceń dotyczących
-                      pielęgnacji skóry przed i po zabiegu. Miałam/em możliwość
-                      zadawania pytań i uzyskałam/em na nie zrozumiale
-                      odpowiedzi.
+                      <strong>Informacja o zabiegu i ryzyku:</strong>{" "}
+                      Otrzymałam/em wyczerpujące informacje na temat przebiegu
+                      zabiegu, techniki jego wykonania oraz odczuć bólowych.
+                      Miałam/em możliwość zadawania pytań i uzyskałam/em na nie
+                      jasne odpowiedzi.
+                      <br />
+                      Mam świadomość, że zabieg niesie ze sobą ryzyko
+                      wystąpienia reakcji niepożądanych, takich jak: obrzęk,
+                      zaczerwienienie, strupki, pęcherze, a w rzadkich
+                      przypadkach blizny lub odbarwienia skóry
+                      (hipopigmentacja).
+                      <br />
+                      Zdaję sobie sprawę z możliwości wystąpienia reakcji
+                      alergicznej na wiązkę światła lasera lub zastosowane
+                      środki znieczulające/pielęgnacyjne.
                     </p>
                     <p>
                       <strong>Efekty i brak gwarancji:</strong> Zostałam/em
-                      poinformowana/y, że skuteczność depilacji zależy od
-                      indywidualnych cech organizmu (m.in. gospodarki
-                      hormonalnej, koloru i grubości włosa, fazy wzrostu włosa).
-                      Rozumiem, że zabieg należy wykonywać w serii (zazwyczaj co
-                      4-8 tygodni) i przyjmuję do wiadomości, że nie jest
-                      możliwe udzielenie 100% gwarancji usunięcia wszystkich
-                      włosów w określonym czasie. Oświadczam, że brak
-                      oczekiwanego rezultatu estetycznego nie będzie podstawą do
-                      roszczeń reklamacyjnych.
+                      poinformowana/y, że skuteczność usuwania pigmentu zależy
+                      od wielu czynników indywidualnych, m.in.: biochemii
+                      organizmu, fototypu skóry, głębokości podania pigmentu,
+                      jego rodzaju, koloru oraz wieku tatuażu/makijażu.
+                      <br />
+                      Rozumiem, że zabieg należy wykonywać w serii (zazwyczaj w
+                      odstępach min. 4-6 tygodni) i nie da się w pełni
+                      zagwarantować stuprocentowego usunięcia pigmentu, ani
+                      określić dokładnej liczby potrzebnych sesji.
+                      <br />
+                      Oświadczam, że brak uzyskania oczekiwanego efektu (np.
+                      pozostanie cienia pigmentu) lub konieczność wykonania
+                      większej liczby zabiegów niż szacowano, nie będzie
+                      podstawą do roszczeń reklamacyjnych ani finansowych.
                     </p>
                     <p>
-                      <strong>Skutki uboczne i odpowiedzialność:</strong> Mam
-                      świadomość, że po zabiegu mogą wystąpić przejściowe
-                      reakcje niepożądane, takie jak: zaczerwienienie, obrzęk,
-                      pieczenie czy drobne strupki. Akceptuję to ryzyko.
+                      <strong>Zalecenia i higiena:</strong> Potwierdzam, że
+                      materiały użyte do zabiegu są sterylne/jednorazowe i
+                      zostały otwarte w mojej obecności, a w Salonie zachowane
+                      są najwyższe normy higieniczne.
+                      <br />
+                      Otrzymałam/em instrukcję pielęgnacji pozabiegowej i
+                      zobowiązuję się do jej ścisłego przestrzegania (m.in.
+                      ochrona przed słońcem, niestosowanie drażniących
+                      kosmetyków). Rozumiem, że nieprzestrzeganie zaleceń
+                      drastycznie zwiększa ryzyko powikłań.
                     </p>
                     <p>
-                      <strong>Decyzja:</strong> Decyzję o poddaniu się zabiegowi
-                      podejmuję w pełni świadomie i dobrowolnie. Oświadczam, że
-                      w przypadku wykonania zabiegu zgodnie z zasadami sztuki i
-                      etyki zawodowej, nie będę wnosić żadnych roszczeń
-                      finansowych ani prawnych do osoby wykonującej zabieg w
-                      związku z wystąpieniem typowych reakcji po-zabiegowych lub
-                      brakiem całkowitego usunięcia owłosienia.
+                      <strong>Kwalifikacje i decyzja:</strong> Oświadczam, że
+                      mam świadomość, iż Specjalista wykonujący zabieg nie jest
+                      lekarzem, ale posiada odpowiednie przeszkolenie i
+                      doświadczenie w zakresie obsługi lasera.
+                      <br />
+                      Decyzję o poddaniu się zabiegowi podejmuję świadomie,
+                      dobrowolnie i na własną odpowiedzialność, akceptując
+                      ryzyko zabiegowe. W przypadku wykonania usługi zgodnie z
+                      zasadami sztuki, zrzekam się roszczeń odszkodowawczych
+                      wobec Salonu i personelu.
                     </p>
                     <p className="mt-4 font-medium text-[#8b7355]">
                       * W przypadku osoby niepełnoletniej wymagany jest podpis
@@ -1247,7 +1447,7 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
                     świadomą zgodę na przeprowadzenie zabiegu.
                   </p>
                   <SignaturePad
-                    label="Podpis Klienta (Wymagany)"
+                    label="Data i czytelny podpis Klienta (Wymagany)"
                     value={formData.podpisDane}
                     onChange={(sig) => {
                       handleInputChange("podpisDane", sig);

@@ -5,6 +5,7 @@ export type FormType =
   | 'INJECTION_LIPOLYSIS'
   | 'PERMANENT_MAKEUP'
   | 'LASER_HAIR_REMOVAL'
+  | 'LASER_TATTOO_REMOVAL'
   | 'WRINKLE_REDUCTION';
 
 export interface ConsentFormData {
@@ -47,7 +48,77 @@ export interface ConsentFormData {
   // Informacja dodatkowa
   informacjaDodatkowa?: string;
   zastrzeniaKlienta?: string;
+  wykazLekow?: string;
+  inneSchorzenia?: string;
 }
+
+export const mezoterapiaIglowaCategoryBreaks: Record<number, string> = {
+  0: "BEZWZGLĘDNE PRZECIWSKAZANIA DO WYKONANIA ZABIEGU",
+  11: "WZGLĘDNE PRZECIWSKAZANIA DO WYKONANIA ZABIEGU",
+  18: "CZASOWE PRZECIWSKAZANIA DO WYKONANIA ZABIEGU",
+};
+
+export const mezoterapiaIglowaContraindications: Record<
+  string,
+  string | ContraindicationWithFollowUp
+> = {
+  // Bezwzględne
+  ciazaLaktacja: "Czy jest Pani w ciąży lub w okresie laktacji?",
+  chemoRadioTerapia:
+    "Czy w ciągu ostatniego roku był/a Pan/i poddawana chemioterapii lub radioterapii?",
+  kortykosteroidy: "Czy stosuje Pan/i terapię kortykosteroidami?",
+  nowotwor: "Czy choruje Pan/i na nowotwór?",
+  hivZoltaczka: "Czy choruje Pan/i na HIV lub żółtaczkę?",
+  luszczyca: "Czy choruje Pan/i na łuszczycę?",
+  epilepsja: "Czy choruje Pan/i na epilepsję?",
+  hemofilia: "Czy ma Pan/i stwierdzoną hemofilie?",
+  gojenieRan: "Czy ma Pan/i problem/trudności z gojeniem ran?",
+  alergiaZnieczulenie:
+    "Czy ma Pan/i alergie na preparaty stosowane do miejscowego znieczulenia?",
+  alkoholSrodki:
+    "Czy w ciągu ostatnich 2 dni przyjmował/a Pan/i alkohol lub inne środku odurzające?",
+
+  // Względne
+  cukrzyca: "Czy choruje Pan/i na cukrzycę?",
+  serce: "Czy choruje Pan/i na zaburzenie pracy serca?",
+  anemia: "Czy ma Pan/i anemie?",
+  problemyKrazenie: "Czy ma Pan/i problemy z krążeniem?",
+  autoimmunologiczne: "Czy choruje Pan/i na choroby autoimmunologiczne?",
+  zmianySkorne:
+    "Czy ma Pan/i zmiany skórne w obszarze poddawanym zabiegowi (trądzik, stany ropne, alergiczne lub grzybicze zmiany w okolicach podlegających zabiegowi, naczyniaki, liszaje, brodawczaki, przerwania ciągłości naskórka, poparzenia słoneczne)?",
+  lekiKrzepliwosc:
+    "Czy w ostatnich 7 dniach przyjmowała Pan/i leki zmniejszające krzepliwość krwi m.in. kwas acetylosalicylowy, heparynę, acenokumarol?",
+
+  // Czasowe
+  opryszczka: "Czy ma Pan/i aktywną opryszczkę? (ust/oka)",
+  wypelniacze:
+    "Czy korzystał/a Pan/i z wypełniaczy skórnych - kwasu hialuronowego?",
+  botoks: "Czy korzystał/a Pan/i z zastrzyków z botoksu?",
+  zabiegiChirurgiczne: {
+    text:
+      "Czy korzystał/a Pan/i z zabiegów chirurgicznych w okolicy twarzy?",
+    hasFollowUp: true,
+    followUpPlaceholder: "Jeżeli tak, to z jakich?",
+  },
+  zluszczanie4tygodnie:
+    "Czy miał/a Pan/i robiony zabieg złuszczania naskórka przez okres 4 tygodni przed zabiegiem?",
+  chorobySkory:
+    "Czy posiada Pan/i choroby skóry (łojotokowe/atopowe zapalenie)",
+  sterydy: "Czy jest Pan/i w trakcie kuracji sterydowej?",
+  antybiotyki: "Czy jest Pan/i w trakcie stosowania antybiotykoterapii?",
+  lekiRozrzedzajace:
+    "Czy stosuje Pan/ i leki rozrzedzające krew? (aspiryna, paracetamol, witamina E, inne)",
+  lekiMiejscowe:
+    "Czy stosuje Pan/i leki do aplikacji miejscowej w obszarze objętym zabiegiem?",
+  zluszczanie4tygodnie2:
+    "Czy w okresie 4 tyg. przed zabiegiem miał/a Pan/i zabieg złuszczania naskórka?",
+  temperatura:
+    "Czy ma Pan/i podniesioną temperaturę ciała lub jest przeziębiona w dniu zabiegu?",
+  tarczyca: "Czy posiada Pan/i zaburzenia funkcji tarczycy?",
+  sinceKrwawienia: "Czy ma Pan/i skłonności do sińców lub krwawienia?",
+  tatuaze: "Czy posiada Pan/i tatuaże?",
+  makijazPermanentny: "Czy posiada Pani makijaż permanentny?",
+};
 
 // RODO Information - Dane administratora
 export const rodoInfo = {
@@ -803,121 +874,101 @@ export const wolumetriaTwarzyPostCare = [
   'Nie poddawać się zabiegom peelingu chemicznego i mechanicznego przez okres 3 tygodni od zabiegu',
 ];
 
-// MEZOTERAPIA_IGLOWA - Mezoterapia igłowa kwasem polimlekowym
-export const mezoterapiaIglowaContraindications: Record<string, string> = {
-  ciazaLaktacja: 'Jestem w ciąży lub w okresie laktacji',
-  chemioterapiaRadioterapia: 'W ciągu ostatniego roku byłam/em poddawana chemioterapii lub radioterapii',
-  terapiaKortykosteroidy: 'Stosuję terapię kortykosteroidami',
-  nowotwor: 'Choruję na nowotwór',
-  hivZoltaczka: 'Choruję na HIV lub żółtaczkę',
-  luszczycaAktywna: 'Choruję na łuszczycę',
-  epilepsja: 'Choruję na epilepsję',
-  hemofilia: 'Mam stwierdzoną hemofilię',
-  problemyGojenieRan: 'Mam problem/trudności z gojeniem ran',
-  alergiaZnieczulenie: 'Mam alergie na preparaty stosowane do miejscowego znieczulenia',
-  alkoholNarkotyki: 'W ciągu ostatnich 2 dni przyjmowałam/em alkohol lub inne środki odurzające',
-  cukrzyca: 'Choruję na cukrzycę',
-  zaburzeniaSerca: 'Choruję na zaburzenie pracy serca',
-  anemia: 'Mam anemię',
-  problemyKrazeniem: 'Mam problemy z krążeniem',
-  chorobyAutoimmunologiczne: 'Choruję na choroby autoimmunologiczne',
-  zmianySkorne: 'Mam zmiany skórne w obszarze poddawanym zabiegowi (trądzik, stany ropne, alergiczne lub grzybicze zmiany, naczyniaki, liszaje, brodawczaki, przerwania ciągłości naskórka, poparzenia słoneczne)',
-  lekiKrzepliwoscKrwi: 'W ostatnich 7 dniach przyjmowałam/em leki zmniejszające krzepliwość krwi (kwas acetylosalicylowy, heparynę, acenokumarol)',
-  aktywnaOpryszczka: 'Mam aktywną opryszczkę (ust/oka)',
-  wypelniaczeSkorneKwasHialuronowy: 'Korzystałam/em z wypełniaczy skórnych - kwasu hialuronowego',
-  zastrzykiBotoks: 'Korzystałam/em z zastrzyków z botoksu',
-  zabiegiChirurgiczneTwarz: 'Korzystałam/em z zabiegów chirurgicznych w okolicy twarzy',
-  zabiegZluszczania: 'Miałam/em robiony zabieg złuszczania naskórka przez okres 4 tygodni przed zabiegiem',
-  chorobySkory: 'Posiadam choroby skóry (łojotokowe/atopowe zapalenie)',
-  kuracjaSterydowa: 'Jestem w trakcie kuracji sterydowej',
-  antybiotykoterapia: 'Jestem w trakcie stosowania antybiotykoterapii',
-  lekiRozrzedzajaceKrew: 'Stosuję leki rozrzedzające krew (aspiryna, paracetamol, witamina E, inne)',
-  lekiMiejscowe: 'Stosuję leki do aplikacji miejscowej w obszarze objętym zabiegiem',
-  temperaturaPrzeziebienie: 'Mam podniesioną temperaturę ciała lub jestem przeziębiona/y w dniu zabiegu',
-  zaburzeniaTarczycy: 'Posiadam zaburzenia funkcji tarczycy',
-  sklonnosciSinceKrwawienie: 'Mam skłonności do sińców lub krwawienia',
-  tatuaze: 'Posiadam tatuaże',
-  makijazPermanentny: 'Posiadam makijaż permanentny',
-};
-
+// MEZOTERAPIA_IGLOWA - Mezoterapia igłowa
 export const mezoterapiaIglowaNaturalReactions = [
-  'miejscowy ból w punktach wkłucia',
-  'rumień',
-  'obrzęk i szczypanie okolicy pozabiegowej utrzymujący się do tygodnia',
-  'zaczerwienienie i/lub zasinienie okolicy pozabiegowej utrzymujące się do tygodnia',
-  'wylewy, krwiaki, siniaki okolicy pozabiegowej utrzymujące się do tygodnia',
-  'tkliwość tkanek objętych zabiegiem utrzymująca się do 2 tygodni',
-  'swędzenia w okresie gojenia',
+  "miejscowy ból w punktach wkłucia",
+  "rumień",
+  "obrzęk i szczypanie okolicy po zabiegowej utrzymujący się do tygodnia",
+  "zaczerwienienie i/ lub zasinienie okolicy po zabiegowej utrzymujące się do tygodnia",
+  "wylewy, krwiaki, siniaki okolicy po zabiegowej utrzymujące się do tygodnia",
+  "tkliwość tkanek objętych zabiegiem utrzymująca się do 2 tygodni",
+  "swędzenia w okresie gojenia",
 ];
 
-export const mezoterapiaIglowaComplications = {
-  czeste: [
-    'miejscowy ból w punktach wkłucia',
-    'rumień',
-    'obrzęk',
-    'zaczerwienienie',
-    'zasinienie',
-    'wylewy',
-    'krwiaki',
-    'siniaki',
-    'tkliwość tkanek',
-    'swędzenie',
-  ],
-  rzadkie: [
-    'nawrót infekcji opryszczki',
-    'zakażenia wirusowe',
-    'zakażenia bakteryjne',
-    'reakcje alergiczne',
-  ],
-  bardzoRzadkie: [
-    'wylewy krwawe i krwiaki',
-  ],
-};
+export const mezoterapiaIglowaComplications = [
+  "nawrót infekcji opryszczki",
+  "zakażenia wirusowe",
+  "zakażenia bakteryjne",
+  "reakcje alergiczne",
+];
+
+export const mezoterapiaIglowaComplicationsVeryRare = [
+  "wylewy krwawe i krwiaki",
+];
+
+export const mezoterapiaIglowaPreCare = [
+  "Na 7 dni przed zabiegiem nie należy przyjmować leków zmniejszających krzepliwość krwi (np. aspiryny)",
+  "Co najmniej 24h przed zabiegiem nie spożywać alkoholu",
+  "W dniu zabiegu skóra nie powinna być opalona ani podrażniona",
+];
 
 export const mezoterapiaIglowaPostCare = [
-  'Miejsce poddane zabiegowi traktować ze szczególną ostrożnością',
-  'Zachować wysoką higienę dłoni, istnieje bowiem duże ryzyko wtórnego zakażenia',
-  'Nie wykonywać makijażu w miejscach objętych zabiegiem przez 24 godz.',
-  'Nie traktować środkami złuszczającymi miejsc poddanych zabiegowi przez około 14 dni',
-  'Nie dotykać ani nie masować miejsc poddanych zabiegowi',
-  'Unikać silnej ekspozycji słonecznej przez 4 tygodnie i stosować kremy z wysokim filtrem UV',
-  'Nie korzystać z solarium przez okres 4 tygodni',
-  'Nie korzystać z sauny, basenu przez okres 4 tygodni',
-  'Unikać długotrwałego przebywania na mrozie',
-  'Unikać mechanicznego odrywania strupów',
-  'Unikać spożywania alkoholu przez 24 godziny po zabiegu',
-  'Nie poddawać się zabiegom peelingu chemicznego i mechanicznego przez okres 3 tygodni od zabiegu',
+  "Stosować zalecony preparat do pielęgnacji domowej (regenerujący/ochronny) ściśle według instrukcji przekazanych przez Specjalistę, przez wskazany okres czasu.",
+  "miejsce poddane zabiegowi traktować ze szczególną ostrożnością",
+  "zachować wysoką higienę dłoni, istnieje bowiem duże ryzyko wtórnego zakażenia",
+  "nie wykonywać makijażu w miejscach objętych zabiegiem przez 24 godz.",
+  "nie traktować środkami złuszczającymi miejsc poddanych zabiegowi przez około 14 dni",
+  "nie dotykać ani nie masować miejsc poddanych zabiegowi",
+  "unikać silnej ekspozycji słonecznej przez 4 tygodnie i stosować kremy z wysokim filtrem UV",
+  "nie korzystać z solarium przez okres 4 tygodni",
+  "nie korzystać z sauny, basenu przez okres 4 tygodni",
+  "unikać długotrwałego przebywania na mrozie",
+  "unikać mechanicznego odrywania strupów",
+  "unikać spożywania alkoholu przez 24 godziny po zabiegu",
+  "nie poddawać się zabiegom peelingu chemicznego i mechanicznego przez okres 3 tygodni od zabiegu",
+  "UWAGA!!! Należy stosować się ściśle do zaleceń pozabiegowych!",
+  "UWAGA!!! Wystąpienie jakichkolwiek reakcji niepożądanych należy niezwłocznie zgłosić Specjaliście wykonującemu zabieg.",
 ];
 
 // LIPOLIZA_INIEKCYJNA - Lipoliza iniekcyjna
-export const lipolizaIniekcyjnaContraindications: Record<string, string> = {
-  ciazaLaktacja: 'Jestem w ciąży lub w okresie laktacji',
-  zapalenieZakazenieSkory: 'Mam zapalenie lub zakażenie skóry (trądzik, opryszczka, zapalenia skórne, alergiczne lub grzybicze zmiany, naczyniaki, liszaje, brodawczaki, przerwania ciągłości naskórka, poparzenia słoneczne)',
-  chorobySerca: 'Choruję na choroby serca',
-  chorobyAutoimmunologiczne: 'Choruję na choroby autoimmunologiczne',
-  cukrzycaZaburzeniamiNaczyniowymi: 'Choruję na cukrzycę z zaburzeniami naczyniowymi',
-  chemioterapiaRadioterapia: 'W ciągu ostatniego roku byłam/em poddawana chemioterapii lub radioterapii',
-  nowotwor: 'Choruję na nowotwór',
-  zoltaczkaChorobyWatrobyNerek: 'Choruję na żółtaczkę lub ciężkie choroby wątroby lub nerek',
-  zaburzeniaTarczycy: 'Choruję na zaburzenia pracy tarczycy',
-  epilepsja: 'Choruję na epilepsję',
-  alergiaSkładnikiPreparatu: 'Posiadam alergie na składniki preparatu',
-  nadwrazliwoscKwasBenzoesowySojaWitamina: 'Posiadam nadwrażliwość na kwas benzoesowy, soję lub witaminę E, B',
-  alergiaZnieczulenie: 'Mam alergie na preparaty stosowane do miejscowego znieczulenia',
-  chorobyImmunologiczne: 'Choruję na choroby immunologiczne',
-  lekiRyzykoKrwawienia: 'Stosuję leki zwiększające ryzyko krwawienia (aspiryna, paracetamol, witamina E, inne)',
-  problemyKrzepliwoscKrwi: 'Występują problemy z krzepliwością krwi',
-  zakrzepoweZapalenieZyl: 'Choruję na zakrzepowe zapalenie żył',
-  preparatyIzotretynoina: 'Przed upływem ostatnich 3 miesięcy były przyjmowane doustnie preparaty z izotretynoiną (np. Acnenormin, Roacutan, Izotek, Curacne)',
-  niewydolnoscMarskoscWatroby: 'Choruję na niewydolność lub marskość wątroby bądź inne choroby wątroby',
-  problemyKrazeniem: 'Mam problemy z krążeniem',
-  antybiotykoterapia: 'Jestem w trakcie stosowania antybiotykoterapii',
-  lekiMiejscowe: 'Stosuję leki do aplikacji miejscowej w obszarze objętym zabiegiem',
-  temperaturaPrzeziebienie: 'Mam podniesioną temperaturę ciała lub jestem przeziębiona/y w dniu zabiegu',
-  tatuaze: 'Posiadam tatuaże',
-  makijazPermanentny: 'Posiadam makijaż permanentny',
-  zabiegiKwasHialuronowyToksynaBotulinowa: 'W ciągu ostatnich 6 miesięcy były wykonywane zabiegi z zastosowaniem kwasu hialuronowego lub toksyny botulinowej',
-  zabiegiChirurgiczneTwarz: 'Korzystałam/em z zabiegów chirurgicznych w okolicy twarzy',
+export const lipolizaIniekcyjnaContraindications: Record<string, string | ContraindicationWithFollowUp> = {
+  // BEZWZGLĘDNE
+  ciazaLaktacja: 'Czy jest Pani w ciąży lub w okresie laktacji?',
+  zapalenieZakazenieSkory: 'Czy ma Pani/Pan zapalenie lub zakażenie skóry (trądzik, opryszczka, zapalenia skórne, alergiczne lub grzybicze zmiany w okolicach podlegających zabiegowi, naczyniaki, liszaje, brodawczaki, przerwania ciągłości naskórka, poparzenia słoneczne?)',
+  chorobySerca: 'Czy choruje Pani/Pan na choroby serca?',
+  chorobyAutoimmunologiczne: 'Czy choruje Pani/Pan na choroby autoimmunologiczne?',
+  cukrzycaZaburzeniamiNaczyniowymi: 'Czy choruje Pani/Pan na cukrzycę z zaburzeniami naczyniowymi?',
+  chemioterapiaRadioterapia: 'Czy w ciągu ostatniego roku była /Pan poddawana chemioterapii lub radioterapii?',
+  nowotwor: 'Czy choruje Pani/Pan na nowotwór?',
+  zoltaczkaChorobyWatrobyNerek: 'Czy choruje Pani/Pan na żółtaczkę lub ciężki choroby wątroby lub nerek?',
+  zaburzeniaTarczycy: 'Czy choruje Pani/Pan na zaburzenia pracy tarczycy?',
+  epilepsja: 'Czy choruje Pani/Pan na epilepsję?',
+  alergiaSkladnikiPreparatu: 'Czy posiada Pani/Pan alergie na składniki preparatu?',
+  nadwrazliwoscKwasBenzoesowy: 'Czy posiada Pani/Pan nadwrażliwość na kwas benzoesowy, soję lub witaminę E, B?',
+  alergiaZnieczulenie: 'Czy ma Pani/Pan alergie na preparaty stosowane do miejscowego znieczulenia?',
+  chorobyImmunologiczne: 'Czy choruje Pani/Pan na choroby immunologiczne?',
+  lekiRyzykoKrwawienia: 'Czy stosuje Pani/Pan leki zwiększające ryzyko krwawienia? (aspiryna, paracetamol, witamina E, inne)',
+  problemyKrzepliwoscKrwi: 'Czy występują problemy z krzepliwością krwi?',
+  zakrzepoweZapalenieZyl: 'Czy choruje Pani/Pan na zakrzepowe zapalenie żył?',
+  preparatyIzotretynoina: 'Czy przed upływem ostatnich 3 miesięcy były przyjmowane doustnie preparaty z izotretynoiną? (np. Acnenormin, Roacutan, Izotek, Curacne)?',
+  niewydolnoscMarskoscWatroby: 'Czy choruje Pani/Pan na niewydolność lub marskość wątroby bądź inne choroby wątroby?',
+
+  // WZGLĘDNE
+  problemyKrazeniem: 'Czy ma Pani/Pan problemy z krążeniem?',
+
+  // CZASOWE
+  antybiotykoterapia: 'Czy jest Pani/Pan w trakcie stosowania antybiotykoterapii?',
+  lekiMiejscowe: 'Czy stosuje Pani/Pan leki do aplikacji miejscowej w obszarze objętym zabiegiem?',
+  temperaturaPrzeziebienie: 'Czy ma Pani/Pan podniesioną temperaturę ciała lub jest przeziębiona w dniu zabiegu?',
+
+  // INNE
+  tatuaze: 'Czy posiada Pani/Pan tatuaże?',
+  makijazPermanentny: {
+    text: 'Czy posiada Pani/Pan makijaż permanentny?',
+    hasFollowUp: true,
+    followUpPlaceholder: 'Jeżeli tak, to kiedy został wykonany i jaką techniką?',
+  },
+  zabiegiKwasHialuronowyToksynaBotulinowa: 'Czy w ciągu ostatnich 6 miesięcy były wykonywane zabiegi z zastosowaniem kwasu hialuronowego lub toksyny botulinowej?',
+  zabiegiChirurgiczneTwarz: {
+    text: 'Czy korzystała Pani/Pan z zabiegów chirurgicznych w okolicy twarzy?',
+    hasFollowUp: true,
+    followUpPlaceholder: 'Jeżeli tak, to z jakich?',
+  },
+  inneSchorzenia: {
+    text: 'Czy posiada Pani/Pan inne schorzenia niewymienione, proszę podać jakie:',
+    hasFollowUp: true,
+    followUpPlaceholder: 'Proszę podać jakie',
+  },
 };
 
 export const lipolizaIniekcyjnaNaturalReactions = [
@@ -961,64 +1012,94 @@ export const lipolizaIniekcyjnaComplications = {
   ],
 };
 
+export const lipolizaIniekcyjnaPreCare = [
+  '7 dni przed zabiegiem należy odstawić leki zwiększające ryzyko krwawienia (Aspiryna, Polopiryna, Acard)',
+  'ograniczyć spożywanie alkoholu na 24h przed planowanym zabiegiem',
+  '7 dni przed zabiegiem spożywać co najmniej 2 l wody dziennie',
+];
+
 export const lipolizaIniekcyjnaPostCare = [
-  'Miejsce poddane zabiegowi traktować ze szczególną ostrożnością',
-  'Do 24h po zabiegu nie spożywać alkoholu',
-  'Spożywać co najmniej 2 l wody na dobę',
-  'Unikać stosowania środków przeciwbólowych hamujących reakcje zapalne',
-  'Nie zażywać leków zmniejszających krzepliwość krwi, np. Aspiryny',
-  'Nie stosować gorących kąpieli – tylko krótki chłodny prysznic',
-  'Unikać ekspozycji na słońce i solarium przez ok 4 tyg. po zabiegu',
-  'Nie stosować inwazyjnych kosmetyków na obszar objętych zabiegiem przez 7 dni',
-  'Delikatnie osuszać skórę ręcznikiem i nie trzeć',
-  'Nie korzystać z sauny przez okres min. 14 dni',
-  'Nie poddawać się zabiegom peelingu chemicznego i mechanicznego przez okres 4 tyg. od zabiegu',
+  'miejsce poddane zabiegowi traktować ze szczególną ostrożnością',
+  'do 24h po zabiegu nie spożywać alkoholu',
+  'spożywać co najmniej 2 l wody na dobę',
+  'unikać stosowania środków przeciwbólowych hamujących reakcje zapalne',
+  'nie zażywać leków zmniejszających krzepliwość krwi, np. Apiryny',
+  'nie stosować gorących kąpieli – tylko krótki chłodny prysznic',
+  'unikać ekspozycji na słońce i solarium przez ok 4 tyg. po zabiegu',
+  'nie stosować inwazyjnych kosmetyków na obszar objętych zabiegiem przez 7 dni',
+  'delikatnie osuszać skórę ręcznikiem i nie trzeć',
+  'nie korzystać z sauny przez okres min. 14 dni',
+  'nie poddawać się zabiegom peelingu chemicznego i mechanicznego przez okres 4 tyg. od zabiegu',
+  'UWAGA!!! Należy stosować się ściśle do zaleceń pozabiegowych.',
+  'UWAGA!!! Wystąpienie jakichkolwiek reakcji niepożądanych należy niezwłocznie zgłosić Specjaliście wykonującemu zabieg.',
 ];
 
 // MAKIJAZ_PERMANENTNY - Makijaż permanentny
-export const makijazPermanentnyContraindications: Record<string, string> = {
-  ciazaLaktacja: 'Jestem w ciąży lub w okresie laktacji',
-  chemioterapiaRadioterapia: 'W ciągu ostatniego roku byłam/em poddawana chemioterapii lub radioterapii',
-  nowotwor: 'Choruję na nowotwór',
-  hivZoltaczka: 'Choruję na HIV lub żółtaczkę',
-  luszczycaAktywna: 'Choruję na łuszczycę',
-  epilepsja: 'Choruję na epilepsję',
-  hemofilia: 'Mam stwierdzoną hemofilię',
-  problemyGojenieRan: 'Mam problem/trudności z gojeniem ran',
-  alergiaBarwniki: 'Posiadam alergie na barwniki stosowane do pigmentacji',
-  alergiaZnieczulenie: 'Mam alergie na preparaty stosowane do miejscowego znieczulenia',
-  alkoholNarkotyki: 'W ciągu ostatnich 2 dni przyjmowałam/em alkohol lub inne środki odurzające',
-  nadpobudliwoscGalkiOcznej: 'Mam nadpobudliwość gałki ocznej',
-  stanyZapalneSpojowekOczu: 'Mam stany zapalne spojówek oczu',
-  stwardnienieSiatkowki: 'Mam stwardnienie siatkówki',
-  skoraTendencjeKeloidyBlizny: 'Mam skórę z tendencjami do keloidów i blizn',
-  lekiPrzeciwzapalne: 'Przyjmuję niesteroidowe leki przeciwzapalne',
-  cukrzyca: 'Choruję na cukrzycę',
-  zaburzeniaSerca: 'Choruję na zaburzenie pracy serca',
-  anemia: 'Mam anemię',
-  problemyKrazeniem: 'Mam problemy z krążeniem',
-  chorobyAutoimmunologiczne: 'Choruję na choroby autoimmunologiczne',
-  zmianySkorne: 'Mam zmiany skórne w obszarze poddawanym zabiegowi (trądzik, stany ropne, alergiczne lub grzybicze zmiany, naczyniaki, liszaje, brodawczaki, przerwania ciągłości naskórka, poparzenia słoneczne)',
-  skoraTlustaPorowata: 'Mam skórę tłustą lub porowatą',
-  aktywnaOpryszczka: 'Mam aktywną opryszczkę (ust/oka)',
-  leczenieStomatologiczne: 'Jestem w trakcie leczenia stomatologicznego',
-  peelingChemicznyLaserowy: 'W ciągu 6 miesięcy korzystałam/em z peelingu chemicznego czy laserowego',
-  wypelniaczeSkorneKwasHialuronowy: 'Korzystałam/em z wypełniaczy skórnych - kwasu hialuronowego',
-  zastrzykiBotoks: 'Korzystałam/em z zastrzyków z botoksu',
-  zabiegiChirurgiczneTwarz: 'Korzystałam/em z zabiegów chirurgicznych w okolicy twarzy',
-  chorobySkory: 'Posiadam choroby skóry (łojotokowe/atopowe zapalenie)',
-  kuracjaSterydowa: 'Jestem w trakcie kuracji sterydowej',
-  antybiotykoterapia: 'Jestem w trakcie stosowania antybiotykoterapii',
-  lekiRozrzedzajaceKrew: 'Stosuję leki rozrzedzające krew (aspiryna, paracetamol, witamina E, inne)',
-  lekiMiejscowe: 'Stosuję leki do aplikacji miejscowej w obszarze objętym zabiegiem',
-  zabiegZluszczania: 'W okresie 4 tyg. przed zabiegiem miałam/em zabieg złuszczania naskórka',
-  odzywkiRewitalizacjaBrwiRzesy: 'Stosowałam/em odżywki do rewitalizacji, stymulacji wzrostu brwi i rzęs w okresie miesiąca przed zabiegiem',
-  temperaturaPrzeziebienie: 'Mam podniesioną temperaturę ciała lub jestem przeziębiona/y w dniu zabiegu',
-  zaburzeniaTarczycy: 'Posiadam zaburzenia funkcji tarczycy',
-  sklonnosciSinceKrwawienie: 'Mam skłonności do sińców lub krwawienia',
-  uczulenieLidokaina: 'Posiadam uczulenie na lidokainę',
-  tatuaze: 'Posiadam inne tatuaże',
-  makijazPermanentny: 'Posiadam makijaż permanentny',
+export const makijazPermanentnyContraindications: Record<string, string | ContraindicationWithFollowUp> = {
+  // BEZWZGLĘDNE PRZECIWSKAZANIA DO WYKONANIA ZABIEGU
+  ciazaLaktacja: 'Czy jest Pani w ciąży lub w okresie laktacji?',
+  chemioterapiaRadioterapia: 'Czy w ciągu ostatniego roku była Pani poddawana chemioterapii lub radioterapii?',
+  nowotwor: 'Czy choruje Pani na nowotwór?',
+  hivZoltaczka: 'Czy choruje Pani na HIV lub żółtaczkę?',
+  luszczycaAktywna: 'Czy choruje Pani na łuszczycę?',
+  epilepsja: 'Czy choruje Pani na epilepsję?',
+  hemofilia: 'Czy ma Pani stwierdzoną hemofilię?',
+  problemyGojenieRan: 'Czy ma Pani problem/trudności z gojeniem ran?',
+  alergiaBarwniki: 'Czy posiada Pani alergie na barwniki stosowane do pigmentacji?',
+  alergiaZnieczulenie: 'Czy ma Pani alergie na preparaty stosowane do miejscowego znieczulenia?',
+  alkoholNarkotyki: 'Czy w ciągu ostatnich 2 dni przyjmowała Pani alkohol lub inne środki odurzające?',
+  nadpobudliwoscGalkiOcznej: 'Czy ma Pani nadpobudliwość gałki ocznej?',
+  stanyZapalneSpojowekOczu: 'Czy ma Pani stany zapalne spojówek oczu?',
+  stwardnienieSiatkowki: 'Czy ma Pani stwardnienie siatkówki?',
+  skoraTendencjeKeloidyBlizny: 'Czy ma Pani skórę z tendencjami do keloidów i blizn?',
+  lekiPrzeciwzapalne: 'Czy przyjmuje Pani niesteroidowe leki przeciwzapalne?',
+  // WZGLĘDNE PRZECIWSKAZANIA DO WYKONANIA ZABIEGU
+  cukrzyca: 'Czy choruje Pani na cukrzycę?',
+  zaburzeniaSerca: 'Czy choruje Pani na zaburzenie pracy serca?',
+  anemia: 'Czy ma Pani anemię?',
+  problemyKrazeniem: 'Czy ma Pani problemy z krążeniem?',
+  chorobyAutoimmunologiczne: 'Czy choruje Pani na choroby autoimmunologiczne?',
+  zmianySkorne: 'Czy ma Pani zmiany skórne w obszarze poddawanym zabiegowi (trądzik, stany ropne, alergiczne lub grzybicze zmiany w okolicach podlegających zabiegowi, naczyniaki, liszaje, brodawczaki, przerwania ciągłości naskórka, poparzenia słoneczne)?',
+  skoraTlustaPorowata: 'Czy ma Pani skórę tłustą lub porowatą?',
+  // CZASOWE PRZECIWWSKAZANIA DO WYKONANIA ZABIEGU
+  aktywnaOpryszczka: 'Czy ma Pani aktywną opryszczkę? (ust/oka)',
+  leczenieStomatologiczne: 'Czy jest Pani w trakcie leczenia stomatologicznego?',
+  peelingChemicznyLaserowy: 'Czy w ciągu 6 miesięcy korzystała Pani z peelingu chemicznego czy laserowego?',
+  wypelniaczeSkorneKwasHialuronowy: 'Czy korzystała Pani z wypełniaczy skórnych - kwasu hialuronowego?',
+  zastrzykiBotoks: 'Czy korzystała Pani z zastrzyków z botoksu?',
+  zabiegiChirurgiczneTwarz: {
+    text: 'Czy korzystała Pani z zabiegów chirurgicznych w okolicy twarzy?',
+    hasFollowUp: true,
+    followUpPlaceholder: 'Jeżeli tak, to z jakich i kiedy?',
+  },
+  chorobySkory: 'Czy posiada Pani choroby skóry (łojotokowe/atopowe zapalenie)?',
+  kuracjaSterydowa: 'Czy jest Pani w trakcie kuracji sterydowej?',
+  antybiotykoterapia: 'Czy jest Pani w trakcie stosowania antybiotykoterapii?',
+  lekiRozrzedzajaceKrew: 'Czy stosuje Pani leki rozrzedzające krew? (aspiryna, paracetamol, witamina E, inne)',
+  lekiMiejscowe: 'Czy stosuje Pani leki do aplikacji miejscowej w obszarze objętym zabiegiem?',
+  zabiegZluszczania: 'Czy w okresie 4 tyg. przed zabiegiem miała Pani zabieg złuszczania naskórka?',
+  odzywkiRewitalizacjaBrwiRzesy: 'Czy stosowała Pani odżywki do rewitalizacji, stymulacji wzrostu brwi i rzęs w okresie miesiąca przed zabiegiem?',
+  temperaturaPrzeziebienie: 'Czy ma Pani podniesioną temperaturę ciała lub jest przeziębiona w dniu zabiegu?',
+  zaburzeniaTarczycy: 'Czy posiada Pani zaburzenia funkcji tarczycy?',
+  sklonnosciSinceKrwawienie: 'Czy ma Pani skłonności do sińców lub krwawienia?',
+  uczulenieLidokaina: 'Czy posiada Pani uczulenie na lidokainę?',
+  tatuaze: 'Czy posiada Pani inne tatuaże?',
+  makijazPermanentny: {
+    text: 'Czy posiada Pani makijaż permanentny?',
+    hasFollowUp: true,
+    followUpPlaceholder: 'Jeżeli tak, to kiedy został wykonany i jaką techniką?',
+  },
+  inneSchorzenia: {
+    text: 'Inne schorzenia',
+    hasFollowUp: true,
+    followUpPlaceholder: 'Proszę podać jakie',
+  },
+};
+
+export const makijazPermanentnyCategoryBreaks: Record<number, string> = {
+  0: 'BEZWZGLĘDNE PRZECIWSKAZANIA DO WYKONANIA ZABIEGU',
+  16: 'WZGLĘDNE PRZECIWSKAZANIA DO WYKONANIA ZABIEGU',
+  23: 'CZASOWE PRZECIWWSKAZANIA DO WYKONANIA ZABIEGU',
 };
 
 export const makijazPermanentnyNaturalReactions = [
@@ -1067,37 +1148,47 @@ export const makijazPermanentnyPostCare = [
   'W pierwszej dobie po zabiegu unikać gorących napojów, potraw i spożywania alkoholu',
   'Przyjmować płyny przez słomkę w pierwszych dniach po zabiegu (makijaż ust)',
   'Nie używać pomadek, błyszczyków przez okres gojenia się ust (makijaż ust)',
-  'Zachować szczególną higieny jamy ustnej (makijaż ust)',
+  'Zachować szczególną higienę jamy ustnej (makijaż ust)',
   'Nie poddawać się zabiegom mezoterapii oraz zabiegom z zastosowaniem toksyny botulinowej w okresie 2-3 tygodni po zabiegu',
   'Nie poddawać się zabiegom peelingu chemicznego i mechanicznego przez okres 3 tygodni od zabiegu',
   'Do 3 doby od zabiegu unikać ćwiczeń fizycznych',
   'Do 3 doby od zabiegu unikać stosowania kosmetyków kolorowych oraz kremów pielęgnacyjnych',
   'W przypadku makijażu ust, może pojawić się opryszczka, należy zastosować preparaty: hascovir, zovirax lub udać się do lekarza po receptę na lek heviran',
+  'UWAGA!!! Należy stosować się ściśle do zaleceń pozabiegowych. Strupów ani złuszczającego się naskórka nie wolno usuwać mechanicznie.',
+  'UWAGA!!! Utrzymujące się reakcje zapalne przez okres dłuższy niż tydzień lub wystąpienie jakichkolwiek reakcji niepożądanych należy niezwłocznie zgłosić do Specjalisty wykonującego zabieg.',
 ];
 
 // LASEROWE_USUWANIE - Laserowe usuwanie makijażu permanentnego lub tatuażu
-export const laseroweUsuwanieContraindications: Record<string, string> = {
-  ciazaLaktacja: 'Jestem w ciąży lub w okresie laktacji',
-  zapalenieZakazenieSkory: 'Mam zapalenie lub zakażenie skóry (trądzik, opryszczka, zapalenia skórne, alergiczne lub grzybicze zmiany, naczyniaki, liszaje, brodawczaki, przerwania ciągłości naskórka, poparzenia słoneczne)',
-  chorobySerca: 'Choruję na choroby serca',
-  chorobyAutoimmunologiczne: 'Choruję na choroby autoimmunologiczne',
-  wysokieCisnienieKrwi: 'Mam wysokie ciśnienie krwi',
-  cukrzycaZaburzeniamiNaczyniowymi: 'Choruję na cukrzycę z zaburzeniami naczyniowymi',
-  chemioterapiaRadioterapia: 'W ciągu ostatniego roku byłam/em poddawana chemioterapii lub radioterapii',
-  nowotwor: 'Choruję na nowotwór',
-  zoltaczkaChorobyWatrobyNerek: 'Choruję na żółtaczkę lub ciężkie choroby wątroby lub nerek',
-  zaburzeniaTarczycy: 'Choruję na zaburzenia pracy tarczycy',
-  epilepsja: 'Choruję na epilepsję',
-  chorobyImmunologiczne: 'Choruję na choroby immunologiczne',
-  luszczycaBielactwo: 'Choruję na łuszczycę lub bielactwo',
-  chorobyTkankiLacznej: 'Choruję na choroby tkanki łącznej',
-  problemyKrazeniem: 'Mam problemy z krążeniem',
-  lekiMiejscowe: 'Stosuję leki do aplikacji miejscowej w obszarze objętym zabiegiem',
-  temperaturaPrzeziebienie: 'Mam podniesioną temperaturę ciała lub jestem przeziębiona/y w dniu zabiegu',
-  lekiSwiatlouczulajace: 'Przyjmuję leki światłouczulające lub suplementy diety: nagietek, dziurawiec, pokrzywa, czystek, skrzyp polny',
-  lekiAntydepresyjneSterydy: 'Przyjmuję leki antydepresyjne, sterydy',
-  kuracjaAntybiotykowa: 'Jestem w trakcie kuracji antybiotykowej w tym retinoidy',
-  leczenieStomatologiczne: 'Byłam/em w ciągu ostatniego tygodnia na leczeniu stomatologicznym',
+export const laseroweUsuwanieContraindications: Record<string, string | ContraindicationWithFollowUp> = {
+  lekiLista: {
+    text: 'Proszę wpisać wykaz wszystkich leków przyjmowanych w ciągu ostatnich 6 miesięcy',
+    hasFollowUp: true,
+  },
+  ciazaLaktacja: 'Czy jest Pani w ciąży lub w okresie laktacji?',
+  zapalenieZakazenieSkory: 'Czy ma Pani/Pan zapalenie lub zakażenie skóry (trądzik, opryszczka, zapalenia skórne, alergiczne lub grzybicze zmiany w okolicach podlegających zabiegowi, naczyniaki, liszaje, brodawczaki, przerwania ciągłości naskórka, poparzenia słoneczne?)',
+  chorobySerca: 'Czy choruje Pani/Pan na choroby serca?',
+  chorobyAutoimmunologiczne: 'Czy choruje Pani/Pan na choroby autoimmunologiczne?',
+  wysokieCisnienieKrwi: 'Czy ma Pani/Pan wysokie ciśnienie krwi?',
+  cukrzycaZaburzeniamiNaczyniowymi: 'Czy choruje Pani/Pan na cukrzycę z zaburzeniami naczyniowymi?',
+  chemioterapiaRadioterapia: 'Czy w ciągu ostatniego roku była /Pan poddawana chemioterapii lub radioterapii?',
+  nowotwor: 'Czy choruje Pani/Pan na nowotwór?',
+  zoltaczkaChorobyWatrobyNerek: 'Czy choruje Pani/Pan na żółtaczkę lub ciężkie choroby wątroby lub nerek?',
+  zaburzeniaTarczycy: 'Czy choruje Pani/Pan na zaburzenia pracy tarczycy?',
+  epilepsja: 'Czy choruje Pani/Pan na epilepsję?',
+  chorobyImmunologiczne: 'Czy choruje Pani/Pan na choroby immunologiczne?',
+  luszczycaBielactwo: 'Czy choruje Pani/Pan na łuszczycę lub bielactwo?',
+  chorobyTkankiLacznej: 'Czy choruje Pani/Pan na choroby tkanki łącznej?',
+  problemyKrazeniem: 'Czy ma Pani/Pan problemy z krążeniem?',
+  lekiMiejscowe: 'Czy stosuje Pani/Pan leki do aplikacji miejscowej w obszarze objętym zabiegiem?',
+  temperaturaPrzeziebienie: 'Czy ma Pani/Pan podniesioną temperaturę ciała lub jest przeziębiona w dniu zabiegu?',
+  lekiSwiatlouczulajace: 'Czy przyjmuje Pani/Pan leki światłouczulające lub suplementy diety: nagietek, dziurawiec, pokrzywa, czystek, skrzyp polny',
+  lekiAntydepresyjneSterydy: 'Czy przyjmuje Pani/Pan leki antydepresyjne, sterydy?',
+  kuracjaAntybiotykowa: 'Czy jest Pani/Pan w trakcie kuracji antybiotykowej w tym retinoidy?',
+  leczenieStomatologiczne: 'Czy była Pani/Pan w ciągu ostatniego tygodnia na leczeniu stomatologicznym?',
+  inneSchorzenia: {
+    text: 'Czy posiada Pani/Pan inne schorzenia niewymienione, proszę podać jakie:',
+    hasFollowUp: true,
+  },
 };
 
 export const laseroweUsuwanieNaturalReactions = [
@@ -1128,29 +1219,37 @@ export const laseroweUsuwanieComplications = {
     'infekcje',
     'bąble opuchnięcia',
     'zmiana koloru włosa na odcień siwy czy biały (w przypadku brwi)',
-    'hiperpigmentacja',
-    'hipopigmentacja',
+    'hiperpigmentacja (może wystąpić jako skutek zwiększonej produkcji melaniny przez melanocyty, w odpowiedzi na ciepło generowane przez laser. Ryzyko hiperpigmentacji zależy w dużej mierze od rodzaju skóry, osoby o ciemnej karnacji (fototyp III i IV wg Fitzpatricka) są bardziej narażone na wystąpienie tego powikłania. Klienci z wysokim ryzykiem hiperpigmentacji powinni unikać ekspozycji na słońce przed i po zabiegu)',
+    'hipopigmentacja (najczęstszym przewlekłym powikłaniem laseroterapii jest hipopigmentacja, ryzyko wystąpienia tego powikłania jest wyższe u osób o ciemnej karnacji)',
   ],
   bardzoRzadkie: [
     'bliznowce',
   ],
 };
 
+export const laseroweUsuwaniePreCare = [
+  'zaniechanie ekspozycji na promienie UV (SŁOŃCE, SOLARIUM) – na 1,5 miesiąca przed planowanym zabiegiem',
+  '1 tydzień przed zabiegiem nie wykonywać peelingów mechanicznych i depilacji w miejscu, które ma zostać poddane zabiegowi',
+  'w dniu zabiegu należy natomiast precyzyjnie ogolić i dokładnie oczyścić skórę',
+];
+
 export const laseroweUsuwaniePostCare = [
-  'Miejsce poddane zabiegowi traktować ze szczególną ostrożnością',
-  'Nie dotykać ani nie masować miejsc poddanych zabiegowi',
-  'Zachować wysoką higienę dłoni, istnieje bowiem duże ryzyko wtórnego zakażenia',
-  'Unikać wzmożonego wysiłku fizycznego oraz gorących kąpieli w wannie',
-  'Ochładzać powierzchni gdzie był wykonywany zabieg, suchymi okładami',
-  'Unikać spożywania alkoholu',
-  'Nie nakładać makijażu w obszarze objętym zabiegiem',
-  'Pod żadnym pozorem nie należy zdrapywać strupków',
-  'Nie korzystać z basenu i sauny przez okres wykonywania zabiegów oraz pomiędzy zabiegami. Mycie obszaru na których wykonywano zabieg możliwe jest dopiero po upływie 24 godzin',
-  'Bezwzględny zakaz opalania na słońcu oraz w solarium przez okres wykonywania zabiegów oraz pomiędzy zabiegami',
-  'Miejsce poddane zabiegowi należy zabezpieczać kremem z filtrem',
-  'Zakaz poddawania się zabiegom peelingu chemicznego i mechanicznego',
-  'Nie stosować toników na bazie alkoholu oraz kremów z kwasami owocowymi i witaminą A,C przez okres 4 tygodni od zabiegu',
-  'Nie przemywać obszaru objętego zabiegiem preparatami z zawartością alkoholu (dopuszczalny jest Octanisept)',
+  'miejsce poddane zabiegowi traktować ze szczególną ostrożnością',
+  'nie dotykać ani nie masować miejsc poddanych zabiegowi',
+  'zachować wysoką higienę dłoni, istnieje bowiem duże ryzyko wtórnego zakażenia',
+  'unikać wzmożonego wysiłku fizycznego oraz gorących kąpieli w wannie',
+  'ochładzać powierzchni gdzie był wykonywany zabieg, suchymi okładami',
+  'unikać spożywania alkoholu',
+  'nie nakładać makijażu w obszarze objętym zabiegiem',
+  'pod żadnym pozorem nie należy zdrapywać strupków',
+  'nie korzystać z basenu i sauny przez okres wykonywania zabiegów oraz pomiędzy zabiegami. Mycie obszaru na których wykonywano zabieg możliwe jest dopiero po upływie 24 godzin',
+  'bezwzględny zakaz opalania na słońcu oraz w solarium przez okres wykonywania zabiegów oraz pomiędzy zabiegami',
+  'miejsce poddane zabiegowi należy zabezpieczać kremem z filtrem',
+  'zakaz poddawania się zabiegom peelingu chemicznego i mechanicznego',
+  'nie stosować toników na bazie alkoholu oraz kremów z kwasami owocowymi i witaminą A,C przez okres 4 tygodni od zabiegu',
+  'nie przemywać obszaru objętego zabiegiem preparatami z zawartością alkoholu (dopuszczalny jest Octanisept)',
+  'UWAGA!!! Należy stosować się ściśle do zaleceń pozabiegowych.',
+  'UWAGA!!! Wystąpienie jakichkolwiek reakcji niepożądanych należy niezwłocznie zgłosić Specjaliście wykonującemu zabieg.',
 ];
 
 // DEPILACJA_LASEROWA - Depilacja laserowa
@@ -1231,9 +1330,11 @@ export const contraindicationsByFormType: Record<FormType, Record<string, string
   PERMANENT_MAKEUP: makijazPermanentnyContraindications,
 
   LASER_HAIR_REMOVAL: depilacjaLaserowaContraindications,
+  LASER_TATTOO_REMOVAL: laseroweUsuwanieContraindications,
   WRINKLE_REDUCTION: wolumetriaTwarzyContraindications,
 };
 
 // Zachowanie kompatybilności wstecznej (dla starych importów)
 export const defaultContraindications = {};
 export const contraindicationLabels = hyaluronicContraindications;
+

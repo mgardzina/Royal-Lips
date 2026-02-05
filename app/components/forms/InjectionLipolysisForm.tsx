@@ -6,7 +6,6 @@ import {
   Instagram,
   Mail,
   Shield,
-  CheckCircle2,
   X,
 } from "lucide-react";
 import { isAdult, getTodayDate } from "@/lib/dateUtils";
@@ -17,21 +16,21 @@ import Footer from "@/app/components/Footer";
 import {
   ConsentFormData,
   ContraindicationWithFollowUp,
-  depilacjaLaserowaNaturalReactions,
-  depilacjaLaserowaComplications,
-  depilacjaLaserowaPostCare,
-  depilacjaLaserowaPreCare,
+  lipolizaIniekcyjnaNaturalReactions,
+  lipolizaIniekcyjnaComplications,
+  lipolizaIniekcyjnaPostCare,
   rodoInfo,
+  lipolizaIniekcyjnaContraindications,
+  lipolizaIniekcyjnaPreCare,
 } from "../../../types/booking";
-import { depilacjaLaserowaContraindications } from "../../../types/booking";
 import SpecialistSignature from "./SpecialistSignature";
 
-interface LaserRemovalFormProps {
+interface LipModelingFormProps {
   onBack: () => void;
 }
 
 const initialFormData: ConsentFormData = {
-  type: "LASER_HAIR_REMOVAL",
+  type: "INJECTION_LIPOLYSIS",
   imieNazwisko: "",
   ulica: "",
   kodPocztowy: "",
@@ -40,21 +39,23 @@ const initialFormData: ConsentFormData = {
   telefon: "",
   miejscowoscData: `Krosno, ${getTodayDate()}`,
   osobaPrzeprowadzajacaZabieg: "",
-  nazwaProduktu: "",
-  obszarZabiegu: "",
-  celEfektu: "",
+  nazwaProduktu: "Cincelar",
+  obszarZabiegu: "", // Will be filled by checkboxes
+  celEfektu: "", // Will be filled by new section
   numerZabiegu: "",
-  przeciwwskazania: Object.entries(depilacjaLaserowaContraindications).reduce(
-    (acc, [key, value]) => {
-      const hasFollowUp = typeof value === "object" && value.hasFollowUp;
-      return {
-        ...acc,
-        [key]: null,
-        ...(hasFollowUp ? { [`${key}_details`]: "" } : {}),
-      };
-    },
-    {},
-  ),
+  przeciwwskazania: Object.entries(
+    lipolizaIniekcyjnaContraindications as unknown as Record<
+      string,
+      string | ContraindicationWithFollowUp
+    >,
+  ).reduce((acc, [key, value]) => {
+    const hasFollowUp = typeof value === "object" && value.hasFollowUp;
+    return {
+      ...acc,
+      [key]: null,
+      ...(hasFollowUp ? { [`${key}_details`]: "" } : {}),
+    };
+  }, {}),
   zgodaPrzetwarzanieDanych: false,
   zgodaMarketing: false,
   zgodaFotografie: false,
@@ -69,7 +70,9 @@ const initialFormData: ConsentFormData = {
   zastrzeniaKlienta: "",
 };
 
-export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
+export default function InjectionLipolysisForm({
+  onBack,
+}: LipModelingFormProps) {
   const [formData, setFormData] = useState<ConsentFormData>(initialFormData);
   const [email, setEmail] = useState("");
   const [birthDateError, setBirthDateError] = useState<string | null>(null);
@@ -90,10 +93,10 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
   const [isSignatureVerified, setIsSignatureVerified] = useState(false);
   const [auditLog, setAuditLog] = useState<AuditLogData | null>(null);
 
-  const contraindicationKeys = Object.keys(depilacjaLaserowaContraindications);
+  const contraindicationKeys = Object.keys(lipolizaIniekcyjnaContraindications);
   const currentContraindicationKey =
     contraindicationKeys[currentContraindicationIndex];
-  const currentContraindicationValue = depilacjaLaserowaContraindications[
+  const currentContraindicationValue = lipolizaIniekcyjnaContraindications[
     currentContraindicationKey
   ] as string | ContraindicationWithFollowUp;
   const currentContraindicationObject:
@@ -114,7 +117,7 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
     handleContraindicationChange(currentContraindicationKey, value);
     // For follow-up questions, don't auto-advance — user must click "Dalej"
     const currentValue =
-      depilacjaLaserowaContraindications[currentContraindicationKey];
+      lipolizaIniekcyjnaContraindications[currentContraindicationKey];
     const hasFollowUp =
       typeof currentValue === "object" && currentValue.hasFollowUp;
     if (hasFollowUp) {
@@ -138,7 +141,7 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
 
   const handleInputChange = (
     field: keyof ConsentFormData,
-    value: string | boolean | null,
+    value: string | boolean,
   ) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
@@ -187,7 +190,6 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
     }));
   };
 
-  // Handler dla zweryfikowanego podpisu
   // Handler dla zweryfikowanego podpisu
   const handleSignatureVerified = (
     _signatureData: string,
@@ -386,10 +388,10 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
 
           <div className="text-center">
             <h1 className="text-3xl md:text-4xl font-serif text-[#4a3a2a] mb-2">
-              Depilacja Laserowa
+              Lipoliza Iniekcyjna
             </h1>
             <p className="text-[#8b7355] text-lg font-light tracking-wide uppercase">
-              Laser Diodowy
+              Redukcja tkanki tłuszczowej i cellulitu
             </p>
           </div>
         </div>
@@ -552,42 +554,86 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
                 </h2>
                 <div className="prose prose-sm max-w-none text-[#5a5550] leading-relaxed space-y-4">
                   <p>
-                    Zabieg depilacji laserowej przy użyciu lasera diodowego jest
-                    zabiegiem kosmetologicznym mającym na celu trwałą redukcję
-                    owłosienia. Działanie lasera opiera się na selektywnym
-                    pochłanianiu energii światła przez melaninę zawartą we
-                    włosach, która następnie przekształcana jest w ciepło.
-                    Powstałe w ten sposób ciepło prowadzi do uszkodzenia mieszka
-                    włosowego, co hamuje dalszy wzrost włosa. Laser diodowy
-                    penetruje głębiej w skórę niż inne typy laserów, dzięki
-                    czemu skutecznie działa na włosy ciemniejsze i głębiej
-                    osadzone, przy minimalnym oddziaływaniu na otaczającą skórę.
+                    Lipoliza iniekcyjna polega na wstrzyknięciu bezpośrednio w
+                    tkankę tłuszczową substancji aktywnych składnika naturalnego
+                    pochodzenia - uzyskiwanego z soi, która posiada właściwości
+                    lipolityczne. Proces ten polega na destrukcji tkanki
+                    tłuszczowej poprzez rozpad tłuszczy złożonych prostych,
+                    które zostają metabolicznie usunięte. W rezultacie tego
+                    procesu komórki tłuszczowe ulegają degradacji,
+                    transportowane są do wątroby i wydalane z organizmu.
                   </p>
                   <p>
-                    Zabieg jest najbardziej skuteczny w przypadku włosów
-                    znajdujących się w fazie wzrostu, zwanej fazą anagenu. Z
-                    tego powodu osiągnięcie optymalnych efektów wymaga wykonania
-                    serii zabiegów w odstępach kilku tygodni, aby objąć
-                    wszystkie włosy w różnych fazach cyklu wzrostu. Czas trwania
-                    pojedynczej sesji zależy od wielkości obszaru poddanego
-                    zabiegowi i może wynosić od kilkunastu minut do około
-                    godziny.
+                    Lipoliza iniekcyjna nie jest metodą odchudzania a metodą
+                    modelowania sylwetki poprzez redukcję lokalnego nadmiaru
+                    tkanki tłuszczowej. Kandydatem do zabiegu jest osoba z
+                    niewielkim nadmiarem tkanki tłuszczowej – takim, którego nie
+                    można usunąć nawet za pomocą intensywnych ćwiczeń i diety.
                   </p>
                   <p>
-                    Efekty depilacji laserowej mogą się różnić w zależności od
-                    rodzaju włosów, fototypu skóry, gospodarki hormonalnej oraz
-                    indywidualnych predyspozycji organizmu. Zabieg zwykle
-                    prowadzi do znacznej redukcji owłosienia po kilku sesjach,
-                    jednak nie gwarantuje całkowitego i trwałego usunięcia
-                    włosów.
+                    Zabieg pozwala uzyskać najlepsze efekty u osób, których
+                    ciężko pozbyć się tkanki tłuszczowej przy pomocy
+                    intensywnych ćwiczeń czy diet. Natomiast u osób z rozległą
+                    otyłością zabieg ten jest nieskuteczny. Dodatkowo lipoliza
+                    iniekcyjna jest jedną z najskuteczniejszych metod usunięcia
+                    cellulitu.
                   </p>
                   <p>
-                    Po zabiegu skóra może reagować zaczerwienieniem, obrzękiem,
-                    pieczeniem lub swędzeniem, a w niektórych przypadkach mogą
-                    pojawić się strupki, pęcherze lub tymczasowe przebarwienia.
-                    Reakcje te są indywidualne i mogą wystąpić nawet przy
-                    prawidłowym wykonaniu zabiegu i przestrzeganiu zaleceń
-                    pielęgnacyjnych.
+                    Zabieg jest przeprowadzany po wyeliminowaniu przeciwwskazań
+                    do wykonania zabiegu. Należy przeprowadzić pomiar tkanki
+                    tłuszczowej za pomocą miernika tkanki tłuszczowej. Zabieg
+                    polega na podaniu preparatu do tkanki tłuszczowej w
+                    zależności od wyników pomiaru.
+                  </p>
+                  <p>
+                    Do zabiegu podawane jest znieczulenie, które minimalizuje
+                    dyskomfort podczas zabiegu. Próg bólu odczuwany jest
+                    indywidualnie. Do zabiegu wykorzystuje się znieczulenie
+                    Lidokaine 9,6%. Zastosowanie znieczulenia gwarantuje
+                    zminimalizowanie bólu.
+                  </p>
+                  <p>
+                    W trakcie zabiegu może dojść do sytuacji wymagającej
+                    zastosowania dodatkowych procedur postępowania - nie
+                    uzgodnionej przed zabiegiem z Klientem. W przypadku
+                    wystąpienia powikłań konieczne będzie wykonanie dodatkowego
+                    zabiegu lub zastosowanie leczenia. Nawet gdy ryzyko
+                    wystąpienia powikłań nie jest duże i dochodzi do nich rzadko
+                    Klient powinien liczyć się z możliwością ich wystąpienia i
+                    zabiegami mającymi na celu poprawę wyniku pierwotnego
+                    zabiegu.
+                  </p>
+                  <p>
+                    Czas zabiegu zależny jest od miejsca aplikacji oraz cech
+                    indywidualnych naskórka, ale średnio trwa ok. godzinę.
+                  </p>
+                  <p>
+                    Zabieg lipolizy nie daje natychmiastowego efektu
+                    bezpośrednio po zabiegu, a zamierzony efekt może wystąpić
+                    ok. 8-10 tygodni po wykonaniu zabiegu. Klient został
+                    poinformowany o tym, że efekty zabiegów nie są identyczne w
+                    przypadku każdego Klienta.
+                  </p>
+                  <p>
+                    Aby osiągnąć zadowalający efekt, najczęściej konieczne jest
+                    wykonanie od 2 do 4 zabiegów w odstępach 3–6 tygodniowych.
+                    Większość Klientów jest zadowolona z osiągniętego rezultatu
+                    po 2-4 zabiegach, choć u niektórych osób zamierzony efekt
+                    uzyskuje się już po pierwszym zabiegu. Aby osiągnąć
+                    najlepsze i trwałe rezultaty, lipolizę iniekcyjną należy
+                    połączyć z odpowiednią dietą i ćwiczeniami.
+                  </p>
+                  <p>
+                    W miejsce poddane zabiegowi wstrzykiwany jest preparat
+                    bezpośrednio do tkanki tłuszczowej za pomocą specjalnej
+                    igły. Do wykonania zabiegu stosowany jest preparat:
+                    Cincelar.
+                  </p>
+                  <p>
+                    Po aplikacji preparatu Klientowi wykonuje się masaż, dzięki
+                    któremu wstrzykiwane substancje aktywne są równomiernie
+                    rozprowadzane. Masaż pomaga również ograniczyć ewentualne
+                    obrzęki, które są skutkami ubocznymi iniekcji.
                   </p>
                 </div>
               </section>
@@ -601,56 +647,73 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
                   Szczegóły Zabiegu
                 </h2>
                 <div className="space-y-6">
+                  {/* Preparat */}
+                  <div className="bg-[#f8f6f3] p-4 rounded-xl border border-[#d4cec4]/50">
+                    <p className="text-sm text-[#6b6560] mb-1 font-medium">
+                      Preparat
+                    </p>
+                    <p className="text-[#4a4540] font-serif text-lg">
+                      Cincelar
+                    </p>
+                  </div>
+
+                  {/* Znieczulenie */}
+                  <div className="bg-[#f8f6f3] p-4 rounded-xl border border-[#d4cec4]/50">
+                    <p className="text-sm text-[#6b6560] mb-1 font-medium">
+                      Znieczulenie
+                    </p>
+                    <p className="text-[#4a4540] font-serif text-lg">
+                      Lidokaina 9,6%
+                    </p>
+                  </div>
+
+                  {/* Miejsce zabiegu */}
                   <div>
-                    <div>
-                      <label className="block text-sm text-[#6b6560] mb-2 font-medium">
-                        Obszar Zabiegu
-                      </label>
-                      <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                        {[
-                          "Wąsik",
-                          "Broda",
-                          "Twarz",
-                          "Pachy",
-                          "Ramiona",
-                          "Bikini",
-                          "Uda",
-                          "Łydki",
-                          "Całe nogi",
-                          "Plecy",
-                          "Klatka piersiowa",
-                          "Brzuch",
-                        ].map((area) => (
+                    <label className="block text-sm text-[#6b6560] mb-3 font-medium">
+                      Miejsce zabiegu (można wybrać kilka)
+                    </label>
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                      {[
+                        "Podbródek",
+                        "Brzuch",
+                        "Uda",
+                        "Okolice kolan",
+                        "Broda",
+                        "Kolana",
+                        "Pośladki",
+                        "Okolice pach",
+                        "Ramiona",
+                      ].map((area) => {
+                        const selected = formData.obszarZabiegu
+                          ? formData.obszarZabiegu.split(", ")
+                          : [];
+                        const isSelected = selected.includes(area);
+                        return (
                           <button
                             key={area}
                             type="button"
                             onClick={() => {
-                              const current = formData.obszarZabiegu
-                                ? formData.obszarZabiegu.split(", ")
-                                : [];
-                              const newValue = current.includes(area)
-                                ? current.filter((i) => i !== area).join(", ")
-                                : [...current, area].join(", ");
+                              const newValue = isSelected
+                                ? selected.filter((i) => i !== area).join(", ")
+                                : [...selected, area].join(", ");
                               handleInputChange("obszarZabiegu", newValue);
                             }}
                             className={`py-3 px-4 rounded-xl border-2 transition-all font-medium text-sm ${
-                              (formData.obszarZabiegu || "")
-                                .split(", ")
-                                .includes(area)
+                              isSelected
                                 ? "border-[#8b7355] bg-[#8b7355] text-white"
                                 : "border-[#d4cec4] bg-white text-[#6b6560] hover:border-[#8b7355] hover:text-[#8b7355]"
                             }`}
                           >
                             {area}
                           </button>
-                        ))}
-                      </div>
+                        );
+                      })}
                     </div>
                   </div>
                 </div>
               </section>
 
-              {/* Wywiad Medyczny Laser Removal */}
+              {/* Wywiad Medyczny Hyaluronic */}
               <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
                 <h2 className="text-2xl font-serif text-[#4a3a2a] mb-6 flex items-center gap-3">
                   <span className="w-8 h-8 bg-[#8b7355] text-white rounded-full flex items-center justify-center text-sm font-sans">
@@ -663,6 +726,52 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
                 </p>
 
                 {/* Medications Input */}
+                <div className="bg-[#f8f6f3] p-5 rounded-xl border border-[#d4cec4] mb-6">
+                  <h3 className="font-serif text-[#4a4540] text-lg mb-2">
+                    PRZECIWSKAZANIA DO WYKONANIA ZABIEGU
+                  </h3>
+                  <label className="block text-sm text-[#6b6560] mb-2 font-medium">
+                    Proszę wpisać wykaz wszystkich leków przyjmowanych w ciągu
+                    ostatnich 6 miesięcy
+                  </label>
+                  <textarea
+                    rows={3}
+                    className="w-full px-4 py-3 bg-white border border-[#d4cec4] rounded-xl focus:border-[#8b7355] outline-none text-sm"
+                    placeholder="Wpisz leki lub wpisz 'BRAK'..."
+                    value={
+                      (formData.informacjaDodatkowa || "")
+                        .split("\n")
+                        .find((p) => p.startsWith("Leki (6 m-cy): "))
+                        ?.replace("Leki (6 m-cy): ", "") || ""
+                    }
+                    onChange={(e) => {
+                      const parts = (formData.informacjaDodatkowa || "").split(
+                        "\n",
+                      );
+                      const prefix = "Leki (6 m-cy): ";
+                      const newVal = `${prefix}${e.target.value}`;
+                      const index = parts.findIndex((p) =>
+                        p.startsWith(prefix),
+                      );
+
+                      if (index !== -1) {
+                        if (e.target.value) {
+                          parts[index] = newVal;
+                        } else {
+                          parts.splice(index, 1);
+                        }
+                      } else if (e.target.value) {
+                        parts.push(newVal);
+                      }
+
+                      handleInputChange(
+                        "informacjaDodatkowa",
+                        parts.filter(Boolean).join("\n"),
+                      );
+                    }}
+                  />
+                </div>
+
                 <div className="space-y-3">
                   {showContraindicationsWizard && !isWizardComplete ? (
                     <div
@@ -805,56 +914,83 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
                         </button>
                       </div>
 
-                      {Object.entries(depilacjaLaserowaContraindications).map(
-                        ([key, value], index) => {
-                          const questionText =
-                            typeof value === "string" ? value : value.text;
-                          const hasFollowUp =
-                            typeof value === "object" && value.hasFollowUp;
-                          const followUpDetails =
-                            formData.przeciwwskazania[`${key}_details`];
+                      {Object.entries(
+                        lipolizaIniekcyjnaContraindications as unknown as Record<
+                          string,
+                          string | ContraindicationWithFollowUp
+                        >,
+                      ).map(([key, value], index) => {
+                        const questionText =
+                          typeof value === "string" ? value : value.text;
+                        const hasFollowUp =
+                          typeof value === "object" && value.hasFollowUp;
+                        const followUpDetails =
+                          formData.przeciwwskazania[`${key}_details`];
 
-                          return (
-                            <div
-                              key={key}
-                              className={`flex items-start gap-4 p-4 rounded-xl transition-colors ${
-                                formData.przeciwwskazania[key]
-                                  ? "bg-red-50 border border-red-100"
-                                  : "bg-green-50/50 border border-green-100/50"
-                              }`}
-                            >
-                              <span className="text-[#8b7355] font-medium min-w-[1.5rem] mt-0.5">
-                                {index + 1}.
-                              </span>
-                              <div className="flex-1">
-                                <p className="text-[#5a5550] text-sm leading-relaxed">
-                                  {questionText}
-                                </p>
-                                {hasFollowUp &&
-                                  formData.przeciwwskazania[key] &&
-                                  followUpDetails && (
-                                    <p className="text-[#8b7355] text-xs mt-2 italic">
-                                      → {followUpDetails}
-                                    </p>
-                                  )}
-                              </div>
-                              <div className="ml-2">
-                                {formData.przeciwwskazania[key] ? (
-                                  <span className="inline-flex items-center px-3 py-1 bg-red-100 text-red-700 text-xs font-bold rounded-full border border-red-200 whitespace-nowrap">
-                                    TAK
-                                  </span>
-                                ) : (
-                                  <span className="inline-flex items-center px-3 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full border border-green-200 whitespace-nowrap">
-                                    NIE
-                                  </span>
+                        return (
+                          <div
+                            key={key}
+                            className={`flex items-start gap-4 p-4 rounded-xl transition-colors ${
+                              formData.przeciwwskazania[key]
+                                ? "bg-red-50 border border-red-100"
+                                : "bg-green-50/50 border border-green-100/50"
+                            }`}
+                          >
+                            <span className="text-[#8b7355] font-medium min-w-[1.5rem] mt-0.5">
+                              {index + 1}.
+                            </span>
+                            <div className="flex-1">
+                              <p className="text-[#5a5550] text-sm leading-relaxed">
+                                {questionText}
+                              </p>
+                              {hasFollowUp &&
+                                formData.przeciwwskazania[key] &&
+                                followUpDetails && (
+                                  <p className="text-[#8b7355] text-xs mt-2 italic">
+                                    → {followUpDetails}
+                                  </p>
                                 )}
-                              </div>
                             </div>
-                          );
-                        },
-                      )}
+                            <div className="ml-2">
+                              {formData.przeciwwskazania[key] ? (
+                                <span className="inline-flex items-center px-3 py-1 bg-red-100 text-red-700 text-xs font-bold rounded-full border border-red-200 whitespace-nowrap">
+                                  TAK
+                                </span>
+                              ) : (
+                                <span className="inline-flex items-center px-3 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full border border-green-200 whitespace-nowrap">
+                                  NIE
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })}
                     </div>
                   )}
+                </div>
+              </section>
+
+              {/* Zalecenia Przedzabiegowe */}
+              <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
+                <h2 className="text-2xl font-serif text-[#4a3a2a] mb-6 flex items-center gap-3">
+                  <span className="w-8 h-8 bg-[#8b7355] text-white rounded-full flex items-center justify-center text-sm font-sans">
+                    5
+                  </span>
+                  Zalecenia Przedzabiegowe
+                </h2>
+
+                <div className="bg-[#f8f6f3] p-5 rounded-xl border border-[#d4cec4]/50">
+                  <p className="text-sm font-medium text-[#4a4540] mb-3">
+                    Proszę o przestrzeganie poniższych zaleceń przed zabiegiem:
+                  </p>
+                  <ul className="space-y-2 text-sm text-[#5a5550]">
+                    {lipolizaIniekcyjnaPreCare.map((instruction, index) => (
+                      <li key={index} className="flex items-start gap-2">
+                        <span className="text-[#8b7355]">∙</span>
+                        <span>{instruction}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               </section>
 
@@ -862,7 +998,7 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
               <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
                 <h2 className="text-2xl font-serif text-[#4a3a2a] mb-6 flex items-center gap-3">
                   <span className="w-8 h-8 bg-[#8b7355] text-white rounded-full flex items-center justify-center text-sm font-sans">
-                    5
+                    6
                   </span>
                   Informacje o Skutkach Ubocznych i Powikłaniach
                 </h2>
@@ -875,7 +1011,7 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
                       ZABIEGU - CZĘSTE
                     </p>
                     <ul className="space-y-2 text-sm text-[#5a5550]">
-                      {depilacjaLaserowaNaturalReactions.map(
+                      {lipolizaIniekcyjnaNaturalReactions.map(
                         (reaction, index) => (
                           <li key={index} className="flex items-start gap-2">
                             <span className="text-[#8b7355]">∙</span>
@@ -886,59 +1022,50 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
                     </ul>
                   </div>
 
-                  {/* MOŻLIWE REAKCJE SKÓRY */}
-                  <div className="bg-[#f8f6f3] p-5 rounded-xl border border-[#d4cec4]/50 mt-6">
-                    <p className="text-sm font-medium text-[#4a4540] mb-3 uppercase tracking-wide">
-                      MOŻLIWE REAKCJE SKÓRY
+                  {/* Rzadkie powikłania */}
+                  <div className="bg-[#f8f6f3] p-5 rounded-xl border border-[#d4cec4]/50">
+                    <p className="text-sm font-medium text-[#4a4540] mb-3">
+                      MOŻLIWE POWIKŁANIA PO PRZEPROWADZONYM ZABIEGU – RZADKIE
                     </p>
-                    <ul className="space-y-2 text-sm text-[#5a5550] mb-4">
-                      {depilacjaLaserowaNaturalReactions.map(
-                        (reaction, index) => (
+                    <ul className="space-y-2 text-sm text-[#5a5550]">
+                      {lipolizaIniekcyjnaComplications.rzadkie.map(
+                        (complication, index) => (
                           <li key={index} className="flex items-start gap-2">
                             <span className="text-[#8b7355]">∙</span>
-                            <span>{reaction}</span>
+                            <span>{complication}</span>
                           </li>
                         ),
                       )}
                     </ul>
-                    <p className="text-sm text-[#8b7355] italic">
-                      Reakcje te są indywidualne i mogą wystąpić mimo
-                      prawidłowego wykonania zabiegu.
+                  </div>
+
+                  {/* Bardzo rzadkie powikłania */}
+                  <div className="bg-[#f8f6f3] p-5 rounded-xl border border-[#d4cec4]/50">
+                    <p className="text-sm font-medium text-[#4a4540] mb-3">
+                      MOŻLIWE POWIKŁANIA PO PRZEPROWADZONYM ZABIEGU – BARDZO
+                      RZADKIE
                     </p>
+                    <ul className="space-y-2 text-sm text-[#5a5550]">
+                      {lipolizaIniekcyjnaComplications.bardzoRzadkie.map(
+                        (complication, index) => (
+                          <li key={index} className="flex items-start gap-2">
+                            <span className="text-[#8b7355]">∙</span>
+                            <span>{complication}</span>
+                          </li>
+                        ),
+                      )}
+                    </ul>
                   </div>
                 </div>
-              </section>
-
-              {/* Zalecenia Przed Zabiegiem */}
-              <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
-                <h2 className="text-2xl font-serif text-[#4a3a2a] mb-6 flex items-center gap-3">
-                  <span className="w-8 h-8 bg-[#8b7355] text-white rounded-full flex items-center justify-center text-sm font-sans">
-                    5
-                  </span>
-                  Zalecenia Przed Zabiegiem
-                </h2>
-                <ul className="space-y-3">
-                  {depilacjaLaserowaPreCare.map((instruction, index) => (
-                    <li
-                      key={index}
-                      className="flex items-start gap-3 bg-white/50 p-3 rounded-lg border border-[#d4cec4]/30"
-                    >
-                      <div className="w-1.5 h-1.5 rounded-full bg-[#8b7355] mt-2 flex-shrink-0" />
-                      <span className="text-[#5a5550] text-sm leading-relaxed">
-                        {instruction}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
               </section>
 
               {/* Zalecenia Pozabiegowe */}
               <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
                 <h2 className="text-2xl font-serif text-[#4a3a2a] mb-6 flex items-center gap-3">
                   <span className="w-8 h-8 bg-[#8b7355] text-white rounded-full flex items-center justify-center text-sm font-sans">
-                    6
+                    7
                   </span>
-                  Zalecenia Po Zabiegu
+                  Zalecenia Pozabiegowe
                 </h2>
 
                 <div className="bg-[#f8f6f3] p-5 rounded-xl border border-[#d4cec4]/50 mb-6">
@@ -950,7 +1077,7 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
                     </strong>
                   </p>
                   <ul className="space-y-2 text-sm text-[#5a5550]">
-                    {depilacjaLaserowaPostCare.map((instruction, index) => (
+                    {lipolizaIniekcyjnaPostCare.map((instruction, index) => (
                       <li key={index} className="flex items-start gap-2">
                         <span className="text-[#8b7355]">∙</span>
                         <span
@@ -993,6 +1120,7 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
                   <div className="bg-[#f8f6f3] p-6 rounded-xl text-sm text-[#5a5550] leading-relaxed whitespace-pre-line max-h-[60vh] overflow-y-auto mb-6 border border-[#e5e0d8]">
                     {rodoInfo.consentText}
                   </div>
+                  {/* Signature Area for RODO */}
                   <div className="mt-8">
                     <p className="text-sm text-[#6b6560] mb-4 font-medium uppercase tracking-wide">
                       Podpis Klienta (Zgoda na przetwarzanie danych):
@@ -1003,6 +1131,7 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
                         value={formData.podpisRodo || ""}
                         onChange={(sig) => {
                           handleInputChange("podpisRodo", sig);
+                          // Auto-approve RODO consent when signed
                           if (sig && !formData.zgodaPrzetwarzanieDanych) {
                             handleInputChange("zgodaPrzetwarzanieDanych", true);
                           }
@@ -1045,6 +1174,7 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
                   <div className="bg-[#f8f6f3] p-6 rounded-xl text-sm text-[#5a5550] leading-relaxed whitespace-pre-line max-h-[60vh] overflow-y-auto mb-6 border border-[#e5e0d8]">
                     {rodoInfo.clauseText}
                   </div>
+                  {/* Signature Area for RODO 2 */}
                   <div className="mt-8">
                     <p className="text-sm text-[#6b6560] mb-4 font-medium uppercase tracking-wide">
                       Podpis Klienta (Klauzula informacyjna):
@@ -1107,7 +1237,7 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
                         Możliwe naturalne reakcje:
                       </p>
                       <ul className="space-y-2 text-sm text-[#5a5550]">
-                        {depilacjaLaserowaNaturalReactions.map(
+                        {lipolizaIniekcyjnaNaturalReactions.map(
                           (reaction, index) => (
                             <li key={index} className="flex items-start gap-2">
                               <span className="text-[#8b7355]">•</span>
@@ -1125,15 +1255,15 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
                       <div className="space-y-3 text-sm text-[#5a5550]">
                         <p>
                           <span className="font-medium">Częste:</span>{" "}
-                          {depilacjaLaserowaComplications.czeste.join(", ")}
+                          {lipolizaIniekcyjnaComplications.czeste.join(", ")}
                         </p>
                         <p>
                           <span className="font-medium">Rzadkie:</span>{" "}
-                          {depilacjaLaserowaComplications.rzadkie.join(", ")}
+                          {lipolizaIniekcyjnaComplications.rzadkie.join(", ")}
                         </p>
                         <p>
                           <span className="font-medium">Bardzo rzadkie:</span>{" "}
-                          {depilacjaLaserowaComplications.bardzoRzadkie.join(
+                          {lipolizaIniekcyjnaComplications.bardzoRzadkie.join(
                             ", ",
                           )}
                         </p>
@@ -1143,7 +1273,7 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
                 </div>
               </section>
 
-              {/* Zalecenia Laserowe */}
+              {/* Zalecenia Hyaluronic */}
               <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg">
                 <div className="p-6 md:p-8">
                   <h3 className="text-2xl font-serif text-[#4a4540] mb-6 border-b border-[#d4cec4] pb-2">
@@ -1153,7 +1283,7 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
                     Zobowiązuję się do przestrzegania następujących zaleceń:
                   </p>
                   <ul className="space-y-2 text-[#5a5550] text-sm bg-white/50 p-4 rounded-xl border border-[#d4cec4]/30">
-                    {depilacjaLaserowaPostCare.map((instruction, index) => (
+                    {lipolizaIniekcyjnaPostCare.map((instruction, index) => (
                       <li key={index} className="flex items-start gap-2">
                         <span className="text-[#8b7355]">•</span>
                         <span
@@ -1178,58 +1308,87 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
                 </h3>
                 <div className="bg-[#f8f6f3] p-5 rounded-xl mb-6 border border-[#d4cec4]/50">
                   <h4 className="font-serif text-[#4a4540] text-lg mb-4">
-                    OŚWIADCZENIE I ŚWIADOMA ZGODA NA ZABIEG DEPILACJI LASEROWEJ
+                    OŚWIADCZENIE I ŚWIADOMA ZGODA NA ZABIEG LIPOLIZY INIEKCYJNEJ
                   </h4>
                   <p className="text-sm text-[#5a5550] mb-4">
-                    Ja, niżej podpisana/y, oświadczam, że:
+                    Ja, niżej podpisana/y, po przeprowadzeniu szczegółowego
+                    wywiadu i konsultacji ze Specjalistą, oświadczam, że:
                   </p>
 
                   <div className="space-y-4 text-sm text-[#5a5550] leading-relaxed">
                     <p>
-                      <strong>Stan zdrowia:</strong> Wszystkie informacje podane
-                      przeze mnie w ankiecie zdrowotnej oraz podczas wywiadu są
-                      prawdziwe, kompletne i zgodne z moim aktualnym stanem
-                      zdrowia. Nie zataiłam/em żadnych informacji o chorobach,
-                      alergiach, ekspozycji na słońce/solarium oraz
-                      przyjmowanych lekach i suplementach (zwłaszcza
-                      światłouczulających). Jestem świadoma/y, że zatajenie
-                      informacji może wpłynąć na bezpieczeństwo i skuteczność
-                      zabiegu oraz zwiększyć ryzyko powikłań.
+                      <strong>Stan zdrowia i odpowiedzialność:</strong>{" "}
+                      Oświadczam, że Specjalista poinformował mnie o
+                      przeciwwskazaniach do zabiegu. Potwierdzam, że nie
+                      występują u mnie żadne z nich (m.in. ciąża, cukrzyca,
+                      choroby nerek/wątroby, zaburzenia krzepnięcia).
+                      Udzieliłam/em pełnych i prawdziwych informacji o moim
+                      stanie zdrowia. Mam świadomość, że zatajenie informacji
+                      lub podanie nieprawdy (np. o przyjmowanych lekach)
+                      traktowane będzie jako moje przyczynienie się do powstania
+                      ewentualnej szkody (rozstrój zdrowia, powikłania). W
+                      takiej sytuacji zwalniam osobę wykonującą zabieg z
+                      odpowiedzialności za negatywne skutki.
                     </p>
                     <p>
-                      <strong>Informacja o zabiegu:</strong> Otrzymałam/em
-                      wyczerpujące informacje na temat zabiegu depilacji laserem
-                      diodowym, jego przebiegu, wskazań oraz zaleceń dotyczących
-                      pielęgnacji skóry przed i po zabiegu. Miałam/em możliwość
-                      zadawania pytań i uzyskałam/em na nie zrozumiale
-                      odpowiedzi.
+                      <strong>Informacja o zabiegu i przebiegu:</strong>{" "}
+                      Otrzymałam/em wyczerpujące informacje na temat mechanizmu
+                      działania lipolizy iniekcyjnej. Miałam/em możliwość
+                      zadawania pytań i uzyskałam/em na nie jasne odpowiedzi.
+                      Potwierdzam, że materiały użyte do zabiegu są sterylne,
+                      jednorazowe i zostały otwarte w mojej obecności, a w
+                      Salonie zachowane są najwyższe normy higieniczne.
                     </p>
                     <p>
-                      <strong>Efekty i brak gwarancji:</strong> Zostałam/em
-                      poinformowana/y, że skuteczność depilacji zależy od
-                      indywidualnych cech organizmu (m.in. gospodarki
-                      hormonalnej, koloru i grubości włosa, fazy wzrostu włosa).
-                      Rozumiem, że zabieg należy wykonywać w serii (zazwyczaj co
-                      4-8 tygodni) i przyjmuję do wiadomości, że nie jest
-                      możliwe udzielenie 100% gwarancji usunięcia wszystkich
-                      włosów w określonym czasie. Oświadczam, że brak
-                      oczekiwanego rezultatu estetycznego nie będzie podstawą do
-                      roszczeń reklamacyjnych.
+                      <strong>
+                        Specyfika zabiegu i ryzyko (Stan zapalny):
+                      </strong>{" "}
+                      Zostałam/em poinformowana/y, że naturalną i oczekiwaną
+                      konsekwencją zabiegu jest wystąpienie stanu zapalnego, z
+                      którym wiąże się: silna opuchlizna, zaczerwienienie,
+                      pieczenie, tkliwość oraz możliwe zasinienia. Objawy te
+                      ustępują zazwyczaj w ciągu 7 dni, w zależności od trybu
+                      życia i organizmu. Mam świadomość ryzyka wystąpienia
+                      reakcji alergicznej na preparat lub środek znieczulający.
+                      Akceptuję to ryzyko i biorę na siebie odpowiedzialność za
+                      skutki wystąpienia alergii, o której nie wiedziałam/em.
                     </p>
                     <p>
-                      <strong>Skutki uboczne i odpowiedzialność:</strong> Mam
-                      świadomość, że po zabiegu mogą wystąpić przejściowe
-                      reakcje niepożądane, takie jak: zaczerwienienie, obrzęk,
-                      pieczenie czy drobne strupki. Akceptuję to ryzyko.
+                      <strong>Efekty i plan zabiegowy:</strong> Rozumiem, że dla
+                      uzyskania zadowalającego efektu należy przeprowadzić serię
+                      zabiegów. Zalecana seria to średnio od …… do …… zabiegów w
+                      odstępach co …… tygodni. Poinformowano mnie, że efekty
+                      zabiegu zależą od wielu czynników (ilość tkanki
+                      tłuszczowej, metabolizm, styl życia, dieta) i nie da się w
+                      pełni zagwarantować identycznego rezultatu u każdego
+                      klienta. Oświadczam, że brak uzyskania oczekiwanego przeze
+                      mnie efektu estetycznego nie będzie podstawą do roszczeń
+                      reklamacyjnych ani finansowych, o ile zabieg został
+                      wykonany zgodnie ze sztuką.
                     </p>
                     <p>
-                      <strong>Decyzja:</strong> Decyzję o poddaniu się zabiegowi
-                      podejmuję w pełni świadomie i dobrowolnie. Oświadczam, że
-                      w przypadku wykonania zabiegu zgodnie z zasadami sztuki i
-                      etyki zawodowej, nie będę wnosić żadnych roszczeń
-                      finansowych ani prawnych do osoby wykonującej zabieg w
-                      związku z wystąpieniem typowych reakcji po-zabiegowych lub
-                      brakiem całkowitego usunięcia owłosienia.
+                      <strong>Zalecenia i powikłania:</strong> Zobowiązuję się
+                      przestrzegać wszelkich zaleceń pozabiegowych (m.in. picie
+                      dużej ilości wody, masaż - jeśli zalecono, unikanie
+                      ciepła). Rozumiem, że nieprzestrzeganie zaleceń może
+                      skutkować wystąpieniem powikłań, takich jak zakażenia,
+                      zrosty czy powstanie blizn, za co Specjalista nie ponosi
+                      odpowiedzialności.
+                    </p>
+                    <p>
+                      <strong>Kwalifikacje i oświadczenie końcowe:</strong>{" "}
+                      Oświadczam, że mam świadomość, iż Specjalista wykonujący
+                      zabieg nie jest lekarzem medycyny estetycznej, ale posiada
+                      odpowiednie przeszkolenie i doświadczenie. Decyzję o
+                      poddaniu się zabiegowi podejmuję świadomie, dobrowolnie i
+                      na własną odpowiedzialność.
+                    </p>
+                    <p>
+                      <strong>AKCEPTACJA REGULAMINU:</strong> Oświadczam, że
+                      zapoznałam/em się z Regulaminem Salonu dostępnym na
+                      stronie internetowej oraz w recepcji. W pełni akceptuję
+                      jego postanowienia, w tym zasady dotyczące rezerwacji,
+                      zadatków, korekt oraz reklamacji.
                     </p>
                     <p className="mt-4 font-medium text-[#8b7355]">
                       * W przypadku osoby niepełnoletniej wymagany jest podpis
@@ -1237,6 +1396,8 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
                     </p>
                   </div>
                 </div>
+
+                {/* Podpis pod Zabiegiem (Nowy, obowiązkowy) */}
                 <div className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8 mt-8">
                   <h3 className="text-xl font-serif text-[#4a4540] mb-4 border-b border-[#d4cec4] pb-2">
                     Potwierdzenie Zgody na Zabieg
@@ -1287,7 +1448,7 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
               <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
                 <h3 className="text-2xl font-serif text-[#4a4540] mb-6 flex items-center gap-3">
                   <span className="w-8 h-8 bg-[#8b7355] text-white rounded-full flex items-center justify-center text-sm font-sans">
-                    7
+                    8
                   </span>
                   Zgody Dodatkowe
                 </h3>
