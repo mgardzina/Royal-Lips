@@ -868,8 +868,8 @@ export default function ClientDetailsPage({
                         ) : (
                           <>
                             {/* WIDOK STANDARDOWY */}
-                            <div className="flex justify-between items-start mb-1.5">
-                              <span className="text-[#8b7355] font-medium text-sm">
+                            <div className="flex justify-between items-start mb-2">
+                              <span className="text-[#8b7355] font-semibold text-base">
                                 {item.date.toLocaleDateString("pl-PL", {
                                   day: "numeric",
                                   month: "long",
@@ -887,19 +887,21 @@ export default function ClientDetailsPage({
                                         id: item.id,
                                         date: item.date.toISOString(),
                                         description: item.description,
+                                        znieczulenie: (item as any)
+                                          .znieczulenie,
                                       })
                                     }
-                                    className="p-1 text-[#8b8580] hover:text-[#8b7355] transition-colors"
+                                    className="p-1.5 text-[#8b8580] hover:text-[#8b7355] transition-colors"
                                     title="Edytuj"
                                   >
-                                    <Edit2 className="w-3.5 h-3.5" />
+                                    <Edit2 className="w-4 h-4" />
                                   </button>
                                   <button
                                     onClick={() => handleDeleteHistory(item.id)}
-                                    className="p-1 text-red-400 hover:text-red-600 transition-colors"
+                                    className="p-1.5 text-red-400 hover:text-red-600 transition-colors"
                                     title="Usuń"
                                   >
-                                    <Trash2 className="w-3.5 h-3.5" />
+                                    <Trash2 className="w-4 h-4" />
                                   </button>
                                 </div>
                               )}
@@ -907,15 +909,15 @@ export default function ClientDetailsPage({
 
                             {item.type === "visit" ? (
                               <>
-                                <p className="text-[#5a5550] text-sm leading-relaxed whitespace-pre-wrap">
+                                <p className="text-[#5a5550] text-base leading-relaxed whitespace-pre-wrap font-medium">
                                   {item.description}
                                 </p>
                                 {(item as any).znieczulenie && (
-                                  <div className="mt-1 flex items-center gap-1.5">
-                                    <span className="text-[10px] font-bold text-[#8b7355] bg-[#8b7355]/10 px-1.5 py-0.5 rounded uppercase tracking-wider">
+                                  <div className="mt-3 flex flex-col gap-1 bg-[#8b7355]/5 p-2 rounded-lg border border-[#8b7355]/20">
+                                    <span className="text-xs font-bold text-[#8b7355] uppercase tracking-wider">
                                       Znieczulenie
                                     </span>
-                                    <span className="text-[11px] text-[#5a5550]">
+                                    <span className="text-sm font-medium text-[#4a4540]">
                                       {(item as any).znieczulenie}
                                     </span>
                                   </div>
@@ -926,26 +928,26 @@ export default function ClientDetailsPage({
                                 href={`/admin/formularz/${item.id}`}
                                 className="block hover:text-[#8b7355] transition-colors"
                               >
-                                <p className="font-medium text-[#4a4540] text-sm">
+                                <p className="font-bold text-[#4a4540] text-base mb-1">
                                   {formTypeLabels[item.formType] ||
                                     item.formType}
                                 </p>
-                                <p className="text-xs text-[#8b8580] mt-0.5 font-medium">
+                                <p className="text-sm text-[#8b8580] font-medium">
                                   {translateZones(item.obszarZabiegu)}
                                 </p>
                                 {(item as any).nazwaProduktu && (
-                                  <p className="text-[11px] text-[#8b8580]/80 mt-1">
+                                  <p className="text-sm text-[#8b8580] mt-1 italic">
                                     {((item as any).nazwaProduktu || "")
                                       .replace(/\| Email:.*$/, "")
                                       .trim()}
                                   </p>
                                 )}
                                 {(item as any).znieczulenie && (
-                                  <div className="mt-1 flex items-center gap-1.5">
-                                    <span className="text-[10px] font-bold text-[#8b7355] bg-[#8b7355]/10 px-1.5 py-0.5 rounded uppercase tracking-wider">
+                                  <div className="mt-3 flex flex-col gap-1 bg-[#8b7355]/5 p-2 rounded-lg border border-[#8b7355]/20">
+                                    <span className="text-xs font-bold text-[#8b7355] uppercase tracking-wider">
                                       Znieczulenie
                                     </span>
-                                    <span className="text-[11px] text-[#5a5550]">
+                                    <span className="text-sm font-medium text-[#4a4540]">
                                       {(item as any).znieczulenie}
                                     </span>
                                   </div>

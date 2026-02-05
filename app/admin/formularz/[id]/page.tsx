@@ -79,6 +79,7 @@ interface ConsentFormFull {
   podpisMarketing: string | null;
   podpisFotografie: string | null;
   podpisRodo: string | null;
+  podpisRodo2: string | null;
   informacjaDodatkowa: string | null;
   osobaPrzeprowadzajacaZabieg: string | null;
   clientId: string | null;

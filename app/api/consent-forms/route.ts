@@ -43,6 +43,7 @@ export async function POST(request: NextRequest) {
         podpisMarketing: body.podpisMarketing || null,
         podpisFotografie: body.podpisFotografie || null,
         podpisRodo: body.podpisRodo || null,
+        podpisRodo2: body.podpisRodo2 || null,
         informacjaDodatkowa: body.informacjaDodatkowa || null,
         zastrzeniaKlienta: body.zastrzeniaKlienta || null,
         numerZabiegu: body.numerZabiegu || null,
