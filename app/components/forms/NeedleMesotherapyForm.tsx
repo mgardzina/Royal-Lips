@@ -1203,7 +1203,7 @@ export default function NeedleMesotherapyForm({
                     <p className="text-sm text-[#6b6560] mb-4 font-medium uppercase tracking-wide">
                       Podpis Klienta (Zgoda na przetwarzanie danych):
                     </p>
-                    <div className="bg-white rounded-xl overflow-hidden min-h-[200px]">
+                    <div className="bg-white rounded-xl overflow-hidden min-h-[200px] border border-[#d4cec4] p-1">
                       <SignaturePad
                         label=""
                         value={formData.podpisRodo || ""}
@@ -1257,7 +1257,7 @@ export default function NeedleMesotherapyForm({
                     <p className="text-sm text-[#6b6560] mb-4 font-medium uppercase tracking-wide">
                       Podpis Klienta (Klauzula informacyjna):
                     </p>
-                    <div className="bg-white rounded-xl overflow-hidden min-h-[200px]">
+                    <div className="bg-white rounded-xl overflow-hidden min-h-[200px] border border-[#d4cec4] p-1">
                       <SignaturePad
                         label=""
                         value={formData.podpisRodo2 || ""}

@@ -57,9 +57,9 @@ export async function POST(
 
   try {
     const body = await request.json();
-    const { date, description } = body;
+    const { date, description, znieczulenie } = body;
     
-    console.error("[API] Add visit request:", { clientId: id, date, description });
+    console.error("[API] Add visit request:", { clientId: id, date, description, znieczulenie });
 
     if (!date || !description) {
       console.error("[API] Missing date or description");
@@ -131,6 +131,7 @@ export async function POST(
           formId: latestForm.id,
           date: parsedDate,
           description,
+          znieczulenie,
         },
       });
     } catch (createError) {

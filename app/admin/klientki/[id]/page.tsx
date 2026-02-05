@@ -19,9 +19,45 @@ import {
   Edit2,
   X,
   Check,
+  Syringe,
+  Eraser,
+  Sparkles,
 } from "lucide-react";
+import { ZONES } from "@/types/face-zones";
 
-type NoteCategory = "NOTATKA" | "ALERGIA" | "UWAGA" | "PREFERENCJA";
+// Helper do tłumaczenia stref
+const translateZones = (zonesString: string | null): string => {
+  if (!zonesString) return "Brak szczegółów";
+  const selectedIds = zonesString.split(",").map((s) => s.trim());
+  return selectedIds
+    .map((id) => {
+      const zone = ZONES.find((z) => z.id === id);
+      return zone ? zone.name : id;
+    })
+    .join(", ");
+};
+
+// Mapowanie ikon zabiegów
+const formTypeIcons: Record<string, typeof Check> = {
+  HYALURONIC: Heart,
+  PMU: Sparkles,
+  LASER: Sparkles, // Or generic
+  WRINKLE_REDUCTION: Sparkles,
+  FacialVolumetryForm: Syringe, // fallback check
+};
+
+const formTypeLabels: Record<string, string> = {
+  HYALURONIC: "Modelowanie ust",
+  FACIAL_VOLUMETRY: "Wolumetria twarzy",
+  WRINKLE_REDUCTION: "Niwelowanie zmarszczek",
+  NEEDLE_MESOTHERAPY: "Mezoterapia igłowa",
+  INJECTION_LIPOLYSIS: "Lipoliza iniekcyjna",
+  PMU: "Makijaż permanentny (Legacy)",
+  PERMANENT_MAKEUP: "Makijaż permanentny",
+  LASER: "Laser",
+  LASER_HAIR_REMOVAL: "Depilacja laserowa",
+  LASER_TATTOO_REMOVAL: "Usuwanie tatuażu",
+};
 
 interface Note {
   id: string;
@@ -32,18 +68,17 @@ interface Note {
 
 interface Form {
   id: string;
-  type: "HYALURONIC" | "PMU" | "LASER";
+  type: string;
   createdAt: string;
   obszarZabiegu: string | null;
+  nazwaProduktu: string | null;
+  osobaPrzeprowadzajacaZabieg: string | null;
   email: string | null;
   telefon: string;
+  znieczulenie: string | null;
 }
 
-const categoryLabels: Record<Form["type"], string> = {
-  HYALURONIC: "Kwas hialuronowy",
-  PMU: "Makijaż permanentny",
-  LASER: "Laser",
-};
+type NoteCategory = "NOTATKA" | "ALERGIA" | "UWAGA" | "PREFERENCJA";
 
 const noteCategoryConfig: Record<
   NoteCategory,
@@ -103,15 +138,21 @@ export default function ClientDetailsPage({
     id: string;
     date: string;
     description: string;
+    znieczulenie?: string;
   }
   const [history, setHistory] = useState<TreatmentHistory[]>([]);
-  const [newHistory, setNewHistory] = useState({ date: "", description: "" });
+  const [newHistory, setNewHistory] = useState({
+    date: "",
+    description: "",
+    znieczulenie: "",
+  });
   const [isAddingHistory, setIsAddingHistory] = useState(false);
   const [showAddHistoryForm, setShowAddHistoryForm] = useState(false);
   const [editingHistoryId, setEditingHistoryId] = useState<string | null>(null);
   const [editFormData, setEditFormData] = useState({
     date: "",
     description: "",
+    znieczulenie: "",
   });
   const [isSavingEdit, setIsSavingEdit] = useState(false);
 
@@ -203,7 +244,7 @@ export default function ClientDetailsPage({
 
       if (response.ok) {
         await fetchHistory();
-        setNewHistory({ date: "", description: "" });
+        setNewHistory({ date: "", description: "", znieczulenie: "" });
         return true;
       } else {
         const err = await response.json();
@@ -269,12 +310,13 @@ export default function ClientDetailsPage({
     setEditFormData({
       date: item.date,
       description: item.description,
+      znieczulenie: item.znieczulenie || "",
     });
   };
 
   const cancelEditing = () => {
     setEditingHistoryId(null);
-    setEditFormData({ date: "", description: "" });
+    setEditFormData({ date: "", description: "", znieczulenie: "" });
   };
 
   const handleUpdateHistory = async () => {
@@ -552,6 +594,27 @@ export default function ClientDetailsPage({
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-xs font-medium text-[#8b8580] mb-1 uppercase tracking-wider">
+                        Znieczulenie
+                      </label>
+                      <input
+                        type="text"
+                        value={newHistory.znieczulenie || ""}
+                        onChange={(e) =>
+                          setNewHistory({
+                            ...newHistory,
+                            znieczulenie: e.target.value,
+                          })
+                        }
+                        placeholder="np. Maść znieczulająca"
+                        className="w-full px-3 py-2 bg-[#f8f6f3] border border-[#d4cec4] rounded-lg focus:border-[#8b7355] outline-none text-sm"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Adnotacja i Obszar - 2 kolumny */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-medium text-[#8b8580] mb-1 uppercase tracking-wider">
                         Adnotacja (np. 2. zabieg)
                       </label>
                       <input
@@ -698,6 +761,7 @@ export default function ClientDetailsPage({
                     type: "visit" as const,
                     date: new Date(h.date),
                     description: h.description,
+                    znieczulenie: h.znieczulenie,
                   })),
                   ...client.forms.map((f) => ({
                     id: f.id,
@@ -705,6 +769,9 @@ export default function ClientDetailsPage({
                     date: new Date(f.createdAt),
                     formType: f.type,
                     obszarZabiegu: f.obszarZabiegu,
+                    nazwaProduktu: f.nazwaProduktu,
+                    osoba: f.osobaPrzeprowadzajacaZabieg,
+                    znieczulenie: f.znieczulenie,
                   })),
                 ].sort((a, b) => b.date.getTime() - a.date.getTime());
 
@@ -758,6 +825,18 @@ export default function ClientDetailsPage({
                                   });
                                 }}
                                 className="px-2 py-1 border rounded text-xs"
+                              />
+                              <input
+                                type="text"
+                                value={editFormData.znieczulenie}
+                                onChange={(e) =>
+                                  setEditFormData({
+                                    ...editFormData,
+                                    znieczulenie: e.target.value,
+                                  })
+                                }
+                                placeholder="Znieczulenie"
+                                className="w-full px-2 py-1 border rounded text-xs mb-2"
                               />
                             </div>
                             <textarea
@@ -827,20 +906,50 @@ export default function ClientDetailsPage({
                             </div>
 
                             {item.type === "visit" ? (
-                              <p className="text-[#5a5550] text-sm leading-relaxed whitespace-pre-wrap">
-                                {item.description}
-                              </p>
+                              <>
+                                <p className="text-[#5a5550] text-sm leading-relaxed whitespace-pre-wrap">
+                                  {item.description}
+                                </p>
+                                {(item as any).znieczulenie && (
+                                  <div className="mt-1 flex items-center gap-1.5">
+                                    <span className="text-[10px] font-bold text-[#8b7355] bg-[#8b7355]/10 px-1.5 py-0.5 rounded uppercase tracking-wider">
+                                      Znieczulenie
+                                    </span>
+                                    <span className="text-[11px] text-[#5a5550]">
+                                      {(item as any).znieczulenie}
+                                    </span>
+                                  </div>
+                                )}
+                              </>
                             ) : (
                               <Link
                                 href={`/admin/formularz/${item.id}`}
                                 className="block hover:text-[#8b7355] transition-colors"
                               >
                                 <p className="font-medium text-[#4a4540] text-sm">
-                                  {categoryLabels[item.formType]}
+                                  {formTypeLabels[item.formType] ||
+                                    item.formType}
                                 </p>
-                                <p className="text-xs text-[#8b8580] mt-0.5">
-                                  {item.obszarZabiegu || "Brak szczegółów"}
+                                <p className="text-xs text-[#8b8580] mt-0.5 font-medium">
+                                  {translateZones(item.obszarZabiegu)}
                                 </p>
+                                {(item as any).nazwaProduktu && (
+                                  <p className="text-[11px] text-[#8b8580]/80 mt-1">
+                                    {((item as any).nazwaProduktu || "")
+                                      .replace(/\| Email:.*$/, "")
+                                      .trim()}
+                                  </p>
+                                )}
+                                {(item as any).znieczulenie && (
+                                  <div className="mt-1 flex items-center gap-1.5">
+                                    <span className="text-[10px] font-bold text-[#8b7355] bg-[#8b7355]/10 px-1.5 py-0.5 rounded uppercase tracking-wider">
+                                      Znieczulenie
+                                    </span>
+                                    <span className="text-[11px] text-[#5a5550]">
+                                      {(item as any).znieczulenie}
+                                    </span>
+                                  </div>
+                                )}
                               </Link>
                             )}
                           </>

@@ -80,6 +80,7 @@ model ConsentForm {
   nazwaProduktu String?
   obszarZabiegu String?
   celEfektu     String?
+  znieczulenie  String? // Nowe pole
 
   // Przeciwwskazania (JSON)
   przeciwwskazania Json
@@ -136,10 +137,11 @@ model AdminUser {
 }
 
 model TreatmentHistory {
-  id          String   @id @default(uuid())
-  createdAt   DateTime @default(now())
-  date        DateTime // Data wykonania zabiegu
-  description String // Opis zabiegu (np. ilość ml, parametry lasera)
+  id           String   @id @default(uuid())
+  createdAt    DateTime @default(now())
+  date         DateTime // Data wykonania zabiegu
+  description  String // Opis zabiegu (np. ilość ml, parametry lasera)
+  znieczulenie String? // Informacja o znieczuleniu
 
   formId String
   form   ConsentForm @relation(fields: [formId], references: [id], onDelete: Cascade)

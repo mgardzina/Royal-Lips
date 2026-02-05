@@ -21,6 +21,9 @@ export async function GET(
             obszarZabiegu: true,
             email: true,
             telefon: true,
+            nazwaProduktu: true,
+            osobaPrzeprowadzajacaZabieg: true,
+            znieczulenie: true,
           },
         },
         notes: {

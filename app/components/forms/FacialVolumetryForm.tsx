@@ -84,9 +84,8 @@ export default function FacialVolumetryForm({
   const [isWizardComplete, setIsWizardComplete] = useState(false);
 
   // Form Steps: DATA -> SMS -> RODO -> TREATMENT -> MARKETING
-  const [currentStep, setCurrentStep] = useState<
-    "DATA" | "RODO" | "TREATMENT" | "MARKETING"
-  >("DATA");
+  type Step = "DATA" | "RODO" | "RODO2" | "TREATMENT" | "MARKETING";
+  const [currentStep, setCurrentStep] = useState<Step>("DATA");
 
   // Digital Signature State
   const [showSignatureModal, setShowSignatureModal] = useState(false);
@@ -1441,17 +1440,17 @@ export default function FacialVolumetryForm({
               <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg overflow-hidden">
                 <div className="p-6 md:p-8">
                   <h3 className="text-2xl font-serif text-[#4a4540] mb-6">
-                    Klauzula Informacyjna RODO
+                    {rodoInfo.consentTitle}
                   </h3>
                   <div className="bg-[#f8f6f3] p-6 rounded-xl text-sm text-[#5a5550] leading-relaxed whitespace-pre-line max-h-[60vh] overflow-y-auto mb-6 border border-[#e5e0d8]">
-                    {rodoInfo.pelnyTekst}
+                    {rodoInfo.consentText}
                   </div>
-                  {/* Signature Area for RODO - Expanded and simplified */}
+                  {/* Signature Area for RODO */}
                   <div className="mt-8">
                     <p className="text-sm text-[#6b6560] mb-4 font-medium uppercase tracking-wide">
-                      Podpis Klienta:
+                      Podpis Klienta (Zgoda na przetwarzanie danych):
                     </p>
-                    <div className="bg-white rounded-xl overflow-hidden min-h-[200px]">
+                    <div className="bg-white rounded-xl overflow-hidden min-h-[200px] border border-[#d4cec4] p-1">
                       <SignaturePad
                         label=""
                         value={formData.podpisRodo || ""}
@@ -1465,10 +1464,6 @@ export default function FacialVolumetryForm({
                         date={formData.miejscowoscData}
                       />
                     </div>
-                    <p className="text-xs text-[#8b8580] mt-3 italic">
-                      Złożenie podpisu jest równoznaczne z akceptacją powyższej
-                      klauzuli informacyjnej RODO.
-                    </p>
                   </div>
                 </div>
               </section>
@@ -1483,8 +1478,62 @@ export default function FacialVolumetryForm({
                 </button>
                 <button
                   type="button"
-                  onClick={() => setCurrentStep("TREATMENT")}
+                  onClick={() => setCurrentStep("RODO2")}
                   disabled={!formData.podpisRodo}
+                  className="bg-[#8b7355] text-white py-3 px-8 rounded-xl text-lg font-medium shadow-lg hover:bg-[#7a6548] disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                >
+                  Dalej →
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* KROK 3: RODO 2 */}
+          {currentStep === "RODO2" && (
+            <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+              <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg overflow-hidden">
+                <div className="p-6 md:p-8">
+                  <h3 className="text-2xl font-serif text-[#4a4540] mb-6">
+                    {rodoInfo.clauseTitle}
+                  </h3>
+                  <div className="bg-[#f8f6f3] p-6 rounded-xl text-sm text-[#5a5550] leading-relaxed whitespace-pre-line max-h-[60vh] overflow-y-auto mb-6 border border-[#e5e0d8]">
+                    {rodoInfo.clauseText}
+                  </div>
+                  {/* Signature Area for RODO 2 */}
+                  <div className="mt-8">
+                    <p className="text-sm text-[#6b6560] mb-4 font-medium uppercase tracking-wide">
+                      Podpis Klienta (Klauzula informacyjna):
+                    </p>
+                    <div className="bg-white rounded-xl overflow-hidden min-h-[200px] border border-[#d4cec4] p-1">
+                      <SignaturePad
+                        label=""
+                        value={formData.podpisRodo2 || ""}
+                        onChange={(sig) => {
+                          handleInputChange("podpisRodo2", sig);
+                        }}
+                        date={formData.miejscowoscData}
+                      />
+                    </div>
+                    <p className="text-xs text-[#8b8580] mt-3 italic">
+                      Złożenie podpisu jest równoznaczne z zapoznaniem się z
+                      powyższą klauzulą informacyjną RODO.
+                    </p>
+                  </div>
+                </div>
+              </section>
+
+              <div className="flex justify-between pt-4 pb-12">
+                <button
+                  type="button"
+                  onClick={() => setCurrentStep("RODO")}
+                  className="text-[#6b5540] hover:text-[#4a3a2a] px-6 py-3 font-medium transition-colors"
+                >
+                  ← Wróć do RODO
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setCurrentStep("TREATMENT")}
+                  disabled={!formData.podpisRodo2}
                   className="bg-[#8b7355] text-white py-3 px-8 rounded-xl text-lg font-medium shadow-lg hover:bg-[#7a6548] disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                 >
                   Dalej →

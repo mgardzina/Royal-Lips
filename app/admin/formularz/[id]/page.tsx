@@ -21,6 +21,21 @@ import { contraindicationsByFormType, FormType } from "@/types/booking";
 import AnatomyFaceSelector from "@/app/components/AnatomyFaceSelector";
 
 import SpecialistSignature from "@/app/components/forms/SpecialistSignature";
+import { ZONES } from "@/types/face-zones";
+
+// Helper do tłumaczenia stref
+const translateZones = (zonesString: string | null): string => {
+  if (!zonesString) return "Nie podano";
+
+  const selectedIds = zonesString.split(",").map((s) => s.trim());
+
+  return selectedIds
+    .map((id) => {
+      const zone = ZONES.find((z) => z.id === id);
+      return zone ? zone.name : id; // Fallback to ID if name not found
+    })
+    .join(", ");
+};
 
 // Funkcja do czyszczenia starego formatu nazwaProduktu (usuwanie emaila)
 const cleanNazwaProduktu = (nazwa: string | null): string | null => {
@@ -503,7 +518,7 @@ export default function FormDetailsPage() {
                   />
                 ) : (
                   <p className="text-[#5a5550]">
-                    {form.obszarZabiegu || "Nie podano"}
+                    {translateZones(form.obszarZabiegu)}
                   </p>
                 )}
               </div>
@@ -531,22 +546,20 @@ export default function FormDetailsPage() {
                 )}
               </div>
 
-              {/* Visual Face Selector for Admin */}
+              {/* Visual Face Selector for Admin - Improved Visibility */}
               <div className="mt-4 border-t border-[#d4cec4] pt-4">
-                <label className="block text-sm font-medium text-[#8b8580] mb-2">
+                <label className="block text-sm font-medium text-[#8b8580] mb-4">
                   Wizualizacja obszaru zabiegu
                 </label>
-                <div className="bg-[#f8f6f3] rounded-xl border border-[#d4cec4] p-4 flex justify-center overflow-hidden">
-                  <div className="w-[300px] h-[300px] relative pointer-events-none">
-                    <div className="absolute top-0 left-0 w-full h-full transform scale-[0.3] origin-top-left">
-                      <AnatomyFaceSelector
-                        initialSelected={
-                          form.obszarZabiegu
-                            ? form.obszarZabiegu.split(",").map((s) => s.trim())
-                            : []
-                        }
-                      />
-                    </div>
+                <div className="bg-[#f8f6f3] rounded-xl border border-[#d4cec4] p-6 flex justify-center pointer-events-none">
+                  <div className="w-full max-w-lg aspect-square relative">
+                    <AnatomyFaceSelector
+                      initialSelected={
+                        form.obszarZabiegu
+                          ? form.obszarZabiegu.split(",").map((s) => s.trim())
+                          : []
+                      }
+                    />
                   </div>
                 </div>
               </div>
@@ -576,11 +589,89 @@ export default function FormDetailsPage() {
                 <label className="block text-sm font-medium text-[#8b8580] mb-1">
                   Uwagi Dodatkowe
                 </label>
-                <div className="bg-[#f8f6f3] p-3 rounded-lg border border-[#d4cec4] min-h-[60px]">
-                  <p className="text-[#5a5550] text-sm">
-                    {form.informacjaDodatkowa || "Brak uwag"}
-                  </p>
-                </div>
+
+                {/* Logic to separate history/meds from notes */}
+                {(() => {
+                  const rawNotes = form.informacjaDodatkowa || "";
+                  const lines = rawNotes.split("\n");
+                  const historyInfo: string[] = [];
+                  const medications: string[] = [];
+                  const otherNotes: string[] = [];
+
+                  lines.forEach((line) => {
+                    const trimmed = line.trim();
+                    if (!trimmed) return;
+
+                    if (
+                      trimmed.startsWith("Usta modelowane") ||
+                      trimmed.startsWith("Zabieg wykonywany")
+                    ) {
+                      historyInfo.push(trimmed);
+                    } else if (trimmed.startsWith("Leki (6 m-cy):")) {
+                      medications.push(trimmed);
+                    } else {
+                      otherNotes.push(trimmed);
+                    }
+                  });
+
+                  return (
+                    <div className="space-y-4">
+                      {/* 1. History Section */}
+                      {historyInfo.length > 0 && (
+                        <div className="bg-blue-50/50 p-4 rounded-lg border border-blue-100">
+                          <h4 className="text-xs font-bold text-blue-700 uppercase tracking-wide mb-2 flex items-center gap-2">
+                            <Calendar className="w-3 h-3" />
+                            Historia Zabiegów (z wywiadu)
+                          </h4>
+                          <ul className="list-disc list-inside space-y-1">
+                            {historyInfo.map((info, i) => (
+                              <li
+                                key={i}
+                                className="text-sm text-blue-900 font-medium"
+                              >
+                                {info}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+
+                      {/* 2. Medications Section */}
+                      {medications.length > 0 && (
+                        <div className="bg-red-50/50 p-4 rounded-lg border border-red-100">
+                          <h4 className="text-xs font-bold text-red-700 uppercase tracking-wide mb-2 flex items-center gap-2">
+                            <User className="w-3 h-3" />
+                            Przyjmowane Leki (ostatnie 6 m-cy)
+                          </h4>
+                          <ul className="list-disc list-inside space-y-1">
+                            {medications.map((med, i) => (
+                              <li
+                                key={i}
+                                className="text-sm text-red-900 font-medium"
+                              >
+                                {med.replace("Leki (6 m-cy):", "").trim() ||
+                                  "BRAK"}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+
+                      {/* 3. General Notes */}
+                      <div className="bg-[#f8f6f3] p-3 rounded-lg border border-[#d4cec4] min-h-[60px]">
+                        {otherNotes.length > 0 ? (
+                          <div className="text-[#5a5550] text-sm whitespace-pre-line">
+                            {otherNotes.join("\n")}
+                          </div>
+                        ) : (
+                          <p className="text-[#8b8580] text-sm italic">
+                            Brak dodatkowych uwag.
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })()}
               </div>
             </div>
           </div>
@@ -780,14 +871,14 @@ export default function FormDetailsPage() {
                 (SMS/Email).
               </p>
               {form.zgodaMarketing && form.podpisMarketing ? (
-                <div className="bg-[#f8f6f3] p-4 rounded-xl border border-[#e5e0d8]">
-                  <p className="text-xs text-[#8b8580] uppercase tracking-wider mb-2">
+                <div className="p-4 rounded-xl">
+                  <p className="text-xs text-[#8b8580] uppercase tracking-wider mb-2 font-medium">
                     Podpis Marketingowy
                   </p>
                   <img
                     src={form.podpisMarketing}
                     alt="Podpis Marketing"
-                    className="h-20 object-contain mx-auto md:mx-0"
+                    className="h-40 object-contain mx-auto md:mx-0 filter mix-blend-multiply"
                   />
                 </div>
               ) : (
@@ -821,14 +912,14 @@ export default function FormDetailsPage() {
                 </p>
               )}
               {form.zgodaFotografie && form.podpisFotografie ? (
-                <div className="bg-[#f8f6f3] p-4 rounded-xl border border-[#e5e0d8]">
-                  <p className="text-xs text-[#8b8580] uppercase tracking-wider mb-2">
+                <div className="p-4 rounded-xl">
+                  <p className="text-xs text-[#8b8580] uppercase tracking-wider mb-2 font-medium">
                     Podpis Wizerunek
                   </p>
                   <img
                     src={form.podpisFotografie}
                     alt="Podpis Foto"
-                    className="h-20 object-contain mx-auto md:mx-0"
+                    className="h-40 object-contain mx-auto md:mx-0 filter mix-blend-multiply"
                   />
                 </div>
               ) : (

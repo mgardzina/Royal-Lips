@@ -84,7 +84,7 @@ export default function SignaturePad({
 
       {/* Date label BELOW signature */}
       {date && (
-        <p className="text-xs text-[#6b6560] font-serif italic text-right">
+        <p className="text-xs text-[#6b6560] font-serif italic text-right mr-2">
           {date}
         </p>
       )}
