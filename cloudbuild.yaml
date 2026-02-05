@@ -25,7 +25,7 @@ steps:
   - name: 'gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.8.0'
     args:
       - '--unix-socket=/cloudsql'
-      - 'royal-lips:europe-west3:royal-lips-database'
+      - 'royal-lips:europe-west3:royal-lips-db-small'
     waitFor: ['-']
     id: 'cloud-sql-proxy'
 
@@ -39,7 +39,7 @@ steps:
         npm install prisma @prisma/client &&
         npx prisma db push --accept-data-loss
     env:
-      - 'DATABASE_URL=postgresql://postgres:royallips1220%40%23@localhost/royal-lips-database?host=/cloudsql/royal-lips:europe-west3:royal-lips-database'
+      - 'DATABASE_URL=postgresql://postgres:royallips1220%40%23@localhost/royal-lips-database?host=/cloudsql/royal-lips:europe-west3:royal-lips-db-small'
     waitFor: ['cloud-sql-proxy']
 
   # Deploy container image to Cloud Run
