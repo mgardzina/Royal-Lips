@@ -30,6 +30,8 @@ steps:
         apk add --no-cache openssl curl &&
         curl -o cloud-sql-proxy https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/v2.8.0/cloud-sql-proxy.linux.amd64 &&
         chmod +x cloud-sql-proxy &&
+        mkdir -p /cloudsql &&
+        chmod 777 /cloudsql &&
         ./cloud-sql-proxy --unix-socket=/cloudsql royal-lips:europe-west3:royal-lips-db-small &
         sleep 5 &&
         npm install prisma @prisma/client &&
