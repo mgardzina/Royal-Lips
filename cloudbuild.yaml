@@ -36,9 +36,6 @@ steps:
         npx prisma db push --accept-data-loss
     env:
       - 'DATABASE_URL=postgresql://postgres:royallips1220%40%23@localhost/royal-lips-database?host=/cloudsql/royal-lips:europe-west3:royal-lips-db-small'
-    volumes:
-      - name: 'cloudsql'
-        path: '/cloudsql'
 
   # Deploy container image to Cloud Run
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
