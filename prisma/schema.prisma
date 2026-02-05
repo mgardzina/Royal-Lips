@@ -16,6 +16,11 @@ enum FormType {
 
   LASER_HAIR_REMOVAL
   WRINKLE_REDUCTION
+
+  // Deprecated (keep for backward compatibility)
+  HYALURONIC
+  PMU
+  LASER
 }
 
 // Klientka - identyfikowana po imieniu i nazwisku
