@@ -44,7 +44,7 @@ export default function PolitykaPrywatnosciPage() {
           <div className="bg-white/60 backdrop-blur-sm p-8 md:p-12 space-y-8 rounded-2xl shadow-sm border border-[#d4cec4]">
             <div>
               <h2 className="text-xl font-serif font-light text-[#4a4540] mb-4 tracking-wider uppercase">
-                1. Administrator danych
+                §1. Administrator danych
               </h2>
               <p className="text-[#4a4540]/80 font-light leading-relaxed">
                 Administratorem Twoich danych osobowych jest Royal Lips - Joanna
@@ -57,7 +57,7 @@ export default function PolitykaPrywatnosciPage() {
 
             <div>
               <h2 className="text-xl font-serif font-light text-[#4a4540] mb-4 tracking-wider uppercase">
-                2. Cele przetwarzania danych
+                §2. Cele przetwarzania danych
               </h2>
               <p className="text-[#4a4540]/80 font-light leading-relaxed mb-4">
                 Twoje dane osobowe przetwarzamy w następujących celach:
@@ -73,7 +73,7 @@ export default function PolitykaPrywatnosciPage() {
 
             <div>
               <h2 className="text-xl font-serif font-light text-[#4a4540] mb-4 tracking-wider uppercase">
-                3. Zakres przetwarzanych danych
+                §3. Zakres przetwarzanych danych
               </h2>
               <p className="text-[#4a4540]/80 font-light leading-relaxed mb-4">
                 W celu realizacji usług przetwarzamy następujące kategorie
@@ -98,7 +98,7 @@ export default function PolitykaPrywatnosciPage() {
 
             <div>
               <h2 className="text-xl font-serif font-light text-[#4a4540] mb-4 tracking-wider uppercase">
-                4. Podstawa prawna
+                §4. Podstawa prawna
               </h2>
               <p className="text-[#4a4540]/80 font-light leading-relaxed">
                 Przetwarzanie danych odbywa się na podstawie: Twojej zgody (art.
@@ -111,7 +111,7 @@ export default function PolitykaPrywatnosciPage() {
 
             <div>
               <h2 className="text-xl font-serif font-light text-[#4a4540] mb-4 tracking-wider uppercase">
-                5. Okres przechowywania
+                §5. Okres przechowywania
               </h2>
               <p className="text-[#4a4540]/80 font-light leading-relaxed">
                 Dane osobowe przechowujemy przez okres niezbędny do realizacji
@@ -123,7 +123,7 @@ export default function PolitykaPrywatnosciPage() {
 
             <div>
               <h2 className="text-xl font-serif font-light text-[#4a4540] mb-4 tracking-wider uppercase">
-                6. Twoje prawa
+                §6. Twoje prawa
               </h2>
               <p className="text-[#4a4540]/80 font-light leading-relaxed mb-4">
                 Przysługują Ci następujące prawa:
@@ -144,7 +144,7 @@ export default function PolitykaPrywatnosciPage() {
 
             <div>
               <h2 className="text-xl font-serif font-light text-[#4a4540] mb-4 tracking-wider uppercase">
-                7. Odbiorcy danych
+                §7. Odbiorcy danych
               </h2>
               <p className="text-[#4a4540]/80 font-light leading-relaxed">
                 Twoje dane mogą być przekazywane podmiotom świadczącym usługi na
@@ -156,7 +156,7 @@ export default function PolitykaPrywatnosciPage() {
 
             <div>
               <h2 className="text-xl font-serif font-light text-[#4a4540] mb-4 tracking-wider uppercase">
-                8. Pliki cookies
+                §8. Pliki cookies
               </h2>
               <p className="text-[#4a4540]/80 font-light leading-relaxed">
                 Strona wykorzystuje pliki cookies w celu zapewnienia
@@ -168,7 +168,7 @@ export default function PolitykaPrywatnosciPage() {
 
             <div>
               <h2 className="text-xl font-serif font-light text-[#4a4540] mb-4 tracking-wider uppercase">
-                9. Kontakt
+                §9. Kontakt
               </h2>
               <p className="text-[#4a4540]/80 font-light leading-relaxed">
                 W sprawach związanych z ochroną danych osobowych możesz

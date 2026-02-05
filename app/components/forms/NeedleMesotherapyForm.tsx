@@ -1215,6 +1215,7 @@ export default function NeedleMesotherapyForm({
                           }
                         }}
                         date={formData.miejscowoscData}
+                        hasBorder={false}
                       />
                     </div>
                   </div>
@@ -1265,6 +1266,7 @@ export default function NeedleMesotherapyForm({
                           handleInputChange("podpisRodo2", sig);
                         }}
                         date={formData.miejscowoscData}
+                        hasBorder={false}
                       />
                     </div>
                     <p className="text-xs text-[#8b8580] mt-3 italic">
@@ -1775,24 +1777,6 @@ export default function NeedleMesotherapyForm({
                         handleInputChange("zgodaFotografie", !!sig);
                       }}
                       date={formData.miejscowoscData}
-                    />
-                  </div>
-                </div>
-
-                {/* Informacja dodatkowa */}
-                <div className="bg-white/60 backdrop-blur-sm rounded-xl shadow-sm overflow-hidden border border-[#e5e0d8] hover:shadow-md transition-shadow">
-                  <div className="p-6">
-                    <label className="block font-serif text-[#4a4540] text-lg mb-3">
-                      Uwagi Dodatkowe
-                    </label>
-                    <textarea
-                      value={formData.informacjaDodatkowa || ""}
-                      onChange={(e) =>
-                        handleInputChange("informacjaDodatkowa", e.target.value)
-                      }
-                      className="w-full px-4 py-3 bg-[#f8f6f3] border-b border-[#d4cec4] focus:border-[#8b7355] outline-none transition-all resize-none rounded-t-lg"
-                      placeholder="Np. uwagi co do terminu, prośby..."
-                      rows={3}
                     />
                   </div>
                 </div>

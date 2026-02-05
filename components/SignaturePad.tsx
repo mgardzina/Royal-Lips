@@ -9,6 +9,7 @@ interface SignaturePadProps {
   onChange: (signature: string) => void;
   required?: boolean;
   date?: string;
+  hasBorder?: boolean;
 }
 
 export default function SignaturePad({
@@ -17,6 +18,7 @@ export default function SignaturePad({
   onChange,
   required,
   date,
+  hasBorder = true,
 }: SignaturePadProps) {
   const sigCanvas = useRef<SignatureCanvas>(null);
 
@@ -45,7 +47,11 @@ export default function SignaturePad({
       </label>
 
       <div className="relative group">
-        <div className="rounded-xl overflow-hidden border border-[#d4cec4]">
+        <div
+          className={`rounded-xl overflow-hidden ${
+            hasBorder ? "border border-[#d4cec4]" : ""
+          }`}
+        >
           <div style={{ height: "160px", width: "100%" }}>
             <SignatureCanvas
               ref={sigCanvas}
