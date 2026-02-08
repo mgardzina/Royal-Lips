@@ -351,12 +351,6 @@ export default function FacialVolumetryForm({
       <header className="bg-[#4a4540]/95 backdrop-blur-sm sticky top-0 z-50 shadow-lg">
         <div className="max-w-4xl mx-auto px-4 py-4 flex justify-between items-center">
           <div className="flex items-center gap-4">
-            <button
-              onClick={onBack}
-              className="text-white/80 hover:text-white transition-colors"
-            >
-              <ArrowLeft className="w-6 h-6" />
-            </button>
             <h1 className="text-xl md:text-2xl font-serif text-white tracking-wider">
               ROYAL LIPS
             </h1>
