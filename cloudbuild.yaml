@@ -10,6 +10,7 @@ steps:
       - '.'
     timeout: 1200s
 
+
   # Push the container image to Container Registry
   - name: 'gcr.io/cloud-builders/docker'
     args:
@@ -53,6 +54,10 @@ steps:
       - '--platform'
       - 'managed'
       - '--allow-unauthenticated'
+      - '--add-cloudsql-instances'
+      - 'royal-lips:europe-west3:royal-lips-db-small'
+      - '--set-env-vars'
+      - 'DATABASE_URL=postgresql://postgres:royallips1220%40%23@/royal-lips-database?host=/cloudsql/royal-lips:europe-west3:royal-lips-db-small,NEXTAUTH_SECRET=rQG+KCcnUPBB4C5f2EVnSSZmozRHFk85aAJjOHVpwLA=,NEXTAUTH_URL=https://royallips.pl,SMSAPI_TOKEN=pH4CnKnd4QciFZQ94CV1oKVrqk7eMxGbrODwSxsP,SMSAPI_SENDER=PowderBrows'
       - '--memory'
       - '512Mi'
       - '--cpu'
