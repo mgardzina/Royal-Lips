@@ -25,7 +25,6 @@ import {
   mezoterapiaIglowaComplicationsVeryRare,
   mezoterapiaIglowaPostCare,
 } from "../../../types/booking";
-import SpecialistSignature from "./SpecialistSignature";
 
 interface NeedleMesotherapyFormProps {
   onBack: () => void;
@@ -642,147 +641,6 @@ export default function NeedleMesotherapyForm({
                   Szczegóły Zabiegu
                 </h2>
                 <div className="space-y-6">
-                  <div>
-                    <label className="block text-sm text-[#6b6560] mb-2 font-medium">
-                      Nazwa preparatu
-                    </label>
-                    <div className="space-y-4">
-                      {/* Product Selection */}
-                      <div className="flex flex-col gap-3">
-                        {[
-                          {
-                            name: "Kwas hialuronowy Jetema - Vitten hydro plus",
-                            desc: "Nawilżenie i rewitalizacja skóry.",
-                          },
-                          {
-                            name: "Pink Glow",
-                            desc: "Zaawansowana mezoterapia, odżywienie i blask.",
-                          },
-                          {
-                            name: "Witaminy C",
-                            desc: "Rozświetlenie, antyoksydacja i poprawa kolorytu.",
-                          },
-                        ].map((product) => {
-                          const currentName = formData.nazwaProduktu || "";
-                          // Check if base product name matches (ignoring volume suffix)
-                          const baseName =
-                            currentName.includes(" - ") &&
-                            !product.name.includes(" - ")
-                              ? currentName
-                                  .split(" - ")
-                                  .slice(0, -1)
-                                  .join(" - ") // Handle "Product - Name - 1.0ml" case if product name has dash
-                              : currentName.split(" - ")[0]; // Simple split for standard cases
-
-                          // More robust check: does currentName start with product.name?
-                          const isSelectedProduct = currentName.startsWith(
-                            product.name,
-                          );
-
-                          return (
-                            <div
-                              key={product.name}
-                              onClick={() => {
-                                // Select product only, reset volume if switching to new product
-                                if (!isSelectedProduct) {
-                                  handleInputChange(
-                                    "nazwaProduktu",
-                                    product.name,
-                                  );
-                                }
-                              }}
-                              className={`p-4 rounded-xl border-2 transition-all cursor-pointer ${
-                                isSelectedProduct
-                                  ? "border-[#8b7355] bg-[#8b7355]/5 shadow-md"
-                                  : "border-[#d4cec4] bg-white hover:border-[#8b7355]"
-                              }`}
-                            >
-                              <div className="flex justify-between items-center mb-1">
-                                <span
-                                  className={`font-serif text-lg font-medium ${
-                                    isSelectedProduct
-                                      ? "text-[#8b7355]"
-                                      : "text-[#4a4540]"
-                                  }`}
-                                >
-                                  {product.name}
-                                </span>
-                                {isSelectedProduct && (
-                                  <CheckCircle2 className="w-5 h-5 text-[#8b7355]" />
-                                )}
-                              </div>
-                              <p className="text-sm text-[#6b6560] leading-relaxed mb-4">
-                                {product.desc}
-                              </p>
-
-                              {/* Volume Selection inside Product Card */}
-                              {isSelectedProduct && (
-                                <div className="border-t border-[#d4cec4]/50 pt-3 animate-in fade-in slide-in-from-top-2 duration-300">
-                                  <p className="text-xs font-medium text-[#8b7355] mb-2 uppercase tracking-wide">
-                                    Wybierz ilość:
-                                  </p>
-                                  <div className="flex flex-wrap gap-2">
-                                    {["1.0", "2.0", "3.0", "4.0"].map((vol) => {
-                                      const isSelectedVolume =
-                                        currentName ===
-                                        `${product.name} - ${vol}ml`;
-                                      return (
-                                        <button
-                                          key={vol}
-                                          type="button"
-                                          onClick={(e) => {
-                                            e.stopPropagation();
-                                            handleInputChange(
-                                              "nazwaProduktu",
-                                              `${product.name} - ${vol}ml`,
-                                            );
-                                          }}
-                                          className={`px-3 py-1.5 rounded-lg border text-xs font-medium transition-all ${
-                                            isSelectedVolume
-                                              ? "border-[#8b7355] bg-[#8b7355] text-white shadow-sm"
-                                              : "border-[#d4cec4] bg-white text-[#6b6560] hover:border-[#8b7355] hover:text-[#8b7355]"
-                                          }`}
-                                        >
-                                          {vol} ml
-                                        </button>
-                                      );
-                                    })}
-                                  </div>
-                                </div>
-                              )}
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Znieczulenie */}
-                  <div>
-                    <label className="block text-sm text-[#6b6560] mb-2 font-medium">
-                      Znieczulenie
-                    </label>
-                    <div className="space-y-4">
-                      {/* Anesthesia Selection */}
-                      <div className="flex flex-col gap-3">
-                        <button
-                          type="button"
-                          className="text-left p-4 rounded-xl border-2 border-[#8b7355] bg-[#8b7355]/5 shadow-md transition-all group"
-                        >
-                          <div className="flex justify-between items-center mb-1">
-                            <span className="font-serif text-lg font-medium text-[#8b7355]">
-                              Lidokaina 9,6%
-                            </span>
-                            <CheckCircle2 className="w-5 h-5 text-[#8b7355]" />
-                          </div>
-                          <p className="text-sm text-[#6b6560] leading-relaxed">
-                            Znieczulenie miejscowe jest zawsze stosowane podczas
-                            zabiegu.
-                          </p>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
                   {/* Obszar zabiegu */}
                   <div>
                     <label className="block text-sm text-[#6b6560] mb-2 font-medium">
@@ -1678,7 +1536,6 @@ export default function NeedleMesotherapyForm({
                     date={formData.miejscowoscData}
                   />
                 </div>
-                <SpecialistSignature date={formData.miejscowoscData} />
               </section>
 
               <div className="flex justify-between pt-4 pb-12">

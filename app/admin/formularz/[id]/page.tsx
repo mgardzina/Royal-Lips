@@ -19,8 +19,6 @@ import {
 } from "lucide-react";
 import { contraindicationsByFormType, FormType } from "@/types/booking";
 import AnatomyFaceSelector from "@/app/components/AnatomyFaceSelector";
-
-import SpecialistSignature from "@/app/components/forms/SpecialistSignature";
 import { ZONES } from "@/types/face-zones";
 
 // Helper do tłumaczenia stref
@@ -962,11 +960,6 @@ export default function FormDetailsPage() {
                   Klient nie wyraził zgody.
                 </p>
               )}
-            </div>
-
-            {/* Specialist Signature */}
-            <div className="bg-white/80 rounded-2xl shadow-sm border border-[#d4cec4] p-6">
-              <SpecialistSignature date={form.miejscowoscData} />
             </div>
           </div>
         )}

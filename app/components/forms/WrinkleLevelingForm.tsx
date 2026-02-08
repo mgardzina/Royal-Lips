@@ -15,7 +15,6 @@ import SignatureVerificationModal from "@/components/SignatureVerificationModal"
 import { AuditLogData } from "@/app/actions/otp";
 import Footer from "@/app/components/Footer";
 import AnatomyFaceSelector from "../AnatomyFaceSelector";
-import SpecialistSignature from "./SpecialistSignature";
 import {
   ConsentFormData,
   ContraindicationWithFollowUp,
@@ -1745,7 +1744,6 @@ export default function FacialVolumetryForm({
                     date={formData.miejscowoscData}
                   />
                 </div>
-                <SpecialistSignature date={formData.miejscowoscData} />
               </section>
 
               <div className="flex justify-between pt-4 pb-12">

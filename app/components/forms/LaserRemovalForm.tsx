@@ -24,7 +24,6 @@ import {
   rodoInfo,
 } from "../../../types/booking";
 import { depilacjaLaserowaContraindications } from "../../../types/booking";
-import SpecialistSignature from "./SpecialistSignature";
 
 interface LaserRemovalFormProps {
   onBack: () => void;
@@ -1260,7 +1259,6 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
                     date={formData.miejscowoscData}
                   />
                 </div>
-                <SpecialistSignature date={formData.miejscowoscData} />
               </section>
 
               <div className="flex justify-between pt-4 pb-12">

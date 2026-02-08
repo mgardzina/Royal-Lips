@@ -23,7 +23,6 @@ import {
   lipolizaIniekcyjnaContraindications,
   lipolizaIniekcyjnaPreCare,
 } from "../../../types/booking";
-import SpecialistSignature from "./SpecialistSignature";
 
 interface LipModelingFormProps {
   onBack: () => void;
@@ -647,26 +646,6 @@ export default function InjectionLipolysisForm({
                   Szczegóły Zabiegu
                 </h2>
                 <div className="space-y-6">
-                  {/* Preparat */}
-                  <div className="bg-[#f8f6f3] p-4 rounded-xl border border-[#d4cec4]/50">
-                    <p className="text-sm text-[#6b6560] mb-1 font-medium">
-                      Preparat
-                    </p>
-                    <p className="text-[#4a4540] font-serif text-lg">
-                      Cincelar
-                    </p>
-                  </div>
-
-                  {/* Znieczulenie */}
-                  <div className="bg-[#f8f6f3] p-4 rounded-xl border border-[#d4cec4]/50">
-                    <p className="text-sm text-[#6b6560] mb-1 font-medium">
-                      Znieczulenie
-                    </p>
-                    <p className="text-[#4a4540] font-serif text-lg">
-                      Lidokaina 9,6%
-                    </p>
-                  </div>
-
                   {/* Miejsce zabiegu */}
                   <div>
                     <label className="block text-sm text-[#6b6560] mb-3 font-medium">
@@ -1421,7 +1400,6 @@ export default function InjectionLipolysisForm({
                     date={formData.miejscowoscData}
                   />
                 </div>
-                <SpecialistSignature date={formData.miejscowoscData} />
               </section>
 
               <div className="flex justify-between pt-4 pb-12">

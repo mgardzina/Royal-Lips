@@ -23,7 +23,6 @@ import {
   rodoInfo,
 } from "../../../types/booking";
 import { makijazPermanentnyContraindications } from "../../../types/booking";
-import SpecialistSignature from "./SpecialistSignature";
 import AnatomyFaceSelector from "../AnatomyFaceSelector";
 import { ZONES as PMU_ZONES } from "@/types/face-zone-pernament";
 
@@ -1682,7 +1681,6 @@ export default function LipModelingForm({ onBack }: LipModelingFormProps) {
                     date={formData.miejscowoscData}
                   />
                 </div>
-                <SpecialistSignature date={formData.miejscowoscData} />
               </section>
 
               <div className="flex justify-between pt-4 pb-12">

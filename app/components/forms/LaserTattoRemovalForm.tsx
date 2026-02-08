@@ -25,7 +25,6 @@ import {
   rodoInfo,
 } from "../../../types/booking";
 import { laseroweUsuwanieContraindications } from "../../../types/booking";
-import SpecialistSignature from "./SpecialistSignature";
 
 interface LaserTattoRemovalFormProps {
   onBack: () => void;
@@ -788,32 +787,6 @@ export default function LaserTattoRemovalForm({
                       />
                     </div>
                   </div>
-
-                  {/* Znieczulenie */}
-                  <div>
-                    <label className="block text-sm text-[#6b6560] mb-2 font-medium">
-                      Znieczulenie
-                    </label>
-                    <div className="space-y-4">
-                      <div className="flex flex-col gap-3">
-                        <button
-                          type="button"
-                          className="text-left p-4 rounded-xl border-2 border-[#8b7355] bg-[#8b7355]/5 shadow-md transition-all group"
-                        >
-                          <div className="flex justify-between items-center mb-1">
-                            <span className="font-serif text-lg font-medium text-[#8b7355]">
-                              Lidokaina 9,6%
-                            </span>
-                            <CheckCircle2 className="w-5 h-5 text-[#8b7355]" />
-                          </div>
-                          <p className="text-sm text-[#6b6560] leading-relaxed">
-                            Znieczulenie miejscowe może być stosowane w celu
-                            zminimalizowania dyskomfortu podczas zabiegu.
-                          </p>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
                 </div>
               </section>
 
@@ -1460,7 +1433,6 @@ export default function LaserTattoRemovalForm({
                     date={formData.miejscowoscData}
                   />
                 </div>
-                <SpecialistSignature date={formData.miejscowoscData} />
               </section>
 
               <div className="flex justify-between pt-4 pb-12">
