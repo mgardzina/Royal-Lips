@@ -568,11 +568,6 @@ export default function LipModelingForm({ onBack }: LipModelingFormProps) {
                     pochodzenia niezwierzęcego.
                   </p>
                   <p>
-                    Zabieg wykonywany jest przy użyciu produktów takich jak:
-                    Stylage M, Revolax Fine, Revolax Deep z lidokainą lub bez
-                    lidokainy.
-                  </p>
-                  <p>
                     Zabieg odbywa się zawsze po wykluczeniu wszelkich
                     przeciwwskazań do wykonania zabiegu. W rozmowie z Klientem
                     zostają określone potrzeby i oczekiwania od wykonania
