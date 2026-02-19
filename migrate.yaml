@@ -18,7 +18,7 @@ steps:
       sleep 5
 
       # 4. Run Migration
-      export DATABASE_URL="postgresql://postgres:royallips1220%40%23@127.0.0.1:5433/royal-lips-database?sslmode=disable"
+      export DATABASE_URL="postgresql://postgres:TempPass123%21@127.0.0.1:5433/royal-lips-database?sslmode=disable"
       npx prisma db push --accept-data-loss
 
       # 5. Cleanup

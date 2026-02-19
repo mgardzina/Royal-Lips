@@ -1,7 +1,8 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import { compare } from "bcryptjs";
 import { prisma } from "./prisma";
+import { normalizePhoneNumber } from "./smsapi";
+import { SALON_CONFIG } from "@/app/config/salon";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   trustHost: true,
@@ -12,35 +13,58 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     Credentials({
       name: "credentials",
       credentials: {
-        email: { label: "Email", type: "email" },
-        password: { label: "Hasło", type: "password" },
+        phone: { label: "Telefon", type: "text" },
+        code: { label: "Kod SMS", type: "text" },
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
+        if (!credentials?.phone || !credentials?.code) {
           return null;
         }
 
-        const user = await prisma.adminUser.findUnique({
-          where: { email: credentials.email as string },
+        const phone = credentials.phone as string;
+        const code = credentials.code as string;
+        const normalizedPhone = normalizePhoneNumber(phone);
+
+        if (!normalizedPhone) {
+            return null;
+        }
+
+        // 1. Check if it's an allowed admin phone in DB
+        const admin = await prisma.adminUser.findFirst({
+          where: { phoneNumber: normalizedPhone },
         });
 
-        if (!user) {
+        if (!admin) {
           return null;
         }
 
-        const isPasswordValid = await compare(
-          credentials.password as string,
-          user.passwordHash
-        );
+        // 2. Verify OTP from DB
+        const verification = await prisma.otpVerification.findFirst({
+          where: {
+            phoneNumber: normalizedPhone,
+            code: code,
+            verified: false,
+            expiresAt: { gt: new Date() },
+          },
+          orderBy: { createdAt: "desc" },
+        });
 
-        if (!isPasswordValid) {
+        if (!verification) {
           return null;
         }
 
+        // 3. Mark as verified
+        await prisma.otpVerification.update({
+          where: { id: verification.id },
+          data: { verified: true },
+        });
+
+        // 4. Return admin session
         return {
-          id: user.id,
-          email: user.email,
-          name: user.name,
+          id: admin.id,
+          email: admin.email, // Keep email for compatibility
+          name: admin.name,
+          image: admin.phoneNumber, // storing phone in image field or custom field if possible, strictly following User type
         };
       },
     }),
@@ -54,3 +78,4 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
   },
 });
+

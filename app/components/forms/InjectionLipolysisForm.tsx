@@ -13,6 +13,7 @@ import SignaturePad from "@/components/SignaturePad";
 import SignatureVerificationModal from "@/components/SignatureVerificationModal";
 import { AuditLogData } from "@/app/actions/otp";
 import Footer from "@/app/components/Footer";
+import BackButton from "@/app/components/BackButton";
 import {
   ConsentFormData,
   ContraindicationWithFollowUp,
@@ -256,14 +257,14 @@ export default function InjectionLipolysisForm({
   if (submitSuccess) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-[#f8f6f3] via-[#efe9e1] to-[#e8e0d5] flex items-center justify-center p-4">
-        <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl p-12 max-w-lg text-center">
+        <div className="bg-white backdrop-blur-sm rounded-3xl shadow-2xl p-12 max-w-lg text-center">
           <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
             <Check className="w-10 h-10 text-green-600" />
           </div>
           <h2 className="text-3xl font-serif text-[#4a4540] mb-4">
             Dziękujemy!
           </h2>
-          <p className="text-[#6b6560] mb-8">Twój formularz został zapisany.</p>
+          <p className="text-[#4a4540] mb-8">Twój formularz został zapisany.</p>
           <div className="flex flex-col gap-3">
             <button
               onClick={() => {
@@ -276,13 +277,13 @@ export default function InjectionLipolysisForm({
                 setAuditLog(null);
                 window.scrollTo(0, 0);
               }}
-              className="bg-[#8b7355] text-white px-8 py-3 rounded-xl hover:bg-[#7a6548] transition-colors"
+              className="bg-[#4a4540] text-white px-8 py-3 rounded-xl hover:bg-[#2C2622] transition-colors"
             >
               Wypełnij ponownie
             </button>
             <button
               onClick={onBack}
-              className="text-[#8b7355] px-8 py-2 hover:text-[#7a6548] transition-colors"
+              className="text-[#C4B5A0] px-8 py-2 hover:text-[#7a6548] transition-colors"
             >
               Wróć do wyboru zabiegu
             </button>
@@ -333,19 +334,11 @@ export default function InjectionLipolysisForm({
       <main className="max-w-4xl mx-auto px-4 py-8 relative z-10">
         <div className="mb-8">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-            <button
-              onClick={onBack}
-              className="group flex items-center text-[#6b5540] hover:text-[#4a3a2a] transition-colors font-medium self-start"
-            >
-              <div className="bg-white/50 p-2 rounded-full mr-3 group-hover:bg-white/80 transition-all">
-                <ArrowLeft className="w-4 h-4" />
-              </div>
-              Powrót
-            </button>
-            <div className="flex gap-2 text-xs md:text-sm font-medium text-[#8b7355]/60 overflow-x-auto pb-2 md:pb-0">
+            <BackButton onClick={onBack} className="self-start" />
+            <div className="flex gap-2 text-xs md:text-sm font-medium text-[#C4B5A0]/60 overflow-x-auto pb-2 md:pb-0">
               <span
                 className={
-                  currentStep === "DATA" ? "text-[#8b7355] font-bold" : ""
+                  currentStep === "DATA" ? "text-[#C4B5A0] font-bold" : ""
                 }
               >
                 1. Dane
@@ -353,7 +346,7 @@ export default function InjectionLipolysisForm({
               <span>→</span>
               <span
                 className={
-                  currentStep === "RODO" ? "text-[#8b7355] font-bold" : ""
+                  currentStep === "RODO" ? "text-[#C4B5A0] font-bold" : ""
                 }
               >
                 2. RODO
@@ -361,7 +354,7 @@ export default function InjectionLipolysisForm({
               <span>→</span>
               <span
                 className={
-                  currentStep === "RODO2" ? "text-[#8b7355] font-bold" : ""
+                  currentStep === "RODO2" ? "text-[#C4B5A0] font-bold" : ""
                 }
               >
                 3. RODO 2
@@ -369,7 +362,7 @@ export default function InjectionLipolysisForm({
               <span>→</span>
               <span
                 className={
-                  currentStep === "TREATMENT" ? "text-[#8b7355] font-bold" : ""
+                  currentStep === "TREATMENT" ? "text-[#C4B5A0] font-bold" : ""
                 }
               >
                 4. Zabieg
@@ -377,7 +370,7 @@ export default function InjectionLipolysisForm({
               <span>→</span>
               <span
                 className={
-                  currentStep === "MARKETING" ? "text-[#8b7355] font-bold" : ""
+                  currentStep === "MARKETING" ? "text-[#C4B5A0] font-bold" : ""
                 }
               >
                 5. Zgody
@@ -386,10 +379,10 @@ export default function InjectionLipolysisForm({
           </div>
 
           <div className="text-center">
-            <h1 className="text-3xl md:text-4xl font-serif text-[#4a3a2a] mb-2">
+            <h1 className="text-3xl md:text-4xl font-serif text-[#4a4540] mb-2">
               Lipoliza Iniekcyjna
             </h1>
-            <p className="text-[#8b7355] text-lg font-light tracking-wide uppercase">
+            <p className="text-[#C4B5A0] text-lg font-light tracking-wide uppercase">
               Redukcja tkanki tłuszczowej i cellulitu
             </p>
           </div>
@@ -400,9 +393,9 @@ export default function InjectionLipolysisForm({
           {currentStep === "DATA" && (
             <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
               {/* Dane osobowe */}
-              <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
-                <h2 className="text-2xl font-serif text-[#4a3a2a] mb-6 flex items-center gap-3">
-                  <span className="w-8 h-8 bg-[#8b7355] text-white rounded-full flex items-center justify-center text-sm font-sans">
+              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
+                <h2 className="text-2xl font-serif text-[#4a4540] mb-6 flex items-center gap-3">
+                  <span className="w-8 h-8 bg-[#4a4540] text-white rounded-full flex items-center justify-center text-sm font-sans">
                     1
                   </span>
                   Dane Osobowe
@@ -410,7 +403,7 @@ export default function InjectionLipolysisForm({
 
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm text-[#6b6560] mb-2 font-medium">
+                    <label className="block text-sm text-[#4a4540] mb-2 font-medium">
                       Imię i nazwisko *
                     </label>
                     <input
@@ -420,12 +413,12 @@ export default function InjectionLipolysisForm({
                       onChange={(e) =>
                         handleInputChange("imieNazwisko", e.target.value)
                       }
-                      className="w-full px-4 py-3 bg-white/80 border border-[#d4cec4] rounded-xl focus:border-[#8b7355] focus:ring-2 focus:ring-[#8b7355]/20 outline-none transition-all"
+                      className="w-full px-4 py-3 bg-white border border-[#d4cec4] rounded-xl focus:border-[#C4B5A0] focus:ring-2 focus:ring-[#C4B5A0]/20 outline-none transition-all"
                       placeholder="Joanna Wielgos"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm text-[#6b6560] mb-2 font-medium">
+                    <label className="block text-sm text-[#4a4540] mb-2 font-medium">
                       Miejscowość / Data *
                     </label>
                     <input
@@ -435,21 +428,21 @@ export default function InjectionLipolysisForm({
                       onChange={(e) =>
                         handleInputChange("miejscowoscData", e.target.value)
                       }
-                      className="w-full px-4 py-3 bg-white/80 border border-[#d4cec4] rounded-xl focus:border-[#8b7355] focus:ring-2 focus:ring-[#8b7355]/20 outline-none transition-all"
+                      className="w-full px-4 py-3 bg-white border border-[#d4cec4] rounded-xl focus:border-[#C4B5A0] focus:ring-2 focus:ring-[#C4B5A0]/20 outline-none transition-all"
                       placeholder="Krosno, 27.01.2026"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm text-[#6b6560] mb-2 font-medium">
+                    <label className="block text-sm text-[#4a4540] mb-2 font-medium">
                       Adres E-mail
                     </label>
                     <div className="relative">
-                      <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#8b8580]" />
+                      <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#4a4540]" />
                       <input
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        className="w-full pl-12 pr-4 py-3 bg-white/80 border border-[#d4cec4] rounded-xl focus:border-[#8b7355] focus:ring-2 focus:ring-[#8b7355]/20 outline-none transition-all"
+                        className="w-full pl-12 pr-4 py-3 bg-white border border-[#d4cec4] rounded-xl focus:border-[#C4B5A0] focus:ring-2 focus:ring-[#C4B5A0]/20 outline-none transition-all"
                         placeholder="kontakt@royallips.pl"
                       />
                     </div>
@@ -457,7 +450,7 @@ export default function InjectionLipolysisForm({
 
                   <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="md:col-span-2">
-                      <label className="block text-sm text-[#6b6560] mb-2 font-medium">
+                      <label className="block text-sm text-[#4a4540] mb-2 font-medium">
                         Ulica i numer
                       </label>
                       <input
@@ -466,13 +459,13 @@ export default function InjectionLipolysisForm({
                         onChange={(e) =>
                           handleInputChange("ulica", e.target.value)
                         }
-                        className="w-full px-4 py-3 bg-white/80 border border-[#d4cec4] rounded-xl focus:border-[#8b7355] focus:ring-2 focus:ring-[#8b7355]/20 outline-none transition-all"
+                        className="w-full px-4 py-3 bg-white border border-[#d4cec4] rounded-xl focus:border-[#C4B5A0] focus:ring-2 focus:ring-[#C4B5A0]/20 outline-none transition-all"
                         placeholder="ul. Przykładowa 1/2"
                         autoComplete="street-address"
                       />
                     </div>
                     <div>
-                      <label className="block text-sm text-[#6b6560] mb-2 font-medium">
+                      <label className="block text-sm text-[#4a4540] mb-2 font-medium">
                         Kod pocztowy
                       </label>
                       <input
@@ -481,13 +474,13 @@ export default function InjectionLipolysisForm({
                         onChange={(e) =>
                           handleInputChange("kodPocztowy", e.target.value)
                         }
-                        className="w-full px-4 py-3 bg-white/80 border border-[#d4cec4] rounded-xl focus:border-[#8b7355] focus:ring-2 focus:ring-[#8b7355]/20 outline-none transition-all"
+                        className="w-full px-4 py-3 bg-white border border-[#d4cec4] rounded-xl focus:border-[#C4B5A0] focus:ring-2 focus:ring-[#C4B5A0]/20 outline-none transition-all"
                         placeholder="38-400"
                         autoComplete="postal-code"
                       />
                     </div>
                     <div>
-                      <label className="block text-sm text-[#6b6560] mb-2 font-medium">
+                      <label className="block text-sm text-[#4a4540] mb-2 font-medium">
                         Miasto
                       </label>
                       <input
@@ -496,7 +489,7 @@ export default function InjectionLipolysisForm({
                         onChange={(e) =>
                           handleInputChange("miasto", e.target.value)
                         }
-                        className="w-full px-4 py-3 bg-white/80 border border-[#d4cec4] rounded-xl focus:border-[#8b7355] focus:ring-2 focus:ring-[#8b7355]/20 outline-none transition-all"
+                        className="w-full px-4 py-3 bg-white border border-[#d4cec4] rounded-xl focus:border-[#C4B5A0] focus:ring-2 focus:ring-[#C4B5A0]/20 outline-none transition-all"
                         placeholder="Krosno"
                         autoComplete="address-level2"
                       />
@@ -504,14 +497,14 @@ export default function InjectionLipolysisForm({
                   </div>
 
                   <div>
-                    <label className="block text-sm text-[#6b6560] mb-2 font-medium">
+                    <label className="block text-sm text-[#4a4540] mb-2 font-medium">
                       Data urodzenia
                     </label>
                     <input
                       type="text"
                       value={formData.dataUrodzenia}
                       onChange={(e) => handleBirthDateChange(e.target.value)}
-                      className="w-full px-4 py-3 bg-white/80 border border-[#d4cec4] rounded-xl focus:border-[#8b7355] focus:ring-2 focus:ring-[#8b7355]/20 outline-none transition-all"
+                      className="w-full px-4 py-3 bg-white border border-[#d4cec4] rounded-xl focus:border-[#C4B5A0] focus:ring-2 focus:ring-[#C4B5A0]/20 outline-none transition-all"
                       placeholder="DD.MM.RRRR"
                     />
                     {birthDateError && (
@@ -522,11 +515,11 @@ export default function InjectionLipolysisForm({
                     )}
                   </div>
                   <div>
-                    <label className="block text-sm text-[#6b6560] mb-2 font-medium">
+                    <label className="block text-sm text-[#4a4540] mb-2 font-medium">
                       Telefon * (do weryfikacji SMS)
                     </label>
                     <div className="flex">
-                      <span className="inline-flex items-center px-4 py-3 bg-[#f0ebe4] border border-r-0 border-[#d4cec4] rounded-l-xl text-[#6b6560] font-medium select-none">
+                      <span className="inline-flex items-center px-4 py-3 bg-[#f0ebe4] border border-r-0 border-[#d4cec4] rounded-l-xl text-[#4a4540] font-medium select-none">
                         +48
                       </span>
                       <input
@@ -534,7 +527,7 @@ export default function InjectionLipolysisForm({
                         required
                         value={formData.telefon}
                         onChange={(e) => handlePhoneChange(e.target.value)}
-                        className="w-full px-4 py-3 bg-white/80 border border-[#d4cec4] rounded-r-xl focus:border-[#8b7355] focus:ring-2 focus:ring-[#8b7355]/20 outline-none transition-all"
+                        className="w-full px-4 py-3 bg-white border border-[#d4cec4] rounded-r-xl focus:border-[#C4B5A0] focus:ring-2 focus:ring-[#C4B5A0]/20 outline-none transition-all"
                         placeholder="123 456 789"
                         maxLength={11}
                       />
@@ -544,9 +537,9 @@ export default function InjectionLipolysisForm({
               </section>
 
               {/* Informacja o Zabiegu */}
-              <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
-                <h2 className="text-2xl font-serif text-[#4a3a2a] mb-6 flex items-center gap-3">
-                  <span className="w-8 h-8 bg-[#8b7355] text-white rounded-full flex items-center justify-center text-sm font-sans">
+              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
+                <h2 className="text-2xl font-serif text-[#4a4540] mb-6 flex items-center gap-3">
+                  <span className="w-8 h-8 bg-[#4a4540] text-white rounded-full flex items-center justify-center text-sm font-sans">
                     2
                   </span>
                   Informacja o Zabiegu
@@ -638,9 +631,9 @@ export default function InjectionLipolysisForm({
               </section>
 
               {/* Szczegóły Zabiegu */}
-              <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
-                <h2 className="text-2xl font-serif text-[#4a3a2a] mb-6 flex items-center gap-3">
-                  <span className="w-8 h-8 bg-[#8b7355] text-white rounded-full flex items-center justify-center text-sm font-sans">
+              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
+                <h2 className="text-2xl font-serif text-[#4a4540] mb-6 flex items-center gap-3">
+                  <span className="w-8 h-8 bg-[#4a4540] text-white rounded-full flex items-center justify-center text-sm font-sans">
                     3
                   </span>
                   Szczegóły Zabiegu
@@ -648,7 +641,7 @@ export default function InjectionLipolysisForm({
                 <div className="space-y-6">
                   {/* Miejsce zabiegu */}
                   <div>
-                    <label className="block text-sm text-[#6b6560] mb-3 font-medium">
+                    <label className="block text-sm text-[#4a4540] mb-3 font-medium">
                       Miejsce zabiegu (można wybrać kilka)
                     </label>
                     <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
@@ -679,8 +672,8 @@ export default function InjectionLipolysisForm({
                             }}
                             className={`py-3 px-4 rounded-xl border-2 transition-all font-medium text-sm ${
                               isSelected
-                                ? "border-[#8b7355] bg-[#8b7355] text-white"
-                                : "border-[#d4cec4] bg-white text-[#6b6560] hover:border-[#8b7355] hover:text-[#8b7355]"
+                                ? "border-[#8b7355] bg-[#4a4540] text-white"
+                                : "border-[#d4cec4] bg-white text-[#4a4540] hover:border-[#8b7355] hover:text-[#C4B5A0]"
                             }`}
                           >
                             {area}
@@ -693,14 +686,14 @@ export default function InjectionLipolysisForm({
               </section>
 
               {/* Wywiad Medyczny Hyaluronic */}
-              <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
-                <h2 className="text-2xl font-serif text-[#4a3a2a] mb-6 flex items-center gap-3">
-                  <span className="w-8 h-8 bg-[#8b7355] text-white rounded-full flex items-center justify-center text-sm font-sans">
+              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
+                <h2 className="text-2xl font-serif text-[#4a4540] mb-6 flex items-center gap-3">
+                  <span className="w-8 h-8 bg-[#4a4540] text-white rounded-full flex items-center justify-center text-sm font-sans">
                     4
                   </span>
                   Wywiad Medyczny
                 </h2>
-                <p className="text-sm text-[#6b6560] mb-6">
+                <p className="text-sm text-[#4a4540] mb-6">
                   Czy posiadasz którekolwiek z poniższych przeciwwskazań?
                 </p>
 
@@ -709,13 +702,13 @@ export default function InjectionLipolysisForm({
                   <h3 className="font-serif text-[#4a4540] text-lg mb-2">
                     PRZECIWSKAZANIA DO WYKONANIA ZABIEGU
                   </h3>
-                  <label className="block text-sm text-[#6b6560] mb-2 font-medium">
+                  <label className="block text-sm text-[#4a4540] mb-2 font-medium">
                     Proszę wpisać wykaz wszystkich leków przyjmowanych w ciągu
                     ostatnich 6 miesięcy
                   </label>
                   <textarea
                     rows={3}
-                    className="w-full px-4 py-3 bg-white border border-[#d4cec4] rounded-xl focus:border-[#8b7355] outline-none text-sm"
+                    className="w-full px-4 py-3 bg-white border border-[#d4cec4] rounded-xl focus:border-[#C4B5A0] outline-none text-sm"
                     placeholder="Wpisz leki lub wpisz 'BRAK'..."
                     value={
                       (formData.informacjaDodatkowa || "")
@@ -758,13 +751,13 @@ export default function InjectionLipolysisForm({
                       className="bg-[#f8f6f3] p-6 rounded-xl border border-[#d4cec4] max-w-2xl mx-auto shadow-sm"
                     >
                       <div className="flex justify-between items-center mb-6">
-                        <span className="text-sm font-medium text-[#8b7355]">
+                        <span className="text-sm font-medium text-[#C4B5A0]">
                           Pytanie {currentContraindicationIndex + 1} z{" "}
                           {contraindicationKeys.length}
                         </span>
                         <div className="h-2 w-24 bg-[#d4cec4] rounded-full overflow-hidden">
                           <div
-                            className="h-full bg-[#8b7355] transition-all duration-300"
+                            className="h-full bg-[#4a4540] transition-all duration-300"
                             style={{
                               width: `${((currentContraindicationIndex + 1) / contraindicationKeys.length) * 100}%`,
                             }}
@@ -785,7 +778,7 @@ export default function InjectionLipolysisForm({
                           <div className="mb-6 animate-in fade-in slide-in-from-top-2">
                             <input
                               type="text"
-                              className="w-full px-4 py-3 text-base bg-white border-2 border-[#d4cec4] rounded-xl focus:border-[#8b7355] outline-none transition-colors"
+                              className="w-full px-4 py-3 text-base bg-white border-2 border-[#d4cec4] rounded-xl focus:border-[#C4B5A0] outline-none transition-colors"
                               placeholder={
                                 currentContraindicationObject.followUpPlaceholder
                               }
@@ -818,7 +811,7 @@ export default function InjectionLipolysisForm({
                               currentContraindicationKey
                             ] === false
                               ? "border-green-500 bg-green-500 text-white"
-                              : "bg-white border-[#d4cec4] text-[#6b6560] active:border-green-500 active:bg-green-500 active:text-white md:hover:border-green-500 md:hover:bg-green-500 md:hover:text-white"
+                              : "bg-white border-[#d4cec4] text-[#4a4540] active:border-green-500 active:bg-green-500 active:text-white md:hover:border-green-500 md:hover:bg-green-500 md:hover:text-white"
                           }`}
                         >
                           NIE
@@ -832,7 +825,7 @@ export default function InjectionLipolysisForm({
                               currentContraindicationKey
                             ] === true
                               ? "border-red-500 bg-red-500 text-white"
-                              : "bg-white border-[#d4cec4] text-[#6b6560] active:border-red-500 active:bg-red-500 active:text-white md:hover:border-red-500 md:hover:bg-red-500 md:hover:text-white"
+                              : "bg-white border-[#d4cec4] text-[#4a4540] active:border-red-500 active:bg-red-500 active:text-white md:hover:border-red-500 md:hover:bg-red-500 md:hover:text-white"
                           }`}
                         >
                           TAK
@@ -847,7 +840,7 @@ export default function InjectionLipolysisForm({
                             <button
                               type="button"
                               onClick={handleWizardNext}
-                              className="w-full py-4 px-6 rounded-xl bg-[#8b7355] text-white transition-all text-lg font-medium shadow-sm hover:shadow-md hover:bg-[#7a6548] active:scale-95 flex items-center justify-center"
+                              className="w-full py-4 px-6 rounded-xl bg-[#4a4540] text-white transition-all text-lg font-medium shadow-sm hover:shadow-md hover:bg-[#2C2622] active:scale-95 flex items-center justify-center"
                             >
                               Dalej →
                             </button>
@@ -863,7 +856,7 @@ export default function InjectionLipolysisForm({
                             )
                           }
                           disabled={currentContraindicationIndex === 0}
-                          className="flex items-center gap-2 text-sm text-[#8b8580] disabled:opacity-0 hover:text-[#8b7355] transition-colors"
+                          className="flex items-center gap-2 text-sm text-[#4a4540] disabled:opacity-0 hover:text-[#C4B5A0] transition-colors"
                         >
                           <ArrowLeft className="w-4 h-4" />
                           Poprzednie
@@ -915,7 +908,7 @@ export default function InjectionLipolysisForm({
                                 : "bg-green-50/50 border border-green-100/50"
                             }`}
                           >
-                            <span className="text-[#8b7355] font-medium min-w-[1.5rem] mt-0.5">
+                            <span className="text-[#C4B5A0] font-medium min-w-[1.5rem] mt-0.5">
                               {index + 1}.
                             </span>
                             <div className="flex-1">
@@ -925,7 +918,7 @@ export default function InjectionLipolysisForm({
                               {hasFollowUp &&
                                 formData.przeciwwskazania[key] &&
                                 followUpDetails && (
-                                  <p className="text-[#8b7355] text-xs mt-2 italic">
+                                  <p className="text-[#C4B5A0] text-xs mt-2 italic">
                                     → {followUpDetails}
                                   </p>
                                 )}
@@ -950,9 +943,9 @@ export default function InjectionLipolysisForm({
               </section>
 
               {/* Zalecenia Przedzabiegowe */}
-              <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
-                <h2 className="text-2xl font-serif text-[#4a3a2a] mb-6 flex items-center gap-3">
-                  <span className="w-8 h-8 bg-[#8b7355] text-white rounded-full flex items-center justify-center text-sm font-sans">
+              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
+                <h2 className="text-2xl font-serif text-[#4a4540] mb-6 flex items-center gap-3">
+                  <span className="w-8 h-8 bg-[#4a4540] text-white rounded-full flex items-center justify-center text-sm font-sans">
                     5
                   </span>
                   Zalecenia Przedzabiegowe
@@ -965,7 +958,7 @@ export default function InjectionLipolysisForm({
                   <ul className="space-y-2 text-sm text-[#5a5550]">
                     {lipolizaIniekcyjnaPreCare.map((instruction, index) => (
                       <li key={index} className="flex items-start gap-2">
-                        <span className="text-[#8b7355]">∙</span>
+                        <span className="text-brand">•</span>
                         <span>{instruction}</span>
                       </li>
                     ))}
@@ -974,9 +967,9 @@ export default function InjectionLipolysisForm({
               </section>
 
               {/* Skutki Uboczne i Powikłania */}
-              <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
-                <h2 className="text-2xl font-serif text-[#4a3a2a] mb-6 flex items-center gap-3">
-                  <span className="w-8 h-8 bg-[#8b7355] text-white rounded-full flex items-center justify-center text-sm font-sans">
+              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
+                <h2 className="text-2xl font-serif text-[#4a4540] mb-6 flex items-center gap-3">
+                  <span className="w-8 h-8 bg-[#4a4540] text-white rounded-full flex items-center justify-center text-sm font-sans">
                     6
                   </span>
                   Informacje o Skutkach Ubocznych i Powikłaniach
@@ -993,7 +986,7 @@ export default function InjectionLipolysisForm({
                       {lipolizaIniekcyjnaNaturalReactions.map(
                         (reaction, index) => (
                           <li key={index} className="flex items-start gap-2">
-                            <span className="text-[#8b7355]">∙</span>
+                            <span className="text-brand">•</span>
                             <span>{reaction}</span>
                           </li>
                         ),
@@ -1010,7 +1003,7 @@ export default function InjectionLipolysisForm({
                       {lipolizaIniekcyjnaComplications.rzadkie.map(
                         (complication, index) => (
                           <li key={index} className="flex items-start gap-2">
-                            <span className="text-[#8b7355]">∙</span>
+                            <span className="text-brand">•</span>
                             <span>{complication}</span>
                           </li>
                         ),
@@ -1028,7 +1021,7 @@ export default function InjectionLipolysisForm({
                       {lipolizaIniekcyjnaComplications.bardzoRzadkie.map(
                         (complication, index) => (
                           <li key={index} className="flex items-start gap-2">
-                            <span className="text-[#8b7355]">∙</span>
+                            <span className="text-brand">•</span>
                             <span>{complication}</span>
                           </li>
                         ),
@@ -1039,9 +1032,9 @@ export default function InjectionLipolysisForm({
               </section>
 
               {/* Zalecenia Pozabiegowe */}
-              <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
-                <h2 className="text-2xl font-serif text-[#4a3a2a] mb-6 flex items-center gap-3">
-                  <span className="w-8 h-8 bg-[#8b7355] text-white rounded-full flex items-center justify-center text-sm font-sans">
+              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
+                <h2 className="text-2xl font-serif text-[#4a4540] mb-6 flex items-center gap-3">
+                  <span className="w-8 h-8 bg-[#4a4540] text-white rounded-full flex items-center justify-center text-sm font-sans">
                     7
                   </span>
                   Zalecenia Pozabiegowe
@@ -1058,11 +1051,11 @@ export default function InjectionLipolysisForm({
                   <ul className="space-y-2 text-sm text-[#5a5550]">
                     {lipolizaIniekcyjnaPostCare.map((instruction, index) => (
                       <li key={index} className="flex items-start gap-2">
-                        <span className="text-[#8b7355]">∙</span>
+                        <span className="text-brand">•</span>
                         <span
                           className={
                             instruction.startsWith("UWAGA")
-                              ? "font-bold text-[#bfa07a]"
+                              ? "font-bold text-[#C4B5A0] font-bold"
                               : ""
                           }
                         >
@@ -1079,7 +1072,7 @@ export default function InjectionLipolysisForm({
                   type="button"
                   onClick={() => setShowSignatureModal(true)}
                   disabled={!isStep1Valid}
-                  className="bg-[#8b7355] text-white py-4 px-8 rounded-xl text-lg font-medium shadow-lg hover:bg-[#7a6548] disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center gap-3"
+                  className="bg-[#4a4540] text-white py-4 px-8 rounded-xl text-lg font-medium shadow-lg hover:bg-[#2C2622] disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center gap-3"
                 >
                   <Shield className="w-5 h-5" />
                   Weryfikuj Tożsamość (SMS) i Przejdź Dalej
@@ -1091,17 +1084,17 @@ export default function InjectionLipolysisForm({
           {/* KROK 2: RODO */}
           {currentStep === "RODO" && (
             <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-              <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg overflow-hidden">
+              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg overflow-hidden">
                 <div className="p-6 md:p-8">
                   <h3 className="text-2xl font-serif text-[#4a4540] mb-6">
                     {rodoInfo.consentTitle}
                   </h3>
-                  <div className="bg-[#f8f6f3] p-6 rounded-xl text-sm text-[#5a5550] leading-relaxed whitespace-pre-line max-h-[60vh] overflow-y-auto mb-6 border border-[#e5e0d8]">
+                  <div className="bg-[#f8f6f3] p-6 rounded-xl text-sm text-[#5a5550] leading-relaxed whitespace-pre-line max-h-[60vh] overflow-y-auto mb-6 border border-[#d4cec4]">
                     {rodoInfo.consentText}
                   </div>
                   {/* Signature Area for RODO */}
                   <div className="mt-8">
-                    <p className="text-sm text-[#6b6560] mb-4 font-medium uppercase tracking-wide">
+                    <p className="text-sm text-[#4a4540] mb-4 font-medium uppercase tracking-wide">
                       Podpis Klienta (Zgoda na przetwarzanie danych):
                     </p>
                     <div className="bg-white rounded-xl overflow-hidden min-h-[200px] border border-[#d4cec4] p-1">
@@ -1127,7 +1120,7 @@ export default function InjectionLipolysisForm({
                 <button
                   type="button"
                   onClick={() => setCurrentStep("DATA")}
-                  className="text-[#6b5540] hover:text-[#4a3a2a] px-6 py-3 font-medium transition-colors"
+                  className="text-[#4a4540] hover:text-[#4a4540] px-6 py-3 font-medium transition-colors"
                 >
                   ← Wróć do danych
                 </button>
@@ -1135,7 +1128,7 @@ export default function InjectionLipolysisForm({
                   type="button"
                   onClick={() => setCurrentStep("RODO2")}
                   disabled={!formData.podpisRodo}
-                  className="bg-[#8b7355] text-white py-3 px-8 rounded-xl text-lg font-medium shadow-lg hover:bg-[#7a6548] disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                  className="bg-[#4a4540] text-white py-3 px-8 rounded-xl text-lg font-medium shadow-lg hover:bg-[#2C2622] disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                 >
                   Dalej →
                 </button>
@@ -1146,17 +1139,17 @@ export default function InjectionLipolysisForm({
           {/* KROK 3: RODO 2 */}
           {currentStep === "RODO2" && (
             <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-              <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg overflow-hidden">
+              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg overflow-hidden">
                 <div className="p-6 md:p-8">
                   <h3 className="text-2xl font-serif text-[#4a4540] mb-6">
                     {rodoInfo.clauseTitle}
                   </h3>
-                  <div className="bg-[#f8f6f3] p-6 rounded-xl text-sm text-[#5a5550] leading-relaxed whitespace-pre-line max-h-[60vh] overflow-y-auto mb-6 border border-[#e5e0d8]">
+                  <div className="bg-[#f8f6f3] p-6 rounded-xl text-sm text-[#5a5550] leading-relaxed whitespace-pre-line max-h-[60vh] overflow-y-auto mb-6 border border-[#d4cec4]">
                     {rodoInfo.clauseText}
                   </div>
                   {/* Signature Area for RODO 2 */}
                   <div className="mt-8">
-                    <p className="text-sm text-[#6b6560] mb-4 font-medium uppercase tracking-wide">
+                    <p className="text-sm text-[#4a4540] mb-4 font-medium uppercase tracking-wide">
                       Podpis Klienta (Klauzula informacyjna):
                     </p>
                     <div className="bg-white rounded-xl overflow-hidden min-h-[200px] border border-[#d4cec4] p-1">
@@ -1170,7 +1163,7 @@ export default function InjectionLipolysisForm({
                         hasBorder={false}
                       />
                     </div>
-                    <p className="text-xs text-[#8b8580] mt-3 italic">
+                    <p className="text-xs text-[#4a4540] mt-3 italic">
                       Złożenie podpisu jest równoznaczne z zapoznaniem się z
                       powyższą klauzulą informacyjną RODO.
                     </p>
@@ -1182,7 +1175,7 @@ export default function InjectionLipolysisForm({
                 <button
                   type="button"
                   onClick={() => setCurrentStep("RODO")}
-                  className="text-[#6b5540] hover:text-[#4a3a2a] px-6 py-3 font-medium transition-colors"
+                  className="text-[#4a4540] hover:text-[#4a4540] px-6 py-3 font-medium transition-colors"
                 >
                   ← Wróć do RODO
                 </button>
@@ -1190,7 +1183,7 @@ export default function InjectionLipolysisForm({
                   type="button"
                   onClick={() => setCurrentStep("TREATMENT")}
                   disabled={!formData.podpisRodo2}
-                  className="bg-[#8b7355] text-white py-3 px-8 rounded-xl text-lg font-medium shadow-lg hover:bg-[#7a6548] disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                  className="bg-[#4a4540] text-white py-3 px-8 rounded-xl text-lg font-medium shadow-lg hover:bg-[#2C2622] disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                 >
                   Dalej →
                 </button>
@@ -1202,12 +1195,12 @@ export default function InjectionLipolysisForm({
           {currentStep === "TREATMENT" && (
             <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
               {/* Ryzyko Hyaluronic */}
-              <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg">
+              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg">
                 <div className="p-6 md:p-8">
                   <h3 className="text-2xl font-serif text-[#4a4540] mb-6 border-b border-[#d4cec4] pb-2">
                     Świadomość Ryzyka
                   </h3>
-                  <p className="text-sm text-[#6b6560] mb-4">
+                  <p className="text-sm text-[#4a4540] mb-4">
                     Zostałam/em poinformowana/y o przebiegu zabiegu i możliwości
                     naturalnego wystąpienia ryzyka:
                   </p>
@@ -1221,7 +1214,7 @@ export default function InjectionLipolysisForm({
                         {lipolizaIniekcyjnaNaturalReactions.map(
                           (reaction, index) => (
                             <li key={index} className="flex items-start gap-2">
-                              <span className="text-[#8b7355]">•</span>
+                              <span className="text-[#C4B5A0]">•</span>
                               {reaction}
                             </li>
                           ),
@@ -1255,22 +1248,22 @@ export default function InjectionLipolysisForm({
               </section>
 
               {/* Zalecenia Hyaluronic */}
-              <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg">
+              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg">
                 <div className="p-6 md:p-8">
                   <h3 className="text-2xl font-serif text-[#4a4540] mb-6 border-b border-[#d4cec4] pb-2">
                     Zobowiązania Pozabiegowe
                   </h3>
-                  <p className="text-sm text-[#6b6560] mb-4">
+                  <p className="text-sm text-[#4a4540] mb-4">
                     Zobowiązuję się do przestrzegania następujących zaleceń:
                   </p>
                   <ul className="space-y-2 text-[#5a5550] text-sm bg-white/50 p-4 rounded-xl border border-[#d4cec4]/30">
                     {lipolizaIniekcyjnaPostCare.map((instruction, index) => (
                       <li key={index} className="flex items-start gap-2">
-                        <span className="text-[#8b7355]">•</span>
+                        <span className="text-[#C4B5A0]">•</span>
                         <span
                           className={
                             instruction.startsWith("UWAGA")
-                              ? "font-bold text-[#bfa07a]"
+                              ? "font-bold text-[#C4B5A0] font-bold"
                               : ""
                           }
                         >
@@ -1283,7 +1276,7 @@ export default function InjectionLipolysisForm({
               </section>
 
               {/* Oświadczenia */}
-              <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
+              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
                 <h3 className="text-2xl font-serif text-[#4a4540] mb-6 border-b border-[#d4cec4] pb-2">
                   Oświadczenia
                 </h3>
@@ -1371,7 +1364,7 @@ export default function InjectionLipolysisForm({
                       jego postanowienia, w tym zasady dotyczące rezerwacji,
                       zadatków, korekt oraz reklamacji.
                     </p>
-                    <p className="mt-4 font-medium text-[#8b7355]">
+                    <p className="mt-4 font-medium text-[#C4B5A0]">
                       * W przypadku osoby niepełnoletniej wymagany jest podpis
                       rodzica lub opiekuna prawnego.
                     </p>
@@ -1379,7 +1372,7 @@ export default function InjectionLipolysisForm({
                 </div>
 
                 {/* Podpis pod Zabiegiem (Nowy, obowiązkowy) */}
-                <div className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8 mt-8">
+                <div className="bg-white backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8 mt-8">
                   <h3 className="text-xl font-serif text-[#4a4540] mb-4 border-b border-[#d4cec4] pb-2">
                     Potwierdzenie Zgody na Zabieg
                   </h3>
@@ -1406,7 +1399,7 @@ export default function InjectionLipolysisForm({
                 <button
                   type="button"
                   onClick={() => setCurrentStep("RODO")}
-                  className="text-[#6b5540] hover:text-[#4a3a2a] px-6 py-3 font-medium transition-colors"
+                  className="text-[#4a4540] hover:text-[#4a4540] px-6 py-3 font-medium transition-colors"
                 >
                   ← Wróć do RODO
                 </button>
@@ -1414,7 +1407,7 @@ export default function InjectionLipolysisForm({
                   type="button"
                   onClick={() => setCurrentStep("MARKETING")}
                   disabled={!formData.podpisDane}
-                  className="bg-[#8b7355] text-white py-3 px-8 rounded-xl text-lg font-medium shadow-lg hover:bg-[#7a6548] disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                  className="bg-[#4a4540] text-white py-3 px-8 rounded-xl text-lg font-medium shadow-lg hover:bg-[#2C2622] disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                 >
                   Dalej (Zgody dodatkowe) →
                 </button>
@@ -1425,19 +1418,19 @@ export default function InjectionLipolysisForm({
           {/* KROK 4: MARKETING */}
           {currentStep === "MARKETING" && (
             <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-              <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
+              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
                 <h3 className="text-2xl font-serif text-[#4a4540] mb-6 flex items-center gap-3">
-                  <span className="w-8 h-8 bg-[#8b7355] text-white rounded-full flex items-center justify-center text-sm font-sans">
+                  <span className="w-8 h-8 bg-[#4a4540] text-white rounded-full flex items-center justify-center text-sm font-sans">
                     8
                   </span>
                   Zgody Dodatkowe
                 </h3>
-                <p className="text-sm text-[#6b6560] mb-6">
+                <p className="text-sm text-[#4a4540] mb-6">
                   Poniższe zgody są <strong>opcjonalne</strong>.
                 </p>
 
                 {/* Zgoda na marketing */}
-                <div className="bg-white/60 backdrop-blur-sm rounded-xl shadow-sm overflow-hidden border border-[#e5e0d8] hover:shadow-md transition-shadow">
+                <div className="bg-white backdrop-blur-sm rounded-xl shadow-sm overflow-hidden border border-[#d4cec4] hover:shadow-md transition-shadow">
                   <div className="p-6">
                     <h4 className="font-serif text-[#4a4540] text-lg mb-3">
                       Zgoda Marketingowa
@@ -1461,7 +1454,7 @@ export default function InjectionLipolysisForm({
                 </div>
 
                 {/* Zgoda na wizerunek */}
-                <div className="bg-white/60 backdrop-blur-sm rounded-xl shadow-sm overflow-hidden border border-[#e5e0d8] hover:shadow-md transition-shadow">
+                <div className="bg-white backdrop-blur-sm rounded-xl shadow-sm overflow-hidden border border-[#d4cec4] hover:shadow-md transition-shadow">
                   <div className="p-6">
                     <h4 className="font-serif text-[#4a4540] text-lg mb-3">
                       Zgoda na Wykorzystanie Wizerunku
@@ -1473,7 +1466,7 @@ export default function InjectionLipolysisForm({
                     </p>
 
                     <div className="mb-6">
-                      <label className="block text-xs uppercase tracking-wider text-[#8b8580] mb-2 font-medium">
+                      <label className="block text-xs uppercase tracking-wider text-[#4a4540] mb-2 font-medium">
                         Gdzie możemy publikować? (opcjonalnie)
                       </label>
                       <input
@@ -1485,7 +1478,7 @@ export default function InjectionLipolysisForm({
                             e.target.value,
                           )
                         }
-                        className="w-full px-4 py-2 bg-[#f8f6f3] border-b border-[#d4cec4] focus:border-[#8b7355] outline-none text-sm transition-colors text-[#4a4540]"
+                        className="w-full px-4 py-2 bg-[#f8f6f3] border-b border-[#d4cec4] focus:border-[#C4B5A0] outline-none text-sm transition-colors text-[#4a4540]"
                         placeholder="np. Instagram, Facebook (zostaw puste = wszystkie)"
                       />
                     </div>
@@ -1507,14 +1500,14 @@ export default function InjectionLipolysisForm({
                 <button
                   type="button"
                   onClick={() => setCurrentStep("TREATMENT")}
-                  className="text-[#6b5540] hover:text-[#4a3a2a] px-6 py-3 font-medium transition-colors"
+                  className="text-[#4a4540] hover:text-[#4a4540] px-6 py-3 font-medium transition-colors"
                 >
                   ← Wróć do zabiegu
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting || !isSignatureVerified}
-                  className="bg-[#8b7355] text-white py-4 px-12 rounded-xl text-lg font-medium shadow-lg hover:bg-[#7a6548] disabled:opacity-50 disabled:cursor-not-allowed transition-all transform hover:-translate-y-0.5"
+                  className="bg-[#4a4540] text-white py-4 px-12 rounded-xl text-lg font-medium shadow-lg hover:bg-[#2C2622] disabled:opacity-50 disabled:cursor-not-allowed transition-all transform hover:-translate-y-0.5"
                 >
                   {isSubmitting ? (
                     <div className="flex items-center gap-2">

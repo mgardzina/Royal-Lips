@@ -38,7 +38,7 @@ steps:
         npm install prisma @prisma/client &&
         npx prisma db push --accept-data-loss
     env:
-      - 'DATABASE_URL=postgresql://postgres:royallips1220%40%23@localhost/royal-lips-database?host=/cloudsql/royal-lips:europe-west3:royal-lips-db-small'
+      - 'DATABASE_URL=postgresql://postgres:F>c*kacZsEDIE-6"@localhost/royal-lips-database?host=/cloudsql/royal-lips:europe-west3:royal-lips-db-small'
     
   # Deploy container image to Cloud Run
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
@@ -57,13 +57,13 @@ steps:
       - '--add-cloudsql-instances'
       - 'royal-lips:europe-west3:royal-lips-db-small'
       - '--set-env-vars'
-      - 'DATABASE_URL=postgresql://postgres:royallips1220%40%23@/royal-lips-database?host=/cloudsql/royal-lips:europe-west3:royal-lips-db-small,NEXTAUTH_SECRET=k8xP2mN9qR4vL7wY3jF6hT1bZ5cA0dE8,NEXTAUTH_URL=https://royallips.pl,SMSAPI_TOKEN=NmyBqgymj3vezqlRAJxiS0elAuk7WgLu4fVkrX2c,SMSAPI_SENDER=RoyalLips'
+      - 'DATABASE_URL=postgresql://postgres:TempPass123%21@/royal-lips-database?host=/cloudsql/royal-lips:europe-west3:royal-lips-db-small,NEXTAUTH_SECRET=k8xP2mN9qR4vL7wY3jF6hT1bZ5cA0dE8,NEXTAUTH_URL=https://royallips.pl,SMSAPI_TOKEN=NmyBqgymj3vezqlRAJxiS0elAuk7WgLu4fVkrX2c,SMSAPI_SENDER=RoyalLips'
       - '--memory'
       - '512Mi'
       - '--cpu'
       - '1'
       - '--min-instances'
-      - '1'
+      - '0'
       - '--max-instances'
       - '10'
       - '--port'

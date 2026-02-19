@@ -129,11 +129,13 @@ model OtpVerification {
   @@index([phoneNumber, code])
 }
 
+// AdminUser model for DB-backed authentication
 model AdminUser {
   id           String  @id @default(uuid())
   email        String  @unique
   passwordHash String
   name         String?
+  phoneNumber  String  @unique @map("phone_number")
 }
 
 model TreatmentHistory {

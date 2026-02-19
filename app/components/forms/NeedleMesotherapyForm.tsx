@@ -14,6 +14,7 @@ import SignaturePad from "@/components/SignaturePad";
 import SignatureVerificationModal from "@/components/SignatureVerificationModal";
 import { AuditLogData } from "@/app/actions/otp";
 import Footer from "@/app/components/Footer";
+import BackButton from "@/app/components/BackButton";
 import {
   ConsentFormData,
   ContraindicationWithFollowUp,
@@ -340,15 +341,7 @@ export default function NeedleMesotherapyForm({
       <main className="max-w-4xl mx-auto px-4 py-8 relative z-10">
         <div className="mb-8">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-            <button
-              onClick={onBack}
-              className="group flex items-center text-[#6b5540] hover:text-[#4a3a2a] transition-colors font-medium self-start"
-            >
-              <div className="bg-white/50 p-2 rounded-full mr-3 group-hover:bg-white/80 transition-all">
-                <ArrowLeft className="w-4 h-4" />
-              </div>
-              Powrót
-            </button>
+            <BackButton onClick={onBack} className="self-start" />
             <div className="flex gap-2 text-xs md:text-sm font-medium text-[#8b7355]/60 overflow-x-auto pb-2 md:pb-0">
               <span
                 className={

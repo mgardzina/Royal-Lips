@@ -6,6 +6,7 @@ export type FormType =
   | 'PERMANENT_MAKEUP'
   | 'LASER_HAIR_REMOVAL'
   | 'LASER_TATTOO_REMOVAL'
+  | 'TISSUE_STIMULATION'
   | 'WRINKLE_REDUCTION';
 
 export interface ConsentFormData {
@@ -50,6 +51,12 @@ export interface ConsentFormData {
   zastrzeniaKlienta?: string;
   wykazLekow?: string;
   inneSchorzenia?: string;
+
+  // Pola dla stymulatorów tkankowych
+  iloscProduktu?: string;
+  planowanaIloscZabiegow?: string;
+  odstepMiedzyZabiegami?: string;
+  kolejneZabiegiOdstepy?: string;
 }
 
 export const mezoterapiaIglowaCategoryBreaks: Record<number, string> = {
@@ -1319,6 +1326,110 @@ export const depilacjaLaserowaComplications = {
   ],
 };
 
+// BIOSTYMULATORY - Stymulacja tkankowa
+export const biostymulatoryContraindications: Record<string, string | ContraindicationWithFollowUp> = {
+  // BEZWZGLĘDNE PRZECIWSKAZANIA
+  ciazaLaktacja: 'Czy jest Pani w ciąży lub w okresie laktacji?',
+  zapalenieZakazenieSkory: 'Czy ma Pani/Pan zapalenie lub zakażenie skóry (trądzik, opryszczka, zapalenia skórne, alergiczne lub grzybicze zmiany w okolicach podlegających zabiegowi, naczyniaki, liszaje, brodawczaki, przerwania ciągłości naskórka, poparzenia słoneczne?)',
+  nadwrazliwoscPreparat: {
+    text: 'Czy ma Pani/Pan nadwrażliwość na preparat?',
+    hasFollowUp: true,
+    followUpPlaceholder: 'Jaki?'
+  },
+  grzybiczeBakteryjneZapalenie: 'Czy występuje u Pani/Pana grzybicze/bakteryjne zapalenie skóry?',
+  zaburzeniaSercowoNaczyniowe: 'Czy ma Pani/Pan zaburzenia sercowo – naczyniowe?',
+  hemofilia: 'Czy choruje Pani/Pan na hemofilię?',
+  chemioterapiaRadioterapia: 'Czy w ciągu ostatniego roku była /Pan poddawana chemioterapii lub radioterapii?',
+  nowotwor: 'Czy choruje Pani/Pan na nowotwór?',
+  hivZoltaczka: 'Czy choruje Pani/Pan na HIV lub żółtaczkę?',
+  luszczycaAktywna: 'Czy choruje Pani/Pan na łuszczycę?',
+  epilepsja: 'Czy choruje Pani/Pan na epilepsję?',
+  problemyGojenieRan: 'Czy ma Pani/Pan problem/trudności z gojeniem ran?',
+  problemyKrzepliwoscKrwi: 'Czy ma Pani/Pan problemy z krzepnięciem krwi?',
+  alergiaSkladnikiPreparatu: 'Czy posiada Pani/Pan alergie na składniki preparatu?',
+  alergiaZnieczulenie: 'Czy ma Pani/Pan alergie na preparaty stosowane do miejscowego znieczulenia?',
+  podatnoscBlizny: 'Czy ma Pani/Pan podatność na przerost blizn?',
+  alkoholSrodkiOdurzajace: 'Czy w ciągu ostatnich 2 dni przyjmowała Pani/Pan alkohol lub inne środku odurzające?',
+  lekiPrzeciwzakrzepowe: 'Czy stosuje Pani/Pan leki przeciwzakrzepowe?',
+  cukrzyca: 'Czy choruje Pani/Pan na cukrzycę?',
+  dnaMoczanowa: 'Czy choruje Pani/Pan na dnę moczanową?',
+  trudnosciOddychaniem: 'Czy cierpi Pani/ Pan na trudności z oddychaniem?',
+
+  // WZGLĘDNE PRZECIWSKAZANIA
+  problemyKrazeniem: 'Czy ma Pani/Pan problemy z krążeniem?',
+  chorobyAutoimmunologiczne: 'Czy choruje Pani/Pan na choroby autoimmunologiczne?',
+
+  // CZASOWE PRZECIWSKAZANIA
+  wypelniaczeSkorneKwasHialuronowy: 'Czy korzystała Pani/Pan z wypełniaczy skórnych - kwasu hialuronowego?',
+  zabiegiChirurgiczneTwarz: {
+    text: 'Czy korzystała Pani/Pan z zabiegów chirurgicznych w okolicy twarzy?',
+    hasFollowUp: true,
+    followUpPlaceholder: 'Jeżeli tak, to z jakich?'
+  },
+  antybiotykoterapia: 'Czy jest Pani/Pan w trakcie stosowania antybiotykoterapii?',
+  lekiRozrzedzajaceKrew: 'Czy stosuje Pani/Pan leki rozrzedzające krew? (aspiryna, paracetamol, witamina E, inne)',
+  lekiMiejscowe: 'Czy stosuje Pani/Pan leki do aplikacji miejscowej w obszarze objętym zabiegiem?',
+  temperaturaPrzeziebienie: 'Czy ma Pani/Pan podniesioną temperaturę ciała lub jest przeziębiona w dniu zabiegu?',
+  sklonnosciSinceKrwawienie: 'Czy ma Pani/Pan skłonności do sińców lub krwawienia?',
+  tatuaze: 'Czy posiada Pani/Pan tatuaże?',
+  makijazPermanentny: {
+    text: 'Czy posiada Pani/Pan makijaż permanentny?',
+    hasFollowUp: true,
+    followUpPlaceholder: 'Jeżeli tak, to kiedy został wykonany i jaką techniką?'
+  },
+  inneSchorzenia: {
+    text: 'Czy posiada Pani/Pan inne schorzenia',
+    hasFollowUp: true,
+    followUpPlaceholder: 'Proszę podać jakie:'
+  }
+};
+
+export const biostymulatorySideEffects = [
+  'zaczerwienienie',
+  'obrzęk',
+  'krwawienie',
+  'zasinienie',
+  'rumień',
+  'swędzenie',
+  'ból',
+  'zgrubienie lub grudki'
+];
+
+export const biostymulatoryComplications = {
+  rzadkie: [
+    'zakażenie wirusowe',
+    'powstanie blizn',
+    'reakcje alergiczne',
+    'zakażenie bakteryjne',
+    'asymetria twarzy'
+  ],
+  bardzoRzadkie: [
+    'bliznowce'
+  ]
+};
+
+export const biostymulatoryPreTreatment = [
+  'unikać stosowania leków przeciwzapalnych na kilka dni przed zabiegiem',
+  'zażywać preparaty z … na kilka dni przed zabiegiem i do … po zabiegu',
+  'unikać picia alkoholu z dniu zabiegu',
+  'unikać opalania lub korzystania z sauny na … dni przed zabiegiem'
+];
+
+export const biostymulatoryPostTreatment = [
+  'miejsce poddane zabiegowi traktować ze szczególną ostrożnością',
+  'unikać uciskania i masażu twarzy lub innego miejsca poddanego zabiegowi',
+  'przez około … unikać nadmiernej mimiki',
+  'zachować wysoką higienę dłoni, istnieje bowiem duże ryzyko wtórnego zakażenia',
+  'nie przemywać wodą, mydłem i środkami złuszczającymi miejsc poddanych iniekcji min. …',
+  'unikać silnej ekspozycji słonecznej przez … i stosować kremy z wysokim filtrem UV',
+  'nie korzystać z solarium i zabiegów krioterapii przez okres …',
+  'nie korzystać z sauny, basenu przez okres min. …',
+  'unikać wysiłku fizycznego bezpośrednio po zabiegu',
+  'nie poddawać się zabiegom peelingu chemicznego i mechanicznego przez okres … tygodni od zabiegu',
+  'UWAGA!!! Należy stosować się ściśle do zaleceń pozabiegowych.',
+  'UWAGA!!! Wystąpienie jakichkolwiek reakcji niepożądanych należy niezwłocznie zgłosić Specjaliście wykonującemu zabieg.'
+];
+
 
 
 // Mapowanie typów na zestawy pytań
@@ -1328,7 +1439,7 @@ export const contraindicationsByFormType: Record<FormType, Record<string, string
   NEEDLE_MESOTHERAPY: mezoterapiaIglowaContraindications,
   INJECTION_LIPOLYSIS: lipolizaIniekcyjnaContraindications,
   PERMANENT_MAKEUP: makijazPermanentnyContraindications,
-
+  TISSUE_STIMULATION: biostymulatoryContraindications,
   LASER_HAIR_REMOVAL: depilacjaLaserowaContraindications,
   LASER_TATTOO_REMOVAL: laseroweUsuwanieContraindications,
   WRINKLE_REDUCTION: wolumetriaTwarzyContraindications,

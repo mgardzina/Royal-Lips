@@ -11,10 +11,11 @@ const config: Config = {
       colors: {
         // Semantic Brand Colors
         brand: {
-          DEFAULT: "#8b7355", // Main gold/brown (previously hardcoded #8b7355)
-          dark: "#7a6548",    // Darker variant for hovers
-          light: "#9c856b",   // Lighter variant
-          text: "#4a4540",    // Main text color (previously hardcoded #4a4540)
+          DEFAULT: "#4a4540", // Dark Brown (Primary Action)
+          beige: "#C4B5A0",   // Beige (Accent/Secondary)
+          light: "#d4cec4",   // Light Beige (Backgrounds/Borders)
+          dark: "#2C2622",    // Darker Brown (Hover)
+          text: "#4a4540",    // Main text color
         },
         // UI & Structure
         ui: {
