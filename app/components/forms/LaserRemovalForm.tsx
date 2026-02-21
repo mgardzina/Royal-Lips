@@ -291,23 +291,23 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#f8f6f3] via-[#efe9e1] to-[#e8e0d5]">
       {/* Header */}
-      <header className="bg-[#4a4540]/95 backdrop-blur-sm sticky top-0 z-50 shadow-lg">
+      <header className="bg-[#4a4540] sticky top-0 z-50 shadow-md">
         <div className="max-w-4xl mx-auto px-4 py-4 flex justify-between items-center">
-          <h1 className="text-xl md:text-2xl font-serif text-white tracking-wider">
+          <h1 className="text-xl md:text-2xl font-serif text-[#d4cec4] tracking-wider">
             ROYAL LIPS
           </h1>
           <div className="flex items-center gap-4">
             <a
-              href={`tel:${SALON_CONFIG.phone.replace(/\s/g, "")}`}
-              className="text-white/80 hover:text-white transition-colors"
+              href="tel:+48792377737"
+              className="text-[#d4cec4] hover:text-white transition-colors"
             >
               <Phone className="w-5 h-5" />
             </a>
             <a
-              href={SALON_CONFIG.instagram}
+              href="https://www.instagram.com/makijazpermanentnykrosno/"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-white/80 hover:text-white transition-colors"
+              className="text-[#d4cec4] hover:text-white transition-colors"
             >
               <Instagram className="w-5 h-5" />
             </a>
@@ -320,10 +320,10 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
         <div className="mb-8">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
             <BackButton onClick={onBack} className="self-start" />
-            <div className="flex gap-2 text-xs md:text-sm font-medium text-[#C4B5A0]/60 overflow-x-auto pb-2 md:pb-0">
+            <div className="flex gap-2 text-xs md:text-sm font-medium text-[#8b7355]/60 overflow-x-auto pb-2 md:pb-0">
               <span
                 className={
-                  currentStep === "DATA" ? "text-[#C4B5A0] font-bold" : ""
+                  currentStep === "DATA" ? "text-[#8b7355] font-bold" : ""
                 }
               >
                 1. Dane
@@ -331,7 +331,7 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
               <span>→</span>
               <span
                 className={
-                  currentStep === "RODO" ? "text-[#C4B5A0] font-bold" : ""
+                  currentStep === "RODO" ? "text-[#8b7355] font-bold" : ""
                 }
               >
                 2. RODO
@@ -339,7 +339,7 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
               <span>→</span>
               <span
                 className={
-                  currentStep === "RODO2" ? "text-[#C4B5A0] font-bold" : ""
+                  currentStep === "RODO2" ? "text-[#8b7355] font-bold" : ""
                 }
               >
                 3. RODO 2
@@ -347,7 +347,7 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
               <span>→</span>
               <span
                 className={
-                  currentStep === "TREATMENT" ? "text-[#C4B5A0] font-bold" : ""
+                  currentStep === "TREATMENT" ? "text-[#8b7355] font-bold" : ""
                 }
               >
                 4. Zabieg
@@ -355,7 +355,7 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
               <span>→</span>
               <span
                 className={
-                  currentStep === "MARKETING" ? "text-[#C4B5A0] font-bold" : ""
+                  currentStep === "MARKETING" ? "text-[#8b7355] font-bold" : ""
                 }
               >
                 5. Zgody
@@ -378,9 +378,9 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
           {currentStep === "DATA" && (
             <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
               {/* Dane osobowe */}
-              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
+              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8 border border-[#8b7355]/40">
                 <h2 className="text-2xl font-serif text-[#4a4540] mb-6 flex items-center gap-3">
-                  <span className="w-8 h-8 bg-[#4a4540] text-white rounded-full flex items-center justify-center text-sm font-sans">
+                  <span className="w-8 h-8 bg-[#4a4540] text-[#fff] rounded-full flex items-center justify-center text-sm font-bold font-sans">
                     1
                   </span>
                   Dane Osobowe
@@ -534,14 +534,14 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
               </section>
 
               {/* Informacja o Zabiegu */}
-              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
+              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8 border border-[#8b7355]/40">
                 <h2 className="text-2xl font-serif text-[#4a4540] mb-6 flex items-center gap-3">
-                  <span className="w-8 h-8 bg-[#4a4540] text-white rounded-full flex items-center justify-center text-sm font-sans">
+                  <span className="w-8 h-8 bg-[#4a4540] text-[#fff] rounded-full flex items-center justify-center text-sm font-bold font-sans">
                     2
                   </span>
                   Informacja o Zabiegu
                 </h2>
-                <div className="prose prose-sm max-w-none text-[#5a5550] leading-relaxed space-y-4">
+                <div className="bg-[#f8f6f3] p-6 rounded-xl border border-[#d4cec4] text-[#5a5550] leading-relaxed space-y-4">
                   <p>
                     Zabieg depilacji laserowej przy użyciu lasera diodowego jest
                     zabiegiem kosmetologicznym mającym na celu trwałą redukcję
@@ -584,19 +584,23 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
               </section>
 
               {/* Szczegóły Zabiegu */}
-              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
+              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8 border border-[#8b7355]/40">
                 <h2 className="text-2xl font-serif text-[#4a4540] mb-6 flex items-center gap-3">
-                  <span className="w-8 h-8 bg-[#4a4540] text-white rounded-full flex items-center justify-center text-sm font-sans">
+                  <span className="w-8 h-8 bg-[#4a4540] text-[#fff] rounded-full flex items-center justify-center text-sm font-bold font-sans">
                     3
                   </span>
                   Szczegóły Zabiegu
                 </h2>
-                <div className="bg-white p-4 rounded-xl border border-[#d4cec4] space-y-6">
+                <div className="space-y-6">
                   <div>
-                    <div>
-                      <label className="block text-sm text-[#4a4540] mb-2 font-medium">
-                        Obszar Zabiegu
-                      </label>
+                    <label className="block text-sm text-[#4a4540] mb-2 font-medium">
+                      Obszar Zabiegu
+                    </label>
+                    <div className="bg-[#f8f6f3] p-4 rounded-xl border border-[#d4cec4]">
+                      <p className="text-xs text-[#4a4540] mb-4 text-center">
+                        Zaznacz na schemacie obszary, które mają zostać poddane
+                        zabiegowi.
+                      </p>
                       <AnatomyBodySelector
                         initialSelected={
                           formData.obszarZabiegu
@@ -625,9 +629,9 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
               </section>
 
               {/* Wywiad Medyczny Laser Removal */}
-              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
+              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8 border border-[#8b7355]/40">
                 <h2 className="text-2xl font-serif text-[#4a4540] mb-6 flex items-center gap-3">
-                  <span className="w-8 h-8 bg-[#4a4540] text-white rounded-full flex items-center justify-center text-sm font-sans">
+                  <span className="w-8 h-8 bg-[#4a4540] text-[#fff] rounded-full flex items-center justify-center text-sm font-bold font-sans">
                     4
                   </span>
                   Wywiad Medyczny
@@ -744,12 +748,13 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
                         <button
                           type="button"
                           onClick={() => handleWizardAnswer(false)}
-                          className={`py-4 px-6 rounded-xl border-2 transition-all text-lg font-medium shadow-sm active:scale-95 flex items-center justify-center ${
+                          className={`py-4 px-6 rounded-xl border-2 transition-all text-lg font-medium shadow-sm hover:shadow-md active:scale-95 flex items-center justify-center ${
+                            currentContraindicationObject?.hasFollowUp &&
                             formData.przeciwwskazania[
                               currentContraindicationKey
                             ] === false
-                              ? "border-green-600 bg-green-600 text-white shadow-lg shadow-green-600/20"
-                              : "bg-white border-[#d4cec4] text-[#5a5550] hover:border-green-600 hover:text-green-600"
+                              ? "border-green-500 bg-green-500 text-white"
+                              : "bg-white border-[#d4cec4] text-[#6b6560] active:border-green-500 active:bg-green-500 active:text-white md:hover:border-green-500 md:hover:bg-green-500 md:hover:text-white"
                           }`}
                         >
                           NIE
@@ -757,12 +762,13 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
                         <button
                           type="button"
                           onClick={() => handleWizardAnswer(true)}
-                          className={`py-4 px-6 rounded-xl border-2 transition-all text-lg font-medium shadow-sm active:scale-95 flex items-center justify-center ${
+                          className={`py-4 px-6 rounded-xl border-2 transition-all text-lg font-medium shadow-sm hover:shadow-md active:scale-95 flex items-center justify-center ${
+                            currentContraindicationObject?.hasFollowUp &&
                             formData.przeciwwskazania[
                               currentContraindicationKey
                             ] === true
-                              ? "border-red-500 bg-red-500 text-white shadow-lg shadow-red-500/20"
-                              : "bg-white border-[#d4cec4] text-[#5a5550] hover:border-red-500 hover:text-red-500"
+                              ? "border-red-500 bg-red-500 text-white"
+                              : "bg-white border-[#d4cec4] text-[#6b6560] active:border-red-500 active:bg-red-500 active:text-white md:hover:border-red-500 md:hover:bg-red-500 md:hover:text-white"
                           }`}
                         >
                           TAK
@@ -902,9 +908,9 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
               </section>
 
               {/* Skutki Uboczne i Powikłania */}
-              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
+              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8 border border-[#8b7355]/40">
                 <h2 className="text-2xl font-serif text-[#4a4540] mb-6 flex items-center gap-3">
-                  <span className="w-8 h-8 bg-[#4a4540] text-white rounded-full flex items-center justify-center text-sm font-sans">
+                  <span className="w-8 h-8 bg-[#4a4540] text-[#fff] rounded-full flex items-center justify-center text-sm font-bold font-sans">
                     5
                   </span>
                   Skutki Uboczne i Powikłania
@@ -921,7 +927,7 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
                       {depilacjaLaserowaNaturalReactions.map(
                         (reaction, index) => (
                           <li key={index} className="flex items-start gap-2">
-                            <span className="text-brand">•</span>
+                            <span className="text-[#C4B5A0]">•</span>
                             <span>{reaction}</span>
                           </li>
                         ),
@@ -938,7 +944,7 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
                       {depilacjaLaserowaNaturalReactions.map(
                         (reaction, index) => (
                           <li key={index} className="flex items-start gap-2">
-                            <span className="text-brand">•</span>
+                            <span className="text-[#C4B5A0]">•</span>
                             <span>{reaction}</span>
                           </li>
                         ),
@@ -952,9 +958,9 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
                 </div>
               </section>
 
-              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
+              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8 border border-[#8b7355]/40">
                 <h2 className="text-2xl font-serif text-[#4a4540] mb-6 flex items-center gap-3">
-                  <span className="w-8 h-8 bg-[#4a4540] text-white rounded-full flex items-center justify-center text-sm font-sans">
+                  <span className="w-8 h-8 bg-[#4a4540] text-[#fff] rounded-full flex items-center justify-center text-sm font-bold font-sans">
                     6
                   </span>
                   Zalecenia Przed i Po Zabiegu
@@ -965,19 +971,16 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
                     <h3 className="text-lg font-serif text-[#4a4540] mb-4 flex items-center gap-2">
                       Przed Zabiegiem
                     </h3>
-                    <ul className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                      {depilacjaLaserowaPreCare.map((instruction, index) => (
-                        <li
-                          key={index}
-                          className="flex items-start gap-3 bg-[#f8f6f3] p-3 rounded-lg border border-[#d4cec4]"
-                        >
-                          <div className="w-1.5 h-1.5 rounded-full bg-brand mt-2 flex-shrink-0" />
-                          <span className="text-[#5a5550] text-xs leading-relaxed">
-                            {instruction}
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
+                    <div className="bg-[#f8f6f3] p-5 rounded-xl border border-[#d4cec4]">
+                      <ul className="space-y-2 text-sm text-[#5a5550]">
+                        {depilacjaLaserowaPreCare.map((instruction, index) => (
+                          <li key={index} className="flex items-start gap-2">
+                            <span className="text-[#C4B5A0]">•</span>
+                            <span>{instruction}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
                   </div>
 
                   <div className="bg-[#f8f6f3] p-5 rounded-xl border border-[#d4cec4]">
@@ -987,7 +990,7 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
                     <ul className="space-y-2 text-sm text-[#5a5550]">
                       {depilacjaLaserowaPostCare.map((instruction, index) => (
                         <li key={index} className="flex items-start gap-2">
-                          <span className="text-brand">•</span>
+                          <span className="text-[#C4B5A0]">•</span>
                           <span
                             className={
                               instruction.startsWith("UWAGA")
@@ -1021,19 +1024,19 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
           {/* KROK 2: RODO */}
           {currentStep === "RODO" && (
             <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-              <section className="bg-ui-bg/60 backdrop-blur-sm rounded-2xl shadow-lg overflow-hidden">
+              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg overflow-hidden">
                 <div className="p-6 md:p-8">
-                  <h3 className="text-2xl font-serif text-white mb-6">
+                  <h3 className="text-2xl font-serif text-[#4a4540] mb-6">
                     {rodoInfo.consentTitle}
                   </h3>
-                  <div className="bg-ui-bg p-6 rounded-xl text-sm text-ui-textSecondary leading-relaxed whitespace-pre-line max-h-[60vh] overflow-y-auto mb-6 border border-[#d4cec4]">
+                  <div className="bg-[#f8f6f3] p-6 rounded-xl text-sm text-[#5a5550] leading-relaxed whitespace-pre-line max-h-[60vh] overflow-y-auto mb-6 border border-[#d4cec4]">
                     {rodoInfo.consentText}
                   </div>
                   <div className="mt-8">
-                    <p className="text-sm text-ui-textSecondary mb-4 font-medium uppercase tracking-wide">
+                    <p className="text-sm text-[#5a5550] mb-4 font-medium uppercase tracking-wide">
                       Podpis Klienta (Zgoda na przetwarzanie danych):
                     </p>
-                    <div className="bg-ui-bg rounded-xl overflow-hidden min-h-[200px] border border-[#d4cec4] p-1">
+                    <div className="bg-white rounded-xl overflow-hidden min-h-[200px] border border-[#d4cec4] p-1">
                       <SignaturePad
                         label=""
                         value={formData.podpisRodo || ""}
@@ -1055,7 +1058,7 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
                 <button
                   type="button"
                   onClick={() => setCurrentStep("DATA")}
-                  className="text-brand hover:text-white px-6 py-3 font-medium transition-colors"
+                  className="text-[#4a4540] hover:text-[#4a4540] px-6 py-3 font-medium transition-colors"
                 >
                   ← Wróć do danych
                 </button>
@@ -1063,7 +1066,7 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
                   type="button"
                   onClick={() => setCurrentStep("RODO2")}
                   disabled={!formData.podpisRodo}
-                  className="bg-brand text-white py-3 px-8 rounded-xl text-lg font-medium shadow-lg hover:bg-brand-dark disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                  className="bg-[#4a4540] text-white py-3 px-8 rounded-xl text-lg font-medium shadow-lg hover:bg-[#2C2622] disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                 >
                   Dalej →
                 </button>
@@ -1074,19 +1077,19 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
           {/* KROK 3: RODO 2 */}
           {currentStep === "RODO2" && (
             <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-              <section className="bg-ui-bg/60 backdrop-blur-sm rounded-2xl shadow-lg overflow-hidden">
+              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg overflow-hidden">
                 <div className="p-6 md:p-8">
-                  <h3 className="text-2xl font-serif text-white mb-6">
+                  <h3 className="text-2xl font-serif text-[#4a4540] mb-6">
                     {rodoInfo.clauseTitle}
                   </h3>
-                  <div className="bg-ui-bg p-6 rounded-xl text-sm text-ui-textSecondary leading-relaxed whitespace-pre-line max-h-[60vh] overflow-y-auto mb-6 border border-[#d4cec4]">
+                  <div className="bg-[#f8f6f3] p-6 rounded-xl text-sm text-[#5a5550] leading-relaxed whitespace-pre-line max-h-[60vh] overflow-y-auto mb-6 border border-[#d4cec4]">
                     {rodoInfo.clauseText}
                   </div>
                   <div className="mt-8">
-                    <p className="text-sm text-ui-textSecondary mb-4 font-medium uppercase tracking-wide">
+                    <p className="text-sm text-[#5a5550] mb-4 font-medium uppercase tracking-wide">
                       Podpis Klienta (Klauzula informacyjna):
                     </p>
-                    <div className="bg-ui-bg rounded-xl overflow-hidden min-h-[200px] border border-[#d4cec4] p-1">
+                    <div className="bg-white rounded-xl overflow-hidden min-h-[200px] border border-[#d4cec4] p-1">
                       <SignaturePad
                         label=""
                         value={formData.podpisRodo2 || ""}
@@ -1097,7 +1100,7 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
                         hasBorder={false}
                       />
                     </div>
-                    <p className="text-xs text-white/50 mt-3 italic">
+                    <p className="text-xs text-[#4a4540] mt-3 italic">
                       Złożenie podpisu jest równoznaczne z zapoznaniem się z
                       powyższą klauzulą informacyjną RODO.
                     </p>
@@ -1109,7 +1112,7 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
                 <button
                   type="button"
                   onClick={() => setCurrentStep("RODO")}
-                  className="text-brand hover:text-white px-6 py-3 font-medium transition-colors"
+                  className="text-[#4a4540] hover:text-[#4a4540] px-6 py-3 font-medium transition-colors"
                 >
                   ← Wróć do RODO
                 </button>
@@ -1117,7 +1120,7 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
                   type="button"
                   onClick={() => setCurrentStep("TREATMENT")}
                   disabled={!formData.podpisRodo2}
-                  className="bg-brand text-white py-3 px-8 rounded-xl text-lg font-medium shadow-lg hover:bg-brand-dark disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                  className="bg-[#4a4540] text-white py-3 px-8 rounded-xl text-lg font-medium shadow-lg hover:bg-[#2C2622] disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                 >
                   Dalej →
                 </button>
@@ -1129,28 +1132,28 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
           {currentStep === "TREATMENT" && (
             <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
               {/* Ryzyko Hyaluronic */}
-              <section className="bg-gradient-emerald rounded-2xl border border-[#d4cec4] p-6 md:p-8 shadow-lg">
-                <h2 className="text-2xl font-serif text-white mb-6 flex items-center gap-3">
-                  <span className="w-8 h-8 bg-brand text-black rounded-full flex items-center justify-center text-sm font-sans font-bold">
+              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8 border border-[#8b7355]/40">
+                <h2 className="text-2xl font-serif text-[#4a4540] mb-6 flex items-center gap-3">
+                  <span className="w-8 h-8 bg-[#4a4540] text-white rounded-full flex items-center justify-center text-sm font-sans font-bold">
                     7
                   </span>
                   Świadomość Ryzyka
                 </h2>
-                <p className="text-sm text-ui-textSecondary mb-6 italic">
+                <p className="text-sm text-[#5a5550] mb-6 italic">
                   Zostałam/em poinformowana/y o przebiegu zabiegu i możliwości
                   naturalnego wystąpienia ryzyka:
                 </p>
 
                 <div className="space-y-6">
-                  <div className="bg-ui-bg p-5 rounded-xl border border-[#d4cec4]/30 shadow-sm shadow-black/20">
-                    <p className="text-sm font-medium text-brand mb-3 uppercase tracking-wider">
+                  <div className="bg-[#f8f6f3] p-5 rounded-xl border border-[#d4cec4]/50">
+                    <p className="text-sm font-medium text-[#C4B5A0] mb-3 uppercase tracking-wider">
                       Możliwe naturalne reakcje:
                     </p>
-                    <ul className="space-y-2 text-sm text-ui-textSecondary">
+                    <ul className="space-y-2 text-sm text-[#5a5550]">
                       {depilacjaLaserowaNaturalReactions.map(
                         (reaction, index) => (
                           <li key={index} className="flex items-start gap-2">
-                            <span className="text-brand">•</span>
+                            <span className="text-[#C4B5A0]">•</span>
                             {reaction}
                           </li>
                         ),
@@ -1158,51 +1161,80 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
                     </ul>
                   </div>
 
-                  <div className="bg-ui-bg p-5 rounded-xl border border-[#d4cec4]/30 shadow-sm shadow-black/20">
-                    <p className="text-sm font-medium text-brand mb-3 uppercase tracking-wider">
+                  <div className="bg-[#f8f6f3] p-5 rounded-xl border border-[#d4cec4]/50">
+                    <p className="text-sm font-medium text-[#C4B5A0] mb-3 uppercase tracking-wider">
                       Możliwe powikłania:
                     </p>
-                    <div className="space-y-3 text-sm text-ui-textSecondary">
-                      <p>
-                        <span className="font-bold text-white">Częste:</span>{" "}
-                        {depilacjaLaserowaComplications.czeste.join(", ")}
-                      </p>
-                      <p>
-                        <span className="font-bold text-white">Rzadkie:</span>{" "}
-                        {depilacjaLaserowaComplications.rzadkie.join(", ")}
-                      </p>
-                      <p>
-                        <span className="font-bold text-white">
+                    <div className="space-y-4 text-sm text-[#5a5550]">
+                      <div>
+                        <p className="font-medium text-[#4a4540] mb-2">
+                          Częste:
+                        </p>
+                        <ul className="space-y-1">
+                          {depilacjaLaserowaComplications.czeste.map(
+                            (item, i) => (
+                              <li key={i} className="flex items-start gap-2">
+                                <span className="text-[#C4B5A0]">•</span>
+                                <span>{item}</span>
+                              </li>
+                            ),
+                          )}
+                        </ul>
+                      </div>
+                      <div>
+                        <p className="font-medium text-[#4a4540] mb-2">
+                          Rzadkie:
+                        </p>
+                        <ul className="space-y-1">
+                          {depilacjaLaserowaComplications.rzadkie.map(
+                            (item, i) => (
+                              <li key={i} className="flex items-start gap-2">
+                                <span className="text-[#C4B5A0]">•</span>
+                                <span>{item}</span>
+                              </li>
+                            ),
+                          )}
+                        </ul>
+                      </div>
+                      <div>
+                        <p className="font-medium text-[#4a4540] mb-2">
                           Bardzo rzadkie:
-                        </span>{" "}
-                        {depilacjaLaserowaComplications.bardzoRzadkie.join(
-                          ", ",
-                        )}
-                      </p>
+                        </p>
+                        <ul className="space-y-1">
+                          {depilacjaLaserowaComplications.bardzoRzadkie.map(
+                            (item, i) => (
+                              <li key={i} className="flex items-start gap-2">
+                                <span className="text-[#C4B5A0]">•</span>
+                                <span>{item}</span>
+                              </li>
+                            ),
+                          )}
+                        </ul>
+                      </div>
                     </div>
                   </div>
                 </div>
               </section>
 
-              <section className="bg-gradient-emerald rounded-2xl border border-[#d4cec4] overflow-hidden">
+              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg overflow-hidden">
                 <div className="p-6 md:p-8">
-                  <h2 className="text-2xl font-serif text-white mb-6 flex items-center gap-3">
-                    <span className="w-8 h-8 bg-brand text-black rounded-full flex items-center justify-center text-sm font-sans font-bold">
+                  <h2 className="text-2xl font-serif text-[#4a4540] mb-6 flex items-center gap-3">
+                    <span className="w-8 h-8 bg-[#4a4540] text-white rounded-full flex items-center justify-center text-sm font-sans font-bold">
                       8
                     </span>
                     Zobowiązania Pozabiegowe
                   </h2>
-                  <p className="text-sm text-ui-textSecondary mb-4">
+                  <p className="text-sm text-[#5a5550] mb-4">
                     Zobowiązuję się do przestrzegania następujących zaleceń:
                   </p>
-                  <ul className="space-y-2 text-ui-textSecondary text-sm bg-ui-bg/50 p-4 rounded-xl border border-[#d4cec4]/30">
+                  <ul className="space-y-2 text-[#5a5550] text-sm bg-white/50 p-4 rounded-xl border border-[#d4cec4]/30">
                     {depilacjaLaserowaPostCare.map((instruction, index) => (
                       <li key={index} className="flex items-start gap-2">
-                        <span className="text-brand">•</span>
+                        <span className="text-[#C4B5A0]">•</span>
                         <span
                           className={
                             instruction.startsWith("UWAGA")
-                              ? "font-bold text-brand"
+                              ? "font-bold text-[#C4B5A0]"
                               : ""
                           }
                         >
@@ -1214,22 +1246,22 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
                 </div>
               </section>
 
-              <section className="bg-gradient-emerald rounded-2xl border border-[#d4cec4] p-6 md:p-8">
-                <h2 className="text-2xl font-serif text-white mb-6 flex items-center gap-3">
-                  <span className="w-8 h-8 bg-brand text-black rounded-full flex items-center justify-center text-sm font-sans font-bold">
+              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8 border border-[#8b7355]/40">
+                <h2 className="text-2xl font-serif text-[#4a4540] mb-6 flex items-center gap-3">
+                  <span className="w-8 h-8 bg-[#4a4540] text-white rounded-full flex items-center justify-center text-sm font-sans font-bold">
                     9
                   </span>
                   Oświadczenia
                 </h2>
-                <div className="bg-ui-bg p-5 rounded-xl mb-6 border border-[#d4cec4]/50">
-                  <h4 className="font-serif text-white text-lg mb-4">
+                <div className="bg-[#f8f6f3] p-5 rounded-xl mb-6 border border-[#d4cec4]/50">
+                  <h4 className="font-serif text-[#4a4540] text-lg mb-4">
                     OŚWIADCZENIE I ŚWIADOMA ZGODA NA ZABIEG DEPILACJI LASEROWEJ
                   </h4>
-                  <p className="text-sm text-ui-textSecondary mb-4">
+                  <p className="text-sm text-[#5a5550] mb-4">
                     Ja, niżej podpisana/y, oświadczam, że:
                   </p>
 
-                  <div className="space-y-4 text-sm text-ui-textSecondary leading-relaxed">
+                  <div className="space-y-4 text-sm text-[#5a5550] leading-relaxed">
                     <p>
                       <strong>Stan zdrowia:</strong> Wszystkie informacje podane
                       przeze mnie w ankiecie zdrowotnej oraz podczas wywiadu są
@@ -1276,17 +1308,17 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
                       związku z wystąpieniem typowych reakcji po-zabiegowych lub
                       brakiem całkowitego usunięcia owłosienia.
                     </p>
-                    <p className="mt-4 font-medium text-brand">
+                    <p className="mt-4 font-medium text-[#C4B5A0]">
                       * W przypadku osoby niepełnoletniej wymagany jest podpis
                       rodzica lub opiekuna prawnego.
                     </p>
                   </div>
                 </div>
-                <div className="bg-ui-bg/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8 mt-8">
-                  <h3 className="text-xl font-serif text-white mb-4 border-b border-[#d4cec4] pb-2">
+                <div className="bg-white backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8 mt-8">
+                  <h3 className="text-xl font-serif text-[#4a4540] mb-4 border-b border-[#d4cec4] pb-2">
                     Potwierdzenie Zgody na Zabieg
                   </h3>
-                  <p className="text-sm text-ui-textSecondary mb-6">
+                  <p className="text-sm text-[#5a5550] mb-6">
                     Składając podpis poniżej potwierdzam, że zapoznałam/em się z
                     powyższymi informacjami, ryzykiem oraz zaleceniami i wyrażam
                     świadomą zgodę na przeprowadzenie zabiegu.
@@ -1309,7 +1341,7 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
                 <button
                   type="button"
                   onClick={() => setCurrentStep("RODO")}
-                  className="text-brand hover:text-white px-6 py-3 font-medium transition-colors"
+                  className="text-[#4a4540] hover:text-[#4a4540] px-6 py-3 font-medium transition-colors"
                 >
                   ← Wróć do RODO
                 </button>
@@ -1317,7 +1349,7 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
                   type="button"
                   onClick={() => setCurrentStep("MARKETING")}
                   disabled={!formData.podpisDane}
-                  className="bg-brand text-white py-3 px-8 rounded-xl text-lg font-medium shadow-lg hover:bg-brand-dark disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                  className="bg-[#4a4540] text-white py-3 px-8 rounded-xl text-lg font-medium shadow-lg hover:bg-[#2C2622] disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                 >
                   Dalej (Zgody dodatkowe) →
                 </button>
@@ -1328,24 +1360,24 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
           {/* KROK 4: MARKETING */}
           {currentStep === "MARKETING" && (
             <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-              <section className="bg-gradient-emerald rounded-2xl border border-[#d4cec4] p-6 md:p-8">
-                <h2 className="text-2xl font-serif text-white mb-6 flex items-center gap-3">
-                  <span className="w-8 h-8 bg-brand text-black rounded-full flex items-center justify-center text-sm font-sans font-bold">
+              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8 border border-[#8b7355]/40">
+                <h2 className="text-2xl font-serif text-[#4a4540] mb-6 flex items-center gap-3">
+                  <span className="w-8 h-8 bg-[#4a4540] text-white rounded-full flex items-center justify-center text-sm font-sans font-bold">
                     10
                   </span>
                   Zgody Dodatkowe
                 </h2>
-                <p className="text-sm text-ui-textSecondary mb-6">
+                <p className="text-sm text-[#5a5550] mb-6">
                   Poniższe zgody są <strong>opcjonalne</strong>.
                 </p>
 
                 {/* Zgoda na marketing */}
-                <div className="bg-ui-bg/60 backdrop-blur-sm rounded-xl shadow-sm overflow-hidden border border-[#d4cec4] hover:shadow-md transition-shadow">
+                <div className="bg-[#f8f6f3] rounded-xl border border-[#d4cec4] hover:shadow-md transition-shadow">
                   <div className="p-6">
-                    <h4 className="font-serif text-white text-lg mb-3">
+                    <h4 className="font-serif text-[#4a4540] text-lg mb-3">
                       Zgoda Marketingowa
                     </h4>
-                    <p className="text-sm text-ui-textSecondary leading-relaxed mb-6">
+                    <p className="text-sm text-[#5a5550] leading-relaxed mb-6">
                       Wyrażam zgodę na otrzymywanie informacji o nowościach,
                       promocjach i ofertach specjalnych od firmy{" "}
                       <strong>{rodoInfo.firmaNazwa}</strong> drogą elektroniczną
@@ -1364,19 +1396,19 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
                 </div>
 
                 {/* Zgoda na wizerunek */}
-                <div className="bg-ui-bg/60 backdrop-blur-sm rounded-xl shadow-sm overflow-hidden border border-[#d4cec4] hover:shadow-md transition-shadow">
+                <div className="bg-[#f8f6f3] rounded-xl border border-[#d4cec4] hover:shadow-md transition-shadow">
                   <div className="p-6">
-                    <h4 className="font-serif text-white text-lg mb-3">
+                    <h4 className="font-serif text-[#4a4540] text-lg mb-3">
                       Zgoda na Wykorzystanie Wizerunku
                     </h4>
-                    <p className="text-sm text-ui-textSecondary leading-relaxed mb-4">
+                    <p className="text-sm text-[#5a5550] leading-relaxed mb-4">
                       Wyrażam nieodpłatną zgodę na utrwalenie i
                       rozpowszechnianie mojego wizerunku (zdjęcia/video efektów
                       zabiegu) w celach promocyjnych salonu {SALON_CONFIG.name}.
                     </p>
 
                     <div className="mb-6">
-                      <label className="block text-xs uppercase tracking-wider text-white/50 mb-2 font-medium">
+                      <label className="block text-xs uppercase tracking-wider text-[#4a4540] mb-2 font-medium">
                         Gdzie możemy publikować? (opcjonalnie)
                       </label>
                       <input
@@ -1388,7 +1420,7 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
                             e.target.value,
                           )
                         }
-                        className="w-full px-4 py-2 bg-ui-bg border-b border-[#d4cec4] focus:border-brand outline-none text-sm transition-colors text-white"
+                        className="w-full px-4 py-2 bg-white border-b border-[#d4cec4] focus:border-[#C4B5A0] outline-none text-sm transition-colors text-[#4a4540]"
                         placeholder="np. Instagram, Facebook (zostaw puste = wszystkie)"
                       />
                     </div>
@@ -1410,14 +1442,14 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
                 <button
                   type="button"
                   onClick={() => setCurrentStep("TREATMENT")}
-                  className="text-brand hover:text-white px-6 py-3 font-medium transition-colors"
+                  className="text-[#4a4540] hover:text-[#4a4540] px-6 py-3 font-medium transition-colors"
                 >
                   ← Wróć do zabiegu
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting || !isSignatureVerified}
-                  className="bg-brand text-white py-4 px-12 rounded-xl text-lg font-medium shadow-lg hover:bg-brand-dark disabled:opacity-50 disabled:cursor-not-allowed transition-all transform hover:-translate-y-0.5"
+                  className="bg-[#4a4540] text-white py-4 px-12 rounded-xl text-lg font-medium shadow-lg hover:bg-[#2C2622] disabled:opacity-50 disabled:cursor-not-allowed transition-all transform hover:-translate-y-0.5"
                 >
                   {isSubmitting ? (
                     <div className="flex items-center gap-2">

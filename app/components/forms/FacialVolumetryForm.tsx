@@ -349,17 +349,15 @@ export default function FacialVolumetryForm({
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#f8f6f3] via-[#efe9e1] to-[#e8e0d5]">
       {/* Header */}
-      <header className="bg-[#4a4540]/95 backdrop-blur-sm sticky top-0 z-50 shadow-lg">
+      <header className="bg-[#4a4540] sticky top-0 z-50 shadow-md">
         <div className="max-w-4xl mx-auto px-4 py-4 flex justify-between items-center">
-          <div className="flex items-center gap-4">
-            <h1 className="text-xl md:text-2xl font-serif text-white tracking-wider">
-              ROYAL LIPS
-            </h1>
-          </div>
+          <h1 className="text-xl md:text-2xl font-serif text-[#d4cec4] tracking-wider">
+            ROYAL LIPS
+          </h1>
           <div className="flex items-center gap-4">
             <a
               href="tel:+48792377737"
-              className="text-white/80 hover:text-white transition-colors"
+              className="text-[#d4cec4] hover:text-white transition-colors"
             >
               <Phone className="w-5 h-5" />
             </a>
@@ -367,7 +365,7 @@ export default function FacialVolumetryForm({
               href="https://www.instagram.com/makijazpermanentnykrosno/"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-white/80 hover:text-white transition-colors"
+              className="text-[#d4cec4] hover:text-white transition-colors"
             >
               <Instagram className="w-5 h-5" />
             </a>
@@ -379,11 +377,11 @@ export default function FacialVolumetryForm({
       <main className="max-w-4xl mx-auto px-4 py-8 relative z-10">
         <div className="mb-8">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-            <BackButton onClick={onBack} />
-            <div className="flex gap-2 text-xs md:text-sm font-medium text-[#C4B5A0]/60 overflow-x-auto pb-2 md:pb-0">
+            <BackButton onClick={onBack} className="self-start" />
+            <div className="flex gap-2 text-xs md:text-sm font-medium text-[#8b7355]/60 overflow-x-auto pb-2 md:pb-0">
               <span
                 className={
-                  currentStep === "DATA" ? "text-[#C4B5A0] font-bold" : ""
+                  currentStep === "DATA" ? "text-[#8b7355] font-bold" : ""
                 }
               >
                 1. Dane
@@ -391,7 +389,7 @@ export default function FacialVolumetryForm({
               <span>→</span>
               <span
                 className={
-                  currentStep === "RODO" ? "text-[#C4B5A0] font-bold" : ""
+                  currentStep === "RODO" ? "text-[#8b7355] font-bold" : ""
                 }
               >
                 2. RODO
@@ -399,7 +397,7 @@ export default function FacialVolumetryForm({
               <span>→</span>
               <span
                 className={
-                  currentStep === "RODO2" ? "text-[#C4B5A0] font-bold" : ""
+                  currentStep === "RODO2" ? "text-[#8b7355] font-bold" : ""
                 }
               >
                 3. RODO 2
@@ -407,7 +405,7 @@ export default function FacialVolumetryForm({
               <span>→</span>
               <span
                 className={
-                  currentStep === "TREATMENT" ? "text-[#C4B5A0] font-bold" : ""
+                  currentStep === "TREATMENT" ? "text-[#8b7355] font-bold" : ""
                 }
               >
                 4. Zabieg
@@ -415,7 +413,7 @@ export default function FacialVolumetryForm({
               <span>→</span>
               <span
                 className={
-                  currentStep === "MARKETING" ? "text-[#C4B5A0] font-bold" : ""
+                  currentStep === "MARKETING" ? "text-[#8b7355] font-bold" : ""
                 }
               >
                 5. Zgody
@@ -438,9 +436,9 @@ export default function FacialVolumetryForm({
           {currentStep === "DATA" && (
             <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
               {/* Dane osobowe */}
-              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
+              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8 border border-[#8b7355]/40">
                 <h2 className="text-2xl font-serif text-[#4a4540] mb-6 flex items-center gap-3">
-                  <span className="w-8 h-8 bg-[#4a4540] text-white rounded-full flex items-center justify-center text-sm font-sans">
+                  <span className="w-8 h-8 bg-[#4a4540] text-[#fff] rounded-full flex items-center justify-center text-sm font-bold font-sans">
                     1
                   </span>
                   Dane Osobowe
@@ -582,14 +580,14 @@ export default function FacialVolumetryForm({
               </section>
 
               {/* Informacja o Zabiegu */}
-              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
+              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8 border border-[#8b7355]/40">
                 <h2 className="text-2xl font-serif text-[#4a4540] mb-6 flex items-center gap-3">
-                  <span className="w-8 h-8 bg-[#4a4540] text-white rounded-full flex items-center justify-center text-sm font-sans">
+                  <span className="w-8 h-8 bg-[#4a4540] text-[#fff] rounded-full flex items-center justify-center text-sm font-bold font-sans">
                     2
                   </span>
                   Informacja o Zabiegu
                 </h2>
-                <div className="prose prose-sm max-w-none text-[#5a5550] leading-relaxed space-y-4">
+                <div className="bg-[#f8f6f3] p-6 rounded-xl border border-[#d4cec4] text-[#5a5550] leading-relaxed space-y-4">
                   <p>
                     Wolumetria twarzy to zabieg medycyny estetycznej, którego
                     celem jest przywrócenie lub poprawa objętości tkanek
@@ -646,9 +644,9 @@ export default function FacialVolumetryForm({
               </section>
 
               {/* Szczegóły Zabiegu */}
-              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
+              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8 border border-[#8b7355]/40">
                 <h2 className="text-2xl font-serif text-[#4a4540] mb-6 flex items-center gap-3">
-                  <span className="w-8 h-8 bg-[#4a4540] text-white rounded-full flex items-center justify-center text-sm font-sans">
+                  <span className="w-8 h-8 bg-[#4a4540] text-[#fff] rounded-full flex items-center justify-center text-sm font-bold font-sans">
                     3
                   </span>
                   Szczegóły Zabiegu
@@ -908,9 +906,9 @@ export default function FacialVolumetryForm({
               </section>
 
               {/* Wywiad Medyczny Hyaluronic */}
-              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
+              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8 border border-[#8b7355]/40">
                 <h2 className="text-2xl font-serif text-[#4a4540] mb-6 flex items-center gap-3">
-                  <span className="w-8 h-8 bg-[#4a4540] text-white rounded-full flex items-center justify-center text-sm font-sans">
+                  <span className="w-8 h-8 bg-[#4a4540] text-[#fff] rounded-full flex items-center justify-center text-sm font-bold font-sans">
                     4
                   </span>
                   Wywiad Medyczny
@@ -1172,9 +1170,9 @@ export default function FacialVolumetryForm({
               </section>
 
               {/* Skutki Uboczne i Powikłania */}
-              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
+              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8 border border-[#8b7355]/40">
                 <h2 className="text-2xl font-serif text-[#4a4540] mb-6 flex items-center gap-3">
-                  <span className="w-8 h-8 bg-[#4a4540] text-white rounded-full flex items-center justify-center text-sm font-sans">
+                  <span className="w-8 h-8 bg-[#4a4540] text-[#fff] rounded-full flex items-center justify-center text-sm font-bold font-sans">
                     5
                   </span>
                   Informacje o Skutkach Ubocznych i Powikłaniach
@@ -1182,7 +1180,7 @@ export default function FacialVolumetryForm({
 
                 <div className="space-y-6">
                   {/* Częste skutki uboczne */}
-                  <div className="bg-[#f8f6f3] p-5 rounded-xl border border-[#d4cec4]/50">
+                  <div className="bg-[#f8f6f3] p-6 rounded-xl border border-[#d4cec4] text-[#5a5550] leading-relaxed space-y-4">
                     <p className="text-sm font-medium text-[#4a4540] mb-3">
                       MOŻLIWE DO WYSTĄPIENIA SKUTKI UBOCZNE PO PRZEPROWADZONYM
                       ZABIEGU - CZĘSTE
@@ -1191,7 +1189,7 @@ export default function FacialVolumetryForm({
                       {wolumetriaTwarzyNaturalReactions.map(
                         (reaction, index) => (
                           <li key={index} className="flex items-start gap-2">
-                            <span className="text-brand">•</span>
+                            <span className="text-[#C4B5A0] mt-0.5">•</span>
                             <span>{reaction}</span>
                           </li>
                         ),
@@ -1200,7 +1198,7 @@ export default function FacialVolumetryForm({
                   </div>
 
                   {/* Rzadkie powikłania */}
-                  <div className="bg-[#f8f6f3] p-5 rounded-xl border border-[#d4cec4]/50">
+                  <div className="bg-[#f8f6f3] p-6 rounded-xl border border-[#d4cec4] text-[#5a5550] leading-relaxed space-y-4">
                     <p className="text-sm font-medium text-[#4a4540] mb-3">
                       MOŻLIWE POWIKŁANIA PO PRZEPROWADZONYM ZABIEGU – RZADKIE
                     </p>
@@ -1208,7 +1206,7 @@ export default function FacialVolumetryForm({
                       {wolumetriaTwarzyComplications.rzadkie.map(
                         (complication, index) => (
                           <li key={index} className="flex items-start gap-2">
-                            <span className="text-brand">∙</span>
+                            <span className="text-[#C4B5A0] mt-0.5">•</span>
                             <span>{complication}</span>
                           </li>
                         ),
@@ -1217,7 +1215,7 @@ export default function FacialVolumetryForm({
                   </div>
 
                   {/* Bardzo rzadkie powikłania */}
-                  <div className="bg-[#f8f6f3] p-5 rounded-xl border border-[#d4cec4]/50">
+                  <div className="bg-[#f8f6f3] p-6 rounded-xl border border-[#d4cec4] text-[#5a5550] leading-relaxed space-y-4">
                     <p className="text-sm font-medium text-[#4a4540] mb-3">
                       MOŻLIWE POWIKŁANIA PO PRZEPROWADZONYM ZABIEGU – BARDZO
                       RZADKIE
@@ -1226,7 +1224,7 @@ export default function FacialVolumetryForm({
                       {wolumetriaTwarzyComplications.bardzoRzadkie.map(
                         (complication, index) => (
                           <li key={index} className="flex items-start gap-2">
-                            <span className="text-brand">∙</span>
+                            <span className="text-[#C4B5A0] mt-0.5">•</span>
                             <span>{complication}</span>
                           </li>
                         ),
@@ -1237,15 +1235,15 @@ export default function FacialVolumetryForm({
               </section>
 
               {/* Zalecenia Pozabiegowe */}
-              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
+              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8 border border-[#8b7355]/40">
                 <h2 className="text-2xl font-serif text-[#4a4540] mb-6 flex items-center gap-3">
-                  <span className="w-8 h-8 bg-[#4a4540] text-white rounded-full flex items-center justify-center text-sm font-sans">
+                  <span className="w-8 h-8 bg-[#4a4540] text-[#fff] rounded-full flex items-center justify-center text-sm font-bold font-sans">
                     6
                   </span>
                   Zalecenia Pozabiegowe
                 </h2>
 
-                <div className="bg-[#f8f6f3] p-5 rounded-xl border border-[#d4cec4]/50 mb-6">
+                <div className="bg-[#f8f6f3] p-6 rounded-xl border border-[#d4cec4] text-[#5a5550] leading-relaxed space-y-4 mb-6">
                   <p className="text-sm text-[#5a5550] leading-relaxed mb-4">
                     <strong>
                       Niniejszym oświadczam, że zostałam/em poinformowana/y o
@@ -1256,7 +1254,7 @@ export default function FacialVolumetryForm({
                   <ul className="space-y-2 text-sm text-[#5a5550]">
                     {wolumetriaTwarzyPostCare.map((instruction, index) => (
                       <li key={index} className="flex items-start gap-2">
-                        <span className="text-brand">∙</span>
+                        <span className="text-[#C4B5A0] mt-0.5">•</span>
                         <span
                           className={
                             instruction.startsWith("UWAGA")
@@ -1419,8 +1417,8 @@ export default function FacialVolumetryForm({
                         {wolumetriaTwarzyNaturalReactions.map(
                           (reaction, index) => (
                             <li key={index} className="flex items-start gap-2">
-                              <span className="text-[#C4B5A0]">•</span>
-                              {reaction}
+                              <span className="text-[#C4B5A0] mt-0.5">•</span>
+                              <span>{reaction}</span>
                             </li>
                           ),
                         )}
@@ -1431,21 +1429,61 @@ export default function FacialVolumetryForm({
                       <p className="text-sm font-medium text-[#4a4540] mb-3">
                         Możliwe powikłania:
                       </p>
-                      <div className="space-y-3 text-sm text-[#5a5550]">
-                        <p>
-                          <span className="font-medium">Częste:</span>{" "}
-                          {wolumetriaTwarzyComplications.czeste.join(", ")}
-                        </p>
-                        <p>
-                          <span className="font-medium">Rzadkie:</span>{" "}
-                          {wolumetriaTwarzyComplications.rzadkie.join(", ")}
-                        </p>
-                        <p>
-                          <span className="font-medium">Bardzo rzadkie:</span>{" "}
-                          {wolumetriaTwarzyComplications.bardzoRzadkie.join(
-                            ", ",
-                          )}
-                        </p>
+                      <div className="space-y-4 text-sm text-[#5a5550]">
+                        <div>
+                          <p className="font-medium mb-2">Częste:</p>
+                          <ul className="space-y-1 pl-2">
+                            {wolumetriaTwarzyComplications.czeste.map(
+                              (item, index) => (
+                                <li
+                                  key={index}
+                                  className="flex items-start gap-2"
+                                >
+                                  <span className="text-[#C4B5A0] mt-0.5">
+                                    •
+                                  </span>
+                                  <span>{item}</span>
+                                </li>
+                              ),
+                            )}
+                          </ul>
+                        </div>
+                        <div>
+                          <p className="font-medium mb-2">Rzadkie:</p>
+                          <ul className="space-y-1 pl-2">
+                            {wolumetriaTwarzyComplications.rzadkie.map(
+                              (item, index) => (
+                                <li
+                                  key={index}
+                                  className="flex items-start gap-2"
+                                >
+                                  <span className="text-[#C4B5A0] mt-0.5">
+                                    •
+                                  </span>
+                                  <span>{item}</span>
+                                </li>
+                              ),
+                            )}
+                          </ul>
+                        </div>
+                        <div>
+                          <p className="font-medium mb-2">Bardzo rzadkie:</p>
+                          <ul className="space-y-1 pl-2">
+                            {wolumetriaTwarzyComplications.bardzoRzadkie.map(
+                              (item, index) => (
+                                <li
+                                  key={index}
+                                  className="flex items-start gap-2"
+                                >
+                                  <span className="text-[#C4B5A0] mt-0.5">
+                                    •
+                                  </span>
+                                  <span>{item}</span>
+                                </li>
+                              ),
+                            )}
+                          </ul>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -1464,7 +1502,7 @@ export default function FacialVolumetryForm({
                   <ul className="space-y-2 text-[#5a5550] text-sm bg-white/50 p-4 rounded-xl border border-[#d4cec4]/30">
                     {wolumetriaTwarzyPostCare.map((instruction, index) => (
                       <li key={index} className="flex items-start gap-2">
-                        <span className="text-[#C4B5A0]">•</span>
+                        <span className="text-[#C4B5A0] mt-0.5">•</span>
                         <span
                           className={
                             instruction.startsWith("UWAGA")
@@ -1481,7 +1519,7 @@ export default function FacialVolumetryForm({
               </section>
 
               {/* Oświadczenia */}
-              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
+              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8 border border-[#8b7355]/40">
                 <h3 className="text-2xl font-serif text-[#4a4540] mb-6 border-b border-[#d4cec4] pb-2">
                   Oświadczenia
                 </h3>
@@ -1630,8 +1668,8 @@ export default function FacialVolumetryForm({
                 </p>
 
                 {/* Zgoda na marketing */}
-                <div className="bg-white backdrop-blur-sm rounded-xl shadow-sm overflow-hidden border border-[#d4cec4] hover:shadow-md transition-shadow">
-                  <div className="p-6">
+                <div className="bg-[#f8f6f3] p-6 rounded-xl border border-[#d4cec4] text-[#5a5550] leading-relaxed space-y-4 hover:shadow-md transition-shadow">
+                  <div>
                     <h4 className="font-serif text-[#4a4540] text-lg mb-3">
                       Zgoda Marketingowa
                     </h4>
@@ -1654,8 +1692,8 @@ export default function FacialVolumetryForm({
                 </div>
 
                 {/* Zgoda na wizerunek */}
-                <div className="bg-white backdrop-blur-sm rounded-xl shadow-sm overflow-hidden border border-[#d4cec4] hover:shadow-md transition-shadow">
-                  <div className="p-6">
+                <div className="bg-[#f8f6f3] p-6 rounded-xl border border-[#d4cec4] text-[#5a5550] leading-relaxed space-y-4 hover:shadow-md transition-shadow">
+                  <div>
                     <h4 className="font-serif text-[#4a4540] text-lg mb-3">
                       Zgoda na Wykorzystanie Wizerunku
                     </h4>
@@ -1678,7 +1716,7 @@ export default function FacialVolumetryForm({
                             e.target.value,
                           )
                         }
-                        className="w-full px-4 py-2 bg-[#f8f6f3] border-b border-[#d4cec4] focus:border-[#C4B5A0] outline-none text-sm transition-colors text-[#4a4540]"
+                        className="w-full px-4 py-2 bg-white border-b border-[#d4cec4] focus:border-[#C4B5A0] outline-none text-sm transition-colors text-[#4a4540] rounded-t-lg"
                         placeholder="np. Instagram, Facebook (zostaw puste = wszystkie)"
                       />
                     </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { BODY_ZONES } from "@/types/body-zones";
 
 interface BodyChartProps {
@@ -37,22 +38,22 @@ export default function AnatomyBodySelector({
 
   // KOLORYSTYKA STREF
   const colors = {
-    // 1. BAZOWY (Widoczny od razu): Delikatny szary
+    // 1. BAZOWY (Widoczny od razu): Delikatny brązowy
     base: {
-      fill: "rgba(143, 166, 157, 0.8)", // sage z większą widocznością (szare pola) - ZMIANA NA 0.8
-      stroke: "rgba(143, 166, 157, 0.6)", // sage obrys
+      fill: "rgba(139, 115, 85, 0.15)", // brązowy z dużą przezroczystością
+      stroke: "rgba(139, 115, 85, 0.3)", // brązowy obrys
       strokeWidth: 1,
     },
-    // 2. HOVER (Po najechaniu): Złoty (Brand)
+    // 2. HOVER (Po najechaniu): Brązowy
     hover: {
-      fill: "rgba(212, 175, 55, 0.6)", // Brand (#D4AF37) z przezroczystością - TEŻ ZWIĘKSZAM LEKKO
-      stroke: "#D4AF37", // Pełny kolor obrysu (Brand)
+      fill: "rgba(139, 115, 85, 0.35)", // brązowy (#8b7355) z przezroczystością
+      stroke: "#8b7355", // Pełny kolor obrysu
       strokeWidth: 2,
     },
-    // 3. SELECTED (Wybrany): Mocny Złoty
+    // 3. SELECTED (Wybrany): Mocny Brązowy
     selected: {
-      fill: "rgba(212, 175, 55, 0.9)", // Brand (#D4AF37) z większą przezroczystością - TEŻ ZWIĘKSZAM
-      stroke: "#D4AF37", // mocny złoty (Brand)
+      fill: "rgba(139, 115, 85, 0.5)", // brązowy (#8b7355) z większą przezroczystością
+      stroke: "#8b7355", // mocny brązowy
       strokeWidth: 3,
     },
   };
@@ -97,13 +98,13 @@ export default function AnatomyBodySelector({
     <div className="flex flex-col items-center w-full max-w-2xl mx-auto">
       {/* Nagłówek z nazwą strefy po najechaniu (szybki podgląd) */}
       <div className="mb-2 flex items-center justify-between w-full">
-        <div className="h-8 flex items-center justify-center flex-1 bg-black/40 rounded-md border border-emerald/30 mr-2">
+        <div className="h-8 flex items-center justify-center flex-1 bg-[#f8f6f3] rounded-xl border border-[#d4cec4] mr-2">
           {hovered ? (
-            <span className="text-brand font-semibold text-sm animate-pulse transition-all">
+            <span className="text-[#8b7355] font-semibold text-sm transition-all">
               {getZoneName(hovered)}
             </span>
           ) : (
-            <span className="text-ui-textSecondary text-[10px] uppercase tracking-[0.2em]">
+            <span className="text-[#8b8580] text-[10px] uppercase tracking-[0.2em]">
               Wybierz obszar zabiegu
             </span>
           )}
@@ -111,7 +112,7 @@ export default function AnatomyBodySelector({
         <button
           type="button"
           onClick={selectAll}
-          className="h-8 px-3 text-[10px] font-bold uppercase tracking-wider text-brand bg-brand/10 rounded-md border border-brand/20 hover:bg-brand/20 transition-all whitespace-nowrap"
+          className="h-8 px-3 text-[10px] font-bold uppercase tracking-wider text-[#8b7355] bg-[#f8f6f3] rounded-xl border border-[#d4cec4] hover:bg-[#8b7355] hover:text-white hover:border-[#8b7355] transition-all whitespace-nowrap"
         >
           {selected.length === visibleZones.length
             ? "Odznacz wszystko"
@@ -121,7 +122,7 @@ export default function AnatomyBodySelector({
 
       {/* Kontener na SVG */}
       <div
-        className="relative w-full aspect-[724/1024] shadow-2xl rounded-2xl overflow-hidden border border-emerald/20 cursor-crosshair"
+        className="relative w-full aspect-[724/1024] shadow-lg rounded-2xl overflow-hidden border border-[#d4cec4] cursor-crosshair"
         style={{
           backgroundImage: "url('/women-body-chart.JPG')",
           backgroundSize: "cover",
@@ -185,31 +186,33 @@ export default function AnatomyBodySelector({
           <button
             key={id}
             onClick={() => toggleZone(id)}
-            className="px-3 py-1 bg-brand/10 text-brand text-[10px] font-bold rounded-full border border-brand/20 hover:bg-brand/20 hover:border-brand/40 transition-colors flex items-center gap-1 group uppercase tracking-wider"
+            className="px-3 py-1 bg-[#8b7355]/10 text-[#8b7355] text-[10px] font-bold rounded-full border border-[#8b7355]/20 hover:bg-[#8b7355]/20 hover:border-[#8b7355]/40 transition-colors flex items-center gap-1 group uppercase tracking-wider"
           >
             {getZoneName(id)}
-            <span className="text-brand/60 group-hover:text-brand font-normal ml-1">
+            <span className="text-[#8b7355]/60 group-hover:text-[#8b7355] font-normal ml-1">
               ×
             </span>
           </button>
         ))}
       </div>
 
-      {/* Cursor Tooltip */}
-      {hovered && (
-        <div
-          className="fixed pointer-events-none z-[9999] bg-ui-card text-white px-4 py-2 rounded-lg shadow-2xl border border-brand/30 text-xs font-bold uppercase tracking-widest transform -translate-x-1/2 -translate-y-[120%] backdrop-blur-md"
-          style={{
-            left: mousePos.x,
-            top: mousePos.y,
-            transition: "opacity 0.15s ease-out",
-          }}
-        >
-          {getZoneName(hovered)}
-          {/* Add a small arrow pointing down */}
-          <div className="absolute bottom-[-6px] left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[6px] border-t-ui-card" />
-        </div>
-      )}
+      {/* Cursor Tooltip - rendered via Portal to avoid backdrop-blur containing block issues */}
+      {hovered && mousePos.x > 0 && typeof document !== "undefined" &&
+        createPortal(
+          <div
+            className="fixed pointer-events-none z-[9999] bg-[#4a4540] text-white px-3 py-1.5 rounded-lg shadow-xl border border-[#8b7355]/30 text-xs font-medium uppercase tracking-wide"
+            style={{
+              left: mousePos.x,
+              top: mousePos.y - 40,
+              transform: "translateX(-50%)",
+            }}
+          >
+            {getZoneName(hovered)}
+            {/* Add a small arrow pointing down */}
+            <div className="absolute bottom-[-5px] left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[5px] border-l-transparent border-r-[5px] border-r-transparent border-t-[5px] border-t-[#4a4540]" />
+          </div>,
+          document.body
+        )}
     </div>
   );
 }

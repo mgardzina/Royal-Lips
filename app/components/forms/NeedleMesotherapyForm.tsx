@@ -313,15 +313,15 @@ export default function NeedleMesotherapyForm({
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#f8f6f3] via-[#efe9e1] to-[#e8e0d5]">
       {/* Header */}
-      <header className="bg-[#4a4540]/95 backdrop-blur-sm sticky top-0 z-50 shadow-lg">
+      <header className="bg-[#4a4540] sticky top-0 z-50 shadow-md">
         <div className="max-w-4xl mx-auto px-4 py-4 flex justify-between items-center">
-          <h1 className="text-xl md:text-2xl font-serif text-white tracking-wider">
+          <h1 className="text-xl md:text-2xl font-serif text-[#d4cec4] tracking-wider">
             ROYAL LIPS
           </h1>
           <div className="flex items-center gap-4">
             <a
               href="tel:+48792377737"
-              className="text-white/80 hover:text-white transition-colors"
+              className="text-[#d4cec4] hover:text-white transition-colors"
             >
               <Phone className="w-5 h-5" />
             </a>
@@ -329,7 +329,7 @@ export default function NeedleMesotherapyForm({
               href="https://www.instagram.com/makijazpermanentnykrosno/"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-white/80 hover:text-white transition-colors"
+              className="text-[#d4cec4] hover:text-white transition-colors"
             >
               <Instagram className="w-5 h-5" />
             </a>
@@ -400,9 +400,9 @@ export default function NeedleMesotherapyForm({
           {currentStep === "DATA" && (
             <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
               {/* Dane osobowe */}
-              <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
+              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8 border border-[#8b7355]/40">
                 <h2 className="text-2xl font-serif text-[#4a3a2a] mb-6 flex items-center gap-3">
-                  <span className="w-8 h-8 bg-[#8b7355] text-white rounded-full flex items-center justify-center text-sm font-sans">
+                  <span className="w-8 h-8 bg-[#4a4540] text-[#fff] rounded-full flex items-center justify-center text-sm font-sans">
                     1
                   </span>
                   Dane Osobowe
@@ -544,17 +544,15 @@ export default function NeedleMesotherapyForm({
               </section>
 
               {/* Informacja o Zabiegu */}
-              <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
+              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8 border border-[#8b7355]/40">
                 <h2 className="text-2xl font-serif text-[#4a3a2a] mb-6 flex items-center gap-3">
-                  <span className="w-8 h-8 bg-[#8b7355] text-white rounded-full flex items-center justify-center text-sm font-sans">
+                  <span className="w-8 h-8 bg-[#4a4540] text-[#fff] rounded-full flex items-center justify-center text-sm font-sans">
                     2
                   </span>
                   Informacja o Zabiegu
                 </h2>
-                <div className="prose prose-sm max-w-none text-[#5a5550] leading-relaxed space-y-4">
+                <div className="bg-[#f8f6f3] p-6 rounded-xl border border-[#d4cec4] text-[#5a5550] leading-relaxed space-y-4">
                   <p>
-                    <strong>INFORMACJA O ZABIEGU</strong>
-                    <br />
                     Zabieg mezoterapii igłowej polega na bezpośrednim podaniu
                     cienką igłą małych dawek substancji aktywnych śródskórnie w
                     miejsca, które zostaną poddane zabiegowi. Wstrzyknięcie
@@ -626,9 +624,9 @@ export default function NeedleMesotherapyForm({
               </section>
 
               {/* Szczegóły Zabiegu */}
-              <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
+              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8 border border-[#8b7355]/40">
                 <h2 className="text-2xl font-serif text-[#4a3a2a] mb-6 flex items-center gap-3">
-                  <span className="w-8 h-8 bg-[#8b7355] text-white rounded-full flex items-center justify-center text-sm font-sans">
+                  <span className="w-8 h-8 bg-[#4a4540] text-[#fff] rounded-full flex items-center justify-center text-sm font-sans">
                     3
                   </span>
                   Szczegóły Zabiegu
@@ -668,19 +666,19 @@ export default function NeedleMesotherapyForm({
                 </div>
               </section>
 
-              <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
+              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8 border border-[#8b7355]/40">
                 <h2 className="text-2xl font-serif text-[#4a3a2a] mb-6 flex items-center gap-3">
-                  <span className="w-8 h-8 bg-[#8b7355] text-white rounded-full flex items-center justify-center text-sm font-sans">
+                  <span className="w-8 h-8 bg-[#4a4540] text-[#fff] rounded-full flex items-center justify-center text-sm font-sans">
                     4
                   </span>
                   Wywiad Medyczny
                 </h2>
 
                 {/* Sekcja Wykaz Leki */}
-                <div className="mb-8">
-                  <label className="block text-sm font-bold text-[#4a4540] mb-3 uppercase tracking-wide">
+                <div className="bg-[#f8f6f3] p-5 rounded-xl border border-[#d4cec4] mb-6">
+                  <h3 className="font-serif text-[#4a4540] text-lg mb-2">
                     PRZECIWSKAZANIA DO WYKONANIA ZABIEGU
-                  </label>
+                  </h3>
                   <label className="block text-sm text-[#6b6560] mb-2 font-medium">
                     Proszę wpisać wykaz wszystkich leków przyjmowanych w ciągu
                     ostatnich 6 miesięcy:
@@ -690,8 +688,8 @@ export default function NeedleMesotherapyForm({
                     onChange={(e) =>
                       handleInputChange("wykazLekow", e.target.value)
                     }
-                    className="w-full h-24 px-4 py-3 bg-white/80 border border-[#d4cec4] rounded-xl focus:border-[#8b7355] focus:ring-2 focus:ring-[#8b7355]/20 outline-none transition-all resize-none"
-                    placeholder="Wpisz nazwy leków..."
+                    className="w-full h-24 px-4 py-3 bg-white border border-[#d4cec4] rounded-xl focus:border-[#8b7355] focus:ring-2 focus:ring-[#8b7355]/20 outline-none transition-all resize-none"
+                    placeholder="Wpisz nazwy leków lub wpisz 'BRAK'..."
                   />
                 </div>
 
@@ -699,7 +697,9 @@ export default function NeedleMesotherapyForm({
                   Czy posiadasz którekolwiek z poniższych przeciwwskazań?
                 </p>
 
-                {showContraindicationsWizard ? (
+                {showContraindicationsWizard &&
+                !isWizardComplete &&
+                currentContraindicationIndex < contraindicationKeys.length ? (
                   <div className="bg-[#f8f6f3] p-6 rounded-xl border border-[#d4cec4] max-w-2xl mx-auto shadow-sm animate-in slide-in-from-right-4 duration-300">
                     {/* Category Header */}
 
@@ -894,27 +894,12 @@ export default function NeedleMesotherapyForm({
                     )}
                   </div>
                 )}
-
-                {/* Inne schorzenia */}
-                <div className="mt-8">
-                  <label className="block text-sm text-[#6b6560] mb-2 font-medium">
-                    Inne schorzenia, proszę podać jakie:
-                  </label>
-                  <textarea
-                    value={formData.inneSchorzenia || ""}
-                    onChange={(e) =>
-                      handleInputChange("inneSchorzenia", e.target.value)
-                    }
-                    className="w-full h-24 px-4 py-3 bg-white/80 border border-[#d4cec4] rounded-xl focus:border-[#8b7355] focus:ring-2 focus:ring-[#8b7355]/20 outline-none transition-all resize-none"
-                    placeholder="Opisz inne schorzenia..."
-                  />
-                </div>
               </section>
 
               {/* Skutki Uboczne i Powikłania */}
-              <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
+              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8 border border-[#8b7355]/40">
                 <h2 className="text-2xl font-serif text-[#4a3a2a] mb-6 flex items-center gap-3">
-                  <span className="w-8 h-8 bg-[#8b7355] text-white rounded-full flex items-center justify-center text-sm font-sans">
+                  <span className="w-8 h-8 bg-[#4a4540] text-[#fff] rounded-full flex items-center justify-center text-sm font-sans">
                     5
                   </span>
                   Informacje o Skutkach Ubocznych i Powikłaniach
@@ -922,7 +907,7 @@ export default function NeedleMesotherapyForm({
 
                 <div className="space-y-6">
                   {/* Częste skutki uboczne */}
-                  <div className="bg-[#f8f6f3] p-5 rounded-xl border border-[#d4cec4]/50">
+                  <div className="bg-[#f8f6f3] p-6 rounded-xl border border-[#d4cec4] text-[#5a5550] leading-relaxed space-y-4">
                     <p className="text-sm font-medium text-[#4a4540] mb-3">
                       MOŻLIWE DO WYSTĄPIENIA REAKCJE PO PRZEPROWADZONYM ZABIEGU
                       - CZĘSTE
@@ -936,7 +921,7 @@ export default function NeedleMesotherapyForm({
                       {mezoterapiaIglowaNaturalReactions.map(
                         (reaction, index) => (
                           <li key={index} className="flex items-start gap-2">
-                            <span className="text-[#8b7355]">∙</span>
+                            <span className="text-[#C4B5A0] mt-0.5">•</span>
                             <span>{reaction}</span>
                           </li>
                         ),
@@ -950,7 +935,7 @@ export default function NeedleMesotherapyForm({
                   </div>
 
                   {/* Rzadkie powikłania */}
-                  <div className="bg-[#f8f6f3] p-5 rounded-xl border border-[#d4cec4]/50">
+                  <div className="bg-[#f8f6f3] p-6 rounded-xl border border-[#d4cec4] text-[#5a5550] leading-relaxed space-y-4">
                     <p className="text-sm font-medium text-[#4a4540] mb-3">
                       MOŻLIWE POWIKŁANIA PO PRZEPROWADZONYM ZABIEGU – RZADKIE
                     </p>
@@ -958,7 +943,7 @@ export default function NeedleMesotherapyForm({
                       {mezoterapiaIglowaComplications.map(
                         (complication, index) => (
                           <li key={index} className="flex items-start gap-2">
-                            <span className="text-[#8b7355]">∙</span>
+                            <span className="text-[#C4B5A0] mt-0.5">•</span>
                             <span>{complication}</span>
                           </li>
                         ),
@@ -967,7 +952,7 @@ export default function NeedleMesotherapyForm({
                   </div>
 
                   {/* Bardzo rzadkie powikłania - NEW SECTION */}
-                  <div className="bg-[#f8f6f3] p-5 rounded-xl border border-[#d4cec4]/50">
+                  <div className="bg-[#f8f6f3] p-6 rounded-xl border border-[#d4cec4] text-[#5a5550] leading-relaxed space-y-4">
                     <p className="text-sm font-medium text-[#4a4540] mb-3">
                       MOŻLIWE POWIKŁANIA PO PRZEPROWADZONYM ZABIEGU – BARDZO
                       RZADKIE
@@ -976,7 +961,7 @@ export default function NeedleMesotherapyForm({
                       {mezoterapiaIglowaComplicationsVeryRare.map(
                         (complication, index) => (
                           <li key={index} className="flex items-start gap-2">
-                            <span className="text-[#8b7355]">∙</span>
+                            <span className="text-[#C4B5A0] mt-0.5">•</span>
                             <span>{complication}</span>
                           </li>
                         ),
@@ -989,15 +974,15 @@ export default function NeedleMesotherapyForm({
               </section>
 
               {/* Zalecenia Pozabiegowe */}
-              <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
+              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8 border border-[#8b7355]/40">
                 <h2 className="text-2xl font-serif text-[#4a3a2a] mb-6 flex items-center gap-3">
-                  <span className="w-8 h-8 bg-[#8b7355] text-white rounded-full flex items-center justify-center text-sm font-sans">
+                  <span className="w-8 h-8 bg-[#4a4540] text-[#fff] rounded-full flex items-center justify-center text-sm font-sans">
                     6
                   </span>
                   Zalecenia Pozabiegowe
                 </h2>
 
-                <div className="bg-[#f8f6f3] p-5 rounded-xl border border-[#d4cec4]/50 mb-6">
+                <div className="bg-[#f8f6f3] p-6 rounded-xl border border-[#d4cec4] text-[#5a5550] leading-relaxed space-y-4 mb-6">
                   <p className="text-sm text-[#5a5550] leading-relaxed mb-4">
                     <strong>ZALECENIA PO PRZEPROWADZONYM ZABIEGU</strong>
                     <br />
@@ -1008,7 +993,7 @@ export default function NeedleMesotherapyForm({
                   <ul className="space-y-2 text-sm text-[#5a5550]">
                     {mezoterapiaIglowaPostCare.map((instruction, index) => (
                       <li key={index} className="flex items-start gap-2">
-                        <span className="text-[#8b7355]">∙</span>
+                        <span className="text-[#C4B5A0] mt-0.5">•</span>
                         <span
                           className={
                             instruction.startsWith("UWAGA")
@@ -1029,7 +1014,7 @@ export default function NeedleMesotherapyForm({
                   type="button"
                   onClick={() => setShowSignatureModal(true)}
                   disabled={!isStep1Valid}
-                  className="bg-[#8b7355] text-white py-4 px-8 rounded-xl text-lg font-medium shadow-lg hover:bg-[#7a6548] disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center gap-3"
+                  className="bg-[#4a4540] text-white py-4 px-8 rounded-xl text-lg font-medium shadow-lg hover:bg-[#2C2622] disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center gap-3"
                 >
                   <Shield className="w-5 h-5" />
                   Weryfikuj Tożsamość (SMS) i Przejdź Dalej
@@ -1041,7 +1026,7 @@ export default function NeedleMesotherapyForm({
           {/* KROK 2: RODO */}
           {currentStep === "RODO" && (
             <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-              <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg overflow-hidden">
+              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg overflow-hidden">
                 <div className="p-6 md:p-8">
                   <h3 className="text-2xl font-serif text-[#4a4540] mb-6">
                     {rodoInfo.consentTitle}
@@ -1096,7 +1081,7 @@ export default function NeedleMesotherapyForm({
           {/* KROK 3: RODO 2 */}
           {currentStep === "RODO2" && (
             <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-              <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg overflow-hidden">
+              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg overflow-hidden">
                 <div className="p-6 md:p-8">
                   <h3 className="text-2xl font-serif text-[#4a4540] mb-6">
                     {rodoInfo.clauseTitle}
@@ -1152,7 +1137,7 @@ export default function NeedleMesotherapyForm({
           {currentStep === "TREATMENT" && (
             <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
               {/* Ryzyko Hyaluronic */}
-              <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg">
+              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg">
                 <div className="p-6 md:p-8">
                   <h3 className="text-2xl font-serif text-[#4a4540] mb-6 border-b border-[#d4cec4] pb-2">
                     Świadomość Ryzyka
@@ -1163,7 +1148,7 @@ export default function NeedleMesotherapyForm({
                   </p>
 
                   <div className="space-y-6">
-                    <div className="bg-[#f8f6f3] p-5 rounded-xl border border-[#d4cec4]/50">
+                    <div className="bg-[#f8f6f3] p-6 rounded-xl border border-[#d4cec4] text-[#5a5550] leading-relaxed space-y-4">
                       <p className="text-sm font-medium text-[#4a4540] mb-3">
                         Możliwe naturalne reakcje:
                       </p>
@@ -1171,31 +1156,33 @@ export default function NeedleMesotherapyForm({
                         {mezoterapiaIglowaNaturalReactions.map(
                           (reaction, index) => (
                             <li key={index} className="flex items-start gap-2">
-                              <span className="text-[#8b7355]">•</span>
-                              {reaction}
+                              <span className="text-[#C4B5A0] mt-0.5">•</span>
+                              <span>{reaction}</span>
                             </li>
                           ),
                         )}
                       </ul>
                     </div>
 
-                    <div className="bg-[#f8f6f3] p-5 rounded-xl border border-[#d4cec4]/50">
+                    <div className="bg-[#f8f6f3] p-6 rounded-xl border border-[#d4cec4] text-[#5a5550] leading-relaxed space-y-4">
                       <p className="text-sm font-medium text-[#4a4540] mb-3">
                         Możliwe powikłania:
                       </p>
-                      <div className="space-y-3 text-sm text-[#5a5550]">
-                        <p>
-                          <span className="font-medium">Powikłania:</span>{" "}
-                          {mezoterapiaIglowaComplications.join(", ")}
-                        </p>
-                      </div>
+                      <ul className="space-y-1 text-sm text-[#5a5550]">
+                        {mezoterapiaIglowaComplications.map((item, index) => (
+                          <li key={index} className="flex items-start gap-2">
+                            <span className="text-[#C4B5A0] mt-0.5">•</span>
+                            <span>{item}</span>
+                          </li>
+                        ))}
+                      </ul>
                     </div>
                   </div>
                 </div>
               </section>
 
               {/* Zalecenia Hyaluronic */}
-              <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg">
+              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg">
                 <div className="p-6 md:p-8">
                   <h3 className="text-2xl font-serif text-[#4a4540] mb-6 border-b border-[#d4cec4] pb-2">
                     Zobowiązania Pozabiegowe
@@ -1203,10 +1190,10 @@ export default function NeedleMesotherapyForm({
                   <p className="text-sm text-[#6b6560] mb-4">
                     Zobowiązuję się do przestrzegania następujących zaleceń:
                   </p>
-                  <ul className="space-y-2 text-[#5a5550] text-sm bg-white/50 p-4 rounded-xl border border-[#d4cec4]/30">
+                  <ul className="space-y-2 text-[#5a5550] text-sm bg-[#f8f6f3] p-6 rounded-xl border border-[#d4cec4]">
                     {mezoterapiaIglowaPostCare.map((instruction, index) => (
                       <li key={index} className="flex items-start gap-2">
-                        <span className="text-[#8b7355]">•</span>
+                        <span className="text-[#C4B5A0] mt-0.5">•</span>
                         <span
                           className={
                             instruction.startsWith("UWAGA")
@@ -1223,7 +1210,7 @@ export default function NeedleMesotherapyForm({
               </section>
 
               {/* Regulamin Salonu */}
-              <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg">
+              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg">
                 <div className="p-6 md:p-8">
                   <h3 className="text-2xl font-serif text-[#4a4540] mb-6 border-b border-[#d4cec4] pb-2">
                     Regulamin Salonu
@@ -1391,7 +1378,7 @@ export default function NeedleMesotherapyForm({
               </section>
 
               {/* Oświadczenia */}
-              <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
+              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8 border border-[#8b7355]/40">
                 <h3 className="text-2xl font-serif text-[#4a4540] mb-6 border-b border-[#d4cec4] pb-2">
                   Oświadczenia
                 </h3>
@@ -1508,7 +1495,7 @@ export default function NeedleMesotherapyForm({
                 </div>
 
                 {/* Podpis pod Zabiegiem (Nowy, obowiązkowy) */}
-                <div className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8 mt-8">
+                <div className="bg-white backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8 mt-8">
                   <h3 className="text-xl font-serif text-[#4a4540] mb-4 border-b border-[#d4cec4] pb-2">
                     Potwierdzenie Zgody na Zabieg
                   </h3>
@@ -1554,7 +1541,7 @@ export default function NeedleMesotherapyForm({
           {/* KROK 4: MARKETING */}
           {currentStep === "MARKETING" && (
             <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-              <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
+              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
                 <h3 className="text-2xl font-serif text-[#4a4540] mb-6 flex items-center gap-3">
                   <span className="w-8 h-8 bg-[#8b7355] text-white rounded-full flex items-center justify-center text-sm font-sans">
                     7
@@ -1566,8 +1553,8 @@ export default function NeedleMesotherapyForm({
                 </p>
 
                 {/* Zgoda na marketing */}
-                <div className="bg-white/60 backdrop-blur-sm rounded-xl shadow-sm overflow-hidden border border-[#e5e0d8] hover:shadow-md transition-shadow">
-                  <div className="p-6">
+                <div className="bg-[#f8f6f3] p-6 rounded-xl border border-[#d4cec4] text-[#5a5550] leading-relaxed space-y-4 hover:shadow-md transition-shadow">
+                  <div>
                     <h4 className="font-serif text-[#4a4540] text-lg mb-3">
                       Zgoda Marketingowa
                     </h4>
@@ -1590,8 +1577,8 @@ export default function NeedleMesotherapyForm({
                 </div>
 
                 {/* Zgoda na wizerunek */}
-                <div className="bg-white/60 backdrop-blur-sm rounded-xl shadow-sm overflow-hidden border border-[#e5e0d8] hover:shadow-md transition-shadow">
-                  <div className="p-6">
+                <div className="bg-[#f8f6f3] p-6 rounded-xl border border-[#d4cec4] text-[#5a5550] leading-relaxed space-y-4 hover:shadow-md transition-shadow">
+                  <div>
                     <h4 className="font-serif text-[#4a4540] text-lg mb-3">
                       Zgoda na Wykorzystanie Wizerunku
                     </h4>
@@ -1614,7 +1601,7 @@ export default function NeedleMesotherapyForm({
                             e.target.value,
                           )
                         }
-                        className="w-full px-4 py-2 bg-[#f8f6f3] border-b border-[#d4cec4] focus:border-[#8b7355] outline-none text-sm transition-colors text-[#4a4540]"
+                        className="w-full px-4 py-2 bg-white border-b border-[#d4cec4] focus:border-[#8b7355] outline-none text-sm transition-colors text-[#4a4540] rounded-t-lg"
                         placeholder="np. Instagram, Facebook (zostaw puste = wszystkie)"
                       />
                     </div>

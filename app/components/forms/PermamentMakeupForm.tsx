@@ -305,15 +305,15 @@ export default function LipModelingForm({ onBack }: LipModelingFormProps) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#f8f6f3] via-[#efe9e1] to-[#e8e0d5]">
       {/* Header */}
-      <header className="bg-[#4a4540]/95 backdrop-blur-sm sticky top-0 z-50 shadow-lg">
+      <header className="bg-[#4a4540] sticky top-0 z-50 shadow-md">
         <div className="max-w-4xl mx-auto px-4 py-4 flex justify-between items-center">
-          <h1 className="text-xl md:text-2xl font-serif text-white tracking-wider">
+          <h1 className="text-xl md:text-2xl font-serif text-[#d4cec4] tracking-wider">
             ROYAL LIPS
           </h1>
           <div className="flex items-center gap-4">
             <a
               href="tel:+48792377737"
-              className="text-white/80 hover:text-white transition-colors"
+              className="text-[#d4cec4] hover:text-white transition-colors"
             >
               <Phone className="w-5 h-5" />
             </a>
@@ -321,7 +321,7 @@ export default function LipModelingForm({ onBack }: LipModelingFormProps) {
               href="https://www.instagram.com/makijazpermanentnykrosno/"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-white/80 hover:text-white transition-colors"
+              className="text-[#d4cec4] hover:text-white transition-colors"
             >
               <Instagram className="w-5 h-5" />
             </a>
@@ -334,10 +334,10 @@ export default function LipModelingForm({ onBack }: LipModelingFormProps) {
         <div className="mb-8">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
             <BackButton onClick={onBack} className="self-start" />
-            <div className="flex gap-2 text-xs md:text-sm font-medium text-[#C4B5A0]/60 overflow-x-auto pb-2 md:pb-0">
+            <div className="flex gap-2 text-xs md:text-sm font-medium text-[#8b7355]/60 overflow-x-auto pb-2 md:pb-0">
               <span
                 className={
-                  currentStep === "DATA" ? "text-[#C4B5A0] font-bold" : ""
+                  currentStep === "DATA" ? "text-[#8b7355] font-bold" : ""
                 }
               >
                 1. Dane
@@ -345,7 +345,7 @@ export default function LipModelingForm({ onBack }: LipModelingFormProps) {
               <span>→</span>
               <span
                 className={
-                  currentStep === "RODO" ? "text-[#C4B5A0] font-bold" : ""
+                  currentStep === "RODO" ? "text-[#8b7355] font-bold" : ""
                 }
               >
                 2. RODO
@@ -353,7 +353,7 @@ export default function LipModelingForm({ onBack }: LipModelingFormProps) {
               <span>→</span>
               <span
                 className={
-                  currentStep === "RODO2" ? "text-[#C4B5A0] font-bold" : ""
+                  currentStep === "RODO2" ? "text-[#8b7355] font-bold" : ""
                 }
               >
                 3. RODO 2
@@ -361,7 +361,7 @@ export default function LipModelingForm({ onBack }: LipModelingFormProps) {
               <span>→</span>
               <span
                 className={
-                  currentStep === "TREATMENT" ? "text-[#C4B5A0] font-bold" : ""
+                  currentStep === "TREATMENT" ? "text-[#8b7355] font-bold" : ""
                 }
               >
                 4. Zabieg
@@ -369,7 +369,7 @@ export default function LipModelingForm({ onBack }: LipModelingFormProps) {
               <span>→</span>
               <span
                 className={
-                  currentStep === "MARKETING" ? "text-[#C4B5A0] font-bold" : ""
+                  currentStep === "MARKETING" ? "text-[#8b7355] font-bold" : ""
                 }
               >
                 5. Zgody
@@ -392,9 +392,9 @@ export default function LipModelingForm({ onBack }: LipModelingFormProps) {
           {currentStep === "DATA" && (
             <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
               {/* Dane osobowe */}
-              <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
+              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8 border border-[#8b7355]/40">
                 <h2 className="text-2xl font-serif text-[#4a4540] mb-6 flex items-center gap-3">
-                  <span className="w-8 h-8 bg-[#C4B5A0] text-[#4a4540] rounded-full flex items-center justify-center text-sm font-bold font-sans">
+                  <span className="w-8 h-8 bg-[#4a4540] text-[#fff] rounded-full flex items-center justify-center text-sm font-bold font-sans">
                     1
                   </span>
                   Dane Osobowe
@@ -536,14 +536,14 @@ export default function LipModelingForm({ onBack }: LipModelingFormProps) {
               </section>
 
               {/* Informacja o Zabiegu */}
-              <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
+              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8 border border-[#8b7355]/40">
                 <h2 className="text-2xl font-serif text-[#4a4540] mb-6 flex items-center gap-3">
-                  <span className="w-8 h-8 bg-[#C4B5A0] text-[#4a4540] rounded-full flex items-center justify-center text-sm font-bold font-sans">
+                  <span className="w-8 h-8 bg-[#4a4540] text-[#fff] rounded-full flex items-center justify-center text-sm font-bold font-sans">
                     2
                   </span>
                   Informacja o Zabiegu
                 </h2>
-                <div className="prose prose-sm max-w-none text-[#5a5550] leading-relaxed space-y-4">
+                <div className="bg-[#f8f6f3] p-6 rounded-xl border border-[#d4cec4] text-[#5a5550] leading-relaxed space-y-4">
                   <p>
                     Makijaż permanentny jest zabiegiem inwazyjnym gdyż związany
                     jest z przerwaniem ciągłości naskórka, wobec czego nie jest
@@ -678,16 +678,16 @@ export default function LipModelingForm({ onBack }: LipModelingFormProps) {
               </section>
 
               {/* Szczegóły Zabiegu */}
-              <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
+              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8 border border-[#8b7355]/40">
                 <h2 className="text-2xl font-serif text-[#4a4540] mb-6 flex items-center gap-3">
-                  <span className="w-8 h-8 bg-[#C4B5A0] text-[#4a4540] rounded-full flex items-center justify-center text-sm font-bold font-sans">
+                  <span className="w-8 h-8 bg-[#4a4540] text-[#fff] rounded-full flex items-center justify-center text-sm font-bold font-sans">
                     3
                   </span>
                   Szczegóły Zabiegu
                 </h2>
                 <div className="space-y-6">
-                  <div>
-                    <label className="block text-sm text-ui-textSecondary mb-2 font-medium">
+                  <div className="bg-[#f8f6f3] p-4 rounded-xl border border-[#d4cec4]">
+                    <label className="block text-sm text-[#5a5550] mb-2 font-medium">
                       Anatomia (zaznacz obszar zabiegu)
                     </label>
                     <AnatomyFaceSelector
@@ -705,7 +705,7 @@ export default function LipModelingForm({ onBack }: LipModelingFormProps) {
                   </div>
                   {/* Obszar zabiegu */}
                   <div>
-                    <label className="block text-sm text-ui-textSecondary mb-2 font-medium">
+                    <label className="block text-sm text-[#5a5550] mb-2 font-medium">
                       Wykonywany zabieg dotyczy makijażu permanentnego:
                     </label>
                     <div className="grid grid-cols-3 gap-3 mb-3">
@@ -756,8 +756,8 @@ export default function LipModelingForm({ onBack }: LipModelingFormProps) {
                             }}
                             className={`py-3 px-4 rounded-xl border-2 transition-all font-medium text-sm ${
                               isSelected
-                                ? "border-[#8b7355] bg-[#8b7355] text-white shadow-lg shadow-[#8b7355]/20"
-                                : "border-[#d4cec4] bg-white text-[#6b6560] hover:border-[#8b7355] hover:text-[#8b7355]"
+                                ? "border-[#4a4540] bg-[#4a4540] text-white"
+                                : "border-[#d4cec4] bg-white text-[#4a4540] hover:border-[#4a4540] hover:text-[#4a4540]"
                             }`}
                           >
                             {item.label}
@@ -788,8 +788,8 @@ export default function LipModelingForm({ onBack }: LipModelingFormProps) {
                           }}
                           className={`py-3 px-4 rounded-xl border-2 transition-all font-medium text-sm ${
                             formData.celEfektu === effect
-                              ? "border-[#8b7355] bg-[#8b7355] text-white shadow-lg shadow-[#8b7355]/20"
-                              : "border-[#d4cec4] bg-white text-[#6b6560] hover:border-[#8b7355] hover:text-[#8b7355]"
+                              ? "border-[#4a4540] bg-[#4a4540] text-white"
+                              : "border-[#d4cec4] bg-white text-[#4a4540] hover:border-[#4a4540] hover:text-[#4a4540]"
                           }`}
                         >
                           {effect}
@@ -801,9 +801,9 @@ export default function LipModelingForm({ onBack }: LipModelingFormProps) {
               </section>
 
               {/* Wywiad Medyczny Hyaluronic */}
-              <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
+              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8 border border-[#8b7355]/40">
                 <h2 className="text-2xl font-serif text-[#4a4540] mb-6 flex items-center gap-3">
-                  <span className="w-8 h-8 bg-[#C4B5A0] text-[#4a4540] rounded-full flex items-center justify-center text-sm font-bold font-sans">
+                  <span className="w-8 h-8 bg-[#4a4540] text-[#fff] rounded-full flex items-center justify-center text-sm font-bold font-sans">
                     4
                   </span>
                   Wywiad Medyczny
@@ -1056,9 +1056,9 @@ export default function LipModelingForm({ onBack }: LipModelingFormProps) {
               </section>
 
               {/* Skutki Uboczne i Powikłania */}
-              <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
+              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8 border border-[#8b7355]/40">
                 <h2 className="text-2xl font-serif text-[#4a4540] mb-6 flex items-center gap-3">
-                  <span className="w-8 h-8 bg-[#C4B5A0] text-[#4a4540] rounded-full flex items-center justify-center text-sm font-bold font-sans">
+                  <span className="w-8 h-8 bg-[#4a4540] text-[#fff] rounded-full flex items-center justify-center text-sm font-bold font-sans">
                     5
                   </span>
                   Informacje o Skutkach Ubocznych i Powikłaniach
@@ -1066,7 +1066,7 @@ export default function LipModelingForm({ onBack }: LipModelingFormProps) {
 
                 <div className="space-y-6">
                   {/* Częste skutki uboczne */}
-                  <div className="bg-[#f8f6f3] p-5 rounded-xl border border-[#d4cec4]/50">
+                  <div className="bg-[#f8f6f3] p-6 rounded-xl border border-[#d4cec4] text-[#5a5550] leading-relaxed space-y-4">
                     <p className="text-sm font-medium text-[#4a4540] mb-3">
                       MOŻLIWE DO WYSTĄPIENIA SKUTKI UBOCZNE PO PRZEPROWADZONYM
                       ZABIEGU - CZĘSTE
@@ -1075,7 +1075,7 @@ export default function LipModelingForm({ onBack }: LipModelingFormProps) {
                       {makijazPermanentnyNaturalReactions.map(
                         (reaction, index) => (
                           <li key={index} className="flex items-start gap-2">
-                            <span className="text-[#C4B5A0] font-bold">∙</span>
+                            <span className="text-[#C4B5A0] mt-0.5">•</span>
                             <span>{reaction}</span>
                           </li>
                         ),
@@ -1084,7 +1084,7 @@ export default function LipModelingForm({ onBack }: LipModelingFormProps) {
                   </div>
 
                   {/* Rzadkie powikłania */}
-                  <div className="bg-[#f8f6f3] p-5 rounded-xl border border-[#d4cec4]/50">
+                  <div className="bg-[#f8f6f3] p-6 rounded-xl border border-[#d4cec4] text-[#5a5550] leading-relaxed space-y-4">
                     <p className="text-sm font-medium text-[#4a4540] mb-3">
                       MOŻLIWE POWIKŁANIA PO PRZEPROWADZONYM ZABIEGU – RZADKIE
                     </p>
@@ -1092,7 +1092,7 @@ export default function LipModelingForm({ onBack }: LipModelingFormProps) {
                       {makijazPermanentnyComplications.rzadkie.map(
                         (complication, index) => (
                           <li key={index} className="flex items-start gap-2">
-                            <span className="text-[#C4B5A0] font-bold">∙</span>
+                            <span className="text-[#C4B5A0] mt-0.5">•</span>
                             <span>{complication}</span>
                           </li>
                         ),
@@ -1101,7 +1101,7 @@ export default function LipModelingForm({ onBack }: LipModelingFormProps) {
                   </div>
 
                   {/* Bardzo rzadkie powikłania */}
-                  <div className="bg-[#f8f6f3] p-5 rounded-xl border border-[#d4cec4]/50">
+                  <div className="bg-[#f8f6f3] p-6 rounded-xl border border-[#d4cec4] text-[#5a5550] leading-relaxed space-y-4">
                     <p className="text-sm font-medium text-[#4a4540] mb-3">
                       MOŻLIWE POWIKŁANIA PO PRZEPROWADZONYM ZABIEGU – BARDZO
                       RZADKIE
@@ -1110,7 +1110,7 @@ export default function LipModelingForm({ onBack }: LipModelingFormProps) {
                       {makijazPermanentnyComplications.bardzoRzadkie.map(
                         (complication, index) => (
                           <li key={index} className="flex items-start gap-2">
-                            <span className="text-[#C4B5A0] font-bold">∙</span>
+                            <span className="text-[#C4B5A0] mt-0.5">•</span>
                             <span>{complication}</span>
                           </li>
                         ),
@@ -1121,15 +1121,15 @@ export default function LipModelingForm({ onBack }: LipModelingFormProps) {
               </section>
 
               {/* Zalecenia Pozabiegowe */}
-              <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
+              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8 border border-[#8b7355]/40">
                 <h2 className="text-2xl font-serif text-[#4a4540] mb-6 flex items-center gap-3">
-                  <span className="w-8 h-8 bg-[#C4B5A0] text-[#4a4540] rounded-full flex items-center justify-center text-sm font-bold font-sans">
+                  <span className="w-8 h-8 bg-[#4a4540] text-[#fff] rounded-full flex items-center justify-center text-sm font-bold font-sans">
                     6
                   </span>
                   Zalecenia Pozabiegowe
                 </h2>
 
-                <div className="bg-[#f8f6f3] p-5 rounded-xl border border-[#d4cec4]/50 mb-6">
+                <div className="bg-[#f8f6f3] p-6 rounded-xl border border-[#d4cec4] text-[#5a5550] leading-relaxed space-y-4 mb-6">
                   <p className="text-sm text-[#5a5550] leading-relaxed mb-4">
                     <strong>
                       Niniejszym oświadczam, że zostałam/em poinformowana/y o
@@ -1140,7 +1140,7 @@ export default function LipModelingForm({ onBack }: LipModelingFormProps) {
                   <ul className="space-y-2 text-sm text-[#5a5550]">
                     {makijazPermanentnyPostCare.map((instruction, index) => (
                       <li key={index} className="flex items-start gap-2">
-                        <span className="text-[#C4B5A0] font-bold">∙</span>
+                        <span className="text-[#C4B5A0] mt-0.5">•</span>
                         <span
                           className={
                             instruction.startsWith("UWAGA")
@@ -1173,7 +1173,7 @@ export default function LipModelingForm({ onBack }: LipModelingFormProps) {
           {/* KROK 2: RODO */}
           {currentStep === "RODO" && (
             <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-              <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg overflow-hidden">
+              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg overflow-hidden">
                 <div className="p-6 md:p-8">
                   <h3 className="text-2xl font-serif text-[#4a4540] mb-6">
                     {rodoInfo.consentTitle}
@@ -1228,7 +1228,7 @@ export default function LipModelingForm({ onBack }: LipModelingFormProps) {
           {/* KROK 3: RODO 2 */}
           {currentStep === "RODO2" && (
             <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-              <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg overflow-hidden">
+              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg overflow-hidden">
                 <div className="p-6 md:p-8">
                   <h3 className="text-2xl font-serif text-[#4a4540] mb-6">
                     {rodoInfo.clauseTitle}
@@ -1284,7 +1284,7 @@ export default function LipModelingForm({ onBack }: LipModelingFormProps) {
           {currentStep === "TREATMENT" && (
             <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
               {/* Ryzyko Hyaluronic */}
-              <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg">
+              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg">
                 <div className="p-6 md:p-8">
                   <h3 className="text-2xl font-serif text-[#4a4540] mb-6 border-b border-[#d4cec4] pb-2">
                     Świadomość Ryzyka
@@ -1295,7 +1295,7 @@ export default function LipModelingForm({ onBack }: LipModelingFormProps) {
                   </p>
 
                   <div className="space-y-6">
-                    <div className="bg-[#f8f6f3] p-5 rounded-xl border border-[#d4cec4]/50">
+                    <div className="bg-[#f8f6f3] p-6 rounded-xl border border-[#d4cec4] text-[#5a5550] leading-relaxed space-y-4">
                       <p className="text-sm font-medium text-[#4a4540] mb-3">
                         Możliwe naturalne reakcje:
                       </p>
@@ -1303,35 +1303,73 @@ export default function LipModelingForm({ onBack }: LipModelingFormProps) {
                         {makijazPermanentnyNaturalReactions.map(
                           (reaction, index) => (
                             <li key={index} className="flex items-start gap-2">
-                              <span className="text-[#C4B5A0] font-bold">
-                                •
-                              </span>
-                              {reaction}
+                              <span className="text-[#C4B5A0] mt-0.5">•</span>
+                              <span>{reaction}</span>
                             </li>
                           ),
                         )}
                       </ul>
                     </div>
 
-                    <div className="bg-[#f8f6f3] p-5 rounded-xl border border-[#d4cec4]/50">
+                    <div className="bg-[#f8f6f3] p-6 rounded-xl border border-[#d4cec4] text-[#5a5550] leading-relaxed space-y-4">
                       <p className="text-sm font-medium text-[#4a4540] mb-3">
                         Możliwe powikłania:
                       </p>
-                      <div className="space-y-3 text-sm text-[#5a5550]">
-                        <p>
-                          <span className="font-medium">Częste:</span>{" "}
-                          {makijazPermanentnyComplications.czeste.join(", ")}
-                        </p>
-                        <p>
-                          <span className="font-medium">Rzadkie:</span>{" "}
-                          {makijazPermanentnyComplications.rzadkie.join(", ")}
-                        </p>
-                        <p>
-                          <span className="font-medium">Bardzo rzadkie:</span>{" "}
-                          {makijazPermanentnyComplications.bardzoRzadkie.join(
-                            ", ",
-                          )}
-                        </p>
+                      <div className="space-y-4 text-sm text-[#5a5550]">
+                        <div>
+                          <p className="font-medium mb-2">Częste:</p>
+                          <ul className="space-y-1 pl-2">
+                            {makijazPermanentnyComplications.czeste.map(
+                              (item, index) => (
+                                <li
+                                  key={index}
+                                  className="flex items-start gap-2"
+                                >
+                                  <span className="text-[#C4B5A0] mt-0.5">
+                                    •
+                                  </span>
+                                  <span>{item}</span>
+                                </li>
+                              ),
+                            )}
+                          </ul>
+                        </div>
+                        <div>
+                          <p className="font-medium mb-2">Rzadkie:</p>
+                          <ul className="space-y-1 pl-2">
+                            {makijazPermanentnyComplications.rzadkie.map(
+                              (item, index) => (
+                                <li
+                                  key={index}
+                                  className="flex items-start gap-2"
+                                >
+                                  <span className="text-[#C4B5A0] mt-0.5">
+                                    •
+                                  </span>
+                                  <span>{item}</span>
+                                </li>
+                              ),
+                            )}
+                          </ul>
+                        </div>
+                        <div>
+                          <p className="font-medium mb-2">Bardzo rzadkie:</p>
+                          <ul className="space-y-1 pl-2">
+                            {makijazPermanentnyComplications.bardzoRzadkie.map(
+                              (item, index) => (
+                                <li
+                                  key={index}
+                                  className="flex items-start gap-2"
+                                >
+                                  <span className="text-[#C4B5A0] mt-0.5">
+                                    •
+                                  </span>
+                                  <span>{item}</span>
+                                </li>
+                              ),
+                            )}
+                          </ul>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -1339,7 +1377,7 @@ export default function LipModelingForm({ onBack }: LipModelingFormProps) {
               </section>
 
               {/* Zalecenia Hyaluronic */}
-              <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg">
+              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg">
                 <div className="p-6 md:p-8">
                   <h3 className="text-2xl font-serif text-[#4a4540] mb-6 border-b border-[#d4cec4] pb-2">
                     Zobowiązania Pozabiegowe
@@ -1347,10 +1385,10 @@ export default function LipModelingForm({ onBack }: LipModelingFormProps) {
                   <p className="text-sm text-[#6b6560] mb-4">
                     Zobowiązuję się do przestrzegania następujących zaleceń:
                   </p>
-                  <ul className="space-y-2 text-[#5a5550] text-sm bg-white/50 p-4 rounded-xl border border-[#d4cec4]/30">
+                  <ul className="space-y-2 text-[#5a5550] text-sm bg-[#f8f6f3] p-6 rounded-xl border border-[#d4cec4]">
                     {makijazPermanentnyPostCare.map((instruction, index) => (
                       <li key={index} className="flex items-start gap-2">
-                        <span className="text-[#C4B5A0] font-bold">•</span>
+                        <span className="text-[#C4B5A0] mt-0.5">•</span>
                         <span
                           className={
                             instruction.startsWith("UWAGA")
@@ -1367,7 +1405,7 @@ export default function LipModelingForm({ onBack }: LipModelingFormProps) {
               </section>
 
               {/* Regulamin Salonu */}
-              <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg">
+              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg">
                 <div className="p-6 md:p-8">
                   <h3 className="text-2xl font-serif text-[#4a4540] mb-6 border-b border-[#d4cec4] pb-2">
                     Regulamin Salonu
@@ -1535,7 +1573,7 @@ export default function LipModelingForm({ onBack }: LipModelingFormProps) {
               </section>
 
               {/* Oświadczenia */}
-              <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
+              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8 border border-[#8b7355]/40">
                 <h3 className="text-2xl font-serif text-[#4a4540] mb-6 border-b border-[#d4cec4] pb-2">
                   Oświadczenia
                 </h3>
@@ -1655,7 +1693,7 @@ export default function LipModelingForm({ onBack }: LipModelingFormProps) {
                 </div>
 
                 {/* Podpis pod Zabiegiem (Nowy, obowiązkowy) */}
-                <div className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8 mt-8">
+                <div className="bg-white backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8 mt-8">
                   <h3 className="text-xl font-serif text-[#4a4540] mb-4 border-b border-[#d4cec4] pb-2">
                     Potwierdzenie Zgody na Zabieg
                   </h3>
@@ -1701,7 +1739,7 @@ export default function LipModelingForm({ onBack }: LipModelingFormProps) {
           {/* KROK 4: MARKETING */}
           {currentStep === "MARKETING" && (
             <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-              <section className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
+              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
                 <h3 className="text-2xl font-serif text-[#4a4540] mb-6 flex items-center gap-3">
                   <span className="w-8 h-8 bg-[#C4B5A0] text-[#4a4540] rounded-full flex items-center justify-center text-sm font-bold font-sans">
                     7
@@ -1713,8 +1751,8 @@ export default function LipModelingForm({ onBack }: LipModelingFormProps) {
                 </p>
 
                 {/* Zgoda na marketing */}
-                <div className="bg-white/60 backdrop-blur-sm rounded-xl shadow-sm overflow-hidden border border-[#e5e0d8] hover:shadow-md transition-shadow">
-                  <div className="p-6">
+                <div className="bg-[#f8f6f3] p-6 rounded-xl border border-[#d4cec4] text-[#5a5550] leading-relaxed space-y-4 hover:shadow-md transition-shadow">
+                  <div>
                     <h4 className="font-serif text-[#4a4540] text-lg mb-3">
                       Zgoda Marketingowa
                     </h4>
@@ -1737,8 +1775,8 @@ export default function LipModelingForm({ onBack }: LipModelingFormProps) {
                 </div>
 
                 {/* Zgoda na wizerunek */}
-                <div className="bg-white/60 backdrop-blur-sm rounded-xl shadow-sm overflow-hidden border border-[#e5e0d8] hover:shadow-md transition-shadow">
-                  <div className="p-6">
+                <div className="bg-[#f8f6f3] p-6 rounded-xl border border-[#d4cec4] text-[#5a5550] leading-relaxed space-y-4 hover:shadow-md transition-shadow">
+                  <div>
                     <h4 className="font-serif text-[#4a4540] text-lg mb-3">
                       Zgoda na Wykorzystanie Wizerunku
                     </h4>
@@ -1761,7 +1799,7 @@ export default function LipModelingForm({ onBack }: LipModelingFormProps) {
                             e.target.value,
                           )
                         }
-                        className="w-full px-4 py-2 bg-[#f8f6f3] border-b border-[#d4cec4] focus:border-[#8b7355] outline-none text-sm transition-colors text-[#4a4540]"
+                        className="w-full px-4 py-2 bg-white border-b border-[#d4cec4] focus:border-[#8b7355] outline-none text-sm transition-colors text-[#4a4540] rounded-t-lg"
                         placeholder="np. Instagram, Facebook (zostaw puste = wszystkie)"
                       />
                     </div>

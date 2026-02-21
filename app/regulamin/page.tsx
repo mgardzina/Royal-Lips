@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 
 export default function RegulaminPage() {
   return (
@@ -16,9 +17,10 @@ export default function RegulaminPage() {
             </Link>
             <Link
               href="/"
-              className="text-[#f8f6f3] hover:text-[#8b7355] transition-colors font-light text-sm tracking-wider uppercase"
+              className="flex items-center space-x-2 text-[#f8f6f3] hover:text-[#8b7355] transition-colors font-light text-sm tracking-wider uppercase"
             >
-              Powrót
+              <ArrowLeft className="w-4 h-4" />
+              <span>Powrót</span>
             </Link>
           </div>
         </div>
@@ -51,10 +53,10 @@ export default function RegulaminPage() {
               <div className="text-[#4a4540]/80 font-light leading-relaxed space-y-3">
                 <p>
                   Niniejszy Regulamin określa zasady korzystania z usług
-                  kosmetycznych i makijażu permanentnego świadczonych przez firmę
-                  Royal Lips – Joanna Wielgos, z siedzibą przy ul. Pużaka 37,
-                  38-400 Krosno, NIP: 6842237473, REGON: 180685260 (zwaną dalej
-                  „Salonem").
+                  kosmetycznych i makijażu permanentnego świadczonych przez
+                  firmę Royal Lips – Joanna Wielgos, z siedzibą przy ul. Pużaka
+                  37, 38-400 Krosno, NIP: 6842237473, REGON: 180685260 (zwaną
+                  dalej „Salonem").
                 </p>
                 <p>
                   Klientem Salonu może być każda osoba pełnoletnia. Osoby
@@ -66,8 +68,8 @@ export default function RegulaminPage() {
                   postanowień niniejszego Regulaminu.
                 </p>
                 <p>
-                  Ceny usług podane w cenniku (na stronie internetowej lub
-                  w Salonie) są cenami brutto i wyrażone są w polskich złotych.
+                  Ceny usług podane w cenniku (na stronie internetowej lub w
+                  Salonie) są cenami brutto i wyrażone są w polskich złotych.
                 </p>
               </div>
             </div>
@@ -81,9 +83,7 @@ export default function RegulaminPage() {
                 <p>Rezerwacji wizyty można dokonać:</p>
                 <ul className="list-disc list-inside space-y-1 ml-4">
                   <li>telefonicznie,</li>
-                  <li>
-                    poprzez media społecznościowe (Facebook/Instagram),
-                  </li>
+                  <li>poprzez media społecznościowe (Facebook/Instagram),</li>
                   <li>osobiście w Salonie.</li>
                 </ul>
                 <p>
@@ -92,14 +92,11 @@ export default function RegulaminPage() {
                   <strong>50% wartości zabiegu</strong>.
                 </p>
                 <p>
-                  Zadatek należy wpłacić w terminie{" "}
-                  <strong>3 dni</strong> od momentu wstępnej rezerwacji. Brak
-                  wpłaty w tym terminie skutkuje automatycznym anulowaniem
-                  rezerwacji.
+                  Zadatek należy wpłacić w terminie <strong>3 dni</strong> od
+                  momentu wstępnej rezerwacji. Brak wpłaty w tym terminie
+                  skutkuje automatycznym anulowaniem rezerwacji.
                 </p>
-                <p>
-                  Wpłaty można dokonać przelewem na konto bankowe:
-                </p>
+                <p>Wpłaty można dokonać przelewem na konto bankowe:</p>
                 <div className="bg-[#f8f6f3] p-4 rounded-xl border border-[#d4cec4]/50 my-2">
                   <p className="font-medium text-[#4a4540]">
                     76 2490 0005 0000 4600 3925 2048
@@ -144,8 +141,8 @@ export default function RegulaminPage() {
                 <p>
                   W przypadku niestawienia się na wizytę bez wcześniejszego
                   powiadomienia, zadatek przepada w całości. Salon zastrzega
-                  sobie również prawo do odmowy przyjęcia kolejnych rezerwacji od
-                  takiej osoby lub wymagania przedpłaty 100% wartości usługi.
+                  sobie również prawo do odmowy przyjęcia kolejnych rezerwacji
+                  od takiej osoby lub wymagania przedpłaty 100% wartości usługi.
                 </p>
                 <p>
                   Spóźnienie Klienta powyżej 15 minut może skutkować skróceniem
@@ -168,9 +165,7 @@ export default function RegulaminPage() {
                   informacji o stanie zdrowia (przeciwwskazaniach) zwalnia Salon
                   z odpowiedzialności za ewentualne powikłania.
                 </p>
-                <p>
-                  Bezwzględnymi przeciwwskazaniami do zabiegu są m.in.:
-                </p>
+                <p>Bezwzględnymi przeciwwskazaniami do zabiegu są m.in.:</p>
                 <ul className="list-disc list-inside space-y-1 ml-4">
                   <li>ciąża, karmienie piersią,</li>
                   <li>aktywna opryszczka,</li>
@@ -180,8 +175,8 @@ export default function RegulaminPage() {
                   <li>przyjmowanie leków rozrzedzających krew.</li>
                 </ul>
                 <p>
-                  Klientki posiadające „stary" makijaż permanentny (wykonany
-                  w innym salonie) są zobowiązane poinformować o tym fakcie przy
+                  Klientki posiadające „stary" makijaż permanentny (wykonany w
+                  innym salonie) są zobowiązane poinformować o tym fakcie przy
                   zapisie. Salon zastrzega sobie prawo do odmowy wykonania
                   pigmentacji naprawczej lub skierowania Klientki na zabieg
                   laserowego usuwania (dodatkowo płatny).
@@ -206,8 +201,8 @@ export default function RegulaminPage() {
                 </p>
                 <p>
                   Linergistka ma prawo odmówić wykonania zabiegu, jeśli
-                  oczekiwania Klientki co do kształtu lub koloru są niezgodne
-                  z estetyką, anatomią twarzy lub zasadami sztuki PMU.
+                  oczekiwania Klientki co do kształtu lub koloru są niezgodne z
+                  estetyką, anatomią twarzy lub zasadami sztuki PMU.
                 </p>
                 <p>
                   W przypadku braku akceptacji przez Klientkę proponowanego
@@ -219,8 +214,8 @@ export default function RegulaminPage() {
                   Efekt zabiegu jest kwestią indywidualną i zależy od rodzaju
                   skóry, wieku oraz przestrzegania zaleceń pozabiegowych. Salon
                   nie udziela gwarancji na trwałość makijażu (nie jest możliwe
-                  przewidzenie dokładnego czasu utrzymywania się pigmentu
-                  w skórze).
+                  przewidzenie dokładnego czasu utrzymywania się pigmentu w
+                  skórze).
                 </p>
               </div>
             </div>
@@ -233,15 +228,15 @@ export default function RegulaminPage() {
               <div className="text-[#4a4540]/80 font-light leading-relaxed space-y-3">
                 <p>
                   Pierwsza korekta (uzupełniająca) jest wliczona w cenę
-                  podstawowego zabiegu (chyba że cennik stanowi inaczej)
-                  i powinna zostać wykonana w terminie od{" "}
+                  podstawowego zabiegu (chyba że cennik stanowi inaczej) i
+                  powinna zostać wykonana w terminie od{" "}
                   <strong>4 do 8 tygodni</strong> od pierwszego zabiegu.
                 </p>
                 <p>
                   Jeżeli Klientka nie stawi się na korektę w wyznaczonym
                   terminie (do 8 tygodni) lub odwoła ją później niż 24h przed
-                  wizytą, korekta przepada. Wykonanie dopigmentowania
-                  w późniejszym terminie jest płatne dodatkowo (każdy miesiąc
+                  wizytą, korekta przepada. Wykonanie dopigmentowania w
+                  późniejszym terminie jest płatne dodatkowo (każdy miesiąc
                   zwłoki to dopłata 100 zł lub wg aktualnej wyceny).
                 </p>
                 <p>
@@ -254,7 +249,9 @@ export default function RegulaminPage() {
                     Odświeżenie makijażu po roku (tzw. „Refresh"):
                   </p>
                   <ul className="list-disc list-inside space-y-1 ml-2">
-                    <li>Do 1,5 roku od zabiegu: 50% aktualnej ceny z cennika.</li>
+                    <li>
+                      Do 1,5 roku od zabiegu: 50% aktualnej ceny z cennika.
+                    </li>
                     <li>
                       Powyżej 2 lat: 100% ceny (traktowane jako nowy zabieg).
                     </li>
@@ -287,9 +284,9 @@ export default function RegulaminPage() {
                 </p>
                 <p>
                   Ewentualne poprawki w ramach reklamacji (jeśli są uzasadnione
-                  błędami technicznymi) wykonywane są bezpłatnie w terminie do
-                  2 miesięcy od zabiegu. Wszelkie uwagi zgłaszane po upływie
-                  2 miesięcy będą traktowane jako nowe zlecenia płatne.
+                  błędami technicznymi) wykonywane są bezpłatnie w terminie do 2
+                  miesięcy od zabiegu. Wszelkie uwagi zgłaszane po upływie 2
+                  miesięcy będą traktowane jako nowe zlecenia płatne.
                 </p>
               </div>
             </div>
@@ -307,8 +304,8 @@ export default function RegulaminPage() {
                   upłynęło ponad 6 miesięcy).
                 </p>
                 <p>
-                  W sprawach nieuregulowanych niniejszym Regulaminem zastosowanie
-                  mają przepisy Kodeksu Cywilnego.
+                  W sprawach nieuregulowanych niniejszym Regulaminem
+                  zastosowanie mają przepisy Kodeksu Cywilnego.
                 </p>
                 <p>Regulamin wchodzi w życie z dniem publikacji.</p>
               </div>

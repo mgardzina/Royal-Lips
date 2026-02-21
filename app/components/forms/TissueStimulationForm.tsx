@@ -18,9 +18,6 @@ import {
   biostymulatoryComplications,
   biostymulatoryPreTreatment,
   biostymulatoryPostTreatment,
-  wolumetriaTwarzyNaturalReactions,
-  wolumetriaTwarzyComplications,
-  wolumetriaTwarzyPostCare,
   rodoInfo,
 } from "../../../types/booking";
 
@@ -295,10 +292,10 @@ export default function TissueStimulationForm({
           <div className="w-20 h-20 bg-green-900/20 rounded-full flex items-center justify-center mx-auto mb-6">
             <Check className="w-10 h-10 text-green-500" />
           </div>
-          <h2 className="text-3xl font-serif text-[#4a4540] mb-4">Dziękujemy!</h2>
-          <p className="text-[#4a4540] mb-8">
-            Twój formularz został zapisany.
-          </p>
+          <h2 className="text-3xl font-serif text-[#4a4540] mb-4">
+            Dziękujemy!
+          </h2>
+          <p className="text-[#4a4540] mb-8">Twój formularz został zapisany.</p>
           <div className="flex flex-col gap-3">
             <button
               onClick={() => {
@@ -339,25 +336,23 @@ export default function TissueStimulationForm({
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#f8f6f3] via-[#efe9e1] to-[#e8e0d5] text-[#4a4540]">
       {/* Header */}
-      <header className="bg-[#4a4540]/95 backdrop-blur-sm sticky top-0 z-50 shadow-lg">
+      <header className="bg-[#4a4540] sticky top-0 z-50 shadow-md">
         <div className="max-w-4xl mx-auto px-4 py-4 flex justify-between items-center">
-          <div className="flex items-center gap-3">
-            <h1 className="text-xl md:text-2xl font-serif text-white tracking-wider">
-              {SALON_CONFIG.name}
-            </h1>
-          </div>
+          <h1 className="text-xl md:text-2xl font-serif text-[#d4cec4] tracking-wider">
+            ROYAL LIPS
+          </h1>
           <div className="flex items-center gap-4">
             <a
-              href={`tel:${SALON_CONFIG.phone.replace(/\s/g, "")}`}
-              className="text-white/80 hover:text-white transition-colors"
+              href="tel:+48792377737"
+              className="text-[#d4cec4] hover:text-white transition-colors"
             >
               <Phone className="w-5 h-5" />
             </a>
             <a
-              href={SALON_CONFIG.instagram}
+              href="https://www.instagram.com/makijazpermanentnykrosno/"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-white/80 hover:text-white transition-colors"
+              className="text-[#d4cec4] hover:text-white transition-colors"
             >
               <Instagram className="w-5 h-5" />
             </a>
@@ -370,22 +365,26 @@ export default function TissueStimulationForm({
         <div className="mb-8">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
             <BackButton onClick={onBack} className="self-start" />
-            <div className="flex gap-2 text-xs md:text-sm font-medium text-[#C4B5A0]/60 overflow-x-auto pb-2 md:pb-0">
+            <div className="flex gap-2 text-xs md:text-sm font-medium text-[#8b7355]/60 overflow-x-auto pb-2 md:pb-0">
               <span
-                className={currentStep === "DATA" ? "text-[#C4B5A0] font-bold" : ""}
+                className={
+                  currentStep === "DATA" ? "text-[#8b7355] font-bold" : ""
+                }
               >
                 1. Dane
               </span>
               <span>→</span>
               <span
-                className={currentStep === "RODO" ? "text-[#C4B5A0] font-bold" : ""}
+                className={
+                  currentStep === "RODO" ? "text-[#8b7355] font-bold" : ""
+                }
               >
                 2. RODO
               </span>
               <span>→</span>
               <span
                 className={
-                  currentStep === "RODO2" ? "text-[#C4B5A0] font-bold" : ""
+                  currentStep === "RODO2" ? "text-[#8b7355] font-bold" : ""
                 }
               >
                 3. RODO 2
@@ -393,7 +392,7 @@ export default function TissueStimulationForm({
               <span>→</span>
               <span
                 className={
-                  currentStep === "TREATMENT" ? "text-[#C4B5A0] font-bold" : ""
+                  currentStep === "TREATMENT" ? "text-[#8b7355] font-bold" : ""
                 }
               >
                 4. Zabieg
@@ -401,7 +400,7 @@ export default function TissueStimulationForm({
               <span>→</span>
               <span
                 className={
-                  currentStep === "MARKETING" ? "text-[#C4B5A0] font-bold" : ""
+                  currentStep === "MARKETING" ? "text-[#8b7355] font-bold" : ""
                 }
               >
                 5. Zgody
@@ -424,7 +423,7 @@ export default function TissueStimulationForm({
           {currentStep === "DATA" && (
             <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
               {/* Dane osobowe */}
-              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
+              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8 border border-[#8b7355]/40">
                 <h2 className="text-2xl font-serif text-[#4a4540] mb-6 flex items-center gap-3">
                   <span className="w-8 h-8 bg-[#4a4540] text-white rounded-full flex items-center justify-center text-sm font-sans">
                     1
@@ -579,7 +578,7 @@ export default function TissueStimulationForm({
               </section>
 
               {/* Informacja o Zabiegu */}
-              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
+              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8 border border-[#8b7355]/40">
                 <h2 className="text-2xl font-serif text-[#4a4540] mb-6 flex items-center gap-3">
                   <span className="w-8 h-8 bg-[#4a4540] text-white rounded-full flex items-center justify-center text-sm font-sans">
                     2
@@ -660,7 +659,7 @@ export default function TissueStimulationForm({
               </section>
 
               {/* Sekcja 3: Obszar Zabiegu */}
-              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
+              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8 border border-[#8b7355]/40">
                 <h2 className="text-2xl font-serif text-[#4a4540] mb-6 flex items-center gap-3">
                   <span className="w-8 h-8 bg-[#4a4540] text-white rounded-full flex items-center justify-center text-sm font-sans">
                     3
@@ -695,7 +694,7 @@ export default function TissueStimulationForm({
               </section>
 
               {/* Wywiad Medyczny Hyaluronic */}
-              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
+              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8 border border-[#8b7355]/40">
                 <h2 className="text-2xl font-serif text-[#4a4540] mb-6 flex items-center gap-3">
                   <span className="w-8 h-8 bg-[#4a4540] text-white rounded-full flex items-center justify-center text-sm font-sans">
                     4
@@ -959,7 +958,7 @@ export default function TissueStimulationForm({
               </section>
 
               {/* Skutki Uboczne i Powikłania */}
-              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
+              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8 border border-[#8b7355]/40">
                 <h2 className="text-2xl font-serif text-[#4a4540] mb-6 flex items-center gap-3">
                   <span className="w-8 h-8 bg-[#4a4540] text-white rounded-full flex items-center justify-center text-sm font-sans">
                     5
@@ -1046,7 +1045,7 @@ export default function TissueStimulationForm({
               </section>
 
               {/* Zalecenia Pozabiegowe */}
-              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
+              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8 border border-[#8b7355]/40">
                 <h2 className="text-2xl font-serif text-[#4a4540] mb-6 flex items-center gap-3">
                   <span className="w-8 h-8 bg-[#4a4540] text-white rounded-full flex items-center justify-center text-sm font-sans">
                     7
@@ -1282,7 +1281,7 @@ export default function TissueStimulationForm({
               </section>
 
               {/* Oświadczenia */}
-              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
+              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8 border border-[#8b7355]/40">
                 <h3 className="text-2xl font-serif text-[#4a4540] mb-6 border-b border-[#d4cec4] pb-2">
                   Oświadczenia
                 </h3>
@@ -1461,7 +1460,7 @@ export default function TissueStimulationForm({
           {/* KROK 4: MARKETING */}
           {currentStep === "MARKETING" && (
             <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8">
+              <section className="bg-white backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8 border border-[#8b7355]/40">
                 <h3 className="text-2xl font-serif text-[#4a4540] mb-6 flex items-center gap-3">
                   <span className="w-8 h-8 bg-[#4a4540] text-white rounded-full flex items-center justify-center text-sm font-sans">
                     8
