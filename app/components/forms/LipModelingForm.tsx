@@ -9,7 +9,12 @@ import {
   CheckCircle2,
   X,
 } from "lucide-react";
-import { isAdult, getTodayDate } from "@/lib/dateUtils";
+import {
+  isAdult,
+  getTodayDate,
+  validateBirthDate,
+  formatBirthDate,
+} from "@/lib/dateUtils";
 import SignaturePad from "@/components/SignaturePad";
 import SignatureVerificationModal from "@/components/SignatureVerificationModal";
 import { AuditLogData } from "@/app/actions/otp";
@@ -155,26 +160,11 @@ export default function LipModelingForm({ onBack }: LipModelingFormProps) {
     setFormData((prev) => ({ ...prev, telefon: formatted }));
   };
 
-  const formatBirthDate = (value: string): string => {
-    const digits = value.replace(/\D/g, "").slice(0, 8);
-    if (digits.length <= 2) return digits;
-    if (digits.length <= 4) return `${digits.slice(0, 2)}.${digits.slice(2)}`;
-    return `${digits.slice(0, 2)}.${digits.slice(2, 4)}.${digits.slice(4)}`;
-  };
-
   const handleBirthDateChange = (value: string) => {
     const formatted = formatBirthDate(value);
     setFormData((prev) => ({ ...prev, dataUrodzenia: formatted }));
-
-    // Validate age if full date is entered
     if (formatted.length === 10) {
-      if (!isAdult(formatted)) {
-        setBirthDateError(
-          "Musisz być osobą pełnoletnią, aby wypełnić formularz.",
-        );
-      } else {
-        setBirthDateError(null);
-      }
+      setBirthDateError(validateBirthDate(formatted));
     } else {
       setBirthDateError(null);
     }

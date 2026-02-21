@@ -1,7 +1,11 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { Phone, Check, ArrowLeft, Instagram, Mail, Shield } from "lucide-react";
-import { getTodayDate, formatBirthDate, calculateAge } from "@/lib/dateUtils";
+import {
+  getTodayDate,
+  formatBirthDate,
+  validateBirthDate,
+} from "@/lib/dateUtils";
 import SignaturePad from "@/components/SignaturePad";
 import SignatureVerificationModal from "@/components/SignatureVerificationModal";
 import { AuditLogData } from "@/app/actions/otp";
@@ -84,6 +88,7 @@ export default function TissueStimulationForm({
 }: TissueStimulationFormProps) {
   const [formData, setFormData] = useState<ConsentFormData>(initialFormData);
   const [email, setEmail] = useState("");
+  const [birthDateError, setBirthDateError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [currentContraindicationIndex, setCurrentContraindicationIndex] =
@@ -209,9 +214,15 @@ export default function TissueStimulationForm({
     setFormData((prev) => ({ ...prev, telefon: formatted }));
   };
 
-  // Oblicz wiek na podstawie daty urodzenia
-
-  const isAgeValid = calculateAge(formData.dataUrodzenia) >= 16;
+  const handleBirthDateChange = (value: string) => {
+    const formatted = formatBirthDate(value);
+    setFormData((prev) => ({ ...prev, dataUrodzenia: formatted }));
+    if (formatted.length === 10) {
+      setBirthDateError(validateBirthDate(formatted));
+    } else {
+      setBirthDateError(null);
+    }
+  };
 
   const handleContraindicationChange = (key: string, value: boolean) => {
     setFormData((prev) => ({
@@ -330,7 +341,7 @@ export default function TissueStimulationForm({
     formData.telefon.replace(/\D/g, "").length === 9 &&
     formData.miejscowoscData &&
     formData.dataUrodzenia &&
-    isAgeValid &&
+    !birthDateError &&
     isWizardComplete;
 
   return (
@@ -535,24 +546,17 @@ export default function TissueStimulationForm({
                       inputMode="numeric"
                       required
                       value={formData.dataUrodzenia}
-                      onChange={(e) =>
-                        handleInputChange(
-                          "dataUrodzenia",
-                          formatBirthDate(e.target.value),
-                        )
-                      }
-                      placeholder="dd.mm.rrrr"
+                      onChange={(e) => handleBirthDateChange(e.target.value)}
+                      placeholder="DD.MM.RRRR"
                       maxLength={10}
                       className={`w-full px-4 py-3 bg-white border rounded-xl focus:border-[#C4B5A0] focus:ring-2 focus:ring-[#C4B5A0]/20 text-[#4a4540] placeholder-[#8b7355]/40 outline-none transition-all ${
-                        formData.dataUrodzenia && !isAgeValid
-                          ? "border-red-500"
-                          : "border-[#d4cec4]"
+                        birthDateError ? "border-red-500" : "border-[#d4cec4]"
                       }`}
                     />
-                    {formData.dataUrodzenia && !isAgeValid && (
-                      <p className="text-red-400 text-xs mt-1">
-                        Musisz mieć ukończone 16 lat
-                      </p>
+                    {birthDateError && (
+                      <div className="mt-2 flex items-center gap-2 text-red-600 text-sm animate-in fade-in slide-in-from-top-1">
+                        <span>{birthDateError}</span>
+                      </div>
                     )}
                   </div>
                   <div>
