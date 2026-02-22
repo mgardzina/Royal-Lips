@@ -1,40 +1,42 @@
-
 import { NextResponse } from "next/server";
 import { normalizePhoneNumber, generateOTPCode, sendSMS, createOTPMessage } from "@/lib/smsapi";
 import { prisma } from "@/lib/prisma";
 import { SALON_CONFIG } from "@/app/config/salon";
+import { compare } from "bcryptjs";
 
 export async function POST(req: Request) {
   try {
-    const { phone } = await req.json();
+    const { email, password } = await req.json();
 
-    if (!phone) {
+    if (!email || !password) {
       return NextResponse.json(
-        { error: "Numer telefonu jest wymagany" },
+        { error: "Email i hasło są wymagane" },
         { status: 400 }
       );
     }
 
-    const normalizedPhone = normalizePhoneNumber(phone);
-
-    if (!normalizedPhone) {
-      return NextResponse.json(
-        { error: "Nieprawidłowy format numeru telefonu" },
-        { status: 400 }
-      );
-    }
-
-    // Check if phone exists in AdminUser table
-    const admin = await prisma.adminUser.findFirst({
-      where: { phoneNumber: normalizedPhone },
+    // Check if user exists in AdminUser table
+    const admin = await prisma.adminUser.findUnique({
+      where: { email },
     });
 
     if (!admin) {
       return NextResponse.json(
-        { error: "Ten numer nie ma uprawnień administratora" },
+        { error: "Nieprawidłowy email lub hasło" },
         { status: 403 }
       );
     }
+
+    // Verify password
+    const isPasswordValid = await compare(password, admin.passwordHash);
+    if (!isPasswordValid) {
+      return NextResponse.json(
+        { error: "Nieprawidłowy email lub hasło" },
+        { status: 403 }
+      );
+    }
+
+    const normalizedPhone = admin.phoneNumber;
 
     // Generate OTP
     const code = generateOTPCode();

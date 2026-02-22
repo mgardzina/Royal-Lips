@@ -42,9 +42,11 @@ export default function SignaturePad({
 
   return (
     <div className="space-y-4">
-      <label className="block text-sm text-[#6b6560] font-medium uppercase tracking-wide">
-        {label} {required && "*"}
-      </label>
+      {label && (
+        <label className="block text-sm text-[#6b6560] font-medium uppercase tracking-wide">
+          {label} {required && "*"}
+        </label>
+      )}
 
       <div className="relative group">
         <div
@@ -56,7 +58,7 @@ export default function SignaturePad({
             <SignatureCanvas
               ref={sigCanvas}
               canvasProps={{
-                className: "w-full h-full touch-none block bg-white",
+                className: "w-full h-full touch-none block bg-white invert",
               }}
               backgroundColor="white"
               penColor="black"

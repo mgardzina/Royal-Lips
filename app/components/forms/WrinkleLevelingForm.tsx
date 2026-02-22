@@ -1421,12 +1421,8 @@ export default function FacialVolumetryForm({
                     {rodoInfo.consentText}
                   </div>
                   <div className="mt-8">
-                    <p className="text-sm text-[#6b6560] mb-4 font-medium uppercase tracking-wide">
-                      Podpis Klienta (Zgoda na przetwarzanie danych):
-                    </p>
-                    <div className="bg-white rounded-xl overflow-hidden min-h-[200px] border border-[#d4cec4] p-1">
-                      <SignaturePad
-                        label=""
+                    <SignaturePad
+                        label="Podpis Klienta (Zgoda na przetwarzanie danych):"
                         value={formData.podpisRodo || ""}
                         onChange={(sig) => {
                           handleInputChange("podpisRodo", sig);
@@ -1435,9 +1431,7 @@ export default function FacialVolumetryForm({
                           }
                         }}
                         date={formData.miejscowoscData}
-                        hasBorder={false}
                       />
-                    </div>
                   </div>
                 </div>
               </section>
@@ -1474,20 +1468,14 @@ export default function FacialVolumetryForm({
                     {rodoInfo.clauseText}
                   </div>
                   <div className="mt-8">
-                    <p className="text-sm text-[#6b6560] mb-4 font-medium uppercase tracking-wide">
-                      Podpis Klienta (Klauzula informacyjna):
-                    </p>
-                    <div className="bg-white rounded-xl overflow-hidden min-h-[200px] border border-[#d4cec4] p-1">
-                      <SignaturePad
-                        label=""
+                    <SignaturePad
+                        label="Podpis Klienta (Klauzula informacyjna):"
                         value={formData.podpisRodo2 || ""}
                         onChange={(sig) => {
                           handleInputChange("podpisRodo2", sig);
                         }}
                         date={formData.miejscowoscData}
-                        hasBorder={false}
                       />
-                    </div>
                     <p className="text-xs text-[#8b8580] mt-3 italic">
                       Złożenie podpisu jest równoznaczne z zapoznaniem się z
                       powyższą klauzulą informacyjną RODO.

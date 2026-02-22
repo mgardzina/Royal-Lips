@@ -1,8 +1,7 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { prisma } from "./prisma";
-import { normalizePhoneNumber } from "./smsapi";
-import { SALON_CONFIG } from "@/app/config/salon";
+import { compare } from "bcryptjs";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   trustHost: true,
@@ -13,35 +12,38 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     Credentials({
       name: "credentials",
       credentials: {
-        phone: { label: "Telefon", type: "text" },
+        email: { label: "Email", type: "text" },
+        password: { label: "Hasło", type: "password" },
         code: { label: "Kod SMS", type: "text" },
       },
       async authorize(credentials) {
-        if (!credentials?.phone || !credentials?.code) {
+        if (!credentials?.email || !credentials?.password || !credentials?.code) {
           return null;
         }
 
-        const phone = credentials.phone as string;
+        const email = credentials.email as string;
+        const password = credentials.password as string;
         const code = credentials.code as string;
-        const normalizedPhone = normalizePhoneNumber(phone);
 
-        if (!normalizedPhone) {
-            return null;
-        }
-
-        // 1. Check if it's an allowed admin phone in DB
-        const admin = await prisma.adminUser.findFirst({
-          where: { phoneNumber: normalizedPhone },
+        // 1. Check if it's an allowed admin email in DB
+        const admin = await prisma.adminUser.findUnique({
+          where: { email },
         });
 
         if (!admin) {
           return null;
         }
 
-        // 2. Verify OTP from DB
+        // 2. Verify password
+        const isPasswordValid = await compare(password, admin.passwordHash);
+        if (!isPasswordValid) {
+          return null;
+        }
+
+        // 3. Verify OTP from DB
         const verification = await prisma.otpVerification.findFirst({
           where: {
-            phoneNumber: normalizedPhone,
+            phoneNumber: admin.phoneNumber,
             code: code,
             verified: false,
             expiresAt: { gt: new Date() },
