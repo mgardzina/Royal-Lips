@@ -94,6 +94,23 @@ const FORM_TYPE_TITLES: Record<string, string> = {
   EYEBROW_LAMINATION: "KARTA ZGODY NA ZABIEG LAMINACJI BRWI",
 };
 
+const FORM_TYPE_LABELS: Record<string, string> = {
+  HYALURONIC: "Kwas hialuronowy",
+  LIP_AUGMENTATION: "Modelowanie ust",
+  FACIAL_VOLUMETRY: "Wolumetria twarzy",
+  NEEDLE_MESOTHERAPY: "Mezoterapia igłowa",
+  INJECTION_LIPOLYSIS: "Lipoliza iniekcyjna",
+  PERMANENT_MAKEUP: "Makijaż permanentny",
+  LASER_HAIR_REMOVAL: "Depilacja laserowa",
+  LASER_TATTOO_REMOVAL: "Laserowe usuwanie tatuażu",
+  WRINKLE_REDUCTION: "Redukcja zmarszczek",
+  EYELID_LIFT: "Lifting powiek",
+  TISSUE_STIMULATION: "Stymulacja tkankowa",
+  EYEBROW_TINTING: "Henna brwi",
+  EYELASH_EXTENSION: "Przedłużanie rzęs",
+  EYEBROW_LAMINATION: "Laminacja brwi",
+};
+
 interface FormContent {
   title: string;
   naturalReactions: string[];
@@ -664,9 +681,17 @@ function ConsentFormPdf({ form }: { form: any }) {
             <View style={styles.fieldRow}>
               <Text style={styles.fieldLabel}>Typ zabiegu:</Text>
               <Text style={styles.fieldValue}>
-                {form.numerZabiegu || "---"}
+                {FORM_TYPE_LABELS[form.type] || form.type || "---"}
               </Text>
             </View>
+            {form.numerZabiegu && (
+              <View style={styles.fieldRow}>
+                <Text style={styles.fieldLabel}>Numer zabiegu:</Text>
+                <Text style={styles.fieldValue}>
+                  {form.numerZabiegu}
+                </Text>
+              </View>
+            )}
           </View>
         </View>
 
@@ -741,9 +766,18 @@ function ConsentFormPdf({ form }: { form: any }) {
           </>
         )}
 
-        {/* Contraindications */}
+        <PageFooter salonName={SALON_CONFIG.fullName} />
+      </Page>
+
+      {/* STRONA 2: Wywiad Medyczny */}
+      <Page size="A4" style={styles.page}>
+        <View style={styles.miniHeader}>
+          <MiniSalonLogo />
+          <Text style={styles.miniTitle}>Wywiad Medyczny</Text>
+        </View>
+
         <Text style={styles.sectionTitle}>
-          Wywiad Medyczny — Przeciwwskazania
+          Przeciwwskazania do Wykonania Zabiegu
         </Text>
         <View style={styles.contrTable}>
           {Object.entries(content.contraindications).map(
@@ -821,7 +855,7 @@ function ConsentFormPdf({ form }: { form: any }) {
         <PageFooter salonName={SALON_CONFIG.fullName} />
       </Page>
 
-      {/* STRONA 2: Skutki, Zalecenia, RODO */}
+      {/* STRONA 3: Skutki, Zalecenia */}
       <Page size="A4" style={styles.page}>
         {/* Mini header */}
         <View style={styles.miniHeader}>
@@ -864,6 +898,16 @@ function ConsentFormPdf({ form }: { form: any }) {
         <Text style={styles.sectionTitle}>Zalecenia Pozabiegowe</Text>
         <BulletList items={content.postCare} />
 
+        <PageFooter salonName={SALON_CONFIG.fullName} />
+      </Page>
+
+      {/* STRONA 3: RODO */}
+      <Page size="A4" style={styles.page}>
+        <View style={styles.miniHeader}>
+          <MiniSalonLogo />
+          <Text style={styles.miniTitle}>Ochrona Danych Osobowych</Text>
+        </View>
+
         {/* RODO Consent */}
         <Text style={styles.sectionTitle}>{rodoInfo.consentTitle}</Text>
         <View style={styles.rodoBox}>
@@ -887,7 +931,7 @@ function ConsentFormPdf({ form }: { form: any }) {
         <PageFooter salonName={SALON_CONFIG.fullName} />
       </Page>
 
-      {/* STRONA 3: Zgody i Podpisy */}
+      {/* STRONA 4: Zgody i Podpisy */}
       <Page size="A4" style={styles.page}>
         {/* Mini header */}
         <View style={styles.miniHeader}>
