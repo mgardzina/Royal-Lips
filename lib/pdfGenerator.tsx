@@ -210,16 +210,16 @@ function FaceZoneDiagram({
     <View
       style={{
         position: "relative",
-        width: 220,
-        height: 220,
+        width: 320,
+        height: 320,
         alignSelf: "center",
-        marginTop: 6,
-        marginBottom: 8,
+        marginTop: 16,
+        marginBottom: 12,
       }}
     >
       <Image
         src={FACE_CHART_IMAGE}
-        style={{ width: 220, height: 220, borderRadius: 4 }}
+        style={{ width: 320, height: 320, borderRadius: 4 }}
       />
       <Svg
         viewBox="0 0 980 980"
@@ -227,8 +227,8 @@ function FaceZoneDiagram({
           position: "absolute",
           top: 0,
           left: 0,
-          width: 220,
-          height: 220,
+          width: 320,
+          height: 320,
         }}
       >
         {zones.map((zone) => {
@@ -237,9 +237,9 @@ function FaceZoneDiagram({
             <SvgPath
               key={zone.id}
               d={zone.d}
-              fill={isSelected ? "rgba(139, 115, 85, 0.45)" : "none"}
-              stroke={isSelected ? "#6b5a3e" : "rgba(139, 115, 85, 0.15)"}
-              strokeWidth={isSelected ? 4 : 1}
+              fill={isSelected ? "rgba(139, 115, 85, 0.5)" : "rgba(139, 115, 85, 0.15)"}
+              stroke={isSelected ? "#8b7355" : "rgba(139, 115, 85, 0.3)"}
+              strokeWidth={isSelected ? 3 : 1}
             />
           );
         })}
