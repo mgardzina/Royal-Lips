@@ -14,7 +14,13 @@ enum FormType {
   INJECTION_LIPOLYSIS
   PERMANENT_MAKEUP
   LASER_HAIR_REMOVAL
+  LASER_TATTOO_REMOVAL
   WRINKLE_REDUCTION
+  EYELID_LIFT
+  TISSUE_STIMULATION
+  EYEBROW_TINTING
+  EYELASH_EXTENSION
+  EYEBROW_LAMINATION
 
   // Deprecated (keep for backward compatibility)
   HYALURONIC
@@ -104,6 +110,12 @@ model ConsentForm {
   zastrzeniaKlienta           String?
   numerZabiegu                String?
   osobaPrzeprowadzajacaZabieg String?
+
+  // Seria zabiegowa
+  planowanaIloscZabiegow String?
+  odstepMiedzyZabiegami  String?
+  kolejneZabiegiOdstepy  String?
+  iloscProduktu          String?
 
   // Digital Signature & Audit Log (Art. 78¹ KC - Forma Dokumentowa)
   signatureStatus     String?   @default("PENDING") // PENDING, VERIFIED, SIGNED

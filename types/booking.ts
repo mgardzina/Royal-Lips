@@ -6,8 +6,12 @@ export type FormType =
   | 'PERMANENT_MAKEUP'
   | 'LASER_HAIR_REMOVAL'
   | 'LASER_TATTOO_REMOVAL'
+  | 'WRINKLE_REDUCTION'
+  | 'EYELID_LIFT'
   | 'TISSUE_STIMULATION'
-  | 'WRINKLE_REDUCTION';
+  | 'EYEBROW_TINTING'
+  | 'EYELASH_EXTENSION'
+  | 'EYEBROW_LAMINATION';
 
 export interface ConsentFormData {
   type: FormType;
@@ -128,14 +132,16 @@ export const mezoterapiaIglowaContraindications: Record<
 };
 
 // RODO Information - Dane administratora
+import { SALON_CONFIG } from "@/app/config/salon";
+
 export const rodoInfo = {
-  administrator: 'Joanna Wielgos',
-  firmaNazwa: 'Royal Lips Makijaż Permanentny - Joanna Wielgos',
-  nip: '6842237473',
-  regon: '180685260',
-  adres: 'ul. Pużaka 37, 38-400 Krosno',
+  administrator: SALON_CONFIG.owner,
+  firmaNazwa: SALON_CONFIG.fullName,
+  nip: SALON_CONFIG.nip,
+  regon: SALON_CONFIG.regon,
+  adres: `${SALON_CONFIG.address}, ${SALON_CONFIG.zipCode} ${SALON_CONFIG.city}`,
   consentTitle: 'ZGODA NA PRZETWARZANIE DANYCH OSOBOWYCH RODO',
-  consentText: `Ja, niżej podpisana, zgodnie z art. 6 ust 1 pkt a w zw. z 7 ust. 2 Rozporządzenia Parlamentu Europejskiego i Rady Unii Europejskiej z dnia 27 kwietnia 2016 r. 2016/679 (Dz.U.UE.L.2018.127.2 t.j.) w sprawie ochrony osób fizycznych w związku z przetwarzaniem danych osobowych i w sprawie swobodnego przepływu takich danych oraz uchylenia dyrektywy 95/46/WE (ogólne rozporządzenie o ochronie danych), zwane dalej RODO, wyrażam dobrowolną zgodę na przetwarzanie przez Administratora – Malwinę Zięba, prowadzącą działalność gospodarczą pod firmą: PowderBrows Academy Malwina Zięba, ul. Siedlanowskiego 3/12 , 37 – 450 Stalowa Wola, NIP: 8652314272, REGON: 383931003, moich danych osobowych w postaci:
+  consentText: `Ja, niżej podpisana, zgodnie z art. 6 ust 1 pkt a w zw. z 7 ust. 2 Rozporządzenia Parlamentu Europejskiego i Rady Unii Europejskiej z dnia 27 kwietnia 2016 r. 2016/679 (Dz.U.UE.L.2018.127.2 t.j.) w sprawie ochrony osób fizycznych w związku z przetwarzaniem danych osobowych i w sprawie swobodnego przepływu takich danych oraz uchylenia dyrektywy 95/46/WE (ogólne rozporządzenie o ochronie danych), zwane dalej RODO, wyrażam dobrowolną zgodę na przetwarzanie przez Administratora – ${SALON_CONFIG.owner}, prowadzącą działalność gospodarczą pod firmą: ${SALON_CONFIG.fullName}, ${SALON_CONFIG.address}, ${SALON_CONFIG.zipCode} ${SALON_CONFIG.city}, NIP: ${SALON_CONFIG.nip}, REGON: ${SALON_CONFIG.regon}, moich danych osobowych w postaci:
 ● imienia i nazwiska
 ● numeru telefonu
 ● adresu e-mail
@@ -161,8 +167,8 @@ l) w przypadku uznania, że dane osobowe są przetwarzane nieprawidłowo lub nie
 
 Zgodnie z art. 13 ogólnego rozporządzenia o ochronie danych osobowych Dz. Urz. UE L 119 z 04.05.2016 informuję, iż:
 
-1) administratorem Pani/Pana danych osobowych jest PowderBrows Academy Malwina Zięba,
-2) Pani/Pana dane osobowe przetwarzane będą w celu korzystania z usług hotelowych/kosmetycznych - na podstawie Art. 6 ust. 1 lit. b ogólnego rozporządzenia o ochronie danych osobowych z dnia 27 kwietnia 2016 r.
+1) administratorem Pani/Pana danych osobowych jest ${SALON_CONFIG.fullName},
+2) Pani/Pana dane osobowe przetwarzane będą w celu korzystania z usług kosmetycznych - na podstawie Art. 6 ust. 1 lit. b ogólnego rozporządzenia o ochronie danych osobowych z dnia 27 kwietnia 2016 r.
 3) odbiorcami Pani/Pana danych osobowych będą wyłącznie podmioty uprawnione do uzyskania danych osobowych na podstawie przepisów prawa oraz podmioty uczestniczące w realizacji usług
 4) Pani/Pana dane osobowe przechowywane będą przez okres 10 lat
 5) posiada Pani/Pan prawo do żądania od administratora dostępu do danych osobowych, prawo do ich sprostowania, usunięcia lub ograniczenia przetwarzania oraz prawo do przenoszenia danych
@@ -1443,6 +1449,10 @@ export const contraindicationsByFormType: Record<FormType, Record<string, string
   LASER_HAIR_REMOVAL: depilacjaLaserowaContraindications,
   LASER_TATTOO_REMOVAL: laseroweUsuwanieContraindications,
   WRINKLE_REDUCTION: wolumetriaTwarzyContraindications,
+  EYELID_LIFT: hyaluronicContraindications,
+  EYEBROW_TINTING: pmuContraindications,
+  EYELASH_EXTENSION: pmuContraindications,
+  EYEBROW_LAMINATION: pmuContraindications,
 };
 
 // Zachowanie kompatybilności wstecznej (dla starych importów)
