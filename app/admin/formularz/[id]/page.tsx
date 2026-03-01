@@ -16,6 +16,7 @@ import {
   Pencil,
   Save,
   XCircle,
+  Download,
 } from "lucide-react";
 import { contraindicationsByFormType, FormType } from "@/types/booking";
 import AnatomyFaceSelector from "@/app/components/AnatomyFaceSelector";
@@ -104,6 +105,7 @@ export default function FormDetailsPage() {
   const [isDeleting, setIsDeleting] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [isDownloadingPdf, setIsDownloadingPdf] = useState(false);
   const [editedForm, setEditedForm] = useState<Partial<ConsentFormFull>>({});
   const [activeTab, setActiveTab] = useState<
     "details" | "contraindications" | "consents"
@@ -214,6 +216,30 @@ export default function FormDetailsPage() {
     setIsEditing(false);
   };
 
+  const handleDownloadPdf = async () => {
+    if (!form) return;
+    setIsDownloadingPdf(true);
+    try {
+      const res = await fetch(`/api/consent-forms/${form.id}/pdf`);
+      if (!res.ok) throw new Error("Błąd pobierania PDF");
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      const date = new Date(form.createdAt).toLocaleDateString("pl-PL").replace(/\./g, "-");
+      a.download = `Karta_zgody_${form.imieNazwisko.replace(/\s+/g, "_")}_${date}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error("Błąd pobierania PDF:", err);
+      alert("Nie udało się pobrać PDF");
+    } finally {
+      setIsDownloadingPdf(false);
+    }
+  };
+
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("pl-PL", {
       day: "2-digit",
@@ -275,6 +301,16 @@ export default function FormDetailsPage() {
               </>
             ) : (
               <>
+                <button
+                  onClick={handleDownloadPdf}
+                  disabled={isDownloadingPdf}
+                  className="flex items-center gap-2 text-[#d4cec4] hover:text-white transition-colors"
+                >
+                  <Download className={`w-5 h-5 ${isDownloadingPdf ? "animate-bounce" : ""}`} />
+                  <span className="hidden md:inline">
+                    {isDownloadingPdf ? "Generowanie..." : "PDF"}
+                  </span>
+                </button>
                 <button
                   onClick={() => setIsEditing(true)}
                   className="flex items-center gap-2 text-white/80 hover:text-white transition-colors"
