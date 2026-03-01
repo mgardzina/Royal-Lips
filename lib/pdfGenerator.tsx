@@ -8,7 +8,10 @@ import {
   Font,
   StyleSheet,
   renderToBuffer,
+  Svg,
+  Path as SvgPath,
 } from "@react-pdf/renderer";
+import nodePath from "path";
 import { SALON_CONFIG } from "@/app/config/salon";
 import {
   type ContraindicationWithFollowUp,
@@ -44,6 +47,8 @@ import {
   biostymulatoryPostTreatment,
 } from "@/types/booking";
 import { ZONES as FACE_ZONES } from "@/types/face-zones";
+import { ZONES as TISSUE_ZONES } from "@/types/face-zones-tissue";
+import { ZONES as PMU_ZONES } from "@/types/face-zone-pernament";
 import { BODY_ZONES } from "@/types/body-zones";
 
 // Register Roboto font for Polish character support
@@ -164,6 +169,83 @@ function getZoneNames(obszarZabiegu: string | null | undefined): string[] {
     .filter(Boolean)
     .map((id) => faceZoneMap.get(id) || bodyZoneMap.get(id) || id)
     .filter(Boolean);
+}
+
+// Face diagram - form types that use it
+const FACE_DIAGRAM_TYPES = new Set([
+  "LIP_AUGMENTATION",
+  "FACIAL_VOLUMETRY",
+  "WRINKLE_REDUCTION",
+  "TISSUE_STIMULATION",
+  "PERMANENT_MAKEUP",
+  "LASER_TATTOO_REMOVAL",
+  "HYALURONIC",
+]);
+
+function getZonesForType(type: string) {
+  switch (type) {
+    case "TISSUE_STIMULATION":
+      return TISSUE_ZONES;
+    case "PERMANENT_MAKEUP":
+      return PMU_ZONES;
+    default:
+      return FACE_ZONES;
+  }
+}
+
+const FACE_CHART_IMAGE = nodePath.join(
+  process.cwd(),
+  "public",
+  "women-face-chart.jpg"
+);
+
+function FaceZoneDiagram({
+  zones,
+  selectedIds,
+}: {
+  zones: { id: string; name: string; d: string }[];
+  selectedIds: string[];
+}) {
+  return (
+    <View
+      style={{
+        position: "relative",
+        width: 220,
+        height: 220,
+        alignSelf: "center",
+        marginTop: 6,
+        marginBottom: 8,
+      }}
+    >
+      <Image
+        src={FACE_CHART_IMAGE}
+        style={{ width: 220, height: 220, borderRadius: 4 }}
+      />
+      <Svg
+        viewBox="0 0 980 980"
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: 220,
+          height: 220,
+        }}
+      >
+        {zones.map((zone) => {
+          const isSelected = selectedIds.includes(zone.id);
+          return (
+            <SvgPath
+              key={zone.id}
+              d={zone.d}
+              fill={isSelected ? "rgba(139, 115, 85, 0.45)" : "none"}
+              stroke={isSelected ? "#6b5a3e" : "rgba(139, 115, 85, 0.15)"}
+              strokeWidth={isSelected ? 4 : 1}
+            />
+          );
+        })}
+      </Svg>
+    </View>
+  );
 }
 
 // PDF Styles
@@ -763,6 +845,15 @@ function ConsentFormPdf({ form }: { form: any }) {
                 </View>
               ))}
             </View>
+            {FACE_DIAGRAM_TYPES.has(form.type) && (
+              <FaceZoneDiagram
+                zones={getZonesForType(form.type)}
+                selectedIds={(form.obszarZabiegu || "")
+                  .split(",")
+                  .map((s: string) => s.trim())
+                  .filter(Boolean)}
+              />
+            )}
           </>
         )}
 
