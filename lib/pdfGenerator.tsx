@@ -333,16 +333,16 @@ function BodyZoneDiagram({
     <View
       style={{
         position: "relative",
-        width: 360,
-        height: 509,
+        width: 240,
+        height: 340,
         alignSelf: "center",
-        marginTop: 16,
-        marginBottom: 12,
+        marginTop: 8,
+        marginBottom: 8,
       }}
     >
       <Image
         src={BODY_CHART_IMAGE}
-        style={{ width: 360, height: 509, borderRadius: 4 }}
+        style={{ width: 240, height: 340, borderRadius: 4 }}
       />
       <Svg
         viewBox="0 0 724 1024"
@@ -350,8 +350,8 @@ function BodyZoneDiagram({
           position: "absolute",
           top: 0,
           left: 0,
-          width: 360,
-          height: 509,
+          width: 240,
+          height: 340,
         }}
       >
         {zones.map((zone) => {
