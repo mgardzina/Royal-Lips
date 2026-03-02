@@ -1083,26 +1083,18 @@ export default function InjectionLipolysisForm({
                     {rodoInfo.consentText}
                   </div>
                   {/* Signature Area for RODO */}
-                  <div className="mt-8">
-                    <p className="text-sm text-[#4a4540] mb-4 font-medium uppercase tracking-wide">
-                      Podpis Klienta (Zgoda na przetwarzanie danych):
-                    </p>
-                    <div className="bg-white rounded-xl overflow-hidden min-h-[200px] border border-[#d4cec4] p-1">
-                      <SignaturePad
-                        label=""
-                        value={formData.podpisRodo || ""}
-                        onChange={(sig) => {
-                          handleInputChange("podpisRodo", sig);
-                          // Auto-approve RODO consent when signed
-                          if (sig && !formData.zgodaPrzetwarzanieDanych) {
-                            handleInputChange("zgodaPrzetwarzanieDanych", true);
-                          }
-                        }}
-                        date={formData.miejscowoscData}
-                        hasBorder={false}
-                      />
-                    </div>
-                  </div>
+                  <SignaturePad
+                    label="Podpis Klienta (Zgoda na przetwarzanie danych):"
+                    value={formData.podpisRodo || ""}
+                    onChange={(sig) => {
+                      handleInputChange("podpisRodo", sig);
+                      // Auto-approve RODO consent when signed
+                      if (sig && !formData.zgodaPrzetwarzanieDanych) {
+                        handleInputChange("zgodaPrzetwarzanieDanych", true);
+                      }
+                    }}
+                    date={formData.miejscowoscData}
+                  />
                 </div>
               </section>
 
@@ -1140,13 +1132,13 @@ export default function InjectionLipolysisForm({
                   {/* Signature Area for RODO 2 */}
                   <div className="mt-8">
                     <SignaturePad
-                        label="Podpis Klienta (Klauzula informacyjna):"
-                        value={formData.podpisRodo2 || ""}
-                        onChange={(sig) => {
-                          handleInputChange("podpisRodo2", sig);
-                        }}
-                        date={formData.miejscowoscData}
-                      />
+                      label="Podpis Klienta (Klauzula informacyjna):"
+                      value={formData.podpisRodo2 || ""}
+                      onChange={(sig) => {
+                        handleInputChange("podpisRodo2", sig);
+                      }}
+                      date={formData.miejscowoscData}
+                    />
                     <p className="text-xs text-[#4a4540] mt-3 italic">
                       Złożenie podpisu jest równoznaczne z zapoznaniem się z
                       powyższą klauzulą informacyjną RODO.

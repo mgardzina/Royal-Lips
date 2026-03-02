@@ -763,7 +763,18 @@ function SignatureBlock({
   return (
     <View style={styles.signatureBlock}>
       {signature ? (
-        <Image style={styles.signatureImage} src={signature} />
+        <View
+          style={{
+            backgroundColor: WHITE,
+            padding: 4,
+            borderRadius: 8,
+            marginBottom: 4,
+            width: 130,
+            alignItems: "center",
+          }}
+        >
+          <Image style={styles.signatureImage} src={signature} />
+        </View>
       ) : null}
       <View style={styles.signatureLine}>
         <Text style={styles.signatureLabel}>{label}</Text>

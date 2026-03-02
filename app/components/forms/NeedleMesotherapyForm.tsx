@@ -1025,26 +1025,18 @@ export default function NeedleMesotherapyForm({
                     {rodoInfo.consentText}
                   </div>
                   {/* Signature Area for RODO */}
-                  <div className="mt-8">
-                    <p className="text-sm text-[#6b6560] mb-4 font-medium uppercase tracking-wide">
-                      Podpis Klienta (Zgoda na przetwarzanie danych):
-                    </p>
-                    <div className="bg-white rounded-xl overflow-hidden min-h-[200px] border border-[#d4cec4] p-1">
-                      <SignaturePad
-                        label=""
-                        value={formData.podpisRodo || ""}
-                        onChange={(sig) => {
-                          handleInputChange("podpisRodo", sig);
-                          // Auto-approve RODO consent when signed
-                          if (sig && !formData.zgodaPrzetwarzanieDanych) {
-                            handleInputChange("zgodaPrzetwarzanieDanych", true);
-                          }
-                        }}
-                        date={formData.miejscowoscData}
-                        hasBorder={false}
-                      />
-                    </div>
-                  </div>
+                  <SignaturePad
+                    label="Podpis Klienta (Zgoda na przetwarzanie danych):"
+                    value={formData.podpisRodo || ""}
+                    onChange={(sig) => {
+                      handleInputChange("podpisRodo", sig);
+                      // Auto-approve RODO consent when signed
+                      if (sig && !formData.zgodaPrzetwarzanieDanych) {
+                        handleInputChange("zgodaPrzetwarzanieDanych", true);
+                      }
+                    }}
+                    date={formData.miejscowoscData}
+                  />
                 </div>
               </section>
 
@@ -1082,13 +1074,13 @@ export default function NeedleMesotherapyForm({
                   {/* Signature Area for RODO 2 */}
                   <div className="mt-8">
                     <SignaturePad
-                        label="Podpis Klienta (Klauzula informacyjna):"
-                        value={formData.podpisRodo2 || ""}
-                        onChange={(sig) => {
-                          handleInputChange("podpisRodo2", sig);
-                        }}
-                        date={formData.miejscowoscData}
-                      />
+                      label="Podpis Klienta (Klauzula informacyjna):"
+                      value={formData.podpisRodo2 || ""}
+                      onChange={(sig) => {
+                        handleInputChange("podpisRodo2", sig);
+                      }}
+                      date={formData.miejscowoscData}
+                    />
                     <p className="text-xs text-[#8b8580] mt-3 italic">
                       Złożenie podpisu jest równoznaczne z zapoznaniem się z
                       powyższą klauzulą informacyjną RODO.
@@ -1222,16 +1214,7 @@ export default function NeedleMesotherapyForm({
                       Jeżeli zabieg się odbędzie, to jego cena pomniejszona jest
                       o wartość zadatku.
                     </li>
-                    <li>
-                      Zadatek można uregulować przelewem na konto bankowe. Numer
-                      konta dostępny jest na stronie www, na miejscu, po
-                      kontakcie telefonicznym lub na FB:{" "}
-                      <span className="font-medium text-[#4a4540]">
-                        NUMER KONTA 76249000050000460039252048
-                      </span>{" "}
-                      — w tytule przelewu należy wpisać datę zabiegu oraz imię i
-                      nazwisko Klienta.
-                    </li>
+
                     <li>
                       Rezerwując termin warto jest się upewnić, że nie ma
                       żadnych przeciwwskazań do wykonania zabiegu.

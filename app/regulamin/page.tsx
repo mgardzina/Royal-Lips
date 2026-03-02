@@ -96,15 +96,6 @@ export default function RegulaminPage() {
                   momentu wstępnej rezerwacji. Brak wpłaty w tym terminie
                   skutkuje automatycznym anulowaniem rezerwacji.
                 </p>
-                <p>Wpłaty można dokonać przelewem na konto bankowe:</p>
-                <div className="bg-[#f8f6f3] p-4 rounded-xl border border-[#d4cec4]/50 my-2">
-                  <p className="font-medium text-[#4a4540]">
-                    76 2490 0005 0000 4600 3925 2048
-                  </p>
-                  <p className="text-sm mt-1">
-                    Tytuł przelewu: Data zabiegu oraz Imię i Nazwisko Klientki.
-                  </p>
-                </div>
                 <p>
                   W dniu zabiegu cena usługi pomniejszana jest o kwotę
                   wpłaconego zadatku. Pozostałą część kwoty Klient uiszcza na
@@ -124,12 +115,6 @@ export default function RegulaminPage() {
                   najpóźniej na <strong>3 dni</strong> przed planowanym
                   zabiegiem. W takim przypadku zadatek przechodzi na nowy
                   termin.
-                </p>
-                <p>
-                  W przypadku odwołania wizyty lub chęci zmiany terminu na mniej
-                  niż 3 dni przed zabiegiem, wpłacony zadatek przepada (zgodnie
-                  z art. 394 Kodeksu Cywilnego jako rekompensata za utracony
-                  czas pracy).
                 </p>
                 <p>
                   Wyjątek stanowią zdarzenia losowe i nagłe choroby,
