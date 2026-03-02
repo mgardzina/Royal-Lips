@@ -237,8 +237,10 @@ function FaceZoneDiagram({
             <SvgPath
               key={zone.id}
               d={zone.d}
-              fill={isSelected ? "rgba(139, 115, 85, 0.5)" : "rgba(139, 115, 85, 0.15)"}
-              stroke={isSelected ? "#8b7355" : "rgba(139, 115, 85, 0.3)"}
+              fill="#8b7355"
+              fillOpacity={isSelected ? 0.5 : 0.15}
+              stroke="#8b7355"
+              strokeOpacity={isSelected ? 1 : 0.3}
               strokeWidth={isSelected ? 3 : 1}
             />
           );

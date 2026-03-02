@@ -58,9 +58,9 @@ export default function SignaturePad({
             <SignatureCanvas
               ref={sigCanvas}
               canvasProps={{
-                className: "w-full h-full touch-none block bg-white invert",
+                className: "w-full h-full touch-none block",
               }}
-              backgroundColor="white"
+              backgroundColor="#f0ece6"
               penColor="black"
               minWidth={1.0}
               maxWidth={2.5} // Optimized for Apple Pencil / Real pen feel
