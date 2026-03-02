@@ -131,29 +131,94 @@ interface FormContent {
 function getFormContent(type: string): FormContent {
   const title = FORM_TYPE_TITLES[type] || "KARTA ZGODY NA ZABIEG";
   const contraindications =
-    contraindicationsByFormType[type as keyof typeof contraindicationsByFormType] || {};
+    contraindicationsByFormType[
+      type as keyof typeof contraindicationsByFormType
+    ] || {};
 
   switch (type) {
     case "LIP_AUGMENTATION":
-      return { title, naturalReactions: modelowanieUstNaturalReactions, complications: modelowanieUstComplications, postCare: modelowanieUstPostCare, contraindications };
+      return {
+        title,
+        naturalReactions: modelowanieUstNaturalReactions,
+        complications: modelowanieUstComplications,
+        postCare: modelowanieUstPostCare,
+        contraindications,
+      };
     case "FACIAL_VOLUMETRY":
-      return { title, naturalReactions: wolumetriaTwarzyNaturalReactions, complications: wolumetriaTwarzyComplications, postCare: wolumetriaTwarzyPostCare, contraindications };
+      return {
+        title,
+        naturalReactions: wolumetriaTwarzyNaturalReactions,
+        complications: wolumetriaTwarzyComplications,
+        postCare: wolumetriaTwarzyPostCare,
+        contraindications,
+      };
     case "NEEDLE_MESOTHERAPY":
-      return { title, naturalReactions: mezoterapiaIglowaNaturalReactions, complications: { czeste: mezoterapiaIglowaComplications as unknown as string[], bardzoRzadkie: mezoterapiaIglowaComplicationsVeryRare }, postCare: mezoterapiaIglowaPostCare, contraindications };
+      return {
+        title,
+        naturalReactions: mezoterapiaIglowaNaturalReactions,
+        complications: {
+          czeste: mezoterapiaIglowaComplications as unknown as string[],
+          bardzoRzadkie: mezoterapiaIglowaComplicationsVeryRare,
+        },
+        postCare: mezoterapiaIglowaPostCare,
+        contraindications,
+      };
     case "INJECTION_LIPOLYSIS":
-      return { title, naturalReactions: lipolizaIniekcyjnaNaturalReactions, complications: lipolizaIniekcyjnaComplications, postCare: lipolizaIniekcyjnaPostCare, contraindications };
+      return {
+        title,
+        naturalReactions: lipolizaIniekcyjnaNaturalReactions,
+        complications: lipolizaIniekcyjnaComplications,
+        postCare: lipolizaIniekcyjnaPostCare,
+        contraindications,
+      };
     case "PERMANENT_MAKEUP":
-      return { title, naturalReactions: makijazPermanentnyNaturalReactions, complications: makijazPermanentnyComplications, postCare: makijazPermanentnyPostCare, contraindications };
+      return {
+        title,
+        naturalReactions: makijazPermanentnyNaturalReactions,
+        complications: makijazPermanentnyComplications,
+        postCare: makijazPermanentnyPostCare,
+        contraindications,
+      };
     case "LASER_HAIR_REMOVAL":
-      return { title, naturalReactions: depilacjaLaserowaNaturalReactions, complications: depilacjaLaserowaComplications, postCare: depilacjaLaserowaPostCare, contraindications };
+      return {
+        title,
+        naturalReactions: depilacjaLaserowaNaturalReactions,
+        complications: depilacjaLaserowaComplications,
+        postCare: depilacjaLaserowaPostCare,
+        contraindications,
+      };
     case "LASER_TATTOO_REMOVAL":
-      return { title, naturalReactions: laseroweUsuwanieNaturalReactions, complications: laseroweUsuwanieComplications, postCare: laseroweUsuwaniePostCare, contraindications };
+      return {
+        title,
+        naturalReactions: laseroweUsuwanieNaturalReactions,
+        complications: laseroweUsuwanieComplications,
+        postCare: laseroweUsuwaniePostCare,
+        contraindications,
+      };
     case "TISSUE_STIMULATION":
-      return { title, naturalReactions: biostymulatorySideEffects, complications: biostymulatoryComplications, postCare: biostymulatoryPostTreatment, contraindications };
+      return {
+        title,
+        naturalReactions: biostymulatorySideEffects,
+        complications: biostymulatoryComplications,
+        postCare: biostymulatoryPostTreatment,
+        contraindications,
+      };
     case "WRINKLE_REDUCTION":
-      return { title, naturalReactions: wolumetriaTwarzyNaturalReactions, complications: wolumetriaTwarzyComplications, postCare: wolumetriaTwarzyPostCare, contraindications };
+      return {
+        title,
+        naturalReactions: wolumetriaTwarzyNaturalReactions,
+        complications: wolumetriaTwarzyComplications,
+        postCare: wolumetriaTwarzyPostCare,
+        contraindications,
+      };
     default:
-      return { title, naturalReactions: hyaluronicNaturalReactions, complications: hyaluronicComplications, postCare: hyaluronicPostCare, contraindications };
+      return {
+        title,
+        naturalReactions: hyaluronicNaturalReactions,
+        complications: hyaluronicComplications,
+        postCare: hyaluronicPostCare,
+        contraindications,
+      };
   }
 }
 
@@ -178,7 +243,6 @@ const FACE_DIAGRAM_TYPES = new Set([
   "WRINKLE_REDUCTION",
   "TISSUE_STIMULATION",
   "PERMANENT_MAKEUP",
-  "LASER_TATTOO_REMOVAL",
   "HYALURONIC",
 ]);
 
@@ -196,7 +260,7 @@ function getZonesForType(type: string) {
 const FACE_CHART_IMAGE = nodePath.join(
   process.cwd(),
   "public",
-  "women-face-chart.jpg"
+  "women-face-chart.jpg",
 );
 
 function FaceZoneDiagram({
@@ -253,7 +317,7 @@ function FaceZoneDiagram({
 const BODY_CHART_IMAGE = nodePath.join(
   process.cwd(),
   "public",
-  "women-body-chart.JPG"
+  "women-body-chart.JPG",
 );
 
 const BODY_DIAGRAM_TYPES = new Set(["LASER_HAIR_REMOVAL"]);
@@ -755,8 +819,7 @@ function ConsentFormPdf({ form }: { form: any }) {
           <View style={styles.headerRight}>
             <Text style={styles.headerTitle}>{SALON_CONFIG.fullName}</Text>
             <Text style={styles.headerDate}>
-              {SALON_CONFIG.address}, {SALON_CONFIG.zipCode}{" "}
-              {SALON_CONFIG.city}
+              {SALON_CONFIG.address}, {SALON_CONFIG.zipCode} {SALON_CONFIG.city}
             </Text>
             <Text style={styles.headerDate}>Data: {createdDate}</Text>
             <Text style={styles.headerDate}>Nr: {docNumber}</Text>
@@ -830,9 +893,7 @@ function ConsentFormPdf({ form }: { form: any }) {
             {form.numerZabiegu && (
               <View style={styles.fieldRow}>
                 <Text style={styles.fieldLabel}>Numer zabiegu:</Text>
-                <Text style={styles.fieldValue}>
-                  {form.numerZabiegu}
-                </Text>
+                <Text style={styles.fieldValue}>{form.numerZabiegu}</Text>
               </View>
             )}
           </View>
@@ -858,9 +919,7 @@ function ConsentFormPdf({ form }: { form: any }) {
           <View style={styles.column}>
             <View style={styles.fieldRow}>
               <Text style={styles.fieldLabel}>Cel / Efekt:</Text>
-              <Text style={styles.fieldValue}>
-                {form.celEfektu || "---"}
-              </Text>
+              <Text style={styles.fieldValue}>{form.celEfektu || "---"}</Text>
             </View>
           </View>
         </View>
@@ -906,9 +965,21 @@ function ConsentFormPdf({ form }: { form: any }) {
                 </View>
               ))}
             </View>
-            {FACE_DIAGRAM_TYPES.has(form.type) && (
+            {/* Face diagram */}
+            {(FACE_DIAGRAM_TYPES.has(form.type) ||
+              (form.type === "LASER_TATTOO_REMOVAL" &&
+                form.nazwaProduktu !== "Tatuaż")) && (
               <>
-                <Text style={{ fontSize: 9, color: "#8b8580", marginTop: 12, marginBottom: 4, textTransform: "uppercase", letterSpacing: 1 }}>
+                <Text
+                  style={{
+                    fontSize: 9,
+                    color: "#8b8580",
+                    marginTop: 12,
+                    marginBottom: 4,
+                    textTransform: "uppercase",
+                    letterSpacing: 1,
+                  }}
+                >
                   Wizualizacja obszaru zabiegu
                 </Text>
                 <FaceZoneDiagram
@@ -920,9 +991,21 @@ function ConsentFormPdf({ form }: { form: any }) {
                 />
               </>
             )}
-            {BODY_DIAGRAM_TYPES.has(form.type) && (
+            {/* Body diagram */}
+            {(BODY_DIAGRAM_TYPES.has(form.type) ||
+              (form.type === "LASER_TATTOO_REMOVAL" &&
+                form.nazwaProduktu === "Tatuaż")) && (
               <>
-                <Text style={{ fontSize: 9, color: "#8b8580", marginTop: 12, marginBottom: 4, textTransform: "uppercase", letterSpacing: 1 }}>
+                <Text
+                  style={{
+                    fontSize: 9,
+                    color: "#8b8580",
+                    marginTop: 12,
+                    marginBottom: 4,
+                    textTransform: "uppercase",
+                    letterSpacing: 1,
+                  }}
+                >
                   Wizualizacja obszaru zabiegu
                 </Text>
                 <BodyZoneDiagram
@@ -988,8 +1071,7 @@ function ConsentFormPdf({ form }: { form: any }) {
                       style={[
                         styles.contrAnswer,
                         {
-                          color:
-                            isTrue || isFollowUpText ? RED : GREEN_DARK,
+                          color: isTrue || isFollowUpText ? RED : GREEN_DARK,
                         },
                       ]}
                     >
@@ -1007,7 +1089,7 @@ function ConsentFormPdf({ form }: { form: any }) {
                   )}
                 </View>
               );
-            }
+            },
           )}
         </View>
 
@@ -1031,9 +1113,7 @@ function ConsentFormPdf({ form }: { form: any }) {
         {/* Mini header */}
         <View style={styles.miniHeader}>
           <MiniSalonLogo />
-          <Text style={styles.miniTitle}>
-            {content.title} — Ciąg Dalszy
-          </Text>
+          <Text style={styles.miniTitle}>{content.title} — Ciąg Dalszy</Text>
         </View>
 
         {/* Natural reactions */}
@@ -1145,12 +1225,12 @@ function ConsentFormPdf({ form }: { form: any }) {
         <View style={styles.consentBox}>
           <Text style={styles.consentTitle}>Świadoma Zgoda na Zabieg</Text>
           <Text style={styles.consentText}>
-            Oświadczam, że zostałam/em poinformowana/y o rodzaju zabiegu,
-            jego przebiegu, możliwych powikłaniach i efektach ubocznych.
-            Rozumiem i akceptuję ryzyko związane z zabiegiem. Potwierdzam,
-            że wszystkie podane przeze mnie informacje w wywiadzie medycznym
-            są prawdziwe i zgodne ze stanem faktycznym. Wyrażam świadomą
-            zgodę na wykonanie zabiegu.
+            Oświadczam, że zostałam/em poinformowana/y o rodzaju zabiegu, jego
+            przebiegu, możliwych powikłaniach i efektach ubocznych. Rozumiem i
+            akceptuję ryzyko związane z zabiegiem. Potwierdzam, że wszystkie
+            podane przeze mnie informacje w wywiadzie medycznym są prawdziwe i
+            zgodne ze stanem faktycznym. Wyrażam świadomą zgodę na wykonanie
+            zabiegu.
           </Text>
           <SignatureBlock
             signature={form.podpisDane}
@@ -1164,8 +1244,8 @@ function ConsentFormPdf({ form }: { form: any }) {
             <Text style={styles.consentTitle}>Zgoda Marketingowa</Text>
             <Text style={styles.consentText}>
               Wyrażam zgodę na otrzymywanie od {SALON_CONFIG.fullName}{" "}
-              informacji handlowych i marketingowych za pośrednictwem
-              środków komunikacji elektronicznej (SMS, e-mail).
+              informacji handlowych i marketingowych za pośrednictwem środków
+              komunikacji elektronicznej (SMS, e-mail).
             </Text>
             <SignatureBlock
               signature={form.podpisMarketing}
@@ -1181,9 +1261,9 @@ function ConsentFormPdf({ form }: { form: any }) {
               Zgoda na Wykorzystanie Wizerunku
             </Text>
             <Text style={styles.consentText}>
-              Wyrażam zgodę na wykonywanie i wykorzystanie zdjęć
-              dokumentujących przebieg i efekty zabiegu w celach
-              szkoleniowych i marketingowych {SALON_CONFIG.fullName}.
+              Wyrażam zgodę na wykonywanie i wykorzystanie zdjęć dokumentujących
+              przebieg i efekty zabiegu w celach szkoleniowych i marketingowych{" "}
+              {SALON_CONFIG.fullName}.
               {form.miejscaPublikacjiFotografii
                 ? ` Miejsca publikacji: ${form.miejscaPublikacjiFotografii}.`
                 : ""}
@@ -1199,9 +1279,7 @@ function ConsentFormPdf({ form }: { form: any }) {
         {form.zastrzeniaKlienta && (
           <View style={styles.consentBox}>
             <Text style={styles.consentTitle}>Zastrzeżenia Klienta</Text>
-            <Text style={styles.consentText}>
-              {form.zastrzeniaKlienta}
-            </Text>
+            <Text style={styles.consentText}>{form.zastrzeniaKlienta}</Text>
           </View>
         )}
 
@@ -1211,12 +1289,10 @@ function ConsentFormPdf({ form }: { form: any }) {
           Cywilnego (forma dokumentowa). Podpis złożony za pośrednictwem
           urządzenia z ekranem dotykowym, zweryfikowany kodem SMS.
           {"\n"}
-          Administrator danych: {SALON_CONFIG.fullName}, NIP:{" "}
-          {SALON_CONFIG.nip}
+          Administrator danych: {SALON_CONFIG.fullName}, NIP: {SALON_CONFIG.nip}
           {"\n"}
-          {SALON_CONFIG.address}, {SALON_CONFIG.zipCode}{" "}
-          {SALON_CONFIG.city} | tel. {SALON_CONFIG.phone} |{" "}
-          {SALON_CONFIG.email}
+          {SALON_CONFIG.address}, {SALON_CONFIG.zipCode} {SALON_CONFIG.city} |
+          tel. {SALON_CONFIG.phone} | {SALON_CONFIG.email}
         </Text>
 
         <PageFooter salonName={SALON_CONFIG.fullName} />
