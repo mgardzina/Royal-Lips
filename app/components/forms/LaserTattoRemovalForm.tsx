@@ -270,15 +270,15 @@ export default function LaserTattoRemovalForm({
 
   if (submitSuccess) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center p-4">
+      <div className="min-h-screen bg-[#f8f6f3] flex items-center justify-center p-4">
         <div className="bg-white backdrop-blur-sm rounded-3xl shadow-2xl p-12 max-w-lg text-center">
-          <div className="w-20 h-20 bg-green-900/20 rounded-full flex items-center justify-center mx-auto mb-6">
-            <Check className="w-10 h-10 text-green-500" />
+          <div className="w-20 h-20 bg-[#f0ebe4] rounded-full flex items-center justify-center mx-auto mb-6">
+            <Check className="w-10 h-10 text-[#4a4540]" />
           </div>
           <h2 className="text-3xl font-serif text-[#4a4540] mb-4">
             Dziękujemy!
           </h2>
-          <p className="text-[#5a5550] mb-8">Twój formularz został zapisany.</p>
+          <p className="text-[#6b6560] mb-8">Twój formularz został zapisany.</p>
           <div className="flex flex-col gap-3">
             <button
               onClick={() => {
@@ -291,15 +291,16 @@ export default function LaserTattoRemovalForm({
                 setAuditLog(null);
                 window.scrollTo(0, 0);
               }}
-              className="bg-[#4a4540] text-white px-8 py-3 rounded-xl hover:bg-[#2C2622] transition-colors"
+              className="bg-[#4a4540] text-white px-8 py-3 rounded-xl hover:bg-[#2C2622] transition-colors shadow-lg shadow-[#4a4540]/10"
             >
               Wypełnij ponownie
             </button>
-            <BackButton
+            <button
               onClick={onBack}
-              label="Wróć do wyboru zabiegu"
-              className="w-full justify-center"
-            />
+              className="text-[#6b6560] px-8 py-2 hover:text-[#4a4540] transition-colors"
+            >
+              Wróć do wyboru zabiegu
+            </button>
           </div>
         </div>
       </div>
@@ -1213,19 +1214,17 @@ export default function LaserTattoRemovalForm({
                   <div className="bg-[#f8f6f3] p-6 rounded-xl text-sm text-[#5a5550] leading-relaxed whitespace-pre-line max-h-[60vh] overflow-y-auto mb-6 border border-[#d4cec4]">
                     {rodoInfo.consentText}
                   </div>
-                  <div className="mt-8">
-                    <SignaturePad
-                        label="Podpis Klienta (Zgoda na przetwarzanie danych):"
-                        value={formData.podpisRodo || ""}
-                        onChange={(sig) => {
-                          handleInputChange("podpisRodo", sig);
-                          if (sig && !formData.zgodaPrzetwarzanieDanych) {
-                            handleInputChange("zgodaPrzetwarzanieDanych", true);
-                          }
-                        }}
-                        date={formData.miejscowoscData}
-                      />
-                  </div>
+                  <SignaturePad
+                    label="Podpis Klienta (Zgoda na przetwarzanie danych):"
+                    value={formData.podpisRodo || ""}
+                    onChange={(sig) => {
+                      handleInputChange("podpisRodo", sig);
+                      if (sig && !formData.zgodaPrzetwarzanieDanych) {
+                        handleInputChange("zgodaPrzetwarzanieDanych", true);
+                      }
+                    }}
+                    date={formData.miejscowoscData}
+                  />
                 </div>
               </section>
 
@@ -1261,20 +1260,18 @@ export default function LaserTattoRemovalForm({
                   <div className="bg-[#f8f6f3] p-6 rounded-xl text-sm text-[#5a5550] leading-relaxed whitespace-pre-line max-h-[60vh] overflow-y-auto mb-6 border border-[#d4cec4]">
                     {rodoInfo.clauseText}
                   </div>
-                  <div className="mt-8">
-                    <SignaturePad
-                        label="Podpis Klienta (Klauzula informacyjna):"
-                        value={formData.podpisRodo2 || ""}
-                        onChange={(sig) => {
-                          handleInputChange("podpisRodo2", sig);
-                        }}
-                        date={formData.miejscowoscData}
-                      />
-                    <p className="text-xs text-[#4a4540]/50 mt-3 italic">
-                      Złożenie podpisu jest równoznaczne z zapoznaniem się z
-                      powyższą klauzulą informacyjną RODO.
-                    </p>
-                  </div>
+                  <SignaturePad
+                    label="Podpis Klienta (Klauzula informacyjna):"
+                    value={formData.podpisRodo2 || ""}
+                    onChange={(sig) => {
+                      handleInputChange("podpisRodo2", sig);
+                    }}
+                    date={formData.miejscowoscData}
+                  />
+                  <p className="text-xs text-[#4a4540]/50 mt-3 italic">
+                    Złożenie podpisu jest równoznaczne z zapoznaniem się z
+                    powyższą klauzulą informacyjną RODO.
+                  </p>
                 </div>
               </section>
 

@@ -25,9 +25,22 @@ import { ZONES } from "@/types/face-zones";
 import { BODY_ZONES } from "@/types/body-zones";
 
 const BODY_FORM_TYPES = ["LASER_HAIR_REMOVAL"];
+// For LASER_TATTOO_REMOVAL: show body selector only when product is "Tatuaż"
+const isBodyFormType = (
+  formType: string,
+  nazwaProduktu?: string | null,
+): boolean => {
+  if (BODY_FORM_TYPES.includes(formType)) return true;
+  if (formType === "LASER_TATTOO_REMOVAL" && nazwaProduktu === "Tatuaż")
+    return true;
+  return false;
+};
 
 // Helper do tłumaczenia stref
-const translateZones = (zonesString: string | null, formType?: string): string => {
+const translateZones = (
+  zonesString: string | null,
+  formType?: string,
+): string => {
   if (!zonesString) return "Nie podano";
 
   const selectedIds = zonesString.split(",").map((s) => s.trim());
@@ -237,7 +250,9 @@ export default function FormDetailsPage() {
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      const date = new Date(form.createdAt).toLocaleDateString("pl-PL").replace(/\./g, "-");
+      const date = new Date(form.createdAt)
+        .toLocaleDateString("pl-PL")
+        .replace(/\./g, "-");
       a.download = `Karta_zgody_${form.imieNazwisko.replace(/\s+/g, "_")}_${date}.pdf`;
       document.body.appendChild(a);
       a.click();
@@ -317,7 +332,9 @@ export default function FormDetailsPage() {
                   disabled={isDownloadingPdf}
                   className="flex items-center gap-2 text-[#d4cec4] hover:text-white transition-colors"
                 >
-                  <Download className={`w-5 h-5 ${isDownloadingPdf ? "animate-bounce" : ""}`} />
+                  <Download
+                    className={`w-5 h-5 ${isDownloadingPdf ? "animate-bounce" : ""}`}
+                  />
                   <span className="hidden md:inline">
                     {isDownloadingPdf ? "Generowanie..." : "PDF"}
                   </span>
@@ -363,7 +380,9 @@ export default function FormDetailsPage() {
                     className="px-3 py-1.5 bg-white border border-[#d4cec4] rounded-lg text-sm focus:border-[#8b7355] focus:ring-2 focus:ring-[#8b7355]/20 outline-none"
                   >
                     {Object.entries(formTypeLabels).map(([value, label]) => (
-                      <option key={value} value={value}>{label}</option>
+                      <option key={value} value={value}>
+                        {label}
+                      </option>
                     ))}
                   </select>
                 ) : (
@@ -599,7 +618,7 @@ export default function FormDetailsPage() {
                 </label>
                 <div className="bg-[#f8f6f3] rounded-xl border border-[#d4cec4] p-6 flex justify-center pointer-events-none">
                   <div className="w-full max-w-lg aspect-square relative">
-                    {BODY_FORM_TYPES.includes(form.type) ? (
+                    {isBodyFormType(form.type, form.nazwaProduktu) ? (
                       <AnatomyBodySelector
                         initialSelected={
                           form.obszarZabiegu
