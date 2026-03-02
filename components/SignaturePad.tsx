@@ -50,7 +50,7 @@ export default function SignaturePad({
 
       <div className="relative group">
         <div
-          className={`rounded-xl overflow-hidden ${
+          className={`rounded-xl overflow-hidden bg-[#f0ece6] ${
             hasBorder ? "border border-[#d4cec4]" : ""
           }`}
         >
@@ -60,7 +60,6 @@ export default function SignaturePad({
               canvasProps={{
                 className: "w-full h-full touch-none block",
               }}
-              backgroundColor="#f0ece6"
               penColor="black"
               minWidth={1.0}
               maxWidth={2.5} // Optimized for Apple Pencil / Real pen feel

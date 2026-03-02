@@ -22,12 +22,67 @@ const formTypeLabels: Record<string, string> = {
   EYEBROW_LAMINATION: "Laminacja brwi",
 };
 
-const formTypeCategory = (type: string): { label: string; colors: string } => {
-  const laserTypes = ["LASER_HAIR_REMOVAL", "LASER_TATTOO_REMOVAL"];
-  const pmuTypes = ["PERMANENT_MAKEUP"];
-  if (laserTypes.includes(type)) return { label: "LASER", colors: "bg-red-100 text-red-700" };
-  if (pmuTypes.includes(type)) return { label: "PMU", colors: "bg-purple-100 text-purple-700" };
-  return { label: formTypeLabels[type] || type, colors: "bg-blue-100 text-blue-700" };
+const formTypeBadge = (type: string): { label: string; colors: string } => {
+  const map: Record<string, { label: string; colors: string }> = {
+    LIP_AUGMENTATION: {
+      label: "Modelowanie ust",
+      colors: "bg-pink-100 text-pink-700",
+    },
+    FACIAL_VOLUMETRY: {
+      label: "Wolumetria twarzy",
+      colors: "bg-rose-100 text-rose-700",
+    },
+    WRINKLE_REDUCTION: {
+      label: "Zmarszczki",
+      colors: "bg-orange-100 text-orange-700",
+    },
+    NEEDLE_MESOTHERAPY: {
+      label: "Mezoterapia igłowa",
+      colors: "bg-amber-100 text-amber-700",
+    },
+    INJECTION_LIPOLYSIS: {
+      label: "Lipoliza iniekcyjna",
+      colors: "bg-yellow-100 text-yellow-700",
+    },
+    TISSUE_STIMULATION: {
+      label: "Stymulacja tkankowa",
+      colors: "bg-lime-100 text-lime-700",
+    },
+    PERMANENT_MAKEUP: {
+      label: "Makijaż permanentny",
+      colors: "bg-purple-100 text-purple-700",
+    },
+    LASER_HAIR_REMOVAL: {
+      label: "Depilacja laserowa",
+      colors: "bg-red-100 text-red-700",
+    },
+    LASER_TATTOO_REMOVAL: {
+      label: "Usuwanie tatuażu",
+      colors: "bg-red-200 text-red-800",
+    },
+    EYELID_LIFT: {
+      label: "Lifting powiek",
+      colors: "bg-teal-100 text-teal-700",
+    },
+    EYEBROW_TINTING: {
+      label: "Henna brwi",
+      colors: "bg-cyan-100 text-cyan-700",
+    },
+    EYELASH_EXTENSION: {
+      label: "Przedłużanie rzęs",
+      colors: "bg-sky-100 text-sky-700",
+    },
+    EYEBROW_LAMINATION: {
+      label: "Laminacja brwi",
+      colors: "bg-blue-100 text-blue-700",
+    },
+  };
+  return (
+    map[type] || {
+      label: formTypeLabels[type] || type,
+      colors: "bg-gray-100 text-gray-700",
+    }
+  );
 };
 
 interface ConsentFormSummary {
@@ -183,9 +238,9 @@ export default function AdminDashboard() {
                       <h3 className="font-medium text-[#4a4540] flex items-center gap-2">
                         {form.imieNazwisko}
                         <span
-                          className={`text-xs px-2 py-0.5 rounded-full ${formTypeCategory(form.type).colors}`}
+                          className={`text-xs px-2 py-0.5 rounded-full ${formTypeBadge(form.type).colors}`}
                         >
-                          {formTypeCategory(form.type).label}
+                          {formTypeBadge(form.type).label}
                         </span>
                       </h3>
                       <p className="text-sm text-[#8b8580]">
