@@ -732,22 +732,12 @@ export default function LaserTattoRemovalForm({
                           formData.obszarZabiegu
                             ? formData.obszarZabiegu
                                 .split(", ")
-                                .map(
-                                  (name) =>
-                                    BODY_ZONES.find((z) => z.name === name)
-                                      ?.id || "",
-                                )
+                                .map((s) => s.trim())
                                 .filter(Boolean)
                             : []
                         }
                         onSelect={(ids) => {
-                          const names = ids
-                            .map(
-                              (id) => BODY_ZONES.find((z) => z.id === id)?.name,
-                            )
-                            .filter(Boolean)
-                            .join(", ");
-                          handleInputChange("obszarZabiegu", names);
+                          handleInputChange("obszarZabiegu", ids.join(", "));
                         }}
                       />
                     ) : (
@@ -756,22 +746,12 @@ export default function LaserTattoRemovalForm({
                           formData.obszarZabiegu
                             ? formData.obszarZabiegu
                                 .split(", ")
-                                .map(
-                                  (name) =>
-                                    FACE_ZONES.find((z) => z.name === name)
-                                      ?.id || "",
-                                )
+                                .map((s) => s.trim())
                                 .filter(Boolean)
                             : []
                         }
                         onSelect={(ids) => {
-                          const names = ids
-                            .map(
-                              (id) => FACE_ZONES.find((z) => z.id === id)?.name,
-                            )
-                            .filter(Boolean)
-                            .join(", ");
-                          handleInputChange("obszarZabiegu", names);
+                          handleInputChange("obszarZabiegu", ids.join(", "));
                         }}
                       />
                     )}

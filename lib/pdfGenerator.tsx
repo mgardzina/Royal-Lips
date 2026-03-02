@@ -116,6 +116,18 @@ const FORM_TYPE_LABELS: Record<string, string> = {
   EYEBROW_LAMINATION: "Laminacja brwi",
 };
 
+const DEFAULT_CEL_EFEKTU: Record<string, string> = {
+  // Only for forms that do NOT have an interactive cel/efekt field:
+  LASER_HAIR_REMOVAL: "Usunięcie włosów z ciała",
+  LASER_TATTOO_REMOVAL: "Usunięcie tatuażu / makijażu permanentnego",
+  NEEDLE_MESOTHERAPY: "Nawilżenie, odżywienie i rewitalizacja skóry",
+  TISSUE_STIMULATION: "Stymulacja tkankowa i modelowanie twarzy",
+  EYELID_LIFT: "Lifting i odmłodzenie okolicy powiek",
+  EYEBROW_TINTING: "Podkreślenie i definiowanie kształtu brwi",
+  EYELASH_EXTENSION: "Przedłużenie i zagęszczenie rzęs",
+  EYEBROW_LAMINATION: "Laminacja i stylizacja brwi",
+};
+
 interface FormContent {
   title: string;
   naturalReactions: string[];
@@ -919,7 +931,9 @@ function ConsentFormPdf({ form }: { form: any }) {
           <View style={styles.column}>
             <View style={styles.fieldRow}>
               <Text style={styles.fieldLabel}>Cel / Efekt:</Text>
-              <Text style={styles.fieldValue}>{form.celEfektu || "---"}</Text>
+              <Text style={styles.fieldValue}>
+                {form.celEfektu || DEFAULT_CEL_EFEKTU[form.type] || "---"}
+              </Text>
             </View>
           </View>
         </View>
