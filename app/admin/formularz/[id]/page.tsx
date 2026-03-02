@@ -20,18 +20,23 @@ import {
 } from "lucide-react";
 import { contraindicationsByFormType, FormType } from "@/types/booking";
 import AnatomyFaceSelector from "@/app/components/AnatomyFaceSelector";
+import AnatomyBodySelector from "@/app/components/AnatomyBodySelector";
 import { ZONES } from "@/types/face-zones";
+import { BODY_ZONES } from "@/types/body-zones";
+
+const BODY_FORM_TYPES = ["LASER_HAIR_REMOVAL"];
 
 // Helper do tłumaczenia stref
-const translateZones = (zonesString: string | null): string => {
+const translateZones = (zonesString: string | null, formType?: string): string => {
   if (!zonesString) return "Nie podano";
 
   const selectedIds = zonesString.split(",").map((s) => s.trim());
+  const allZones = [...ZONES, ...BODY_ZONES];
 
   return selectedIds
     .map((id) => {
-      const zone = ZONES.find((z) => z.id === id);
-      return zone ? zone.name : id; // Fallback to ID if name not found
+      const zone = allZones.find((z) => z.id === id);
+      return zone ? zone.name : id;
     })
     .join(", ");
 };
@@ -90,8 +95,14 @@ const formTypeLabels: Record<string, string> = {
   WRINKLE_REDUCTION: "Niwelowanie zmarszczek",
   NEEDLE_MESOTHERAPY: "Mezoterapia igłowa",
   INJECTION_LIPOLYSIS: "Lipoliza iniekcyjna",
-  PERMANENT_MAKEUP: "Makijaż permanentny (Legacy)",
+  PERMANENT_MAKEUP: "Makijaż permanentny",
+  TISSUE_STIMULATION: "Stymulacja tkankowa",
   LASER_HAIR_REMOVAL: "Depilacja laserowa",
+  LASER_TATTOO_REMOVAL: "Usuwanie tatuażu",
+  EYELID_LIFT: "Lifting powiek",
+  EYEBROW_TINTING: "Henna brwi",
+  EYELASH_EXTENSION: "Przedłużanie rzęs",
+  EYEBROW_LAMINATION: "Laminacja brwi",
 };
 
 export default function FormDetailsPage() {
@@ -351,9 +362,9 @@ export default function FormDetailsPage() {
                     }
                     className="px-3 py-1.5 bg-white border border-[#d4cec4] rounded-lg text-sm focus:border-[#8b7355] focus:ring-2 focus:ring-[#8b7355]/20 outline-none"
                   >
-                    <option value="HYALURONIC">Kwas hialuronowy</option>
-                    <option value="PMU">Makijaż permanentny</option>
-                    <option value="LASER">Laser</option>
+                    {Object.entries(formTypeLabels).map(([value, label]) => (
+                      <option key={value} value={value}>{label}</option>
+                    ))}
                   </select>
                 ) : (
                   <span className="px-3 py-1 bg-[#8b7355]/10 text-[#8b7355] rounded-lg text-sm font-medium">
@@ -553,7 +564,7 @@ export default function FormDetailsPage() {
                   />
                 ) : (
                   <p className="text-[#5a5550]">
-                    {translateZones(form.obszarZabiegu)}
+                    {translateZones(form.obszarZabiegu, form.type)}
                   </p>
                 )}
               </div>
@@ -581,20 +592,30 @@ export default function FormDetailsPage() {
                 )}
               </div>
 
-              {/* Visual Face Selector for Admin - Improved Visibility */}
+              {/* Visual Anatomy Selector for Admin */}
               <div className="mt-4 border-t border-[#d4cec4] pt-4">
                 <label className="block text-sm font-medium text-[#8b8580] mb-4">
                   Wizualizacja obszaru zabiegu
                 </label>
                 <div className="bg-[#f8f6f3] rounded-xl border border-[#d4cec4] p-6 flex justify-center pointer-events-none">
                   <div className="w-full max-w-lg aspect-square relative">
-                    <AnatomyFaceSelector
-                      initialSelected={
-                        form.obszarZabiegu
-                          ? form.obszarZabiegu.split(",").map((s) => s.trim())
-                          : []
-                      }
-                    />
+                    {BODY_FORM_TYPES.includes(form.type) ? (
+                      <AnatomyBodySelector
+                        initialSelected={
+                          form.obszarZabiegu
+                            ? form.obszarZabiegu.split(",").map((s) => s.trim())
+                            : []
+                        }
+                      />
+                    ) : (
+                      <AnatomyFaceSelector
+                        initialSelected={
+                          form.obszarZabiegu
+                            ? form.obszarZabiegu.split(",").map((s) => s.trim())
+                            : []
+                        }
+                      />
+                    )}
                   </div>
                 </div>
               </div>

@@ -117,7 +117,7 @@ export default function SelectionScreen({ onSelect }: SelectionScreenProps) {
               <h3 className="text-xl font-serif text-[#4a4540] mb-2 font-medium">
                 Niwelowanie Zmarszczek
               </h3>
-              <p className="text-sm text-[#8b8580]">Botoks / Kwas</p>
+              <p className="text-sm text-[#8b8580]">Kwas hialuronowy</p>
             </div>
           </button>
 

@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import AnatomyBodySelector from "../AnatomyBodySelector";
-import { Phone, Check, ArrowLeft, Instagram, Mail, Shield } from "lucide-react";
-import { getTodayDate } from "@/lib/dateUtils";
+import { Phone, Check, ArrowLeft, Instagram, Mail, Shield, X } from "lucide-react";
+import { getTodayDate, formatBirthDate, validateBirthDate } from "@/lib/dateUtils";
 import SignaturePad from "@/components/SignaturePad";
 import SignatureVerificationModal from "@/components/SignatureVerificationModal";
 import { AuditLogData } from "@/app/actions/otp";
@@ -67,6 +67,7 @@ const initialFormData: ConsentFormData = {
 export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
   const [formData, setFormData] = useState<ConsentFormData>(initialFormData);
   const [email, setEmail] = useState("");
+  const [birthDateError, setBirthDateError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [currentContraindicationIndex, setCurrentContraindicationIndex] =
@@ -106,12 +107,12 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
 
   const handleWizardAnswer = (value: boolean) => {
     handleContraindicationChange(currentContraindicationKey, value);
-    // For follow-up questions, don't auto-advance — user must click "Dalej"
     const currentValue =
       depilacjaLaserowaContraindications[currentContraindicationKey];
     const hasFollowUp =
       typeof currentValue === "object" && currentValue.hasFollowUp;
-    if (hasFollowUp) {
+    // Only pause auto-advance when TAK on a follow-up question (user must fill details and click "Kontynuuj")
+    if (hasFollowUp && value === true) {
       return;
     }
     if (currentContraindicationIndex < contraindicationKeys.length) {
@@ -149,23 +150,15 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
     setFormData((prev) => ({ ...prev, telefon: formatted }));
   };
 
-  // Oblicz wiek na podstawie daty urodzenia
-  const calculateAge = (birthDate: string): number => {
-    if (!birthDate) return 0;
-    const today = new Date();
-    const birth = new Date(birthDate);
-    let age = today.getFullYear() - birth.getFullYear();
-    const monthDiff = today.getMonth() - birth.getMonth();
-    if (
-      monthDiff < 0 ||
-      (monthDiff === 0 && today.getDate() < birth.getDate())
-    ) {
-      age--;
+  const handleBirthDateChange = (value: string) => {
+    const formatted = formatBirthDate(value);
+    setFormData((prev) => ({ ...prev, dataUrodzenia: formatted }));
+    if (formatted.length === 10) {
+      setBirthDateError(validateBirthDate(formatted));
+    } else {
+      setBirthDateError(null);
     }
-    return age;
   };
-
-  const isAgeValid = calculateAge(formData.dataUrodzenia) >= 16;
 
   const handleContraindicationChange = (key: string, value: boolean) => {
     setFormData((prev) => ({
@@ -285,7 +278,8 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
     formData.telefon.replace(/\D/g, "").length === 9 &&
     formData.miejscowoscData &&
     formData.dataUrodzenia &&
-    isAgeValid &&
+    formData.dataUrodzenia.length === 10 &&
+    !birthDateError &&
     isWizardComplete;
 
   return (
@@ -483,32 +477,25 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
 
                   <div>
                     <label className="block text-sm text-[#4a4540] mb-2 font-medium">
-                      Data urodzenia * (min. 16 lat)
+                      Data urodzenia *
                     </label>
                     <input
-                      type="date"
+                      type="text"
                       required
                       value={formData.dataUrodzenia}
-                      onChange={(e) =>
-                        handleInputChange("dataUrodzenia", e.target.value)
-                      }
-                      max={
-                        new Date(
-                          new Date().setFullYear(new Date().getFullYear() - 16),
-                        )
-                          .toISOString()
-                          .split("T")[0]
-                      }
+                      onChange={(e) => handleBirthDateChange(e.target.value)}
                       className={`w-full px-4 py-3 bg-white border rounded-xl focus:border-[#C4B5A0] focus:ring-2 focus:ring-[#C4B5A0]/20 outline-none transition-all ${
-                        formData.dataUrodzenia && !isAgeValid
+                        birthDateError
                           ? "border-red-500"
                           : "border-[#d4cec4]"
                       }`}
+                      placeholder="DD.MM.RRRR"
                     />
-                    {formData.dataUrodzenia && !isAgeValid && (
-                      <p className="text-red-400 text-xs mt-1">
-                        Musisz mieć ukończone 16 lat
-                      </p>
+                    {birthDateError && (
+                      <div className="mt-2 flex items-center gap-2 text-red-600 text-sm animate-in fade-in slide-in-from-top-1">
+                        <X className="w-4 h-4" />
+                        <span>{birthDateError}</span>
+                      </div>
                     )}
                   </div>
                   <div>
@@ -748,14 +735,7 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
                         <button
                           type="button"
                           onClick={() => handleWizardAnswer(false)}
-                          className={`py-4 px-6 rounded-xl border-2 transition-all text-lg font-medium shadow-sm hover:shadow-md active:scale-95 flex items-center justify-center ${
-                            currentContraindicationObject?.hasFollowUp &&
-                            formData.przeciwwskazania[
-                              currentContraindicationKey
-                            ] === false
-                              ? "border-green-500 bg-green-500 text-white"
-                              : "bg-white border-[#d4cec4] text-[#6b6560] active:border-green-500 active:bg-green-500 active:text-white md:hover:border-green-500 md:hover:bg-green-500 md:hover:text-white"
-                          }`}
+                          className="py-4 px-6 rounded-xl border-2 transition-all text-lg font-medium shadow-sm hover:shadow-md active:scale-95 flex items-center justify-center bg-white border-[#d4cec4] text-[#6b6560] active:border-green-500 active:bg-green-500 active:text-white md:hover:border-green-500 md:hover:bg-green-500 md:hover:text-white"
                         >
                           NIE
                         </button>
@@ -778,7 +758,7 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
                       {currentContraindicationObject?.hasFollowUp &&
                         formData.przeciwwskazania[
                           currentContraindicationKey
-                        ] !== null && (
+                        ] === true && (
                           <div className="max-w-md mx-auto mt-6 animate-in fade-in zoom-in-95 duration-300">
                             <button
                               type="button"

@@ -6,6 +6,30 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { LogOut, FileText, Check, X, Search } from "lucide-react";
 
+const formTypeLabels: Record<string, string> = {
+  LIP_AUGMENTATION: "Modelowanie ust",
+  FACIAL_VOLUMETRY: "Wolumetria twarzy",
+  WRINKLE_REDUCTION: "Niwelowanie zmarszczek",
+  NEEDLE_MESOTHERAPY: "Mezoterapia igłowa",
+  INJECTION_LIPOLYSIS: "Lipoliza iniekcyjna",
+  PERMANENT_MAKEUP: "Makijaż permanentny",
+  TISSUE_STIMULATION: "Stymulacja tkankowa",
+  LASER_HAIR_REMOVAL: "Depilacja laserowa",
+  LASER_TATTOO_REMOVAL: "Usuwanie tatuażu",
+  EYELID_LIFT: "Lifting powiek",
+  EYEBROW_TINTING: "Henna brwi",
+  EYELASH_EXTENSION: "Przedłużanie rzęs",
+  EYEBROW_LAMINATION: "Laminacja brwi",
+};
+
+const formTypeCategory = (type: string): { label: string; colors: string } => {
+  const laserTypes = ["LASER_HAIR_REMOVAL", "LASER_TATTOO_REMOVAL"];
+  const pmuTypes = ["PERMANENT_MAKEUP"];
+  if (laserTypes.includes(type)) return { label: "LASER", colors: "bg-red-100 text-red-700" };
+  if (pmuTypes.includes(type)) return { label: "PMU", colors: "bg-purple-100 text-purple-700" };
+  return { label: formTypeLabels[type] || type, colors: "bg-blue-100 text-blue-700" };
+};
+
 interface ConsentFormSummary {
   id: string;
   type: string;
@@ -159,19 +183,9 @@ export default function AdminDashboard() {
                       <h3 className="font-medium text-[#4a4540] flex items-center gap-2">
                         {form.imieNazwisko}
                         <span
-                          className={`text-xs px-2 py-0.5 rounded-full ${
-                            form.type === "PMU"
-                              ? "bg-purple-100 text-purple-700"
-                              : form.type === "LASER"
-                                ? "bg-red-100 text-red-700"
-                                : "bg-blue-100 text-blue-700"
-                          }`}
+                          className={`text-xs px-2 py-0.5 rounded-full ${formTypeCategory(form.type).colors}`}
                         >
-                          {form.type === "PMU"
-                            ? "PMU"
-                            : form.type === "LASER"
-                              ? "LASER"
-                              : "KWAS"}
+                          {formTypeCategory(form.type).label}
                         </span>
                       </h3>
                       <p className="text-sm text-[#8b8580]">
