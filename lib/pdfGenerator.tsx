@@ -250,6 +250,65 @@ function FaceZoneDiagram({
   );
 }
 
+const BODY_CHART_IMAGE = nodePath.join(
+  process.cwd(),
+  "public",
+  "women-body-chart.JPG"
+);
+
+const BODY_DIAGRAM_TYPES = new Set(["LASER_HAIR_REMOVAL"]);
+
+function BodyZoneDiagram({
+  zones,
+  selectedIds,
+}: {
+  zones: { id: string; name: string; d: string }[];
+  selectedIds: string[];
+}) {
+  return (
+    <View
+      style={{
+        position: "relative",
+        width: 360,
+        height: 509,
+        alignSelf: "center",
+        marginTop: 16,
+        marginBottom: 12,
+      }}
+    >
+      <Image
+        src={BODY_CHART_IMAGE}
+        style={{ width: 360, height: 509, borderRadius: 4 }}
+      />
+      <Svg
+        viewBox="0 0 724 1024"
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: 360,
+          height: 509,
+        }}
+      >
+        {zones.map((zone) => {
+          const isSelected = selectedIds.includes(zone.id);
+          return (
+            <SvgPath
+              key={zone.id}
+              d={zone.d}
+              fill="#8b7355"
+              fillOpacity={isSelected ? 0.5 : 0.05}
+              stroke="#8b7355"
+              strokeOpacity={isSelected ? 1 : 0.15}
+              strokeWidth={isSelected ? 2 : 0.5}
+            />
+          );
+        })}
+      </Svg>
+    </View>
+  );
+}
+
 // PDF Styles
 const styles = StyleSheet.create({
   page: {
@@ -848,13 +907,32 @@ function ConsentFormPdf({ form }: { form: any }) {
               ))}
             </View>
             {FACE_DIAGRAM_TYPES.has(form.type) && (
-              <FaceZoneDiagram
-                zones={getZonesForType(form.type)}
-                selectedIds={(form.obszarZabiegu || "")
-                  .split(",")
-                  .map((s: string) => s.trim())
-                  .filter(Boolean)}
-              />
+              <>
+                <Text style={{ fontSize: 9, color: "#8b8580", marginTop: 12, marginBottom: 4, textTransform: "uppercase", letterSpacing: 1 }}>
+                  Wizualizacja obszaru zabiegu
+                </Text>
+                <FaceZoneDiagram
+                  zones={getZonesForType(form.type)}
+                  selectedIds={(form.obszarZabiegu || "")
+                    .split(",")
+                    .map((s: string) => s.trim())
+                    .filter(Boolean)}
+                />
+              </>
+            )}
+            {BODY_DIAGRAM_TYPES.has(form.type) && (
+              <>
+                <Text style={{ fontSize: 9, color: "#8b8580", marginTop: 12, marginBottom: 4, textTransform: "uppercase", letterSpacing: 1 }}>
+                  Wizualizacja obszaru zabiegu
+                </Text>
+                <BodyZoneDiagram
+                  zones={BODY_ZONES}
+                  selectedIds={(form.obszarZabiegu || "")
+                    .split(",")
+                    .map((s: string) => s.trim())
+                    .filter(Boolean)}
+                />
+              </>
             )}
           </>
         )}

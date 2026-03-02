@@ -19,7 +19,6 @@ import {
 } from "../../../types/booking";
 import { depilacjaLaserowaContraindications } from "../../../types/booking";
 import { SALON_CONFIG } from "@/app/config/salon";
-import { BODY_ZONES } from "@/types/body-zones";
 
 interface LaserRemovalFormProps {
   onBack: () => void;
@@ -591,23 +590,11 @@ export default function LaserRemovalForm({ onBack }: LaserRemovalFormProps) {
                       <AnatomyBodySelector
                         initialSelected={
                           formData.obszarZabiegu
-                            ? formData.obszarZabiegu
-                                .split(", ")
-                                .map(
-                                  (name) =>
-                                    BODY_ZONES.find((z) => z.name === name)?.id,
-                                )
-                                .filter((id): id is string => !!id)
+                            ? formData.obszarZabiegu.split(",").map((s) => s.trim()).filter(Boolean)
                             : []
                         }
                         onSelect={(ids: string[]) => {
-                          const names = ids
-                            .map(
-                              (id) => BODY_ZONES.find((z) => z.id === id)?.name,
-                            )
-                            .filter(Boolean)
-                            .join(", ");
-                          handleInputChange("obszarZabiegu", names);
+                          handleInputChange("obszarZabiegu", ids.join(", "));
                         }}
                       />
                     </div>
