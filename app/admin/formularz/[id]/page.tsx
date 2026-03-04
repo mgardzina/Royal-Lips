@@ -22,6 +22,8 @@ import { contraindicationsByFormType, FormType } from "@/types/booking";
 import AnatomyFaceSelector from "@/app/components/AnatomyFaceSelector";
 import AnatomyBodySelector from "@/app/components/AnatomyBodySelector";
 import { ZONES } from "@/types/face-zones";
+import { ZONES as TISSUE_ZONES } from "@/types/face-zones-tissue";
+import { ZONES as PMU_ZONES } from "@/types/face-zone-pernament";
 import { BODY_ZONES } from "@/types/body-zones";
 
 const BODY_FORM_TYPES = ["LASER_HAIR_REMOVAL"];
@@ -44,7 +46,7 @@ const translateZones = (
   if (!zonesString) return "Nie podano";
 
   const selectedIds = zonesString.split(",").map((s) => s.trim());
-  const allZones = [...ZONES, ...BODY_ZONES];
+  const allZones = [...ZONES, ...TISSUE_ZONES, ...PMU_ZONES, ...BODY_ZONES];
 
   return selectedIds
     .map((id) => {
@@ -52,6 +54,15 @@ const translateZones = (
       return zone ? zone.name : id;
     })
     .join(", ");
+};
+
+// Helper: get zones list based on form type
+const getZonesForFormType = (formType: string, nazwaProduktu?: string | null) => {
+  if (formType === "TISSUE_STIMULATION") return TISSUE_ZONES;
+  if (formType === "PERMANENT_MAKEUP") return PMU_ZONES;
+  if (formType === "LASER_HAIR_REMOVAL") return BODY_ZONES;
+  if (formType === "LASER_TATTOO_REMOVAL" && nazwaProduktu === "Tatuaż") return BODY_ZONES;
+  return ZONES;
 };
 
 // Funkcja do czyszczenia starego formatu nazwaProduktu (usuwanie emaila)
@@ -86,6 +97,7 @@ interface ConsentFormFull {
   nazwaProduktu: string | null;
   obszarZabiegu: string | null;
   celEfektu: string | null;
+  znieczulenie: string | null;
   przeciwwskazania: Record<string, boolean | string | null>;
   zgodaPrzetwarzanieDanych: boolean;
   zgodaMarketing: boolean;
@@ -569,18 +581,37 @@ export default function FormDetailsPage() {
                   Obszar zabiegu
                 </label>
                 {isEditing ? (
-                  <input
-                    type="text"
-                    value={editedForm.obszarZabiegu || ""}
-                    onChange={(e) =>
-                      setEditedForm({
-                        ...editedForm,
-                        obszarZabiegu: e.target.value,
-                      })
-                    }
-                    className="w-full px-3 py-2 bg-white border border-[#d4cec4] rounded-lg focus:border-[#8b7355] focus:ring-2 focus:ring-[#8b7355]/20 outline-none"
-                    placeholder="Obszar zabiegu"
-                  />
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                    {getZonesForFormType(form.type, form.nazwaProduktu).map((zone) => {
+                      const selectedIds = (editedForm.obszarZabiegu || "")
+                        .split(",")
+                        .map((s) => s.trim())
+                        .filter(Boolean);
+                      const isSelected = selectedIds.includes(zone.id);
+                      return (
+                        <button
+                          key={zone.id}
+                          type="button"
+                          onClick={() => {
+                            const newIds = isSelected
+                              ? selectedIds.filter((id) => id !== zone.id)
+                              : [...selectedIds, zone.id];
+                            setEditedForm({
+                              ...editedForm,
+                              obszarZabiegu: newIds.join(", "),
+                            });
+                          }}
+                          className={`py-2 px-3 rounded-lg border-2 transition-all text-sm font-medium ${
+                            isSelected
+                              ? "border-[#8b7355] bg-[#4a4540] text-white"
+                              : "border-[#d4cec4] bg-white text-[#4a4540] hover:border-[#8b7355]"
+                          }`}
+                        >
+                          {zone.name}
+                        </button>
+                      );
+                    })}
+                  </div>
                 ) : (
                   <p className="text-[#5a5550]">
                     {translateZones(form.obszarZabiegu, form.type)}
@@ -657,6 +688,29 @@ export default function FormDetailsPage() {
                 ) : (
                   <p className="text-[#5a5550]">
                     {form.celEfektu || "Nie podano"}
+                  </p>
+                )}
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-[#8b8580] mb-1">
+                  Znieczulenie
+                </label>
+                {isEditing ? (
+                  <input
+                    type="text"
+                    value={editedForm.znieczulenie || ""}
+                    onChange={(e) =>
+                      setEditedForm({
+                        ...editedForm,
+                        znieczulenie: e.target.value,
+                      })
+                    }
+                    className="w-full px-3 py-2 bg-white border border-[#d4cec4] rounded-lg focus:border-[#8b7355] focus:ring-2 focus:ring-[#8b7355]/20 outline-none"
+                    placeholder="Np. Lidokaina 9,6%"
+                  />
+                ) : (
+                  <p className="text-[#5a5550]">
+                    {form.znieczulenie || "Nie podano"}
                   </p>
                 )}
               </div>

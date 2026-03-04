@@ -70,12 +70,12 @@ Font.register({
   ],
 });
 
-// Brand colors — beige/brown matching the app
+// Brand colors — white background for clean printing
 const BROWN = "#8b7355"; // Main accent (borders, titles, bullets)
 const DARK_BROWN = "#4a4540"; // Dark text, headers
-const BEIGE = "#f8f6f3"; // Page background
-const BEIGE_LIGHT = "#efe9e1"; // Alternating rows
-const BORDER_BEIGE = "#d4cec4"; // Subtle borders
+const BEIGE = "#FFFFFF"; // Page background (white for clean print)
+const BEIGE_LIGHT = "#f5f5f5"; // Alternating rows
+const BORDER_BEIGE = "#e0e0e0"; // Subtle borders
 const DARK = "#3a3632"; // Main text
 const GRAY = "#6b635a"; // Secondary text
 const WHITE = "#FFFFFF";
@@ -938,6 +938,12 @@ function ConsentFormPdf({ form }: { form: any }) {
                 <Text style={styles.fieldValue}>{form.iloscProduktu}</Text>
               </View>
             )}
+            <View style={styles.fieldRow}>
+              <Text style={styles.fieldLabel}>Znieczulenie:</Text>
+              <Text style={styles.fieldValue}>
+                {form.znieczulenie || "---"}
+              </Text>
+            </View>
           </View>
           <View style={styles.column}>
             <View style={styles.fieldRow}>

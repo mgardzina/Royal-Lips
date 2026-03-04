@@ -54,6 +54,7 @@ export async function PATCH(
     const allowedFields = [
       "nazwaProduktu",
       "obszarZabiegu",
+      "znieczulenie",
       "celEfektu",
       "email",
       "telefon",
