@@ -605,11 +605,21 @@ export default function FormDetailsPage() {
                     Metoda zabiegu
                   </label>
                   {isEditing ? (
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
                       {[
                         { value: "Mezoterapia", label: "Mezoterapia" },
-                        { value: "Osocze bogatopłytkowe (PRP)", label: "Osocze bogatopłytkowe (PRP)" },
-                        { value: "Osocze + egzosomy", label: "Osocze + egzosomy" },
+                        {
+                          value: "Osocze bogatopłytkowe (PRP)",
+                          label: "Osocze bogatopłytkowe (PRP)",
+                        },
+                        {
+                          value: "Osocze + egzosomy",
+                          label: "Osocze + egzosomy",
+                        },
+                        {
+                          value: "Kwas polimlekowy (PLA)",
+                          label: "Kwas polimlekowy (PLA)",
+                        },
                       ].map((method) => (
                         <button
                           key={method.value}
