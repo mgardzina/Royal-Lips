@@ -97,6 +97,7 @@ interface ConsentFormFull {
   nazwaProduktu: string | null;
   obszarZabiegu: string | null;
   celEfektu: string | null;
+  metodaZabiegu: string | null;
   znieczulenie: string | null;
   przeciwwskazania: Record<string, boolean | string | null>;
   zgodaPrzetwarzanieDanych: boolean;
@@ -576,6 +577,45 @@ export default function FormDetailsPage() {
                   </p>
                 )}
               </div>
+              {/* Metoda zabiegu - only for NEEDLE_MESOTHERAPY */}
+              {form.type === "NEEDLE_MESOTHERAPY" && (
+                <div>
+                  <label className="block text-sm font-medium text-[#8b8580] mb-1">
+                    Metoda zabiegu
+                  </label>
+                  {isEditing ? (
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+                      {[
+                        { value: "Mezoterapia", label: "Mezoterapia" },
+                        { value: "Osocze bogatopłytkowe (PRP)", label: "Osocze bogatopłytkowe (PRP)" },
+                        { value: "Osocze + egzosomy", label: "Osocze + egzosomy" },
+                      ].map((method) => (
+                        <button
+                          key={method.value}
+                          type="button"
+                          onClick={() =>
+                            setEditedForm({
+                              ...editedForm,
+                              metodaZabiegu: method.value,
+                            })
+                          }
+                          className={`py-2 px-3 rounded-lg border-2 transition-all text-sm font-medium ${
+                            (editedForm.metodaZabiegu || form.metodaZabiegu) === method.value
+                              ? "border-[#8b7355] bg-[#4a4540] text-white"
+                              : "border-[#d4cec4] bg-white text-[#4a4540] hover:border-[#8b7355]"
+                          }`}
+                        >
+                          {method.label}
+                        </button>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-[#5a5550]">
+                      {form.metodaZabiegu || "Nie podano"}
+                    </p>
+                  )}
+                </div>
+              )}
               <div>
                 <label className="block text-sm font-medium text-[#8b8580] mb-1">
                   Obszar zabiegu

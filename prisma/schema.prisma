@@ -86,6 +86,7 @@ model ConsentForm {
   nazwaProduktu String?
   obszarZabiegu String?
   celEfektu     String?
+  metodaZabiegu String? // Metoda zabiegu (Mezoterapia / PRP / Osocze + egzosomy)
   znieczulenie  String? // Nowe pole
 
   // Przeciwwskazania (JSON)

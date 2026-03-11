@@ -944,6 +944,12 @@ function ConsentFormPdf({ form }: { form: any }) {
                 {form.znieczulenie || "---"}
               </Text>
             </View>
+            {form.metodaZabiegu && (
+              <View style={styles.fieldRow}>
+                <Text style={styles.fieldLabel}>Metoda zabiegu:</Text>
+                <Text style={styles.fieldValue}>{form.metodaZabiegu}</Text>
+              </View>
+            )}
           </View>
           <View style={styles.column}>
             <View style={styles.fieldRow}>

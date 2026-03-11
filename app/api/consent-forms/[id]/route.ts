@@ -62,6 +62,7 @@ export async function PATCH(
       "kodPocztowy",
       "miasto",
       "type",
+      "metodaZabiegu",
       "przeciwwskazania",
     ];
 

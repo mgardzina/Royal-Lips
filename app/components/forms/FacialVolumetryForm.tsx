@@ -598,13 +598,6 @@ export default function FacialVolumetryForm({
                     jędrności skóry.
                   </p>
                   <p>
-                    Zabieg wykonywany jest przy użyciu produktów takich jak:
-                    Stylage L, Stylage XL (kwas hialuronowy) lub Neauvia
-                    Stimulate, Radiesse (stymulatory tkankowe). Wybór preparatu
-                    zależy od indywidualnych potrzeb klienta i oczekiwanych
-                    efektów.
-                  </p>
-                  <p>
                     Zabieg odbywa się zawsze po wykluczeniu wszelkich
                     przeciwwskazań. W rozmowie z Klientem określane są potrzeby
                     i oczekiwania, a specjalista dobiera odpowiedni preparat i

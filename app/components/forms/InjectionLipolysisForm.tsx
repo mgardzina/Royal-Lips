@@ -606,12 +606,6 @@ export default function InjectionLipolysisForm({
                     połączyć z odpowiednią dietą i ćwiczeniami.
                   </p>
                   <p>
-                    W miejsce poddane zabiegowi wstrzykiwany jest preparat
-                    bezpośrednio do tkanki tłuszczowej za pomocą specjalnej
-                    igły. Do wykonania zabiegu stosowany jest preparat:
-                    Cincelar.
-                  </p>
-                  <p>
                     Po aplikacji preparatu Klientowi wykonuje się masaż, dzięki
                     któremu wstrzykiwane substancje aktywne są równomiernie
                     rozprowadzane. Masaż pomaga również ograniczyć ewentualne

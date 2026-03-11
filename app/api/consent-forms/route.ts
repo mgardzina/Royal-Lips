@@ -33,6 +33,7 @@ export async function POST(request: NextRequest) {
         nazwaProduktu: body.nazwaProduktu || null,
         obszarZabiegu: body.obszarZabiegu || null,
         celEfektu: body.celEfektu || null,
+        metodaZabiegu: body.metodaZabiegu || null,
         przeciwwskazania: body.przeciwwskazania,
         zgodaPrzetwarzanieDanych: Boolean(body.zgodaPrzetwarzanieDanych),
         zgodaMarketing: Boolean(body.zgodaMarketing),

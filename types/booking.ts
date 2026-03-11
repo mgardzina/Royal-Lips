@@ -31,6 +31,7 @@ export interface ConsentFormData {
   nazwaProduktu: string;
   obszarZabiegu: string;
   celEfektu: string;
+  metodaZabiegu?: string; // "Mezoterapia" / "Osocze bogatopłytkowe (PRP)" / "Osocze + egzosomy"
   numerZabiegu?: string; // "zabieg pierwszy" / "zabieg kolejny"
 
   // Przeciwwskazania (Słownik klucz -> wartość, wartość może być boolean dla checkboxów lub string dla pól follow-up)
