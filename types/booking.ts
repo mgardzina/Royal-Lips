@@ -628,6 +628,7 @@ export interface ContraindicationWithFollowUp {
   text: string;
   hasFollowUp?: boolean;
   followUpPlaceholder?: string;
+  isPositiveAnswerSafe?: boolean;
 }
 
 export const modelowanieUstContraindications: Record<string, string | ContraindicationWithFollowUp> = {
