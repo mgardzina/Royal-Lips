@@ -16,7 +16,7 @@ async function main() {
     // Use loose SSL validation (standard for Cloud SQL public IP without explicit certs)
     ssl: { rejectUnauthorized: false }
   });
-  const adapter = new PrismaPg(pool);
+  const adapter = new PrismaPg(pool as any);
   const prisma = new PrismaClient({ adapter });
 
   console.log("Fetching latest ConsentForm...");

@@ -15,7 +15,7 @@ const pool = new Pool({
   connectionString,
   ssl: isCloudSqlProxy ? false : { rejectUnauthorized: false },
 });
-const adapter = new PrismaPg(pool);
+const adapter = new PrismaPg(pool as any);
 
 export const prisma = globalForPrisma.prisma ?? new PrismaClient({ adapter });
 
