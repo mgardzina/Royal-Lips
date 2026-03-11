@@ -109,6 +109,13 @@ export default function NeedleMesotherapyForm({
   const isWizardComplete =
     currentContraindicationIndex === contraindicationKeys.length;
 
+  // Auto-hide wizard when complete to prevent rendering undefined question
+  useEffect(() => {
+    if (isWizardComplete && showContraindicationsWizard) {
+      setShowContraindicationsWizard(false);
+    }
+  }, [isWizardComplete, showContraindicationsWizard]);
+
   // Scroll to top on step change
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
