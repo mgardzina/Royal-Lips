@@ -1458,8 +1458,8 @@ export default function NeedleMesotherapyForm({
                       regulaminu oraz wymienione poniżej zasady.
                     </li>
                     <li>
-                      Przy rezerwacji terminu na makijaż permanentny wymagana
-                      jest opłata (zadatek) w wysokości 50% wartości zabiegu.
+                      Przy rezerwacji terminu na zabieg wymagana jest opłata
+                      (zadatek) w wysokości zgodnej z aktualnym cennikiem.
                     </li>
                     <li>
                       Na uregulowanie zadatku Klient/ka ma 3 dni od momentu
@@ -1487,10 +1487,9 @@ export default function NeedleMesotherapyForm({
                       żadnych przeciwwskazań do wykonania zabiegu.
                     </li>
                     <li>
-                      Konsultacja dotycząca wykonania zabiegu makijażu
-                      permanentnego jest zawsze bezpłatna. Jeśli masz
-                      jakiekolwiek wątpliwości dotyczące zabiegu umów się
-                      telefonicznie na bezpłatną konsultację.
+                      Konsultacja dotycząca wykonania zabiegu jest zawsze
+                      bezpłatna. Jeśli masz jakiekolwiek wątpliwości dotyczące
+                      zabiegu, umów się telefonicznie na bezpłatną konsultację.
                     </li>
                     <li>
                       Klientka ma prawo odwołać wizytę na 3 dni przed planowanym
@@ -1509,86 +1508,73 @@ export default function NeedleMesotherapyForm({
                       zwolnieniem lekarskim).
                     </li>
                     <li>
-                      Klientki, które miały kiedykolwiek wykonywany makijaż
-                      permanentny na danym obszarze (nawet mało widoczny) są
+                      Klientki, które miały kiedykolwiek wykonywany podobny
+                      zabieg na danym obszarze (nawet mało widoczny) są
                       zobowiązane przy zapisie powiadomić o tym fakcie recepcję,
-                      ponieważ zdarza się, że zabieg makijażu permanentnego
-                      powinien zostać poprzedzony laserowym usuwaniem śladów po
-                      starym, a to wymaga innego czasu oraz sprzętu.
+                      ponieważ zdarza się, że zabieg powinien zostać poprzedzony
+                      inną procedurą medyczną lub laserową, co wymaga innego
+                      czasu oraz sprzętu.
                     </li>
                     <li>
-                      Podczas zabiegu makijażu permanentnego wykonywana jest
-                      wizualizacja i wybierana jest odpowiednia metoda makijażu
-                      permanentnego. Rodzaj metody oraz pigmenty wybierane są
-                      przez linergistkę i dopasowane do naturalnej urody
-                      Klientki.
+                      Podczas konsultacji przedzabiegowej dobierana jest
+                      odpowiednia metoda oraz preparaty dostosowane do naturalnej
+                      urody i potrzeb Klientki.
                     </li>
                     <li>
-                      Linergistka ma prawo do odmowy wykonania usługi, jeżeli
-                      oczekiwania Klientki co do kształtu są niezgodne z
-                      klasycznym układem brwi.
+                      Osoba wykonująca zabieg ma prawo do odmowy wykonania
+                      usługi, jeżeli oczekiwania Klientki co do efektu są
+                      niemożliwe do zrealizowania lub niebezpieczne dla jej
+                      zdrowia.
                     </li>
                     <li>
                       Decydując się na zabieg należy zapoznać się z pracami,
-                      stylem i techniką linergistek w Salonie.
+                      stylem i techniką specjalistów w Salonie.
                     </li>
                     <li>
-                      W przypadku, gdy Klientka nie akceptuje proponowanego
-                      kształtu, metody i koloru pigmentu oraz decyduje o
-                      rezygnacji z pigmentacji podczas wizyty — zadatek nie jest
-                      zwracany.
+                      W przypadku, gdy Klientka nie akceptuje proponowanej
+                      metody i preparatów oraz decyduje o rezygnacji z zabiegu
+                      podczas wizyty — zadatek nie jest zwracany.
                     </li>
                     <li>
-                      Jeżeli Klientka, która skorzystała z usługi makijażu
-                      permanentnego w naszym salonie ma uwagi co do
-                      koloru/kształtu itp. to w ciągu 2 miesięcy od wykonania
-                      może je do nas zgłosić (i zostaną one bezpłatnie
-                      skorygowane), natomiast wszelkie sugestie po upływie 2
-                      miesięcy od zabiegu będą wyceniane indywidualnie.
+                      Jeżeli Klientka, która skorzystała z usługi w naszym
+                      salonie ma uwagi co do jej efektów, może je zgłosić w
+                      czasie do 14 dni od zabiegu. Wszelkie sugestie po tym
+                      terminie będą wyceniane indywidualnie.
                     </li>
                     <li>
-                      Jeśli Klientka ma umówioną darmową korektę przysługującą w
-                      ciągu 50 dni od daty zabiegu makijażu i na tę wizytę nie
-                      przyjdzie/nie odwoła na 24 godz. to uważa się ją za odbytą
-                      i kolejna umówiona korekta jest już płatna — dokładną cenę
-                      usługi w tej sytuacji ustala linergistka podczas wizyty.
-                      Każdy 1 miesiąc opóźnienia to dodatkowa opłata 100 zł.
+                      Jeśli Klientka ma umówioną bezpłatną wizytę kontrolną i na
+                      tę wizytę nie przyjdzie lub nie odwoła jej z 24-godzinnym
+                      wyprzedzeniem, uważa się ją za odbytą. Każda kolejna
+                      wizyta jest płatna zgodnie z cennikiem.
                     </li>
                     <li>
-                      Jeżeli Klientka jest z zagranicy i nie może odbyć korekty
-                      w ciągu 50 dni od daty pierwszego zabiegu, to istnieje
-                      możliwość wydłużenia umownego okresu do 3 miesięcy po
-                      pierwszej pigmentacji, należy jednak zgłosić fakt
-                      przebywania za granicą linergistce, która zanotuje
-                      informacje w systemie i tylko na tej podstawie okres
-                      korekty wydłuża się. Jeśli Klientka nie zgłosi się w
-                      terminie 3 miesięcy od dnia pierwszej wizyty na korektę
-                      makijażu, to po tym czasie korekta jest już płatna. Cenę
-                      ustala linergistka podczas wizyty.
+                      Jeżeli Klientka jest z zagranicy i nie może odbyć wizyty
+                      kontrolnej w terminie, istnieje możliwość jego
+                      wydłużenia po uprzednim zgłoszeniu tego faktu osobie
+                      wykonującej zabieg.
                     </li>
                     <li>
-                      Jeżeli Klientka, która wykonywała zabieg makijażu
-                      permanentnego brwi w naszym Salonie po zabiegu dowiaduje
-                      się o ciąży i odkłada korektę makijażu do okresu po
-                      porodzie, i chce dokonać korekty np. po ok. roku to
-                      wówczas cena zabiegu to 50% aktualnej ceny makijażu
-                      permanentnego.
+                      Jeżeli Klientka po zabiegu dowiaduje się o ciąży i odkłada
+                      kolejną wizytę z serii do okresu po porodzie, prosimy o
+                      niezwłoczne poinformowanie salonu w celu ustalenia
+                      indywidualnego planu zabiegowego.
                     </li>
                     <li>
-                      Makijaż permanentny zmienia swoją intensywność w kolejnych
-                      miesiącach po zabiegu dlatego po roku zaleca się wykonanie
-                      korekty płatnej, której koszt zgodnie z cennikiem to 50%
-                      aktualnej ceny makijażu permanentnego. Jeżeli natomiast
-                      będzie potrzebna dodatkowa pigmentacja jej koszt to 200zł.
-                      Korekta po upływie min. 2 latach od ostatniego zabiegu
-                      makijażu permanentnego to koszt 100% aktualnej ceny lub w
-                      wyjątkowych sytuacjach wycena indywidualna.
+                      Efekty zabiegów zmieniają swoją intensywność w czasie,
+                      dlatego dla podtrzymania rezultatu zaleca się wykonywanie
+                      zabiegów przypominających. Koszt takich zabiegów ustalany
+                      jest zgodnie z aktualnym cennikiem.
                     </li>
                     <li>
-                      Korekty makijażu permanentnego po innych salonach są
-                      zawsze wyceniane indywidualnie i zwykle traktowane jako
-                      usługa wykonywana od początku + koszt usuwania laserem
-                      wyceniany jest indywidualnie.
+                      Kontynuacja zabiegów wykonanych w innych salonach
+                      traktowana jest jako nowa usługa i wyceniana zgodnie z
+                      aktualnym cennikiem.
+                    </li>
+                    <li>
+                      Trwałość efektów zabiegowych zależy od wielu czynników, w
+                      tym od obszaru zabiegowego, rodzaju preparatu oraz
+                      indywidualnych cech organizmu. Częstotliwość zabiegów
+                      podtrzymujących ustalana jest indywidualnie.
                     </li>
                     <li>
                       Zastrzegamy sobie prawo do zmiany poszczególnych punktów
@@ -1598,14 +1584,6 @@ export default function NeedleMesotherapyForm({
                       Zastrzegamy sobie prawo do zmiany ustalonego wcześniej
                       terminu wizyty po ustaleniu z Klientką innego, dogodnego
                       dla obu stron.
-                    </li>
-                    <li>
-                      Korekta po około roku dotyczy głównie makijażu
-                      permanentnego brwi, ponieważ pigment w innych częściach
-                      utrzymuje się dłużej w związku z tym np. usta po roku są
-                      wyraźnie zabarwione i nie wymagają korekty. Brwi natomiast
-                      znajdują się w strefie T, co skutkuje szybszym
-                      wypłukiwaniem barwnika.
                     </li>
                   </ol>
                 </div>

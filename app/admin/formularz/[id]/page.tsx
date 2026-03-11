@@ -38,6 +38,27 @@ const isBodyFormType = (
   return false;
 };
 
+const shouldShowAnatomySelector = (
+  formType: string,
+  nazwaProduktu?: string | null,
+): boolean => {
+  const supportedTypes = [
+    "LIP_AUGMENTATION",
+    "FACIAL_VOLUMETRY",
+    "WRINKLE_REDUCTION",
+    "TISSUE_STIMULATION",
+    "PERMANENT_MAKEUP",
+    "LASER_HAIR_REMOVAL",
+    "LASER_TATTOO_REMOVAL", // Handled by isBodyFormType logic inside if needed
+  ];
+  
+  if (formType === "NEEDLE_MESOTHERAPY" || formType === "INJECTION_LIPOLYSIS") {
+    return false;
+  }
+
+  return supportedTypes.includes(formType);
+};
+
 // Helper do tłumaczenia stref
 const translateZones = (
   zonesString: string | null,
@@ -683,32 +704,34 @@ export default function FormDetailsPage() {
               </div>
 
               {/* Visual Anatomy Selector for Admin */}
-              <div className="mt-4 border-t border-[#d4cec4] pt-4">
-                <label className="block text-sm font-medium text-[#8b8580] mb-4">
-                  Wizualizacja obszaru zabiegu
-                </label>
-                <div className="bg-[#f8f6f3] rounded-xl border border-[#d4cec4] p-6 flex justify-center pointer-events-none">
-                  <div className="w-full max-w-lg aspect-square relative">
-                    {isBodyFormType(form.type, form.nazwaProduktu) ? (
-                      <AnatomyBodySelector
-                        initialSelected={
-                          form.obszarZabiegu
-                            ? form.obszarZabiegu.split(",").map((s) => s.trim())
-                            : []
-                        }
-                      />
-                    ) : (
-                      <AnatomyFaceSelector
-                        initialSelected={
-                          form.obszarZabiegu
-                            ? form.obszarZabiegu.split(",").map((s) => s.trim())
-                            : []
-                        }
-                      />
-                    )}
+              {shouldShowAnatomySelector(form.type, form.nazwaProduktu) && (
+                <div className="mt-4 border-t border-[#d4cec4] pt-4">
+                  <label className="block text-sm font-medium text-[#8b8580] mb-4">
+                    Wizualizacja obszaru zabiegu
+                  </label>
+                  <div className="bg-[#f8f6f3] rounded-xl border border-[#d4cec4] p-6 flex justify-center pointer-events-none">
+                    <div className="w-full max-w-lg aspect-square relative">
+                      {isBodyFormType(form.type, form.nazwaProduktu) ? (
+                        <AnatomyBodySelector
+                          initialSelected={
+                            form.obszarZabiegu
+                              ? form.obszarZabiegu.split(",").map((s) => s.trim())
+                              : []
+                          }
+                        />
+                      ) : (
+                        <AnatomyFaceSelector
+                          initialSelected={
+                            form.obszarZabiegu
+                              ? form.obszarZabiegu.split(",").map((s) => s.trim())
+                              : []
+                          }
+                        />
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
               <div>
                 <label className="block text-sm font-medium text-[#8b8580] mb-1">
                   Cel / efekt
