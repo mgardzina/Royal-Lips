@@ -929,7 +929,7 @@ export default function NeedleMesotherapyForm({
                   />
                 </div>
 
-                {showContraindicationsWizard ? (
+                {showContraindicationsWizard && !isWizardComplete ? (
                   <div className="bg-[#f8f6f3]/50 backdrop-blur-sm p-6 rounded-xl border border-[#d4cec4] max-w-2xl mx-auto shadow-sm">
                     {/* Category Header */}
 
@@ -943,7 +943,10 @@ export default function NeedleMesotherapyForm({
                           className="h-full bg-[#8b7355] transition-all duration-300"
                           style={{
                             width: `${
-                              ((currentContraindicationIndex + 1) /
+                              (Math.min(
+                                currentContraindicationIndex + 1,
+                                contraindicationKeys.length,
+                              ) /
                                 contraindicationKeys.length) *
                               100
                             }%`,
