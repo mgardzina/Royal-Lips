@@ -39,6 +39,28 @@ steps:
         npx prisma db push --accept-data-loss
     env:
       - 'DATABASE_URL=postgresql://postgres:TempPass123%21@localhost/royal-lips-database?host=/cloudsql/royal-lips:europe-west1:royal-lips-db-be'
+
+  # Create admin user if not exists
+  - name: 'node:20-alpine'
+    entrypoint: 'sh'
+    args:
+      - '-c'
+      - |
+        apk add --no-cache openssl curl &&
+        curl -o cloud-sql-proxy https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/v2.8.0/cloud-sql-proxy.linux.amd64 &&
+        chmod +x cloud-sql-proxy &&
+        mkdir -p /cloudsql &&
+        chmod 777 /cloudsql &&
+        ./cloud-sql-proxy --unix-socket=/cloudsql royal-lips:europe-west1:royal-lips-db-be &
+        sleep 5 &&
+        npm install tsx bcryptjs pg dotenv &&
+        npx tsx scripts/create-admin.ts
+    env:
+      - 'DATABASE_URL=postgresql://postgres:TempPass123%21@localhost/royal-lips-database?host=/cloudsql/royal-lips:europe-west1:royal-lips-db-be'
+      - 'ADMIN_EMAIL=joanna@royal-lips.pl'
+      - 'ADMIN_PASSWORD=RoyalLips2026!'
+      - 'ADMIN_NAME=Joanna'
+      - 'ADMIN_PHONE_NUMBER=+48792377737'
     
   # Deploy container image to Cloud Run
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
@@ -57,7 +79,7 @@ steps:
       - '--add-cloudsql-instances'
       - 'royal-lips:europe-west1:royal-lips-db-be'
       - '--set-env-vars'
-      - 'DATABASE_URL=postgresql://postgres:TempPass123%21@/royal-lips-database?host=/cloudsql/royal-lips:europe-west1:royal-lips-db-be,NEXTAUTH_SECRET=k8xP2mN9qR4vL7wY3jF6hT1bZ5cA0dE8,NEXTAUTH_URL=https://royallips.pl,SMSAPI_TOKEN=NmyBqgymj3vezqlRAJxiS0elAuk7WgLu4fVkrX2c,SMSAPI_SENDER=RoyalLips'
+      - 'DATABASE_URL=postgresql://postgres:TempPass123%21@/royal-lips-database?host=/cloudsql/royal-lips:europe-west1:royal-lips-db-be,NEXTAUTH_SECRET=k8xP2mN9qR4vL7wY3jF6hT1bZ5cA0dE8,NEXTAUTH_URL=https://royal-lips.pl,SMSAPI_TOKEN=NmyBqgymj3vezqlRAJxiS0elAuk7WgLu4fVkrX2c,SMSAPI_SENDER=RoyalLips'
       - '--memory'
       - '512Mi'
       - '--cpu'
