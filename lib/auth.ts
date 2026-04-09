@@ -14,16 +14,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       credentials: {
         email: { label: "Email", type: "text" },
         password: { label: "Hasło", type: "password" },
-        code: { label: "Kod SMS", type: "text" },
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password || !credentials?.code) {
+        if (!credentials?.email || !credentials?.password) {
           return null;
         }
 
         const email = credentials.email as string;
         const password = credentials.password as string;
-        const code = credentials.code as string;
 
         // 1. Check if it's an allowed admin email in DB
         const admin = await prisma.adminUser.findUnique({
@@ -39,27 +37,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         if (!isPasswordValid) {
           return null;
         }
-
-        // 3. Verify OTP from DB
-        const verification = await prisma.otpVerification.findFirst({
-          where: {
-            phoneNumber: admin.phoneNumber,
-            code: code,
-            verified: false,
-            expiresAt: { gt: new Date() },
-          },
-          orderBy: { createdAt: "desc" },
-        });
-
-        if (!verification) {
-          return null;
-        }
-
-        // 3. Mark as verified
-        await prisma.otpVerification.update({
-          where: { id: verification.id },
-          data: { verified: true },
-        });
 
         // 4. Return admin session
         return {
