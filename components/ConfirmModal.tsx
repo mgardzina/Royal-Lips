@@ -24,6 +24,7 @@ export default function ConfirmModal({
   confirmText = "Potwierdź",
   cancelText = "Anuluj",
   variant = "warning",
+  isAlert = false,
 }: ConfirmModalProps) {
   if (!isOpen) return null;
 
