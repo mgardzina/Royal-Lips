@@ -101,6 +101,7 @@ export default function AdminDashboard() {
   const [forms, setForms] = useState<ConsentFormSummary[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedType, setSelectedType] = useState<string>("ALL");
 
   // Sprawdzenie autentykacji
   useEffect(() => {
@@ -131,8 +132,9 @@ export default function AdminDashboard() {
 
   const filteredForms = forms.filter(
     (form) =>
-      form.imieNazwisko.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      form.telefon.includes(searchQuery),
+      (form.imieNazwisko.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        form.telefon.includes(searchQuery)) &&
+      (selectedType === "ALL" || form.type === selectedType),
   );
 
   const formatDate = (dateString: string) => {
@@ -153,6 +155,12 @@ export default function AdminDashboard() {
       </div>
     );
   }
+
+  // Oblicz liczniki dla filtrów
+  const counts = forms.reduce((acc: Record<string, number>, form) => {
+    acc[form.type] = (acc[form.type] || 0) + 1;
+    return acc;
+  }, {});
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#f8f6f3] via-[#efe9e1] to-[#e8e0d5]">
@@ -194,8 +202,8 @@ export default function AdminDashboard() {
       </header>
 
       <main className="max-w-6xl mx-auto px-4 py-8">
-        {/* Search */}
-        <div className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-4 md:p-6 mb-6">
+        {/* Search & Filter */}
+        <div className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg p-4 md:p-6 mb-6 space-y-4">
           <div className="relative">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#8b8580]" />
             <input
@@ -205,6 +213,35 @@ export default function AdminDashboard() {
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-12 pr-4 py-3 bg-white border border-[#d4cec4] rounded-xl focus:border-[#8b7355] focus:ring-2 focus:ring-[#8b7355]/20 outline-none transition-all"
             />
+          </div>
+
+          <div className="flex flex-wrap gap-2 overflow-x-auto pb-2 scrollbar-hide">
+            <button
+              onClick={() => setSelectedType("ALL")}
+              className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap ${
+                selectedType === "ALL"
+                  ? "bg-[#4a4540] text-white shadow-md"
+                  : "bg-white text-[#8b8580] border border-[#d4cec4] hover:border-[#8b7355] hover:text-[#8b7355]"
+              }`}
+            >
+              WSZYSTKIE ({forms.length})
+            </button>
+            {Object.entries(formTypeLabels).map(([type, label]) => {
+              if (!counts[type]) return null;
+              return (
+                <button
+                  key={type}
+                  onClick={() => setSelectedType(type)}
+                  className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap ${
+                    selectedType === type
+                      ? "bg-[#8b7355] text-white shadow-md"
+                      : "bg-white text-[#8b8580] border border-[#d4cec4] hover:border-[#8b7355] hover:text-[#8b7355]"
+                  }`}
+                >
+                  {label.toUpperCase()} ({counts[type]})
+                </button>
+              );
+            })}
           </div>
         </div>
 

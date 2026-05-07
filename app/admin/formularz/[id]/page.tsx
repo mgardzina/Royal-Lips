@@ -25,6 +25,7 @@ import { ZONES } from "@/types/face-zones";
 import { ZONES as TISSUE_ZONES } from "@/types/face-zones-tissue";
 import { ZONES as PMU_ZONES } from "@/types/face-zone-pernament";
 import { BODY_ZONES } from "@/types/body-zones";
+import ConfirmModal from "@/components/ConfirmModal";
 
 const BODY_FORM_TYPES = ["LASER_HAIR_REMOVAL"];
 // For LASER_TATTOO_REMOVAL: show body selector only when product is "Tatuaż"
@@ -43,7 +44,6 @@ const shouldShowAnatomySelector = (
   nazwaProduktu?: string | null,
 ): boolean => {
   const supportedTypes = [
-    "LIP_AUGMENTATION",
     "FACIAL_VOLUMETRY",
     "WRINKLE_REDUCTION",
     "TISSUE_STIMULATION",
@@ -168,6 +168,20 @@ export default function FormDetailsPage() {
   const [activeTab, setActiveTab] = useState<
     "details" | "contraindications" | "consents"
   >("details");
+  const [modalConfig, setModalConfig] = useState<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+    onConfirm: () => void;
+    confirmText?: string;
+    variant?: "danger" | "warning" | "info" | "success";
+    isAlert?: boolean;
+  }>({
+    isOpen: false,
+    title: "",
+    message: "",
+    onConfirm: () => {},
+  });
 
   useEffect(() => {
     fetchForm();
@@ -228,22 +242,30 @@ export default function FormDetailsPage() {
   };
 
   const handleDelete = async () => {
-    if (!confirm("Czy na pewno chcesz usunąć ten formularz?")) return;
-
-    setIsDeleting(true);
-    try {
-      const response = await fetch(`/api/consent-forms/${params.id}`, {
-        method: "DELETE",
-      });
-      const data = await response.json();
-      if (data.success) {
-        router.push("/admin");
-      }
-    } catch (error) {
-      console.error("Błąd usuwania:", error);
-    } finally {
-      setIsDeleting(false);
-    }
+    setModalConfig({
+      isOpen: true,
+      title: "Usuń formularz",
+      message: "Czy na pewno chcesz trwale usunąć ten formularz? Tej operacji nie można cofnąć.",
+      confirmText: "Usuń",
+      variant: "danger",
+      onConfirm: async () => {
+        setIsDeleting(true);
+        setModalConfig((prev) => ({ ...prev, isOpen: false }));
+        try {
+          const response = await fetch(`/api/consent-forms/${params.id}`, {
+            method: "DELETE",
+          });
+          const data = await response.json();
+          if (data.success) {
+            router.push("/admin");
+          }
+        } catch (error) {
+          console.error("Błąd usuwania:", error);
+        } finally {
+          setIsDeleting(false);
+        }
+      },
+    });
   };
 
   const handleSave = async () => {
@@ -294,7 +316,15 @@ export default function FormDetailsPage() {
       URL.revokeObjectURL(url);
     } catch (err) {
       console.error("Błąd pobierania PDF:", err);
-      alert("Nie udało się pobrać PDF");
+      setModalConfig({
+        isOpen: true,
+        title: "Błąd PDF",
+        message: "Nie udało się pobrać pliku PDF. Spróbuj ponownie później.",
+        confirmText: "OK",
+        variant: "danger",
+        isAlert: true,
+        onConfirm: () => setModalConfig((prev) => ({ ...prev, isOpen: false })),
+      });
     } finally {
       setIsDownloadingPdf(false);
     }
@@ -719,8 +749,8 @@ export default function FormDetailsPage() {
                   <label className="block text-sm font-medium text-[#8b8580] mb-4">
                     Wizualizacja obszaru zabiegu
                   </label>
-                  <div className="bg-[#f8f6f3] rounded-xl border border-[#d4cec4] p-6 flex justify-center pointer-events-none">
-                    <div className="w-full max-w-lg aspect-square relative">
+                  <div className="bg-[#f8f6f3] rounded-xl border border-[#d4cec4] p-4 md:p-6 flex justify-center pointer-events-none overflow-hidden">
+                    <div className="w-full max-w-sm md:max-w-lg relative">
                       {isBodyFormType(form.type, form.nazwaProduktu) ? (
                         <AnatomyBodySelector
                           initialSelected={
@@ -1167,6 +1197,17 @@ export default function FormDetailsPage() {
           </div>
         )}
       </main>
+
+      <ConfirmModal
+        isOpen={modalConfig.isOpen}
+        title={modalConfig.title}
+        message={modalConfig.message}
+        confirmText={modalConfig.confirmText}
+        variant={modalConfig.variant}
+        isAlert={modalConfig.isAlert}
+        onConfirm={modalConfig.onConfirm}
+        onCancel={() => setModalConfig((prev) => ({ ...prev, isOpen: false }))}
+      />
     </div>
   );
 }

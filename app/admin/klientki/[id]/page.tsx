@@ -24,6 +24,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { ZONES } from "@/types/face-zones";
+import ConfirmModal from "@/components/ConfirmModal";
 
 // Helper do tłumaczenia stref
 const translateZones = (zonesString: string | null): string => {
@@ -155,6 +156,20 @@ export default function ClientDetailsPage({
     znieczulenie: "",
   });
   const [isSavingEdit, setIsSavingEdit] = useState(false);
+  const [modalConfig, setModalConfig] = useState<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+    onConfirm: () => void;
+    confirmText?: string;
+    variant?: "danger" | "warning" | "info" | "success";
+    isAlert?: boolean;
+  }>({
+    isOpen: false,
+    title: "",
+    message: "",
+    onConfirm: () => {},
+  });
 
   useEffect(() => {
     params.then((p) => setClientId(p.id));
@@ -230,7 +245,15 @@ export default function ClientDetailsPage({
 
   const handleAddHistory = async (): Promise<boolean> => {
     if (!newHistory.date || !newHistory.description) {
-      alert("Wypełnij datę i opis wizyty.");
+      setModalConfig({
+        isOpen: true,
+        title: "Brak danych",
+        message: "Wypełnij datę i opis wizyty przed zapisaniem.",
+        confirmText: "OK",
+        variant: "warning",
+        isAlert: true,
+        onConfirm: () => setModalConfig((prev) => ({ ...prev, isOpen: false })),
+      });
       return false;
     }
 
@@ -250,21 +273,43 @@ export default function ClientDetailsPage({
         const err = await response.json();
         console.error("API Error Response:", err);
         if (err.error?.includes("Client has no forms")) {
-          alert(
-            "Klientka nie ma jeszcze żadnego formularza. Wypełnij najpierw formularz, aby dodać historię.",
-          );
+          setModalConfig({
+            isOpen: true,
+            title: "Brak formularzy",
+            message: "Klientka nie ma jeszcze żadnego formularza. Wypełnij najpierw formularz, aby dodać historię.",
+            confirmText: "OK",
+            variant: "info",
+            isAlert: true,
+            onConfirm: () => setModalConfig((prev) => ({ ...prev, isOpen: false })),
+          });
         } else {
           let msg = `Błąd zapisu: ${err.error || "Nieznany błąd"}`;
           if (err.details) {
             msg += `\n\nSzczegóły:\n${err.details}`;
           }
-          alert(msg);
+          setModalConfig({
+            isOpen: true,
+            title: "Błąd zapisu",
+            message: msg,
+            confirmText: "Zamknij",
+            variant: "danger",
+            isAlert: true,
+            onConfirm: () => setModalConfig((prev) => ({ ...prev, isOpen: false })),
+          });
         }
         return false;
       }
     } catch (error) {
       console.error("Error adding history:", error);
-      alert("Wystąpił błąd połączenia.");
+      setModalConfig({
+        isOpen: true,
+        title: "Błąd połączenia",
+        message: "Wystąpił błąd połączenia z serwerem. Spróbuj ponownie.",
+        confirmText: "OK",
+        variant: "danger",
+        isAlert: true,
+        onConfirm: () => setModalConfig((prev) => ({ ...prev, isOpen: false })),
+      });
       return false;
     } finally {
       setIsAddingHistory(false);
@@ -272,37 +317,69 @@ export default function ClientDetailsPage({
   };
 
   const handleDeleteNote = async (noteId: string) => {
-    if (!confirm("Czy na pewno chcesz usunąć tę notatkę?")) return;
-
-    try {
-      const response = await fetch(`/api/clients/${clientId}/notes/${noteId}`, {
-        method: "DELETE",
-      });
-      const data = await response.json();
-      if (data.success) {
-        fetchClientDetails();
-      }
-    } catch (error) {
-      console.error("Błąd usuwania notatki:", error);
-    }
+    setModalConfig({
+      isOpen: true,
+      title: "Usuń notatkę",
+      message: "Czy na pewno chcesz usunąć tę notatkę?",
+      confirmText: "Usuń",
+      variant: "danger",
+      onConfirm: async () => {
+        setModalConfig((prev) => ({ ...prev, isOpen: false }));
+        try {
+          const response = await fetch(`/api/clients/${clientId}/notes/${noteId}`, {
+            method: "DELETE",
+          });
+          const data = await response.json();
+          if (data.success) {
+            fetchClientDetails();
+          }
+        } catch (error) {
+          console.error("Błąd usuwania notatki:", error);
+        }
+      },
+    });
   };
 
   const handleDeleteHistory = async (historyId: string) => {
-    if (!confirm("Czy na pewno chcesz usunąć tę wizytę z historii?")) return;
-
-    try {
-      const response = await fetch(`/api/history/${historyId}`, {
-        method: "DELETE",
-      });
-      if (response.ok) {
-        await fetchHistory();
-      } else {
-        alert("Wystąpił błąd podczas usuwania.");
-      }
-    } catch (error) {
-      console.error("Error deleting history:", error);
-      alert("Błąd połączenia.");
-    }
+    setModalConfig({
+      isOpen: true,
+      title: "Usuń wizytę",
+      message: "Czy na pewno chcesz usunąć tę wizytę z historii?",
+      confirmText: "Usuń",
+      variant: "danger",
+      onConfirm: async () => {
+        setModalConfig((prev) => ({ ...prev, isOpen: false }));
+        try {
+          const response = await fetch(`/api/history/${historyId}`, {
+            method: "DELETE",
+          });
+          if (response.ok) {
+            await fetchHistory();
+          } else {
+            setModalConfig({
+              isOpen: true,
+              title: "Błąd",
+              message: "Wystąpił błąd podczas usuwania wizyty.",
+              confirmText: "OK",
+              variant: "danger",
+              isAlert: true,
+              onConfirm: () => setModalConfig((prev) => ({ ...prev, isOpen: false })),
+            });
+          }
+        } catch (error) {
+          console.error("Error deleting history:", error);
+          setModalConfig({
+            isOpen: true,
+            title: "Błąd połączenia",
+            message: "Nie udało się usunąć wizyty z powodu błędu połączenia.",
+            confirmText: "OK",
+            variant: "danger",
+            isAlert: true,
+            onConfirm: () => setModalConfig((prev) => ({ ...prev, isOpen: false })),
+          });
+        }
+      },
+    });
   };
 
   const startEditingHistory = (item: TreatmentHistory) => {
@@ -335,11 +412,27 @@ export default function ClientDetailsPage({
         await fetchHistory();
         cancelEditing();
       } else {
-        alert("Błąd aktualizacji wpisu.");
+        setModalConfig({
+          isOpen: true,
+          title: "Błąd aktualizacji",
+          message: "Wystąpił błąd podczas aktualizacji wpisu w historii.",
+          confirmText: "OK",
+          variant: "danger",
+          isAlert: true,
+          onConfirm: () => setModalConfig((prev) => ({ ...prev, isOpen: false })),
+        });
       }
     } catch (error) {
       console.error("Error updating history:", error);
-      alert("Błąd połączenia.");
+      setModalConfig({
+        isOpen: true,
+        title: "Błąd połączenia",
+        message: "Wystąpił błąd połączenia podczas próby aktualizacji.",
+        confirmText: "OK",
+        variant: "danger",
+        isAlert: true,
+        onConfirm: () => setModalConfig((prev) => ({ ...prev, isOpen: false })),
+      });
     } finally {
       setIsSavingEdit(false);
     }
@@ -965,6 +1058,17 @@ export default function ClientDetailsPage({
           </div>
         </div>
       </main>
+
+      <ConfirmModal
+        isOpen={modalConfig.isOpen}
+        title={modalConfig.title}
+        message={modalConfig.message}
+        confirmText={modalConfig.confirmText}
+        variant={modalConfig.variant}
+        isAlert={modalConfig.isAlert}
+        onConfirm={modalConfig.onConfirm}
+        onCancel={() => setModalConfig((prev) => ({ ...prev, isOpen: false }))}
+      />
     </div>
   );
 }

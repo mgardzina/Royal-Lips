@@ -250,7 +250,6 @@ function getZoneNames(obszarZabiegu: string | null | undefined): string[] {
 
 // Face diagram - form types that use it
 const FACE_DIAGRAM_TYPES = new Set([
-  "LIP_AUGMENTATION",
   "FACIAL_VOLUMETRY",
   "WRINKLE_REDUCTION",
   "TISSUE_STIMULATION",

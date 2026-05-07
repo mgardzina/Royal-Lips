@@ -53,10 +53,10 @@ export default function SessionTimeout() {
 
   return (
     <div
-      className={`fixed top-4 right-4 z-[9999] px-4 py-2 rounded-full shadow-lg border backdrop-blur-md flex items-center gap-2 font-mono text-sm transition-colors ${
+      className={`fixed bottom-4 left-4 z-[9999] px-4 py-2 rounded-full shadow-lg border backdrop-blur-md flex items-center gap-2 font-mono text-sm transition-all duration-300 ${
         isCritical
           ? "bg-red-500/90 border-red-600 text-white animate-pulse"
-          : "bg-white/80 border-[#d4cec4] text-[#4a4540]"
+          : "bg-white/60 hover:bg-white/90 border-[#d4cec4] text-[#4a4540] opacity-60 hover:opacity-100"
       }`}
       title="Czas do automatycznego wylogowania"
     >

@@ -95,7 +95,7 @@ export default function AnatomyBodySelector({
     baseZones.find((z) => z.id === id)?.name || id;
 
   return (
-    <div className="flex flex-col items-center w-full max-w-2xl mx-auto">
+    <div className="flex flex-col items-center w-full mx-auto">
       {/* Nagłówek z nazwą strefy po najechaniu (szybki podgląd) */}
       <div className="mb-2 flex items-center justify-between w-full">
         <div className="h-8 flex items-center justify-center flex-1 bg-[#f8f6f3] rounded-xl border border-[#d4cec4] mr-2">
