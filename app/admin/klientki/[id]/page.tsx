@@ -24,15 +24,20 @@ import {
   Sparkles,
 } from "lucide-react";
 import { ZONES } from "@/types/face-zones";
+import { ZONES as TISSUE_ZONES } from "@/types/face-zones-tissue";
+import { ZONES as PMU_ZONES } from "@/types/face-zone-pernament";
+import { BODY_ZONES } from "@/types/body-zones";
 import ConfirmModal from "@/components/ConfirmModal";
 
 // Helper do tłumaczenia stref
 const translateZones = (zonesString: string | null): string => {
   if (!zonesString) return "Brak szczegółów";
   const selectedIds = zonesString.split(",").map((s) => s.trim());
+  const allZones = [...ZONES, ...TISSUE_ZONES, ...PMU_ZONES, ...BODY_ZONES];
+
   return selectedIds
     .map((id) => {
-      const zone = ZONES.find((z) => z.id === id);
+      const zone = allZones.find((z) => z.id === id);
       return zone ? zone.name : id;
     })
     .join(", ");
@@ -140,12 +145,14 @@ export default function ClientDetailsPage({
     date: string;
     description: string;
     znieczulenie?: string;
+    osobaWykonujaca?: string;
   }
   const [history, setHistory] = useState<TreatmentHistory[]>([]);
   const [newHistory, setNewHistory] = useState({
     date: "",
     description: "",
     znieczulenie: "",
+    osobaWykonujaca: "",
   });
   const [isAddingHistory, setIsAddingHistory] = useState(false);
   const [showAddHistoryForm, setShowAddHistoryForm] = useState(false);
@@ -154,6 +161,7 @@ export default function ClientDetailsPage({
     date: "",
     description: "",
     znieczulenie: "",
+    osobaWykonujaca: "",
   });
   const [isSavingEdit, setIsSavingEdit] = useState(false);
   const [modalConfig, setModalConfig] = useState<{
@@ -267,7 +275,7 @@ export default function ClientDetailsPage({
 
       if (response.ok) {
         await fetchHistory();
-        setNewHistory({ date: "", description: "", znieczulenie: "" });
+        setNewHistory({ date: "", description: "", znieczulenie: "", osobaWykonujaca: "" });
         return true;
       } else {
         const err = await response.json();
@@ -388,12 +396,13 @@ export default function ClientDetailsPage({
       date: item.date,
       description: item.description,
       znieczulenie: item.znieczulenie || "",
+      osobaWykonujaca: item.osobaWykonujaca || "",
     });
   };
 
   const cancelEditing = () => {
     setEditingHistoryId(null);
-    setEditFormData({ date: "", description: "", znieczulenie: "" });
+    setEditFormData({ date: "", description: "", znieczulenie: "", osobaWykonujaca: "" });
   };
 
   const handleUpdateHistory = async () => {
@@ -683,7 +692,7 @@ export default function ClientDetailsPage({
                     </div>
                   </div>
 
-                  {/* Adnotacja i Obszar - 2 kolumny */}
+                  {/* Znieczulenie i Wykonawca - 2 kolumny */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-xs font-medium text-[#8b8580] mb-1 uppercase tracking-wider">
@@ -699,6 +708,23 @@ export default function ClientDetailsPage({
                           })
                         }
                         placeholder="np. Maść znieczulająca"
+                        className="w-full px-3 py-2 bg-[#f8f6f3] border border-[#d4cec4] rounded-lg focus:border-[#8b7355] outline-none text-sm"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-[#8b8580] mb-1 uppercase tracking-wider">
+                        Osoba wykonująca
+                      </label>
+                      <input
+                        type="text"
+                        value={newHistory.osobaWykonujaca || ""}
+                        onChange={(e) =>
+                          setNewHistory({
+                            ...newHistory,
+                            osobaWykonujaca: e.target.value,
+                          })
+                        }
+                        placeholder="np. Karolina"
                         className="w-full px-3 py-2 bg-[#f8f6f3] border border-[#d4cec4] rounded-lg focus:border-[#8b7355] outline-none text-sm"
                       />
                     </div>
@@ -837,7 +863,15 @@ export default function ClientDetailsPage({
                 Historia klientki
               </h2>
               <button
-                onClick={() => setShowAddHistoryForm(!showAddHistoryForm)}
+                onClick={() => {
+                  if (!showAddHistoryForm) {
+                    setNewHistory((prev) => ({
+                      ...prev,
+                      date: new Date().toISOString().split(".")[0], // YYYY-MM-DDTHH:mm:ss
+                    }));
+                  }
+                  setShowAddHistoryForm(!showAddHistoryForm);
+                }}
                 className="bg-[#8b7355] text-white px-3 py-1.5 rounded-lg text-xs font-medium hover:bg-[#7a6548] transition-colors flex items-center gap-1"
               >
                 <Plus className="w-3 h-3" />
@@ -855,6 +889,7 @@ export default function ClientDetailsPage({
                     date: new Date(h.date),
                     description: h.description,
                     znieczulenie: h.znieczulenie,
+                    osobaWykonujaca: h.osobaWykonujaca,
                   })),
                   ...client.forms.map((f) => ({
                     id: f.id,
@@ -863,7 +898,7 @@ export default function ClientDetailsPage({
                     formType: f.type,
                     obszarZabiegu: f.obszarZabiegu,
                     nazwaProduktu: f.nazwaProduktu,
-                    osoba: f.osobaPrzeprowadzajacaZabieg,
+                    osobaPrzeprowadzajacaZabieg: f.osobaPrzeprowadzajacaZabieg,
                     znieczulenie: f.znieczulenie,
                   })),
                 ].sort((a, b) => b.date.getTime() - a.date.getTime());
@@ -929,7 +964,19 @@ export default function ClientDetailsPage({
                                   })
                                 }
                                 placeholder="Znieczulenie"
-                                className="w-full px-2 py-1 border rounded text-xs mb-2"
+                                className="w-full px-2 py-1 border rounded text-xs"
+                              />
+                              <input
+                                type="text"
+                                value={editFormData.osobaWykonujaca}
+                                onChange={(e) =>
+                                  setEditFormData({
+                                    ...editFormData,
+                                    osobaWykonujaca: e.target.value,
+                                  })
+                                }
+                                placeholder="Osoba wykonująca"
+                                className="w-full px-2 py-1 border rounded text-xs"
                               />
                             </div>
                             <textarea
@@ -1005,46 +1052,95 @@ export default function ClientDetailsPage({
                                 <p className="text-[#5a5550] text-base leading-relaxed whitespace-pre-wrap font-medium">
                                   {item.description}
                                 </p>
-                                {(item as any).znieczulenie && (
-                                  <div className="mt-3 flex flex-col gap-1 bg-[#8b7355]/5 p-2 rounded-lg border border-[#8b7355]/20">
-                                    <span className="text-xs font-bold text-[#8b7355] uppercase tracking-wider">
-                                      Znieczulenie
-                                    </span>
-                                    <span className="text-sm font-medium text-[#4a4540]">
-                                      {(item as any).znieczulenie}
-                                    </span>
+                                {((item as any).znieczulenie ||
+                                  (item as any).osobaWykonujaca) && (
+                                  <div className="mt-3 flex flex-wrap gap-2">
+                                    {(item as any).znieczulenie && (
+                                      <div className="bg-[#8b7355]/5 px-3 py-1.5 rounded-lg border border-[#8b7355]/20">
+                                        <span className="text-[10px] font-bold text-[#8b7355] uppercase tracking-wider block mb-0.5">
+                                          Znieczulenie
+                                        </span>
+                                        <span className="text-sm font-medium text-[#4a4540]">
+                                          {(item as any).znieczulenie}
+                                        </span>
+                                      </div>
+                                    )}
+                                    {(item as any).osobaWykonujaca && (
+                                      <div className="bg-[#4a4540]/5 px-3 py-1.5 rounded-lg border border-[#4a4540]/20">
+                                        <span className="text-[10px] font-bold text-[#4a4540] uppercase tracking-wider block mb-0.5">
+                                          Osoba wykonująca
+                                        </span>
+                                        <span className="text-sm font-medium text-[#4a4540]">
+                                          {(item as any).osobaWykonujaca}
+                                        </span>
+                                      </div>
+                                    )}
                                   </div>
                                 )}
                               </>
                             ) : (
                               <Link
                                 href={`/admin/formularz/${item.id}`}
-                                className="block hover:text-[#8b7355] transition-colors"
+                                className="block p-4 bg-[#fcfbf9] rounded-xl border border-[#e5e0d8] hover:border-[#8b7355] hover:shadow-md transition-all group/card"
                               >
-                                <p className="font-bold text-[#4a4540] text-base mb-1">
-                                  {formTypeLabels[item.formType] ||
-                                    item.formType}
-                                </p>
-                                <p className="text-sm text-[#8b8580] font-medium">
-                                  {translateZones(item.obszarZabiegu)}
-                                </p>
-                                {(item as any).nazwaProduktu && (
-                                  <p className="text-sm text-[#8b8580] mt-1 italic">
-                                    {((item as any).nazwaProduktu || "")
-                                      .replace(/\| Email:.*$/, "")
-                                      .trim()}
+                                <div className="flex justify-between items-start mb-2">
+                                  <p className="font-serif font-bold text-[#4a4540] text-lg group-hover/card:text-[#8b7355] transition-colors">
+                                    {formTypeLabels[item.formType] ||
+                                      item.formType}
                                   </p>
-                                )}
-                                {(item as any).znieczulenie && (
-                                  <div className="mt-3 flex flex-col gap-1 bg-[#8b7355]/5 p-2 rounded-lg border border-[#8b7355]/20">
-                                    <span className="text-xs font-bold text-[#8b7355] uppercase tracking-wider">
-                                      Znieczulenie
+                                  <FileText className="w-5 h-5 text-[#8b8580] group-hover/card:text-[#8b7355] transition-colors" />
+                                </div>
+
+                                <div className="space-y-3">
+                                  <div>
+                                    <span className="text-[10px] font-bold text-[#8b8580] uppercase tracking-wider block mb-1">
+                                      Obszar zabiegu
                                     </span>
-                                    <span className="text-sm font-medium text-[#4a4540]">
-                                      {(item as any).znieczulenie}
-                                    </span>
+                                    <p className="text-sm text-[#4a4540] font-medium">
+                                      {translateZones(item.obszarZabiegu)}
+                                    </p>
                                   </div>
-                                )}
+
+                                  {(item as any).nazwaProduktu && (
+                                    <div>
+                                      <span className="text-[10px] font-bold text-[#8b8580] uppercase tracking-wider block mb-1">
+                                        Preparat / Produkt
+                                      </span>
+                                      <p className="text-sm text-[#4a4540] font-medium italic">
+                                        {((item as any).nazwaProduktu || "")
+                                          .replace(/\| Email:.*$/, "")
+                                          .trim()}
+                                      </p>
+                                    </div>
+                                  )}
+
+                                  <div className="flex flex-wrap gap-3 pt-2 border-t border-[#e5e0d8]/50">
+                                    {(item as any).znieczulenie && (
+                                      <div>
+                                        <span className="text-[10px] font-bold text-[#8b7355] uppercase tracking-wider block mb-0.5">
+                                          Znieczulenie
+                                        </span>
+                                        <span className="text-xs font-medium text-[#5a5550]">
+                                          {(item as any).znieczulenie}
+                                        </span>
+                                      </div>
+                                    )}
+                                    {(item as any).osobaPrzeprowadzajacaZabieg && (
+                                      <div>
+                                        <span className="text-[10px] font-bold text-[#4a4540] uppercase tracking-wider block mb-0.5">
+                                          Specjalista
+                                        </span>
+                                        <span className="text-xs font-medium text-[#5a5550]">
+                                          {(item as any).osobaPrzeprowadzajacaZabieg}
+                                        </span>
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
+
+                                <div className="mt-4 flex items-center gap-2 text-[#8b7355] text-xs font-bold uppercase tracking-widest opacity-0 group-hover/card:opacity-100 transition-opacity">
+                                  Zobacz szczegóły formularza →
+                                </div>
                               </Link>
                             )}
                           </>
